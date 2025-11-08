@@ -1,0 +1,95 @@
+[
+  {
+    "name": "Bright Rose Necklace",
+    "description": "Elegant gold-plated necklace, perfect for any occasion.",
+    "highlights": ["18k gold plated", "Handcrafted design", "Hypoallergenic material"],
+    "specifications": [
+      { "title": "Length", "description": "40cm + 5cm extension" },
+      { "title": "Material", "description": "Brass, 18k Gold Plated" }
+    ],
+    "price": 2500,
+    "discountPrice": 1999,
+    "images": [
+      {
+        "public_id": "necklace_img1",
+        "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80"
+      }
+    ],
+    "brand": {
+      "name": "Bright Rose",
+      "logo": {
+        "public_id": "bright_rose_logo",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+      }
+    },
+    "category": "Necklaces",
+    "stock": 25,
+    "warranty": 1,
+    "ratings": 4.7,
+    "numOfReviews": 18,
+    "reviews": [],
+    "seller": "68f89bbccd19c67b787aea3c"
+  },
+  {
+    "name": "Men's Classic Watch",
+    "description": "Timeless watch with stainless steel strap.",
+    "highlights": ["Japanese Quartz Movement", "Water Resistant", "2-Year International Warranty"],
+    "specifications": [
+      { "title": "Dial Size", "description": "42mm" },
+      { "title": "Strap Material", "description": "Stainless Steel" }
+    ],
+    "price": 5200,
+    "discountPrice": 4499,
+    "images": [
+      {
+        "public_id": "watch_img1",
+        "url": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=500&q=80"
+      }
+    ],
+    "brand": {
+      "name": "EliteTime",
+      "logo": {
+        "public_id": "elitetime_logo",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1280px-Google_2015_logo.svg.png"
+      }
+    },
+    "category": "Watches",
+    "stock": 15,
+    "warranty": 2,
+    "ratings": 4.4,
+    "numOfReviews": 9,
+    "reviews": [],
+    "seller": "68f89bbccd19c67b787aea3c"
+  },
+  {
+    "name": "Sterling Silver Bracelet",
+    "description": "Minimalist silver bracelet for all-day comfort.",
+    "highlights": ["Pure 925 Sterling Silver", "Adjustable size", "Unique minimalist style"],
+    "specifications": [
+      { "title": "Length", "description": "16cm - 21cm adjustable" },
+      { "title": "Weight", "description": "5g" }
+    ],
+    "price": 1500,
+    "discountPrice": 1299,
+    "images": [
+      {
+        "public_id": "bracelet_img1",
+        "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=500&q=80"
+      }
+    ],
+    "brand": {
+      "name": "SilverStone",
+      "logo": {
+        "public_id": "silverstone_logo",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png"
+      }
+    },
+    "category": "Bracelets",
+    "stock": 40,
+    "warranty": 1,
+    "ratings": 4.9,
+    "numOfReviews": 23,
+    "reviews": [],
+    "seller": "68f89bbccd19c67b787aea3c"
+  }
+]
