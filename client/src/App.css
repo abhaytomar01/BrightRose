@@ -2,11 +2,14 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
 
 /* Example: Inter */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
 
 * {
@@ -16,21 +19,21 @@
     background-color: page;
 }
 
-body {
-  font-family: 'Manrope', Arial, sans-serif;
-}
-
 /* body {
+  font-family: 'Manrope', Arial, sans-serif;
+} */
+
+body {
   font-family: 'Inter', Arial, sans-serif;
-}  */
+} 
 
 /* Example pairing: */
-h1, h2, h3 {
+/* h1, h2, h3 {
   font-family:  'Inter', Arial, sans-serif;
-}
+} */
 
-/* 
-body {
+
+/* body {
     font-family: playfair;
 } */
 

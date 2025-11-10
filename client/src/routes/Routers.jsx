@@ -18,7 +18,7 @@ import Shipping from "../pages/user/Cart/Shipping";
 import OrderSuccess from "../pages/user/Cart/OrderSuccess";
 import OrderFailed from "../pages/user/Cart/OrderFailed";
 import OrderDetails from "../pages/user/Orders/OrderDetails";
-import Checkout from "../pages/user/checkout/Checkout";
+import Checkout from "../pages/user/Checkout/Checkout";
 
 // 🔹 Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard";
@@ -33,7 +33,7 @@ import ProductPage from "../components/ProductListing/ProductPage.jsx";
 // 🔹 Extra pages
 import Ourheritage from "../pages/Ourheritage/Ourheritage.jsx";
 import WeaveCollection from "../pages/WeaveCollection.jsx";
-import Contact from "../pages/Contact/Contact.jsx";
+import Contact from "../pages/contact/contact.jsx";
 import StyleCollection from "../pages/StyleCollection.jsx";
 
 // 🔹 Route Guards
@@ -100,3 +100,5 @@ const Routers = () => {
 };
 
 export default Routers;
+
+

@@ -34,7 +34,7 @@ const BrandStory = ({
           <div className="w-20 h-1 bg-gradient-to-r from-[#D4AF37] to-transparent mb-6 rounded-full"></div>
 
           {/* Descriptions */}
-          <p className="text-gray-700 text-base sm:text-lg md:text-xl leading-relaxed mb-4">
+          <p className="text-gray-700 text-base sm:text-lg md:text-xl leading-relaxed mb-4"z>
             {description1}
           </p>
 

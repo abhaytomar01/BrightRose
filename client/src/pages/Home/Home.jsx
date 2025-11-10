@@ -44,11 +44,7 @@ const Home = () => {
         // isLoading={loading} 
              />
        
-       <FeaturedProducts
-        title="BestSellers"
-        subtitle="Our most-loved products, handpicked for you"
-        products={fashionProducts}
-       />
+       
        <BrandStory 
             title="Our Story"
             description1="Bright Rose is an endeavor to bring back Indian Handloom so that we can clothe the world once again in a natural way through the beauty of INTRICATE WEAVES."
@@ -56,6 +52,11 @@ const Home = () => {
             description3="“Our knowledge of weaving is often deeply valued within families and seen as a time-honored tradition. Some skilled artisans become masters of the craft to the point where they can weave with their eyes closed” - as quoted by Master weaver, Chand from Varanasi."
             imageUrl="../../src/assets/images/ourstoryImage.jpg"
             learnMoreLink="/about"
+       />
+       <FeaturedProducts
+        title="BestSellers"
+        subtitle="Our most-loved products, handpicked for you"
+        products={fashionProducts}
        />
         <WhyChooseUs />
          <LifestyleBanner
