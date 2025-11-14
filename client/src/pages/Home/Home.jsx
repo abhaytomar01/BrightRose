@@ -50,9 +50,10 @@ const Home = () => {
             description1="Bright Rose is an endeavor to bring back Indian Handloom so that we can clothe the world once again in a natural way through the beauty of INTRICATE WEAVES."
             description2="Rose is known as the Queen of Flowers for its intricate petal structure, wide spectrum of colors, and diverse forms. Similarly, our garments reflect intricate weaves, vibrant and bold hues, and a variety of weaves, each with its own distinctive character, just like you."
             description3="“Our knowledge of weaving is often deeply valued within families and seen as a time-honored tradition. Some skilled artisans become masters of the craft to the point where they can weave with their eyes closed” - as quoted by Master weaver, Chand from Varanasi."
-            imageUrl="../../src/assets/images/ourstoryImage.jpg"
+            imageUrl="client/public/ourstoryImage.jpg"
             learnMoreLink="/about"
        />
+       
        <FeaturedProducts
         title="BestSellers"
         subtitle="Our most-loved products, handpicked for you"

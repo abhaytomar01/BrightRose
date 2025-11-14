@@ -282,7 +282,7 @@ const UserProfile = () => {
                     </div>
                     <div className="mt-4">
                         <h5 className="text-[14px] font-[500]">
-                            When will my Flipkart account be updated with the
+                            When will my Bright Rose account be updated with the
                             new email address (or mobile number)?
                         </h5>
                         <p className="text-[12px] text-slate-500 mt-2">

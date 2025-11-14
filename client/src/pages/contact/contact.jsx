@@ -11,21 +11,32 @@ const Contact = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      // replace URL with your backend endpoint
-      await axios.post("http://localhost:8080/api/v1/contact", form);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await axios.post(
+      "https://thebrightrose.com/api/v1/contact",  // replace with VPS URL
+      form,
+      { headers: { "Content-Type": "application/json" } }
+    );
+
+    if (res.data.success) {
       setSent(true);
       setForm({ name: "", email: "", message: "" });
-    } catch (err) {
-      console.error("Contact error:", err);
-      alert("Something went wrong, try again.");
-    } finally {
-      setLoading(false);
+    } else {
+      alert("Failed to send message.");
     }
-  };
+  } catch (error) {
+    console.error("Contact error:", error);
+    alert("Something went wrong.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <section className="w-full bg-white text-[#222] p-0">

@@ -17,6 +17,7 @@ import authRoute from "./routes/authRoute.js";
 import productRoute from "./routes/productRoute.js";
 import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
+import contactRoute from "./routes/contactRoute.js";
 
 // setup dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -65,6 +66,9 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/product", productRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/cart", cartRoute);
+
+// contact form route
+app.use("/api/v1/contact", contactRoute);
 
 // Subscription test route
 app.post("/api/subscribe", (req, res) => {

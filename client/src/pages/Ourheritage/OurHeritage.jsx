@@ -87,7 +87,7 @@ const HeroParallax = ({ title = "About Us", subtitle }) => {
   );
 };
 
-/* ------ Timeline Item: alternates sides on large screens ------ */
+/* ------ Timeline ------ */
 function TimelineItem({ item, index }) {
   const isEven = index % 2 === 0;
   const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
@@ -101,24 +101,16 @@ function TimelineItem({ item, index }) {
       variants={itemVariant(isEven ? "left" : "right")}
       className="relative flex flex-col md:flex-row md:items-center md:justify-between md:gap-8 max-w-full"
     >
-      {/* Image block (left/right) */}
       <div className={`w-full md:w-1/2 ${isEven ? "md:pl-12 md:order-2" : "md:pr-12 md:order-1"} order-2 md:order-none`}>
         <div className="overflow-hidden rounded-xl mb-4 md:mb-0">
-          <img
-            src={item.image}
-            alt={item.title}
-            loading="lazy"
-            className="w-full h-48 sm:h-56 object-cover rounded-xl shadow-md"
-          />
+          <img src={item.image} alt={item.title} className="w-full h-48 sm:h-56 object-cover rounded-xl shadow-md" />
         </div>
       </div>
-      {/* Text block */}
-      <div className={`w-full md:w-1/2 ${isEven ? "md:pr-12 md:order-1 text-left" : "md:pl-12 md:order-2 text-left"} mt-2 md:mt-0`}>
+      <div className={`w-full md:w-1/2 ${isEven ? "md:pr-12 md:order-1" : "md:pl-12 md:order-2"} text-left`}>
         <span className="inline-block text-sm font-semibold text-[#D4AF37] mb-2">{item.year}</span>
         <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 mb-2 sm:mb-3">{item.title}</h3>
         <p className="text-gray-600 leading-relaxed text-base sm:text-lg">{item.text}</p>
       </div>
-      {/* Center dot (desktop only) */}
       <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
         <div className="w-6 h-6 bg-[#D4AF37] rounded-full border-4 border-[#F8F6F3] shadow-sm" />
       </div>
@@ -126,43 +118,107 @@ function TimelineItem({ item, index }) {
   );
 }
 
-/* ------ Timeline container with central line and staggered spacing ------ */
-const Timeline = ({ items = TIMELINE }) => {
-  return (
-    <section className="relative bg-[#F8F6F3] py-10 px-3 sm:py-20 sm:px-6 md:px-12 lg:px-20 overflow-x-hidden">
-      <div className="max-w-full sm:max-w-6xl mx-auto">
-        <h2 className="text-center text-2xl sm:text-3xl md:text-4xl font-bold text-[#AD000F] mb-8 sm:mb-12">Our Story</h2>
-        <div className="relative">
-          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-[#D4AF37]/90 to-transparent" />
-          <div className="space-y-12 sm:space-y-16">
-            {items.map((it, idx) => (
-              <div key={idx} className="md:relative">
-                <TimelineItem item={it} index={idx} />
-              </div>
-            ))}
-          </div>
+const Timeline = ({ items = TIMELINE }) => (
+  <section className="relative bg-[#F8F6F3] py-10 px-3 sm:py-20 sm:px-6 md:px-12 lg:px-20 overflow-x-hidden">
+    <div className="max-w-full sm:max-w-6xl mx-auto">
+      <h2 className="text-center text-2xl sm:text-3xl md:text-4xl font-bold text-[#AD000F] mb-8 sm:mb-12">Our Story</h2>
+      <div className="relative">
+        <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-[#D4AF37]/90 to-transparent" />
+        <div className="space-y-12 sm:space-y-16">
+          {items.map((it, idx) => (
+            <div key={idx} className="md:relative">
+              <TimelineItem item={it} index={idx} />
+            </div>
+          ))}
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
-/* ------ Full About page combining hero + timeline + CTA + footer ------ */
+/* ------ Additional About Layout Sections ------ */
+const AboutLayout = () => (
+  <section className="bg-[#F8F6F3] py-20 px-6 md:px-16 lg:px-24">
+    {/* <div className="max-w-6xl mx-auto space-y-20">
+      <div className="flex flex-col lg:flex-row gap-10 items-center">
+        <div className="flex-1">
+          <h2 className="text-3xl md:text-5xl font-bold text-[#AD000F] mb-4">About Brand</h2>
+          <p className="text-gray-700 text-lg mb-3 leading-relaxed">
+            <strong>Bright Rose</strong> is an endeavor to bring back Indian Handloom — blending heritage with modern silhouettes to clothe the world again through intricate weaves.
+          </p>
+          <p className="text-gray-700 text-lg mb-3 leading-relaxed">
+            Known as the Queen of Flowers, our logo symbolizes elegance, resilience, and craftsmanship that reflect the soul of Indian artisans.
+          </p>
+          <p className="text-[#3b6e58] italic text-lg">
+            “Our knowledge of weaving is deeply valued, often passed down generations as an honored legacy.” — Chand, Weaver from Varanasi
+          </p>
+        </div>
+        <img
+          src="https://images.pexels.com/photos/7598024/pexels-photo-7598024.jpeg"
+          alt="Brand Logo"
+          className="rounded-xl shadow-lg w-80 sm:w-96"
+        />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#AD000F] mb-4">The Problem</h2>
+          <p className="text-gray-700 text-lg leading-relaxed">
+            Many saree lovers found it hard to drape for events — so we envisioned a world where traditional fabrics could be worn as easy silhouettes.
+          </p>
+        </div>
+        <img src="https://via.placeholder.com/600x400.png?text=Problem" alt="Problem" className="rounded-xl shadow-md" />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-10 items-center">
+        <img src="https://via.placeholder.com/600x400.png?text=Solution" alt="Solution" className="rounded-xl shadow-md" />
+        <div>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#AD000F] mb-4">Our Solution</h2>
+          <p className="text-gray-700 text-lg leading-relaxed">
+            Modern silhouettes crafted in traditional fabrics like Kanjeevaram, Banarasi, and Ikat bring timeless luxury for today’s global women.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-10 items-center">
+        <img src="https://via.placeholder.com/500x500.png?text=Product" alt="Product" className="rounded-xl shadow-lg" />
+        <div>
+          <h2 className="text-3xl md:text-5xl font-bold text-[#AD000F] mb-4">Our Product</h2>
+          <ul className="list-disc list-inside text-gray-700 text-lg space-y-2">
+            <li>Handwoven & handmade only</li>
+            <li>Each piece is unique and timeless</li>
+            <li>Contemporary silhouettes with Indian heritage</li>
+            <li>Sustainable and versatile for global wear</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-10 items-center">
+        <img src="https://via.placeholder.com/600x400.png?text=People" alt="People" className="rounded-xl shadow-lg" />
+        <div>
+          <h2 className="text-3xl md:text-5xl font-bold text-[#AD000F] mb-4">The People</h2>
+          <p className="text-gray-700 text-lg">
+            Educated, rooted, and globally inspired — our consumers value craftsmanship, emotion, and legacy over logos. Age 25+, they represent modern India with heritage at heart.
+          </p>
+        </div>
+      </div>
+    </div> */}
+  </section>
+);
+
 export default function AboutAdvanced() {
   return (
     <main className="min-h-screen bg-white text-[#1f2937] overflow-x-hidden">
       <HeroParallax
         title="ABOUT THE BRIGHT ROSE"
-        subtitle="Crafted with passion. Designed for modern elegance."
+        subtitle="Bright Rose is an endeavor to bring back Indian Handloom — blending heritage with modern silhouettes to clothe the world again through intricate weaves."
       />
-
-      <section className="max-w-full sm:max-w-6xl mx-auto px-3 sm:px-6 md:px-12 lg:px-20 -mt-10 sm:-mt-16 relative z-10">
-        {/* Optionally add intro text block here */}
-      </section>
 
       <Timeline items={TIMELINE} />
 
-      {/* CTA banner */}
+      {/* Added Creative Layout Sections */}
+      <AboutLayout />
+
       <section className="relative w-full mt-8 sm:mt-12">
         <div className="w-full h-56 sm:h-72 md:h-80 lg:h-96 relative overflow-hidden">
           <img
@@ -186,28 +242,6 @@ export default function AboutAdvanced() {
           </div>
         </div>
       </section>
-
-      {/* newsletter */}
-      {/* <section className="py-10 sm:py-16 bg-white">
-        <div className="max-w-[95vw] sm:max-w-4xl mx-auto text-center px-3 sm:px-6">
-          <h4 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#AD000F] mb-2 sm:mb-3">
-            Stay Updated
-          </h4>
-          <p className="text-gray-600 mb-4 sm:mb-6 text-base sm:text-lg">
-            Subscribe for new releases and limited editions.
-          </p>
-          <form className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] outline-none"
-            />
-            <button className="bg-[#AD000F] text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-[#8c000c] transition">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section> */}
     </main>
   );
 }

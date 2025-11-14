@@ -74,6 +74,13 @@ const Login = () => {
         >
           Login
         </button>
+
+        <p className="text-center text-gray-600 text-sm mt-4">
+          New to Bright Rose?{" "}
+          <a href="/register" className="text-indigo-600 hover:underline">
+            Sign Up
+          </a>
+        </p>
       </form>
     </div>
   );
