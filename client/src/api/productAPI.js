@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/v1/product/filtered-products";
+const API_URL = "https://thebrightrose.com/api/v1/product/filtered-products";
+
 
 export const getFilteredProducts = async (filters) => {
   try {

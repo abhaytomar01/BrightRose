@@ -18,9 +18,9 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8080/api/v1/auth/register", formData);
+      const res = await axios.post("http://thebrightrose.com/api/v1/auth/register", formData);
       console.log("Registration successful:", res.data);
-      alert("User registered successfully!");
+      alert("User registered successfully!"); 
     } catch (error) {
       console.error("Registration failed:", error);
       alert("Error: " + (error.response?.data?.message || error.message));
