@@ -58,46 +58,84 @@ const Checkout = () => {
   };
 
   const handleRazorpayPayment = async () => {
+  try {
+    // 1️⃣ Load Razorpay script
     const res = await loadRazorpayScript("https://checkout.razorpay.com/v1/checkout.js");
     if (!res) {
-      toast.error("Razorpay SDK failed to load. Please try again.");
+      toast.error("Razorpay SDK failed to load.");
       return;
     }
 
+    // 2️⃣ Create order on your server
+    const orderRes = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-checkout-session`,
+      { amount: grandTotal }, // amount in INR
+      { headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` } }
+    );
+
+    const { order } = orderRes.data;
+
+    if (!order || !order.id) {
+      toast.error("Payment session creation failed.");
+      return;
+    }
+
+    // 3️⃣ Open Razorpay popup
     const options = {
-      key: "rzp_test_YourKeyHere", // Replace with your Razorpay key
-      amount: grandTotal * 100,
-      currency: "INR",
-      name: "The Digital Radio",
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID, // frontend key
+      amount: order.amount,
+      currency: order.currency,
+      name: "Bright Rose",
       description: "Order Payment",
-      handler: function (response) {
-        toast.success("Payment Successful!");
+      order_id: order.id, // very important
+
+      handler: async function (response) {
+        toast.success("Payment successful!");
+
+        // Send verification request to backend
+        await axios.post(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+          {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            cartItems,
+            address
+          },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` } }
+        );
+
         clearCart();
         navigate("/user/orders");
       },
+
       prefill: {
         name: address.name,
         email: address.email,
         contact: address.phone,
       },
-      theme: {
-        color: "#111827",
-      },
+
+      theme: { color: "#111827" }
     };
 
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
-  };
 
-  const placeOrder = () => {
-    if (paymentMethod === "cod") {
-      toast.success("Order placed successfully!");
-      clearCart();
-      navigate("/user/orders");
-    } else {
-      handleRazorpayPayment();
-    }
-  };
+  } catch (error) {
+    console.error("Payment error:", error);
+    toast.error("Payment failed. Try again.");
+  }
+};
+
+ const placeOrder = () => {
+  if (paymentMethod === "cod") {
+    toast.success("Order placed successfully!");
+    clearCart();
+    navigate("/user/orders");
+  } else {
+    handleRazorpayPayment();
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8 mt-28 md:mt-36 flex flex-col items-center">

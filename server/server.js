@@ -18,6 +18,7 @@ import productRoute from "./routes/productRoute.js";
 import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 // setup dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -69,6 +70,9 @@ app.use("/api/v1/cart", cartRoute);
 
 // contact form route
 app.use("/api/v1/contact", contactRoute);
+
+// payment route
+app.use("/api/v1/payment", paymentRoutes);
 
 // Subscription test route
 app.post("/api/subscribe", (req, res) => {

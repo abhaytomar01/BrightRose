@@ -1,90 +1,26 @@
-import mongoose from "mongoose";
-
-const orderSchema = new mongoose.Schema({
-    paymentId: {
-        type: String,
-        required: true,
-    },
-    products: [
-        {
-            name: {
-                type: String,
-            },
-            image: {
-                type: String,
-            },
-            brandName: {
-                type: String,
-            },
-            price: {
-                type: Number,
-            },
-            discountPrice: {
-                type: Number,
-            },
-            quantity: {
-                type: Number,
-                default: 1,
-            },
-            productId: {
-                type: String,
-                required: true,
-            },
-            seller: {
-                type: mongoose.Schema.ObjectId,
-                ref: "User",
-            },
-        },
-    ],
-
-    buyer: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    shippingInfo: {
-        address: {
-            type: String,
-            required: true,
-        },
-        city: {
-            type: String,
-            required: true,
-        },
-        state: {
-            type: String,
-            required: true,
-        },
-        country: {
-            type: String,
-            required: true,
-        },
-        pincode: {
-            type: Number,
-            required: true,
-        },
-        phoneNo: {
-            type: Number,
-            required: true,
-        },
-        landmark: {
-            type: String,
-        },
-    },
-    orderStatus: {
-        type: String,
-        default: "Processing",
-    },
-    amount: {
-        type: Number,
-        default: 0,
-    },
-    deliveredAt: Date,
-    shippedAt: Date,
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+import mongoose from 'mongoose';
+const itemSchema = new mongoose.Schema({
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  name: String,
+  price: Number,
+  discountPrice: Number,
+  qty: Number,
+  image: String,
+  selectedColor: String,
+  selectedSize: String,
 });
-
-export default mongoose.model("Orders", orderSchema);
+const orderSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  items: [itemSchema],
+  shippingAddress: {
+    name: String, phone: String, address: String, city: String, state: String, pincode: String
+  },
+  paymentMethod: { type: String, enum: ['razorpay','cod','stripe'], default: 'razorpay' },
+  paymentStatus: { type: String, enum: ['pending','paid','failed','refunded'], default: 'pending' },
+  amount: Number, tax: Number, shipping: Number, discount: Number, grandTotal: Number,
+  status: { type: String, enum: ['created','processing','shipped','delivered','cancelled'], default: 'created' },
+  razorpayOrderId: String,
+  razorpayPaymentId: String,
+  createdAt: { type: Date, default: Date.now }
+});
+export default mongoose.model('Order', orderSchema);
