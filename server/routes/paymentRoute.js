@@ -1,6 +1,6 @@
 import express from "express";
 import { createCheckoutSession } from "../controllers/payment/paymentController.js";
-import { requireSignIn } from "../middlewares/authMiddleware.js";
+import { requireSignIn } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

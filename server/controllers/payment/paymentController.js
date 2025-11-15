@@ -1,6 +1,5 @@
 import Razorpay from "razorpay";
 import asyncHandler from "express-async-handler";
-import orderModel from "../../models/orderModel";
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({

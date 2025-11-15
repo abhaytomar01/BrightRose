@@ -109,7 +109,7 @@ const Header = () => {
           <Link to="/" className="flex items-center justify-center">
             <img
               className="w-24 md:w-28 h-16 object-contain transition-all duration-300"
-              src=".client/public/logonew2.png"
+              src=".client/public/logo.png"
               alt="Logo"
               style={{ minWidth: 60, minHeight: 30 }}
             />
