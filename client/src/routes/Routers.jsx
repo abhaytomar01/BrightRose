@@ -30,6 +30,12 @@ import DeleteAllOrder from "../pages/DeleteAllOrder.jsx";
 import Products from "../pages/Products/Products";
 import ProductPage from "../components/ProductListing/ProductPage.jsx";
 
+// Policy Pages
+import Terms from "../pages/Policy/Terms.jsx";
+import Privacy from "../pages/Policy/Privacy.jsx";
+import CustomerService from "../pages/Policy/CustomerService.jsx";
+import ExchangeReturn from "../pages/Policy/ExchangeReturn.jsx";
+
 // 🔹 Extra pages
 import Ourheritage from "../pages/Ourheritage/Ourheritage.jsx";
 import WeaveCollection from "../pages/WeaveCollection.jsx";
@@ -95,6 +101,13 @@ const Routers = () => {
       {/* Others */}
       <Route path="/all-order/delete" element={<DeleteAllOrder />} />
       <Route path="*" element={<PageNotFound />} />
+
+      {/* Policy  */}
+      <Route path="/terms" element={<Terms />} />
+<Route path="/privacy" element={<Privacy />} />
+<Route path="/customer-service" element={<CustomerService />} />
+<Route path="/exchange-return" element={<ExchangeReturn />} />
+
     </Routes>
   );
 };

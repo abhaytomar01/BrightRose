@@ -29,16 +29,16 @@ const Footer = () => {
           <h3 className="text-lg font-semibold text-[#AD000F] mb-4">SERVICE</h3>
           <ul className="space-y-2">
             <li>
-              <a href="/termandcondition" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Terms & Conditions</a>
+              <a href="/terms" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Terms & Conditions</a>
             </li>
             <li>
-              <a href="/refund-return" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Privacy Policy</a>
+              <a href="/privacy" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Privacy Policy</a>
             </li>
             <li>
-              <a href="/exchnage" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Shipping Policy</a>
+              <a href="/customer-service" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Customer Service</a>
             </li>
             <li>
-              <a href="/contact" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Exchange & Return</a>
+              <a href="/exchange-return" className="hover:text-[#AD000F] transition-colors duration-300 text-sm">Exchange & Return</a>
             </li>
           </ul>
         </div>
