@@ -10,11 +10,9 @@ dotenv.config();
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { v2 as cloudinary } from "cloudinary";
 import bodyParser from "body-parser";
-import fileUpload from "express-fileupload";
 import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { dirname } from "path";
 
 // =====================
 // Local Imports
@@ -26,7 +24,7 @@ import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
-import uploadRoute from "./routes/uploadRoute.js";   // ⭐ ADD THIS
+// ❌ Removed: import uploadRoute from "./routes/uploadRoute.js";
 
 // =====================
 // Setup dirname
@@ -38,15 +36,6 @@ const __dirname = dirname(__filename);
 // Express app
 // =====================
 const app = express();
-
-// =====================
-// Cloudinary Config
-// =====================
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // =====================
 // Middlewares
@@ -68,11 +57,6 @@ app.use(
 app.options("*", cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(
-  fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB
-  })
-);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -98,7 +82,7 @@ app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 
-app.use("/api/upload", uploadRoute);  // ⭐ IMPORTANT (Cloudinary upload route)
+// ❌ Removed: app.use("/api/upload", uploadRoute);
 
 // =====================
 // Subscription Test
