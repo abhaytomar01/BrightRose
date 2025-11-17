@@ -57,12 +57,14 @@ app.use(
       "https://thebrightrose.com",
       "https://www.thebrightrose.com",
       "http://localhost:5173",
-      "http://localhost:3000",
+      "http://localhost:3000"
     ],
-    methods: "GET,POST,PUT,PATCH,DELETE",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 app.use(express.json());
 app.use(morgan("dev"));
