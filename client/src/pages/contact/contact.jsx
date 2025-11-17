@@ -16,9 +16,12 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
+    // Get reCAPTCHA v3 token
+    const token = await window.grecaptcha.execute(SITE_KEY, { action: "submit" });
+
     const res = await axios.post(
-      "https://thebrightrose.com/api/v1/contact",  // replace with VPS URL
-      form,
+      "https://thebrightrose.com/api/v1/contact",
+      { ...form, token },
       { headers: { "Content-Type": "application/json" } }
     );
 
@@ -35,7 +38,6 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
-
 
 
   return (
