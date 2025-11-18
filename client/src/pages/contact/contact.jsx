@@ -16,8 +16,10 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
-    // Get reCAPTCHA v3 token
-    const token = await window.grecaptcha.execute(SITE_KEY, { action: "submit" });
+    const token = await grecaptcha.execute(
+      import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+      { action: "submit" }
+    );
 
     const res = await axios.post(
       "https://thebrightrose.com/api/v1/contact",
@@ -29,7 +31,7 @@ const handleSubmit = async (e) => {
       setSent(true);
       setForm({ name: "", email: "", message: "" });
     } else {
-      alert("Failed to send message.");
+      alert(res.data.message || "Failed to send.");
     }
   } catch (error) {
     console.error("Contact error:", error);
@@ -38,6 +40,7 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
+
 
 
   return (
