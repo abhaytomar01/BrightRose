@@ -24,7 +24,6 @@ import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
-// ❌ Removed: import uploadRoute from "./routes/uploadRoute.js";
 
 // =====================
 // Setup dirname
@@ -82,7 +81,6 @@ app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 
-// ❌ Removed: app.use("/api/upload", uploadRoute);
 
 // =====================
 // Subscription Test

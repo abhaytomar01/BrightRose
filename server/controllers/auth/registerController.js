@@ -21,7 +21,7 @@ export const registerController = async (req, res) => {
       email,
       phone,
       address,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
     }).save();
 
     res.status(201).json({
@@ -47,7 +47,7 @@ export const loginController = async (req, res) => {
     if (!user)
       return res.status(404).json({ success: false, message: "User not found" });
 
-    const match = await comparePassword(password, user.password);
+    const match = await comparePassword(password, user.passwordHash);
     if (!match)
       return res.status(401).json({ success: false, message: "Invalid credentials" });
 
