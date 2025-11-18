@@ -17,9 +17,9 @@ const handleSubmit = async (e) => {
 
   try {
     const token = await grecaptcha.execute(
-      import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-      { action: "submit" }
-    );
+  import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  { action: "submit" }
+);
 
     const res = await axios.post(
       "https://thebrightrose.com/api/v1/contact",
