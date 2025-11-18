@@ -16,8 +16,8 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
-    const token = await grecaptcha.execute(
-  import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+    const token = await window.grecaptcha.execute(
+  window.RECAPTCHA_SITE_KEY,
   { action: "submit" }
 );
 
