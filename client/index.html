@@ -3,13 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="./src/assets/images/icon.png" />
-    <script>window.RECAPTCHA_SITE_KEY = "6LfLfw8sAAAAAM0DPUh1ITLt0ba5wjZbQvsDPVZj";</script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LfLfw8sAAAAAM0DPUh1ITLt0ba5wjZbQvsDPVZj"></script>
+    <link rel="icon" type="image/svg+xml" href="./src/assets/images/logonew2.png" />
+
+    <!-- ⭐ MUST BE ABOVE main.jsx ⭐ -->
+    <script>
+      window.RECAPTCHA_SITE_KEY = "6LfLfw8sAAAAAM0DPUh1ITLt0ba5wjZbQvsDPVZj";
+    </script>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=6LfLfw8sAAAAAM0DPUh1ITLt0ba5wjZbQvsDPVZj" async defer></script>
+
     <title>Bright Rose - Reweaving Indian Weaves</title>
   </head>
+
   <body>
     <div id="root"></div>
+    <!-- ❗ MUST BE BELOW the reCAPTCHA script ❗ -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
