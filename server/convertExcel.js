@@ -1,7 +1,7 @@
 import xlsx from "xlsx";
 import fs from "fs";
 
-const excelFile = "./data/SKU Description.xlsx"; // update path if needed
+const excelFile = "../data/SKU Description.xlsx"; // update path if needed
 
 // Utility to clean text fields
 const clean = (value) => {

@@ -10,6 +10,7 @@ import SeoData from "../../SEO/SeoData";
 import SideFilter from "../../components/ProductListing/SideFilter";
 import { useAuth } from "../../context/auth";
 
+
 const Products = () => {
   const location = useLocation();
   const { auth, isAdmin } = useAuth();
@@ -30,6 +31,7 @@ const [weave, setWeave] = useState(initialWeave);
   const [style, setStyle] = useState("");
   const [products, setProducts] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [sort, setSort] = useState("newest");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,14 +61,16 @@ const [weave, setWeave] = useState(initialWeave);
           `${import.meta.env.VITE_SERVER_URL}/api/v1/product/filtered-products`,
           {
             params: {
-              category: category || undefined,
-              weave: weave || undefined,
-              style: style || undefined,
-              color: color || undefined,
-              priceMin: parseInt(debouncedPrice[0]),
-              priceMax: parseInt(debouncedPrice[1]),
-              ratings: ratings || undefined,
-            },
+  category: category || undefined,
+  weave: weave || undefined,
+  style: style || undefined,
+  color: color || undefined,
+  priceMin: parseInt(debouncedPrice[0]),
+  priceMax: parseInt(debouncedPrice[1]),
+  ratings: ratings || undefined,
+  sort,   // ⭐ Add sorting parameter
+},
+
           }
         );
         if (res.data && res.data.products && res.data.products.length > 0) {
@@ -85,7 +89,7 @@ const [weave, setWeave] = useState(initialWeave);
       }
     };
     fetchFilteredData();
-  }, [debouncedPrice, category, ratings, color, weave, style]);
+  }, [debouncedPrice, category, ratings, color, weave, style, sort]);
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
@@ -161,6 +165,20 @@ const [weave, setWeave] = useState(initialWeave);
               />
             </div>
           </div>
+
+          <div className="flex justify-end mb-4">
+  <select
+    value={sort}
+    onChange={e => setSort(e.target.value)}
+    className="border border-gray-300 px-3 py-2 rounded-md text-sm"
+  >
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="priceAsc">Price: Low to High</option>
+    <option value="priceDesc">Price: High to Low</option>
+  </select>
+</div>
+
 
           {/* Products Grid */}
           <div className="w-full lg:w-[77%] relative">

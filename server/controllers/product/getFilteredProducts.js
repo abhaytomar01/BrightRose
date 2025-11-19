@@ -2,101 +2,71 @@ import productModel from "../../models/productModel.js";
 
 const getFilteredProducts = async (req, res) => {
   try {
-    // Extract query params
     const {
       category,
-      color,
-      size,
       weave,
       style,
+      color,
       priceMin,
       priceMax,
       ratings,
       sort,
-      page = 1,
-      limit = 50,
     } = req.query;
 
-    // Build dynamic query
-    const query = {};
+    // Build MongoDB filter object
+    const filter = {};
 
-    if (category && category !== "all") {
-      query.category = { $regex: category, $options: "i" };
+    if (category) filter.category = category;
+    if (weave) filter.weavingArt = weave;
+    if (style) filter.style = style;
+    if (color) filter.color = color;
+    if (ratings) filter.ratings = { $gte: Number(ratings) };
+
+    // Price Filter
+    if (priceMin !== undefined || priceMax !== undefined) {
+      filter.price = {
+        ...(priceMin ? { $gte: Number(priceMin) } : {}),
+        ...(priceMax ? { $lte: Number(priceMax) } : {}),
+      };
     }
-
-    if (color && color !== "all") {
-      query.color = { $regex: color, $options: "i" };
-    }
-
-    if (size && size !== "all") {
-      query.size = { $in: [size] }; // handle multiple sizes
-    }
-
-    if (weave && weave !== "all") {
-      query.weave = { $regex: weave, $options: "i" };
-    }
-
-    if (style && style !== "all") {
-      query.style = { $regex: style, $options: "i" };
-    }
-
-    // Price range filter
-    if (priceMin || priceMax) {
-      query.discountPrice = {};
-      if (priceMin) query.discountPrice.$gte = Number(priceMin);
-      if (priceMax) query.discountPrice.$lte = Number(priceMax);
-    }
-
-    // Ratings filter
-    if (ratings && !isNaN(ratings)) {
-      query.ratings = { $gte: Number(ratings) };
-    }
-
-    // Base query
-    let productsQuery = productModel.find(query);
 
     // Sorting logic
-    if (sort) {
-      switch (sort) {
-        case "price_asc":
-          productsQuery = productsQuery.sort({ discountPrice: 1 });
-          break;
-        case "price_desc":
-          productsQuery = productsQuery.sort({ discountPrice: -1 });
-          break;
-        case "newest":
-          productsQuery = productsQuery.sort({ createdAt: -1 });
-          break;
-        case "top_rated":
-          productsQuery = productsQuery.sort({ ratings: -1 });
-          break;
-        default:
-          break;
-      }
+    let sortQuery = {};
+
+    switch (sort) {
+      case "priceAsc":
+        sortQuery = { price: 1 };
+        break;
+
+      case "priceDesc":
+        sortQuery = { price: -1 };
+        break;
+
+      case "newest":
+        sortQuery = { createdAt: -1 };
+        break;
+
+      case "oldest":
+        sortQuery = { createdAt: 1 };
+        break;
+
+      default:
+        sortQuery = { createdAt: -1 }; // default: newest
     }
 
-    // Pagination
-    const skip = (page - 1) * limit;
-    productsQuery = productsQuery.skip(skip).limit(Number(limit));
+    const products = await productModel
+      .find(filter)
+      .sort(sortQuery);
 
-    // Fetch products
-    const products = await productsQuery.exec();
-    const totalProducts = await productModel.countDocuments(query);
-
-    res.status(200).json({
+    return res.json({
       success: true,
-      count: products.length,
-      total: totalProducts,
-      page: Number(page),
-      totalPages: Math.ceil(totalProducts / limit),
       products,
     });
   } catch (error) {
-    console.error("❌ Error fetching filtered products:", error);
-    res.status(500).json({
+    console.error("Filter API Error:", error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to fetch filtered products",
-      error: error.message,
+      message: "Error fetching products",
     });
   }
 };

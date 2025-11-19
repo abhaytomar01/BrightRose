@@ -37,13 +37,15 @@ router.post("/delete-product", isAdmin, deleteProduct);
 //find filtered product
 router.get("/filtered-products", getFilteredProducts);
 
+// search products using keyword
+router.get("/search/:keyword", searchProductController);
+
 //find product details from product id
 router.get("/:id", findProduct);
 
 //update product details from product id
 router.patch("/update/:id", isAdmin, updateProduct);
   
-// search products using keyword
-router.get("/search/:keyword", searchProductController);
+
 
 export default router;
