@@ -19,11 +19,11 @@ const ProductListing = ({
   const currentProducts = products.slice(startIndex, endIndex);
 
   return (
-    <div className="flex flex-col gap-2 pb-4 justify-center items-center w-full overflow-hidden bg-white">
+    <div className="flex flex-col gap-2 pb-4 justify-center items-center w-full overflow-hidden bg-[#FCF7F1]">
       {loading ? (
         <Spinner />
       ) : products?.length === 0 ? (
-        <div className="flex flex-col items-center justify-start mt-24 md:mt-32 gap-3 bg-white shadow-sm rounded-sm p-6 sm:p-16 sm:min-h-[750px] ">
+        <div className="flex flex-col items-center justify-start mt-24 md:mt-32 gap-3 bg-[#FCF7F1] shadow-sm rounded-sm p-6 sm:p-16 sm:min-h-[750px] ">
           <img
             draggable="true"
             className="w-1/2 h-44 object-contain"

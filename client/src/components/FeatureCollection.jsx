@@ -9,7 +9,7 @@ const FeaturedCollections = ({
 }) => {
   if (isLoading) {
     return (
-      <section className="w-full py-16 bg-neutral-50 animate-pulse">
+      <section className="w-full py-16 bg-[neutral-50] animate-pulse">
         <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-32">
           <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-300 mb-10">
             Loading collections...
@@ -28,8 +28,8 @@ const FeaturedCollections = ({
   }
 
   return (
-    <section className="w-full py-16 bg-neutral-50">
-      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-32">
+    <section className="w-full py-16 bg-white">
+      <div className="w-full bg-white max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 2xl:px-32">
         {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-semibold text-[#AD000F]">

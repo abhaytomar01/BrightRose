@@ -48,7 +48,7 @@ const Product = ({
   };
 
   return (
-    <>
+    <div>
       <ScrollToTopOnRouteChange />
 
       <motion.div
@@ -71,7 +71,7 @@ const Product = ({
 
         {/* Product Image */}
         <Link to={`/product/${_id}`}>
-          <div className="relative w-full h-60 bg-gray-50 flex items-center justify-center overflow-hidden">
+          <div className="relative w-full h-60 bg-white flex items-center justify-center overflow-hidden">
             <motion.img
               src={images && (images[0]?.url || images[0])}
               alt={name}
@@ -127,7 +127,7 @@ const Product = ({
           </div>
         </div>
       </motion.div>
-    </>
+    </div>
   );
 };
 

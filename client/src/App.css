@@ -16,16 +16,23 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: page;
+    color:#444444;
+
+    font-family: 'Manrope', sans-serif;
+
 }
 
-/* body {
-  font-family: 'Manrope', Arial, sans-serif;
-} */
+
 
 body {
+  font-family: 'Manrope', sans-serif;
+     background-color:  #FCF7F1;
+      /* #F6F1EB */
+}
+/* 
+body {
   font-family: 'Inter', Arial, sans-serif;
-} 
+}  */
 
 /* Example pairing: */
 /* h1, h2, h3 {

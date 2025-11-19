@@ -8,7 +8,7 @@ const LifestyleBanner = ({
   imageUrl = "",
 }) => {
   return (
-    <section className="w-full relative">
+    <section className="w-full relative bg-[#FCF7F1]">
       {/* Background Image */}
       <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] relative overflow-hidden">
         <img

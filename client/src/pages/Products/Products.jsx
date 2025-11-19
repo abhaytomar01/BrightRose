@@ -207,7 +207,7 @@ const Products = () => {
             )}
 
             {!loading && products.length > 0 && (
-              <div className="flex flex-col gap-4 pb-4 items-center bg-white">
+              <div className="flex flex-col gap-4 pb-4 items-center bg-[#FCF7F1]">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 w-full min-h-[350px]">
                   {currentProducts.map(product => (
                     <Product

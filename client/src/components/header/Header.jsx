@@ -70,12 +70,12 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ease-in-out ${
-        isScrolled ? "backdrop-blur-sm bg-white" : "bg-transparent"
+        isScrolled ? "backdrop-blur-sm bg-[#FCF7F1]" : "bg-transparent"
       }`}
     >
       {/* Announcement Bar */}
       <div
-        className={`bg-primary-red text-white text-center font-medium text-[11px] md:text-xs tracking-wide uppercase transition-all duration-500 ease-in-out ${
+        className={`bg-primary-red text-[#F6F1EB] text-center font-medium text-[11px] md:text-xs tracking-wide uppercase transition-all duration-500 ease-in-out ${
           hideAnnouncement
             ? "opacity-0 h-0 py-0 pointer-events-none"
             : "opacity-100 h-auto py-0.5 md:py-2"
@@ -130,7 +130,7 @@ const Header = () => {
       </div>
 
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex justify-center space-x-8 text-sm uppercase text-black font-semibold py-2 relative">
+      <nav className="hidden md:flex justify-center space-x-8 text-[12px] uppercase text-black font-semibold py-2 relative">
         <Link to="/" className="hover:text-[#AD000F] transition">
           Home
         </Link>
