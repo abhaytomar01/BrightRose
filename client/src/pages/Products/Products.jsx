@@ -28,7 +28,6 @@ const Products = () => {
   const [weave, setWeave] = useState(initialWeave);
 
   const [style, setStyle] = useState("");
-  const [sort, setSort] = useState("newest");
 
   // Product Data
   const [products, setProducts] = useState([]);
@@ -53,9 +52,7 @@ const Products = () => {
     return () => clearTimeout(handler);
   }, [price]);
 
-  // -----------------------------------------
-  // 1️⃣ Load ALL PRODUCTS on first page load
-  // -----------------------------------------
+  // Load ALL PRODUCTS initially
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -73,9 +70,7 @@ const Products = () => {
     fetchAllProducts();
   }, []);
 
-  // -----------------------------------------
-  // 2️⃣ Load FILTERED PRODUCTS only when filter changes
-  // -----------------------------------------
+  // Load FILTERED PRODUCTS only when filters change
   useEffect(() => {
     const filterIsActive =
       category ||
@@ -86,7 +81,7 @@ const Products = () => {
       debouncedPrice[0] !== 0 ||
       debouncedPrice[1] !== 10000;
 
-    if (!filterIsActive) return; // show all products initially
+    if (!filterIsActive) return;
 
     const fetchFiltered = async () => {
       try {
@@ -102,7 +97,6 @@ const Products = () => {
               ratings,
               priceMin: debouncedPrice[0],
               priceMax: debouncedPrice[1],
-              sort,
             },
           }
         );
@@ -117,11 +111,9 @@ const Products = () => {
     };
 
     fetchFiltered();
-  }, [debouncedPrice, category, ratings, color, weave, style, sort]);
+  }, [debouncedPrice, category, ratings, color, weave, style]);
 
-  // -----------------------------------------
-  // 3️⃣ Load Wishlist if user logged in
-  // -----------------------------------------
+  // Load Wishlist
   useEffect(() => {
     const fetchWishlistItems = async () => {
       try {
@@ -195,20 +187,6 @@ const Products = () => {
                 setStyle={setStyle}
               />
             </div>
-          </div>
-
-          {/* Sorting Dropdown */}
-          <div className="flex justify-end mb-4">
-            <select
-              value={sort}
-              onChange={e => setSort(e.target.value)}
-              className="border border-gray-300 px-3 py-2 rounded-md text-sm"
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="priceAsc">Price: Low → High</option>
-              <option value="priceDesc">Price: High → Low</option>
-            </select>
           </div>
 
           {/* Products */}

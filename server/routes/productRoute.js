@@ -25,6 +25,17 @@ router.get("/products", async (req, res) => {
   }
 });
 
+// GET ALL PRODUCTS (Public)
+router.get("/", async (req, res) => {
+  try {
+    const products = await productModel.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching products" });
+  }
+});
+
+
 //Add new product POST
 router.post("/new-product", isAdmin, newProduct);
 
