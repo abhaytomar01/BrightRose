@@ -210,11 +210,9 @@ const EditProduct = () => {
         // Request for prefilled values from the server
         const fetchData = async () => {
             try {
-                const res = await axios.get(
-                    `${
-                        import.meta.env.VITE_SERVER_URL
-                    }/api/v1/product/${productId}`
-                );
+                const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/products/${productId}`)
+
+
 
                 // Update state with fetched product data
                 setName(res.data.product.name);

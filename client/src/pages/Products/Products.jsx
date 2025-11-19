@@ -58,7 +58,7 @@ const [weave, setWeave] = useState(initialWeave);
       try {
         setLoading(true);
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/product/filtered-products`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
           {
             params: {
   category: category || undefined,

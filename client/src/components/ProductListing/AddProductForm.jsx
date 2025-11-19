@@ -28,7 +28,7 @@ function AddProductForm() {
       )
       // logo and brandName as is
     };
-    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/product/new-product`, {
+    const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v1/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

@@ -5,7 +5,7 @@ const CARD_HEIGHT = "h-[330px] sm:h-[370px] md:h-[450px]";
 const CARD_WIDTH_MOBILE = "w-[210px] sm:w-[260px] md:w-[335px]";
 
 export default function ProductCarousel({
-  apiEndpoint = "http://localhost:8080/api/v1/product",
+  apiEndpoint = "https://thebrightrose/api/v1/products",
   featureImg,
   featureText = "Dive deeper. Glow longer.\nBatiscafos",
   onFeatureClick = () => {},

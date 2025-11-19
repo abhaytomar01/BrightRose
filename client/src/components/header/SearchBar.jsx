@@ -29,9 +29,10 @@ const SearchBar = () => {
     }
 
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/product/search/${searchTerm}`
-      );
+      const res = await axios.get(`${VITE_SERVER_URL}/api/v1/products/search`, {
+   params: { q: keyword }
+})
+
 
       const data = Array.isArray(res.data) ? res.data : res.data.products || [];
       setResults(data.slice(0, 8));

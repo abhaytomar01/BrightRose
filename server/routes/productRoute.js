@@ -16,7 +16,7 @@ const router = express.Router();
 
 
 // Get All Products
-router.get("/", async (req, res) => {
+router.get("/products", async (req, res) => {
   try {
     const products = await productModel.find({});
     res.json({ products });
@@ -45,7 +45,7 @@ router.get("/:id", findProduct);
 
 //update product details from product id
 router.patch("/update/:id", isAdmin, updateProduct);
-  
+
 
 
 export default router;

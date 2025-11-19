@@ -16,16 +16,9 @@ const AllProducts = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(
-                    `${
-                        import.meta.env.VITE_SERVER_URL
-                    }/api/v1/product/seller-product`,
-                    {
-                        headers: {
-                            Authorization: auth.token,
-                        },
-                    }
-                );
+                const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/products`)
+
+
                 // console.log(res.data.products);
 
                 res.status === 201 && setProducts(res.data.products);

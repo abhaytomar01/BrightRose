@@ -165,15 +165,11 @@ const CreateProduct = () => {
                 formData.append("specifications", JSON.stringify(s));
             });
             const response = await axios.post(
-                `${import.meta.env.VITE_SERVER_URL}/api/v1/product/new-product`,
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: auth?.token,
-                    },
-                }
-            );
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/products`,
+  formData,
+  { headers: { Authorization: auth?.token } }
+)
+
             // on success->
             response.status === 201 &&
                 toast.success("Product Added Successfully!");
