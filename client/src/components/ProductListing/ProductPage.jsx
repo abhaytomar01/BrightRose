@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { useCart } from "../../context/cart";
+import fallbackImage from "../../assets/images/fallback.jpg";
 
 const ProductDetails = () => {
   const { productId } = useParams();
