@@ -91,23 +91,27 @@ const ProductDetails = () => {
         <div>
           <div className="w-full h-[420px] md:h-[550px] bg-[#FCF7F1] rounded-lg overflow-hidden flex items-center justify-center">
             <img
-              src={selectedImage}
-              alt="product"
-              className="w-full h-full object-cover"
-            />
+  src={selectedImage || fallbackImage}
+  alt="product"
+  onError={(e) => (e.target.src = fallbackImage)}
+  className="w-full h-full object-cover"
+/>
+
           </div>
 
           {/* Thumbnails */}
           <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
             {product.images?.map((img, i) => (
               <img
-                key={i}
-                src={img.url}
-                onClick={() => setSelectedImage(img.url)}
-                className={`w-20 h-20 object-cover rounded-md cursor-pointer border ${
-                  selectedImage === img.url ? "border-black" : "border-gray-300"
-                }`}
-              />
+  key={i}
+  src={img.url || fallbackImage}
+  onError={(e) => (e.target.src = fallbackImage)}
+  onClick={() => setSelectedImage(img.url || fallbackImage)}
+  className={`w-20 h-20 object-cover rounded-md cursor-pointer border ${
+    selectedImage === img.url ? "border-black" : "border-gray-300"
+  }`}
+/>
+
             ))}
           </div>
         </div>
