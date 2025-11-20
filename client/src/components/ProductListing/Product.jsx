@@ -6,6 +6,8 @@ import StarIcon from "@mui/icons-material/Star";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/auth";
+import fallbackImage from "../../assets/images/fallback.jpg";
+
 
 const Product = ({
   _id,
@@ -62,7 +64,7 @@ const Product = ({
       <Link to={`/product/${_id}`}>
         <div className="relative w-full h-[310px] bg-[#faf7f2] overflow-hidden flex items-center justify-center">
           <motion.img
-            src={images?.[0]?.url || images?.[0]}
+            src={images?.[0]?.url || fallbackImage}
             alt={name}
             className="object-cover w-full h-full rounded-t-2xl"
             initial={{ scale: 1 }}
