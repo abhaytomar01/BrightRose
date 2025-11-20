@@ -75,59 +75,59 @@ const Header = () => {
       }`}
     >
       {/* Announcement Bar */}
-      <div
-        className={`bg-primary-red text-[#F6F1EB] text-center font-medium text-[11px] md:text-xs tracking-wide uppercase transition-all duration-500 ease-in-out ${
-          hideAnnouncement
-            ? "opacity-0 h-0 py-0 pointer-events-none"
-            : "opacity-100 h-auto py-0.5 md:py-2"
-        }`}
-      >
-        FOR ANY CUSTOMISATION OR PERSONAL ASSISTANCE, PLEASE CONTACT US
-      </div>
+      <Link
+  to="/contact"
+  className={`
+    block w-full text-center bg-[#F4EFE9] text-gray-800 
+    text-[11px] md:text-[12px] tracking-wide 
+    font-medium uppercase 
+    transition-all duration-500 ease-in-out cursor-pointer
+    ${hideAnnouncement ? "opacity-0 h-0 py-0 pointer-events-none" : "opacity-100 py-2"}
+  `}
+>
+  For any customisation or personal assistance, please contact us
+</Link>
+
 
       {/* Header Content */}
-      <div className="flex items-center justify-between px-4 py-2 md:px-6 border-b">
-        {/* Mobile Hamburger */}
-        <div className="md:hidden flex items-center z-50">
-          <button aria-label="menu" onClick={() => setOpen(true)}>
-            <Menu size={28} />
-          </button>
-        </div>
+      <div className="grid grid-cols-3 items-center px-4 py-2 md:px-6 border-b">
 
-        {/* Search (Desktop) */}
-        <div className="w-1/4 hidden md:flex justify-start items-center">
-          <button
-            onClick={() => setIsSearchOpen(true)}
-            className="flex items-center gap-1.5 text-gray-600 hover:text-black transition text-sm"
-          >
-            <Search className="w-5 h-5" />
-            <span className="text-sm font-medium">Search</span>
-          </button>
-        </div>
+        {/* Mobile Hamburger */}
+        <div className="flex items-center md:hidden">
+  <button aria-label="menu" onClick={() => setOpen(true)}>
+    <Menu size={28} />
+  </button>
+</div>
+
+<div className="hidden md:flex items-center gap-2">
+  <Search className="w-5 h-5 text-gray-600" />
+  <span className="text-sm text-gray-600">Search</span>
+</div>
+
 
         {/* Logo */}
-        <div className="flex-1 flex justify-center">
-          <Link to="/" className="flex items-center justify-center">
-            <img
-              className="w-24 md:w-28 h-16 object-contain transition-all duration-300"
-              src={Logo}
-              alt="Logo"
-              style={{ minWidth: 60, minHeight: 30 }}
-            />
-          </Link>
-        </div>
+        <div className="flex justify-center">
+  <Link to="/" className="flex items-center justify-center">
+    <img
+      className="w-24 md:w-28 h-16 object-contain"
+      src={Logo}
+      alt="Logo"
+    />
+  </Link>
+</div>
+
+
 
         {/* Icons */}
-        <div className="w-1/4 flex justify-end items-center gap-4">
-          <div className="flex items-center gap-4">
-            <Link to="/admin/login" className="hover:text-black text-gray-700">
-              <User className="w-5 h-5 cursor-pointer" />
-            </Link>
-            <Link to="/cart" className="hover:text-black text-gray-700">
-              <ShoppingBag className="w-5 h-5 cursor-pointer" />
-            </Link>
-          </div>
-        </div>
+        <div className="flex items-center justify-end gap-4">
+  <Link to="/admin/login" className="text-gray-700 hover:text-black">
+    <User className="w-5 h-5" />
+  </Link>
+  <Link to="/cart" className="text-gray-700 hover:text-black">
+    <ShoppingBag className="w-5 h-5" />
+  </Link>
+</div>
+
       </div>
 
       {/* Desktop Navigation */}
@@ -207,94 +207,148 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/30 z-40"
-            onClick={() => setOpen(false)}
-          ></div>
+  <>
+    {/* Background Overlay */}
+    <div
+      className="fixed inset-0 bg-black/30 z-40"
+      onClick={() => setOpen(false)}
+    ></div>
 
-          <div
-            className="fixed top-0 left-0 w-[80vw] max-w-xs h-screen bg-white shadow-lg z-50 flex flex-col pt-6 px-5 overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
+    {/* Slide Menu */}
+    <div
+      className="fixed top-0 left-0 w-[80vw] max-w-xs h-screen bg-[#F9F5F0] z-50 flex flex-col pt-6 px-6 overflow-y-auto transition-all duration-300"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Close Icon */}
+      <button
+        className="self-end mb-6 text-gray-700"
+        aria-label="close"
+        onClick={() => setOpen(false)}
+      >
+        <X size={30} />
+      </button>
+
+      {/* Mobile Menu Title */}
+      <h2 className="text-[20px] font-semibold mb-6 tracking-wide text-gray-800">
+        Menu
+      </h2>
+
+      {/* MENU ITEMS START */}
+      <nav className="flex flex-col text-[15px] font-medium text-gray-900 w-full">
+
+        {/* Home */}
+        <Link
+          to="/"
+          onClick={() => setOpen(false)}
+          className="py-3 border-b border-gray-300"
+        >
+          Home
+        </Link>
+
+        {/* Our Heritage */}
+        <Link
+          to="/ourheritage"
+          onClick={() => setOpen(false)}
+          className="py-3 border-b border-gray-300"
+        >
+          Our Heritage
+        </Link>
+
+        {/* COLLECTIONS WITH SUBMENU */}
+        <div className="border-b border-gray-300 py-3">
+          <button
+            onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
+            className="w-full flex justify-between items-center"
           >
-            <button
-              className="self-end mb-6"
-              aria-label="close"
-              onClick={() => setOpen(false)}
-            >
-              <X size={32} />
-            </button>
+            <span>Collections</span>
+            <ChevronDown
+              className={`w-5 h-5 transition-transform duration-300 ${
+                mobileSubmenuOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
-            {/* 🔍 Mobile Search Trigger */}
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2 mb-6 text-gray-600 hover:text-black transition"
-            >
-              <Search className="w-5 h-5" />
-              <span className="text-sm font-medium">Search Products</span>
-            </button>
+          {mobileSubmenuOpen && (
+            <div className="mt-3 pl-3 space-y-3 text-gray-700 text-[14px]">
+              <Link
+                to="/weavecollection"
+                onClick={() => setOpen(false)}
+                className="block"
+              >
+                WEAVES
+              </Link>
+              <Link
+                to="/stylecollection"
+                onClick={() => setOpen(false)}
+                className="block"
+              >
+                STYLE
+              </Link>
+            </div>
+          )}
+        </div>
 
-            {/* Mobile Navigation Links */}
-            <nav className="flex flex-col gap-5 text-base font-semibold text-black uppercase">
-              <Link to="/" onClick={() => setOpen(false)}>
-                Home
-              </Link>
-              <Link to="/ourheritage" onClick={() => setOpen(false)}>
-                Our Heritage
-              </Link>
+        {/* Shop */}
+        <Link
+          to="/products"
+          onClick={() => setOpen(false)}
+          className="py-3 border-b border-gray-300"
+        >
+          Shop
+        </Link>
 
-              {/* Mobile Submenu */}
-              <div>
-                <button
-                  className="flex justify-between items-center w-full"
-                  onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
-                >
-                  <span className="uppercase">Collections</span>
-                  <ChevronDown
-                    className={`w-5 h-5 transition-transform duration-300 ${
-                      mobileSubmenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {mobileSubmenuOpen && (
-                  <div className="pl-4 mt-2 flex flex-col gap-2 text-gray-700 text-sm font-medium">
-                    <Link
-                      to="/weavecollection"
-                      onClick={() => setOpen(false)}
-                      className="hover:text-[#AD000F]"
-                    >
-                      WEAVES
-                    </Link>
-                    <Link
-                      to="/stylecollection"
-                      onClick={() => setOpen(false)}
-                      className="hover:text-[#AD000F]"
-                    >
-                      STYLE
-                    </Link>
-                  </div>
-                )}
-              </div>
+        {/* Login / Account */}
+        {!auth?.token ? (
+          <Link
+            to="/login"
+            onClick={() => setOpen(false)}
+            className="py-3 border-b border-gray-300"
+          >
+            Login
+          </Link>
+        ) : (
+          <Link
+            to="/user/dashboard"
+            onClick={() => setOpen(false)}
+            className="py-3 border-b border-gray-300"
+          >
+            My Account
+          </Link>
+        )}
 
-              <Link to="/products" onClick={() => setOpen(false)}>
-                Shop
-              </Link>
-              {!auth?.token ? (
-                <Link to="/login" onClick={() => setOpen(false)}>
-                  Login
-                </Link>
-              ) : (
-                <Link to="/user/dashboard" onClick={() => setOpen(false)}>
-                  My Account
-                </Link>
-              )}
-              <Link to="/contact" onClick={() => setOpen(false)}>
-                Contact
-              </Link>
-            </nav>
-          </div>
-        </>
-      )}
+        {/* Contact */}
+        <Link
+          to="/contact"
+          onClick={() => setOpen(false)}
+          className="py-3 border-b border-gray-300"
+        >
+          Contact
+        </Link>
+      </nav>
+
+      {/* FOOTER LINKS – like Hermès */}
+      {/* <div className="mt-10 text-[14px] text-gray-700 space-y-5 pb-10">
+
+        <div className="flex items-center gap-3">
+          <span className="text-[18px]">📍</span>
+          <span>Find a store</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[18px]">👤</span>
+          <span>Account</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[18px]">💬</span>
+          <span>Contact us</span>
+        </div>
+
+      </div> */}
+    </div>
+  </>
+)}
+
 
       {/* 🔍 Full-Screen Search Overlay (shared for desktop & mobile) */}
       {isSearchOpen && (
