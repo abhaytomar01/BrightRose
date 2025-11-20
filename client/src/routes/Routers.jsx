@@ -45,6 +45,7 @@ import StyleCollection from "../pages/StyleCollection.jsx";
 // 🔹 Route Guards
 import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
+import AdminLogin from "../pages/Admin/AdminLogin.jsx";
 
 const Routers = () => {
   return (
@@ -85,12 +86,16 @@ const Routers = () => {
         <Route path="wishlist" element={<Wishlist />} />
       </Route>
 
-      {/* Admin Protected */}
-      <Route path="/admin" element={<AdminRoute />}>
-        <Route path="dashboard/*" element={<AdminDashboard />} />
-        <Route path="orders" element={<AdminOrders />} />
-        <Route path="orders/order_details/:id" element={<UpdateOrders />} />
-      </Route>
+    {/* Admin Login Page (Public) */}
+<Route path="/admin/login" element={<AdminLogin />} />
+
+{/* Admin Protected Routes */}
+<Route path="/admin" element={<AdminRoute />}>
+  <Route path="dashboard/*" element={<AdminDashboard />} />
+  <Route path="orders" element={<AdminOrders />} />
+  <Route path="orders/order_details/:id" element={<UpdateOrders />} />
+</Route>
+
 
       {/* Extra Pages */}
       <Route path="/ourheritage" element={<Ourheritage />} />

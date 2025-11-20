@@ -28,3 +28,33 @@
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-in-out;
 }
+
+.admin-card {
+  background: #FAF8F3;
+  border: 1px solid #E6E2D6;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.admin-btn {
+  background: #111;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.admin-btn:hover {
+  opacity: 0.85;
+}
+
+.admin-input {
+  border: 1px solid #E6E2D6;
+  background: #FFFEFB;
+}
+
+.admin-title {
+  font-family: "Times New Roman", serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+}

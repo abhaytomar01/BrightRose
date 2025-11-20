@@ -8,40 +8,38 @@ import { updateDetailsController } from "../controllers/auth/updateDetails.js";
 import { deactivateController } from "../controllers/auth/deactivateAccount.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 
-//router object
 const router = express.Router();
 
-//routing
-//REGISTER || METHOD POST   
+// REGISTER
 router.post("/register", registerController);
+
+// USER LOGIN
 router.post("/login", loginController);
 
-//USER EXIST || METHOD POST
+// ADMIN LOGIN (NEW)
+router.post("/admin-login", loginController);
+
+// USER EXIST
 router.post("/user-exist", userCheckController);
 
-// FORGOT PASSWORD ROUTE
+// FORGOT PASSWORD
 router.post("/forgot-password", forgotPasswordController);
 
-//protected route-user
+// PROTECTED USER ROUTE
 router.get("/test", requireSignIn, testController);
 router.get("/user-auth", requireSignIn, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
-
-
-//protected Admin route
-router.get("/admin-auth", isAdmin, (req, res) => {
-    res.status(200).send({
-        ok: true,
-    });
-
+// PROTECTED ADMIN ROUTE
+router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
+  res.status(200).send({ ok: true });
 });
 
-// update details POST route\
+// PROFILE UPDATE
 router.post("/update-details", updateDetailsController);
 
-// deactivate account
+// DEACTIVATE ACCOUNT
 router.post("/deactivate", deactivateController);
 
 export default router;

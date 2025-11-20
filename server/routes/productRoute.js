@@ -8,12 +8,27 @@ import updateProduct from "../controllers/product/updateProduct.js";
 import getFilteredProducts from "../controllers/product/getFilteredProducts.js";
 import searchProductController from "../controllers/product/searchProductController.js";
 
-import productModel from "../models/productModel.js"; // adjust path if needed
-
-
+import productModel from "../models/productModel.js";
+import upload from "../utils/multer.js";   // <-- ADDED
 //router object
 const router = express.Router();
 
+
+// =====================================
+// 📸 PRODUCT IMAGE UPLOAD ROUTE
+// =====================================
+router.post(
+  "/new-product",
+  isAdmin,
+  upload.array("images", 6),  // <-- Required for Cloudinary image upload
+  newProduct
+);
+
+
+
+// =====================================
+// EXISTING PRODUCT ROUTES
+// =====================================
 
 // Get All Products
 router.get("/products", async (req, res) => {
@@ -35,28 +50,25 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Add new product
+router.post("/new-product", requireSignIn, isAdmin, newProduct);
 
-//Add new product POST
-router.post("/new-product", isAdmin, newProduct);
-
-//Get Seller Product
+// Get Seller Product
 router.get("/seller-product", isAdmin, getSellerProducts);
 
-//Delete Product
+// Delete Product
 router.post("/delete-product", isAdmin, deleteProduct);
 
-//find filtered product
+// Find filtered product
 router.get("/filtered-products", getFilteredProducts);
 
-// search products using keyword
+// Search products using keyword
 router.get("/search/:keyword", searchProductController);
 
-//find product details from product id
+// Find product details
 router.get("/:id", findProduct);
 
-//update product details from product id
+// Update product
 router.patch("/update/:id", isAdmin, updateProduct);
-
-
 
 export default router;

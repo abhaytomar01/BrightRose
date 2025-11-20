@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Logo from "../../assets/images/brightrose-logo.png";
 import {
   Menu,
   X,
@@ -109,7 +110,7 @@ const Header = () => {
           <Link to="/" className="flex items-center justify-center">
             <img
               className="w-24 md:w-28 h-16 object-contain transition-all duration-300"
-              src="./src/assets/brightrose-logo.png"
+              src={Logo}
               alt="Logo"
               style={{ minWidth: 60, minHeight: 30 }}
             />
@@ -119,7 +120,7 @@ const Header = () => {
         {/* Icons */}
         <div className="w-1/4 flex justify-end items-center gap-4">
           <div className="flex items-center gap-4">
-            <Link to="/user/dashboard" className="hover:text-black text-gray-700">
+            <Link to="/admin/login" className="hover:text-black text-gray-700">
               <User className="w-5 h-5 cursor-pointer" />
             </Link>
             <Link to="/cart" className="hover:text-black text-gray-700">

@@ -1,51 +1,58 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../components/Spinner";
-import { toast } from "react-toastify";
 
 const AdminRoute = () => {
-    const [ok, setOk] = useState(false);
-    const { auth, setAuth, LogOut, isAdmin, isContextLoading } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const [isAllowed, setIsAllowed] = useState(null); // null = loading
+  const { auth, isContextLoading } = useAuth();
 
-    useEffect(() => {
-        const authCheck = async () => {
-            try {
-                const res = await axios.get(
-                    `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-auth`,
-                    {
-                        headers: {
-                            Authorization: auth?.token,
-                        },
-                    }
-                );
+  useEffect(() => {
+    const verifyAdmin = async () => {
+      try {
+        // If no token stored → redirect to admin login
+        if (!auth?.token) {
+          setIsAllowed(false);
+          return;
+        }
 
-                setOk(res.data.ok === true); // Update ok based on the response
-            } catch (error) {
-                console.log(error);
+        // Backend check
+        const res = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-auth`,
+          {
+            headers: { Authorization: auth.token },
+          }
+        );
 
-                if (error.response?.status === 401 && !isContextLoading) {
-                    // When isContextLoading becomes false, it means the context has been loaded
-                    setTimeout(() => {
-                        toast.error("Admin Privileges Required!", {
-                            toastId: "userNotAdmin",
-                        });
+        if (res.data.ok) {
+          setIsAllowed(true);
+        } else {
+          setIsAllowed(false);
+        }
+      } catch (error) {
+        setIsAllowed(false);
+      }
+    };
 
-                        navigate("/", {
-                            state: location.pathname,
-                        });
-                    }, 500);
-                }
-            }
-        };
-        !isContextLoading && authCheck();
-    }, [auth?.token, isContextLoading, location.pathname, navigate]);
+    if (!isContextLoading) {
+      verifyAdmin();
+    }
+  }, [auth?.token, isContextLoading]);
 
-    return ok ? <Outlet /> : <Spinner />;
+  // Still loading context → show spinner
+  if (isContextLoading || isAllowed === null) {
+    return <Spinner />;
+  }
+
+  // Not admin → redirect to Admin Login
+  if (!isAllowed) {
+    return <Navigate to="/admin/login" />;
+  }
+
+  // Allowed → show admin pages
+  return <Outlet />;
 };
 
 export default AdminRoute;

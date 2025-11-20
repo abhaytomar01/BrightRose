@@ -2,63 +2,55 @@ import productModel from "../../models/productModel.js";
 import cloudinary from "cloudinary";
 
 const newProduct = async (req, res) => {
-    // console.log(req.body);
-    try {
-        let images = [];
-        if (typeof req.body.images === "string") {
-            images.push(req.body.images);
-        } else {
-            images = req.body.images;
-        }
-        //
-        const imagesLink = [];
+  try {
+    // IMAGES ------------------------------
+    const imageFiles = Array.isArray(req.body.images)
+      ? req.body.images
+      : [req.body.images];
 
-        for (let i = 0; i < images?.length; i++) {
-            const result = await cloudinary.v2.uploader.upload(images[i], {
-                folder: "products",
-            });
+    const uploadedImages = [];
+    for (let img of imageFiles) {
+      const result = await cloudinary.v2.uploader.upload(img, {
+        folder: "products",
+      });
 
-            imagesLink.push({
-                public_id: result.public_id,
-                url: result.secure_url,
-            });
-        }
-        req.body.logo
-        const result = await cloudinary.v2.uploader.upload(req.body.logo, {
-            folder: "brands",
-        });
-        const brandLogo = {
-            public_id: result.public_id,
-            url: result.secure_url,
-        };
-
-        req.body.brand = {
-            name: req.body.brandName,
-            logo: brandLogo,
-        };
-        req.body.images = imagesLink;
-        req.body.seller = req.user._id;
-
-        let specs = [];
-        req.body.specifications.forEach((s) => {
-            specs.push(JSON.parse(s));
-        });
-        req.body.specifications = specs;
-
-        const product = await productModel.create(req.body);
-
-        res.status(201).send({
-            success: true,
-            product,
-        });
-    } catch (error) {
-        console.log("New Product Error: " + error);
-        res.status(500).send({
-            success: false,
-            message: "Error in adding New Product",
-            error,
-        });
+      uploadedImages.push({
+        url: result.secure_url,
+        public_id: result.public_id,
+      });
     }
+
+    // BRAND LOGO --------------------------
+    const logoResult = await cloudinary.v2.uploader.upload(req.body.logo, {
+      folder: "brands",
+    });
+
+    const brandDetails = {
+      name: req.body.brandName,
+      logo: {
+        url: logoResult.secure_url,
+        public_id: logoResult.public_id,
+      },
+    };
+
+    // SPECIFICATIONS -----------------------
+    const specs = req.body.specifications.map((s) => JSON.parse(s));
+
+    // FINAL PRODUCT ------------------------
+    const product = await productModel.create({
+      ...req.body,
+      images: uploadedImages,
+      brand: brandDetails,
+      specifications: specs,
+      seller: req.user._id,
+    });
+
+    res.status(201).json({ success: true, product });
+
+  } catch (error) {
+    console.log("NEW PRODUCT ERROR:", error);
+    res.status(500).json({ success: false, message: "Error creating product" });
+  }
 };
 
 export default newProduct;

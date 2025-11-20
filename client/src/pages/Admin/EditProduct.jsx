@@ -181,9 +181,7 @@ const EditProduct = () => {
 
             // send a put request to replace data on server
             const response = await axios.patch(
-                `${
-                    import.meta.env.VITE_SERVER_URL
-                }/api/v1/product/update/${productId}`,
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/products/update/${productId}`,
                 formData,
                 {
                     headers: {

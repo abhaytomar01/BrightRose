@@ -165,7 +165,7 @@ const CreateProduct = () => {
                 formData.append("specifications", JSON.stringify(s));
             });
             const response = await axios.post(
-  `${import.meta.env.VITE_SERVER_URL}/api/v1/products`,
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/products/new-product`,
   formData,
   { headers: { Authorization: auth?.token } }
 )
