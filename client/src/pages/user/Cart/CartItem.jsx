@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { toast } from "react-toastify"; 
-import { useCart } from "../../../context/cart"; // adjust path if needed
+import { toast } from "react-toastify";
+import { useCart } from "../../../context/cart";
 
 const CartItem = ({ item }) => {
   const {
@@ -42,66 +42,105 @@ const CartItem = ({ item }) => {
   return (
     <motion.div
       layout
-      className="flex flex-col sm:flex-row justify-between items-center bg-white shadow-md rounded-2xl p-4 mb-4 w-full border border-gray-100 hover:shadow-lg transition-all duration-300"
+      className="
+        flex flex-col sm:flex-row justify-between items-center 
+        bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+        p-5 mb-5 w-full border border-[#e8e2d9]
+        hover:shadow-[0_6px_18px_rgba(0,0,0,0.12)]
+        transition-all duration-300
+      "
     >
-      {/* Product Info */}
-      <div className="flex items-center gap-4 w-full sm:w-1/2">
+      {/* LEFT — Product Image + Info */}
+      <div className="flex items-start gap-5 w-full sm:w-1/2">
         <img
-          src={item.image || "/placeholder.png"}
+          src={item.image || '/placeholder.png'}
           alt={item.name}
-          className="w-20 h-20 object-cover rounded-xl border border-gray-200"
+          className="
+            w-24 h-24 object-cover rounded-xl 
+            border border-[#e6dccf]
+            shadow-sm
+          "
         />
+
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
+          <h2 className="text-lg font-medium text-[#4a3b32] leading-snug">
+            {item.name}
+          </h2>
+
           {item.category && (
-            <p className="text-sm text-gray-500 mt-1">{item.category}</p>
+            <p className="text-sm text-[#8c7d6d] mt-1">{item.category}</p>
           )}
+
           {item.weave && (
-            <p className="text-sm text-gray-500">
-              <strong>Weave:</strong> {item.weave}
+            <p className="text-sm text-[#8c7d6d]">
+              <span className="font-medium text-[#704214]">Weave:</span> {item.weave}
             </p>
           )}
+
           {item.color && (
-            <p className="text-sm text-gray-500">
-              <strong>Color:</strong> {item.color}
+            <p className="text-sm text-[#8c7d6d]">
+              <span className="font-medium text-[#704214]">Color:</span> {item.color}
             </p>
           )}
         </div>
       </div>
 
-      {/* Price */}
-      <div className="text-lg font-semibold text-gray-700 mt-2 sm:mt-0">
+      {/* PRICE */}
+      <div className="text-xl font-semibold text-[#AD000F] mt-3 sm:mt-0">
         ₹{item.price}
       </div>
 
-      {/* Quantity Controls */}
-      <div className="flex items-center gap-2 mt-3 sm:mt-0">
+      {/* QUANTITY CONTROLS */}
+      <div className="flex items-center gap-3 mt-3 sm:mt-0">
         <button
           onClick={handleDecrease}
-          className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-300"
+          className="
+            px-3 py-1 rounded-md 
+            bg-[#f1e8dc] text-[#704214]
+            hover:bg-[#e7dccd] 
+            transition
+          "
         >
           -
         </button>
-        <span className="font-medium text-gray-800">{item.quantity}</span>
+
+        <span className="font-medium text-[#4a3b32]">{item.quantity}</span>
+
         <button
           onClick={handleIncrease}
-          className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-300"
+          className="
+            px-3 py-1 rounded-md 
+            bg-[#f1e8dc] text-[#704214]
+            hover:bg-[#e7dccd] 
+            transition
+          "
         >
           +
         </button>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:mt-0">
+      {/* ACTION BUTTONS */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0">
         <button
           onClick={handleSaveForLater}
-          className="bg-yellow-100 text-yellow-700 px-4 py-1 rounded-lg hover:bg-yellow-200 text-sm font-medium"
+          className="
+            px-4 py-1.5 rounded-md text-sm font-medium
+            border border-[#D4AF37] text-[#704214]
+            hover:bg-[#f9f5ef]
+            transition-all
+          "
         >
           Save for Later
         </button>
+
         <button
           onClick={handleRemove}
-          className="bg-red-100 text-red-600 px-4 py-1 rounded-lg hover:bg-red-200 text-sm font-medium"
+          className="
+            px-4 py-1.5 rounded-md text-sm font-medium
+            border border-[#AD000F] text-[#AD000F]
+            hover:bg-[#fff4f4]
+            transition-all
+          "
         >
           Remove
         </button>

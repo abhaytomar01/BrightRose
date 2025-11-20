@@ -16,64 +16,86 @@ const SaveForLaterItem = ({ product }) => {
   return (
     <div
       key={product.key}
-      className="flex flex-col gap-4 py-5 px-4 sm:px-6 border-b border-gray-200 hover:bg-gray-50 transition-all duration-300 rounded-lg"
+      className="
+        font-[Manrope]
+        bg-white border border-[#e8e2d9] rounded-2xl 
+        p-5 sm:p-6 mb-5 shadow-sm hover:shadow-md 
+        transition-all duration-300
+      "
     >
-      <div className="flex flex-col sm:flex-row gap-5 items-stretch w-full">
+      {/* Top Section */}
+      <div className="flex flex-col sm:flex-row gap-6">
+
         {/* Image */}
-        <div className="w-full sm:w-1/6 h-28 flex-shrink-0">
+        <div className="w-full sm:w-32 h-32 flex-shrink-0">
           <img
             draggable="false"
-            className="h-full w-full object-contain rounded-lg"
+            className="h-full w-full object-cover rounded-xl border border-[#eee]"
             src={product?.image}
             alt={product?.name}
           />
         </div>
 
-        {/* Description */}
-        <div className="flex flex-col justify-between gap-3 sm:gap-4 w-full">
-          <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-1 w-11/12">
-              <p className="text-gray-800 font-medium leading-snug">
-                {product?.name?.length > 60
-                  ? `${product?.name?.substring(0, 60)}...`
-                  : product?.name}
-              </p>
-              <span className="text-sm text-gray-500">
-                Seller: {product?.brand?.name || "Unknown"}
-              </span>
-            </div>
+        {/* Product Info */}
+        <div className="flex-1 flex flex-col justify-between">
+
+          {/* Title & Seller */}
+          <div>
+            <p className="text-[#2b2b2b] text-[15px] font-semibold leading-snug">
+              {product?.name?.length > 60
+                ? `${product?.name?.substring(0, 60)}...`
+                : product?.name}
+            </p>
+
+            <span className="text-sm text-gray-500 mt-1 block">
+              Seller: {product?.brand?.name || "Unknown"}
+            </span>
           </div>
 
-          {/* Price */}
-          <div className="flex items-baseline gap-2 text-lg sm:text-xl font-semibold">
-            <span className="text-gray-900">
+          {/* Price Block */}
+          <div className="flex items-baseline gap-3 mt-3">
+
+            <span className="text-xl font-bold text-[#1a1a1a]">
               ₹{(product?.discountPrice * product?.quantity).toLocaleString()}
             </span>
-            {product?.price && product?.discountPrice < product?.price && (
-              <>
-                <span className="text-sm text-gray-400 line-through font-normal">
-                  ₹{(product?.price * product?.quantity).toLocaleString()}
-                </span>
-                <span className="text-sm text-green-600 font-medium">
-                  {getDiscount(product?.price, product?.discountPrice)}% off
-                </span>
-              </>
-            )}
+
+            {product?.price &&
+              product?.discountPrice < product?.price && (
+                <>
+                  <span className="text-sm text-gray-400 line-through">
+                    ₹{(product?.price * product?.quantity).toLocaleString()}
+                  </span>
+
+                  <span className="text-sm text-green-600 font-medium">
+                    {getDiscount(product?.price, product?.discountPrice)}% off
+                  </span>
+                </>
+              )}
           </div>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex justify-evenly sm:justify-start sm:gap-6 mt-2">
+      {/* Buttons */}
+      <div className="flex justify-start gap-4 mt-6">
+
         <button
           onClick={moveToCartHandler}
-          className="px-4 py-1.5 rounded-md bg-primary text-white font-medium text-sm hover:bg-primary-dark transition-all duration-200"
+          className="
+            px-5 py-2 rounded-lg text-white text-sm font-semibold 
+            bg-[#AD000F] hover:bg-[#8c000c]
+            transition-all duration-200
+          "
         >
           Move to Cart
         </button>
+
         <button
           onClick={removeHandler}
-          className="px-4 py-1.5 rounded-md border border-gray-300 font-medium text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200"
+          className="
+            px-5 py-2 rounded-lg text-sm font-medium  
+            border border-gray-300 text-gray-700 
+            hover:bg-gray-100 transition-all duration-200
+          "
         >
           Remove
         </button>

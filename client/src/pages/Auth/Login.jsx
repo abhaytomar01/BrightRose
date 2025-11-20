@@ -1,88 +1,190 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
 
-  // ✅ If user already logged in, redirect to dashboard
   useEffect(() => {
-    if (auth?.token) {
-      navigate("/user/dashboard", { replace: true });
-    }
-  }, [auth?.token, navigate]);
+    if (auth?.token) navigate("/user/dashboard", { replace: true });
+  }, [auth?.token]);
+
+  const handleChange = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
+
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
-        { email, password }
+        { email: form.email, password: form.password }
       );
 
       if (res.data?.success) {
         toast.success("Login successful!");
-        setAuth({
-          user: res.data.user,
-          token: res.data.token,
-        });
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        localStorage.setItem("token", res.data.token);
+        setAuth({ user: res.data.user, token: res.data.token });
+
+        if (remember)
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({ user: res.data.user, token: res.data.token })
+          );
+
         navigate("/user/dashboard");
       } else {
-        toast.error(res.data?.message || "Login failed");
+        toast.error(res.data?.message || "Invalid credentials");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
       toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center mt-32 md:mt-48">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md p-8 rounded-xl w-[350px] flex flex-col gap-4"
-      >
-        <h2 className="text-2xl font-semibold text-center">Login</h2>
+    <section className="min-h-screen bg-[#FCF7F1] flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+      
+      <div className="w-full max-w-md text-center">
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded-md"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="border p-2 rounded-md"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition-all"
-        >
+        {/* LUXURY TITLE */}
+        <h1 className="text-4xl sm:text-5xl font-light tracking-[6px] text-[#B88646] uppercase mb-10">
           Login
-        </button>
+        </h1>
 
-        <p className="text-center text-gray-600 text-sm mt-4">
-          New to Bright Rose?{" "}
-          <a href="/register" className="text-indigo-600 hover:underline">
-            Sign Up
-          </a>
-        </p>
-      </form>
-    </div>
+        {/* FORM CARD */}
+        <div className="bg-white border border-[#e6ddce] rounded-xl p-10 shadow-sm">
+
+          <form onSubmit={handleSubmit} className="space-y-6 text-left">
+
+            {/* Email */}
+            <div>
+              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                placeholder="yourname@example.com"
+                value={form.email}
+                onChange={handleChange}
+                className="
+                  w-full px-4 py-3 
+                  bg-[#FDFDFC]
+                  border border-[#d4c5ae]
+                  rounded-md
+                  focus:outline-none 
+                  focus:border-[#B88646]
+                  text-[#704214]
+                  placeholder-[#c1a98b]
+                  tracking-wide
+                "
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+                Password
+              </label>
+
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
+                  required
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={handleChange}
+                  className="
+                    w-full px-4 py-3 pr-12
+                    bg-[#FDFDFC]
+                    border border-[#d4c5ae]
+                    rounded-md
+                    focus:outline-none 
+                    focus:border-[#B88646]
+                    text-[#704214]
+                    placeholder-[#c1a98b]
+                    tracking-wide
+                  "
+                />
+
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-600 hover:text-[#704214]"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember + Forgot */}
+            <div className="flex justify-between items-center text-sm">
+              <label className="flex items-center gap-2 text-[#704214]">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                Remember me
+              </label>
+
+              <Link
+                to="/forgot-password"
+                className="text-[#AD000F] underline hover:text-[#8c000c]"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+                w-full py-3 
+                text-sm tracking-[3px]
+                uppercase border border-[#B88646] 
+                text-[#704214]
+                rounded-md
+                hover:bg-[#B88646]/10
+                transition
+              "
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <p className="text-center text-gray-500 text-sm my-6">OR</p>
+
+          {/* Register Link */}
+          <p className="text-center text-sm text-[#704214]">
+            New to Bright Rose?{" "}
+            <Link
+              to="/register"
+              className="text-[#AD000F] underline hover:text-[#8c000c]"
+            >
+              Create account
+            </Link>
+          </p>
+        </div>
+      </div>
+    </section>
   );
 };
 

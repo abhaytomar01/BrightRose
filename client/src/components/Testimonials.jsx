@@ -9,27 +9,24 @@ const Testimonials = ({
     {
       name: "Aanya Sharma",
       rating: 5,
-      quote:
-        "Absolutely love the craftsmanship and quality! My new blazer is stunning.",
+      quote: "Absolutely love the craftsmanship and quality! My new blazer is stunning."
     },
     {
       name: "Rohan Mehta",
       rating: 4,
-      quote:
-        "Premium quality, timely delivery, and excellent customer service.",
+      quote: "Premium quality, timely delivery, and excellent customer service."
     },
     {
       name: "Priya Kapoor",
       rating: 5,
-      quote:
-        "The colors and fabrics are so vibrant. Truly a luxurious experience.",
+      quote: "The colors and fabrics are so elegant. Truly a luxurious experience."
     },
     {
       name: "Karan Singh",
       rating: 4,
-      quote: "Beautifully handcrafted. I highly recommend this brand!",
-    },
-  ],
+      quote: "Beautifully handcrafted. I highly recommend this brand!"
+    }
+  ]
 }) => {
   const sliderSettings = {
     dots: true,
@@ -37,102 +34,110 @@ const Testimonials = ({
     infinite: true,
     speed: 600,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 4200,
     slidesToShow: 4,
     slidesToScroll: 1,
     responsive: [
-      {
-        breakpoint: 1280, // Large screens
-        settings: { slidesToShow: 3 },
-      },
-      {
-        breakpoint: 1024, // Tablets
-        settings: { slidesToShow: 2 },
-      },
-      {
-        breakpoint: 768, // Mobile
-        settings: { slidesToShow: 1 },
-      },
-    ],
+      { breakpoint: 1280, settings: { slidesToShow: 3 } },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } }
+    ]
   };
 
   return (
-    <section className="w-full bg-white py-2 sm:py-20 overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 text-center">
-        {/* Section Header */}
-        <h2 className="text-3xl md:text-4xl font-bold text-[#AD000F] mb-3">
+    <section className="w-full bg-[#FAF7F3] py-20 overflow-hidden">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 text-center">
+
+        {/* HEADER */}
+        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-gray-900">
           What Our Customers Say
         </h2>
-        <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-12 max-w-2xl mx-auto">
-          Hear from our happy clients and see why they love our brand.
+
+        <p className="text-gray-600 text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
+          Real experiences from people who love our craftsmanship.
         </p>
 
-        {/* Desktop Grid (for large screens) */}
-        <div className="hidden lg:grid grid-cols-4 gap-8">
+        <div className="w-24 h-[1px] bg-gray-700/30 mx-auto mt-8 mb-16"></div>
+
+        {/* GRID — Desktop */}
+        <div className="hidden lg:grid grid-cols-4 gap-10">
           {reviews.map((review, index) => (
             <div
               key={index}
-              className="bg-neutral-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-transparent hover:border-[#D4AF37]/60"
+              className="
+                bg-white p-8 rounded-xl 
+                border border-gray-300/40 
+                transition-all duration-300
+                hover:border-gray-800/40
+              "
             >
               {/* Rating */}
-              <div className="flex justify-center mb-3">
+              <div className="flex justify-center mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    size={20}
+                    size={18}
                     className={`${
-                      i < review.rating ? "text-[#D4AF37]" : "text-gray-300"
+                      i < review.rating ? "text-gray-800" : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
 
               {/* Quote */}
-              <p className="text-gray-700 text-sm md:text-base mb-4 italic leading-relaxed">
-                "{review.quote}"
+              <p className="text-gray-700 text-sm md:text-base italic font-light leading-relaxed mb-4">
+                “{review.quote}”
               </p>
 
               {/* Name */}
-              <h4 className="text-[#AD000F] font-semibold text-lg">
-                {review.name}
+              <h4 className="text-gray-900 font-light text-base tracking-wide">
+                — {review.name}
               </h4>
             </div>
           ))}
         </div>
 
-        {/* Mobile / Tablet Slider */}
-        <div className="block lg:hidden">
+        {/* SLIDER — Mobile/Tablet */}
+        <div className="block lg:hidden mt-6">
           <Slider {...sliderSettings}>
             {reviews.map((review, index) => (
               <div key={index} className="px-2 sm:px-3">
-                <div className="bg-neutral-50 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-transparent hover:border-[#D4AF37]/60 mx-auto max-w-sm">
+                <div
+                  className="
+                    bg-white p-8 rounded-xl max-w-sm mx-auto 
+                    border border-gray-300/40 
+                    hover:border-gray-800/40
+                    transition-all duration-300
+                  "
+                >
                   {/* Rating */}
-                  <div className="flex justify-center mb-3">
+                  <div className="flex justify-center mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        size={20}
+                        size={18}
                         className={`${
-                          i < review.rating ? "text-[#D4AF37]" : "text-gray-300"
+                          i < review.rating ? "text-gray-800" : "text-gray-300"
                         }`}
                       />
                     ))}
                   </div>
 
                   {/* Quote */}
-                  <p className="text-gray-700 text-sm sm:text-base mb-4 italic leading-relaxed">
-                    "{review.quote}"
+                  <p className="text-gray-700 text-sm sm:text-base italic font-light leading-relaxed mb-4">
+                    “{review.quote}”
                   </p>
 
                   {/* Name */}
-                  <h4 className="text-[#AD000F] font-semibold text-lg">
-                    {review.name}
+                  <h4 className="text-gray-900 font-light text-base tracking-wide">
+                    — {review.name}
                   </h4>
                 </div>
               </div>
             ))}
           </Slider>
         </div>
+
       </div>
     </section>
   );

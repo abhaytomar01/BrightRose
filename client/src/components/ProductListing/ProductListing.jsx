@@ -19,44 +19,74 @@ const ProductListing = ({
   const currentProducts = products.slice(startIndex, endIndex);
 
   return (
-    <div className="flex flex-col gap-2 pb-4 justify-center items-center w-full overflow-hidden bg-[#FCF7F1]">
+    <div className="w-full bg-[#FCF7F1] flex flex-col items-center pb-16 pt-32 md:pt-44 px-2 sm:px-0 min-h-screen">
+
+      {/* LOADING */}
       {loading ? (
         <Spinner />
       ) : products?.length === 0 ? (
-        <div className="flex flex-col items-center justify-start mt-24 md:mt-32 gap-3 bg-[#FCF7F1] shadow-sm rounded-sm p-6 sm:p-16 sm:min-h-[750px] ">
+        /* EMPTY STATE — LUXURY VERSION */
+        <div className="flex flex-col items-center justify-center gap-5 mt-20 p-10 bg-white rounded-xl shadow-md border border-[#eadccc] max-w-lg text-center">
           <img
-            draggable="true"
-            className="w-1/2 h-44 object-contain"
+            draggable="false"
+            className="w-52 opacity-80"
             src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/error-no-search-results_2353c5.png"
-            alt="Search Not Found"
+            alt="No Results"
           />
-          <h1 className="text-2xl font-medium text-gray-900">
-            Sorry, no results found!
+          <h1 className="text-2xl font-semibold text-gray-800 tracking-wide">
+            No products found
           </h1>
-          <p className="text-xl text-center text-primary-grey">
-            Please check the spelling or try searching for something else.
+          <p className="text-gray-600 text-sm max-w-sm leading-relaxed">
+            Try adjusting your filters or search with different keywords.
           </p>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-1 sm:grid-cols-4 w-full place-content-start overflow-hidden pb-4 min-h-[750px] ">
-            {currentProducts?.map((product) => (
-              <Product
+
+          {/* PRODUCT GRID */}
+          <div className="
+            grid 
+            grid-cols-2 
+            sm:grid-cols-3 
+            md:grid-cols-3 
+            lg:grid-cols-4 
+            gap-4 
+            w-full
+            px-2 md:px-4
+            place-content-start
+          ">
+            {currentProducts.map((product) => (
+              <div
                 key={product._id}
-                {...product}
-                wishlistItems={wishlistItems}
-                setWishlistItems={setWishlistItems}
-              />
+                className="transform transition-all duration-300 hover:scale-[1.02]"
+              >
+                <Product
+                  {...product}
+                  wishlistItems={wishlistItems}
+                  setWishlistItems={setWishlistItems}
+                />
+              </div>
             ))}
           </div>
 
+          {/* PAGINATION */}
           {productsCount > productsPerPage && (
-            <Pagination
-              count={totalPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
+            <div className="mt-10">
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                size="large"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    fontSize: "14px",
+                    borderRadius: "8px",
+                    fontWeight: 600,
+                  },
+                }}
+              />
+            </div>
           )}
         </>
       )}

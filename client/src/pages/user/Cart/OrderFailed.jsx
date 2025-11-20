@@ -4,50 +4,58 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import SeoData from "../../../SEO/SeoData";
 
 const OrderFailed = () => {
-    const navigate = useNavigate();
-    const [time, setTime] = useState(3);
-    //after order place remove items from cart
+  const navigate = useNavigate();
+  const [time, setTime] = useState(3);
 
-    useEffect(() => {
-        if (time === 0) {
-            navigate("/cart");
-            return;
-        }
-        const intervalId = setInterval(() => {
-            setTime(time - 1);
-        }, 1000);
+  useEffect(() => {
+    if (time === 0) {
+      navigate("/cart");
+      return;
+    }
+    const interval = setInterval(() => setTime((t) => t - 1), 1000);
+    return () => clearInterval(interval);
+  }, [time]);
 
-        return () => clearInterval(intervalId);
-        // eslint-disable-next-line
-    }, [time]);
+  return (
+    <>
+      <SeoData title="Transaction Failed" />
 
-    return (
-        <>
-            <SeoData title={`Transaction Failed`} />
+      <main className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-6 py-20 font-[Manrope]">
+        <div className="bg-white shadow-lg border border-[#e8e2d9] rounded-2xl p-10 max-w-lg w-full text-center">
 
-            <main className="w-full p-8">
-                {/* <!-- row --> */}
-                <div className="flex flex-col gap-2 items-center justify-center sm:w-4/6 m-auto  bg-white shadow rounded p-6 min-h-[60vh]">
-                    <div className=" flex gap-4 items-center">
-                        <h1 className="text-2xl font-semibold">
-                            Transaction Failed
-                        </h1>
-                        <ErrorOutlineIcon className="text-red-600" />
-                    </div>
-                    <p className="mt-4 text-lg text-gray-800">
-                        Redirecting to cart in {time} sec
-                    </p>
-                    <Link
-                        to="/cart"
-                        className="bg-primaryBlue mt-2 py-2.5 px-6 text-white uppercase shadow hover:shadow-lg rounded-sm"
-                    >
-                        go to cart
-                    </Link>
-                </div>
-                {/* <!-- row --> */}
-            </main>
-        </>
-    );
+          {/* Icon + Heading */}
+          <div className="flex flex-col items-center gap-3">
+            <ErrorOutlineIcon className="text-red-600" style={{ fontSize: 50 }} />
+            <h1 className="text-3xl font-semibold text-[#3c2f28]">
+              Transaction Failed
+            </h1>
+          </div>
+
+          {/* Subtitle */}
+          <p className="text-gray-700 mt-4 text-sm md:text-base">
+            Something went wrong while processing your payment.
+          </p>
+
+          {/* Redirect Timer */}
+          <p className="mt-3 text-gray-600 text-sm">
+            Redirecting to your cart in <span className="font-semibold">{time}</span> seconds…
+          </p>
+
+          {/* CTA Button */}
+          <Link
+            to="/cart"
+            className="
+              mt-6 inline-block px-10 py-3 rounded-lg
+              bg-[#AD000F] text-white font-medium tracking-wide
+              hover:bg-[#8c000c] transition-all shadow-sm
+            "
+          >
+            Go to Cart
+          </Link>
+        </div>
+      </main>
+    </>
+  );
 };
 
 export default OrderFailed;

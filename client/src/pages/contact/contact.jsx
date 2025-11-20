@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "", honey: "" });
@@ -7,7 +8,7 @@ const Contact = () => {
   const [sent, setSent] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
 
-  // Wait until reCAPTCHA is fully loaded on page
+  // Wait until reCAPTCHA is fully loaded
   useEffect(() => {
     const checkRecaptcha = setInterval(() => {
       if (window.grecaptcha && window.RECAPTCHA_SITE_KEY) {
@@ -17,7 +18,6 @@ const Contact = () => {
         });
       }
     }, 300);
-
     return () => clearInterval(checkRecaptcha);
   }, []);
 
@@ -29,15 +29,11 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.honey !== "") {
-      console.warn("Spam honeypot triggered!");
-      return;
-    }
+    if (form.honey !== "") return; // Spam bot caught
 
     setLoading(true);
 
     try {
-      // Get reCAPTCHA token
       const token = await window.grecaptcha.execute(window.RECAPTCHA_SITE_KEY, {
         action: "submit",
       });
@@ -51,131 +47,208 @@ const Contact = () => {
       if (res.data.success) {
         setSent(true);
         setForm({ name: "", email: "", message: "", honey: "" });
-
         setTimeout(() => setSent(false), 5000);
       } else {
         alert(res.data.message || "Failed to send your message.");
       }
     } catch (error) {
-      console.error("Contact error:", error);
-      alert("reCAPTCHA failed or network issue. Please try again.");
+      alert("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="w-full bg-white text-[#222] p-0">
-      {/* Banner */}
-      <div className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+    <section className="w-full bg-[#F8F6F3] text-[#1a1a1a] pt-0">
+
+      {/* -------------------------------------------------------
+          HERO SECTION — Luxury, silent, editorial-style
+      -------------------------------------------------------- */}
+      <div className="relative h-[60vh] sm:h-[70vh] flex items-center justify-center overflow-hidden">
         <img
           src="https://images.pexels.com/photos/10667753/pexels-photo-10667753.jpeg"
-          alt="Contact Banner"
-          className="absolute inset-0 w-full h-full object-cover opacity-70"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-serif text-white mb-4">Contact Us</h1>
-          <p className="text-lg md:text-xl text-gray-200">
-            Have questions? We’re here to help you with our handcrafted collections.
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative z-10 text-center px-6"
+        >
+          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-light tracking-wide">
+            Contact Us
+          </h1>
+          <p className="text-white/90 mt-4 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
+            We would love to hear from you — for queries, orders, appointments or collaborations.
           </p>
+        </motion.div>
+      </div>
+
+      {/* -------------------------------------------------------
+          CONTACT OPTIONS BAR — (Like Gucci / Hermes)
+      -------------------------------------------------------- */}
+      <div className="max-w-6xl mx-auto py-12 px-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+        <div>
+          <p className="font-semibold text-lg mb-2">Customer Support</p>
+          <p className="text-gray-600">support@brightrose.in</p>
+        </div>
+        <div>
+          <p className="font-semibold text-lg mb-2">Call Us</p>
+          <p className="text-gray-600">+91 98765 43210</p>
+        </div>
+        <div>
+          <p className="font-semibold text-lg mb-2">Business Hours</p>
+          <p className="text-gray-600">Mon–Sat: 10 AM – 7 PM</p>
         </div>
       </div>
 
-      {/* Contact Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
-        {/* Form */}
-        <div className="bg-[#fefaf9] p-8 rounded-lg shadow-md">
+      {/* -------------------------------------------------------
+          FORM + INFO GRID (Luxury layout)
+      -------------------------------------------------------- */}
+      <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-14">
+
+        {/* FORM */}
+        <div className="bg-white p-10 rounded-xl border border-[#e8e5e0]">
+          <h2 className="text-3xl font-light mb-6">Send us a message</h2>
+
           <form onSubmit={handleSubmit} className="space-y-6">
+
             <input
               type="text"
               name="honey"
+              className="hidden"
               value={form.honey}
               onChange={handleChange}
-              className="hidden"
-              tabIndex="-1"
-              autoComplete="off"
             />
 
             <div>
-              <label className="block text-gray-700 mb-2">Full Name</label>
+              <label className="text-sm font-medium">Full Name</label>
               <input
                 type="text"
                 name="name"
+                required
                 value={form.name}
                 onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#AD000F]"
+                className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-black/30 bg-[#FDFDFC]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Email Address</label>
+              <label className="text-sm font-medium">Email Address</label>
               <input
                 type="email"
                 name="email"
+                required
                 value={form.email}
                 onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#AD000F]"
+                className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:outline-none focus:ring-2 focus:ring-black/30 bg-[#FDFDFC]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 mb-2">Message</label>
+              <label className="text-sm font-medium">Message</label>
               <textarea
                 name="message"
+                rows="5"
+                required
                 value={form.message}
                 onChange={handleChange}
-                required
-                rows="5"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#AD000F] resize-none"
+                className="w-full border border-gray-300 rounded-md px-4 py-2 mt-1 focus:ring-2 focus:ring-black/30 bg-[#FDFDFC]"
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading || !recaptchaReady}
-              className={`w-full text-white py-3 rounded-lg font-medium transition-colors ${
-                loading || !recaptchaReady
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#AD000F] hover:bg-[#8c000c]"
-              }`}
+              disabled={!recaptchaReady || loading}
+              className="w-full text-white py-3 rounded-md bg-black hover:bg-neutral-800 transition-all"
             >
-              {loading ? "Sending..." : "Send Message"}
+              {loading ? "Sending..." : "Submit"}
             </button>
 
             {sent && (
-              <p className="text-green-600 mt-4 text-center">
-                ✅ Your message has been sent!
+              <p className="text-green-600 text-center mt-3">
+                Your message has been sent ✔
               </p>
             )}
           </form>
         </div>
 
-        {/* Info */}
-        <div className="flex flex-col justify-center space-y-8 text-gray-800">
+        {/* INFO SECTION — Luxury look */}
+        <div className="space-y-10">
+
           <div>
-            <h3 className="text-2xl font-semibold mb-2">Address</h3>
-            <p>Bright Rose Studio<br />Jaipur, Rajasthan, India</p>
+            <h3 className="text-2xl font-light mb-3">Visit Our Studio</h3>
+            <p className="text-gray-700 leading-relaxed">
+              Bright Rose Studio  
+              <br />
+              Jaipur, Rajasthan, India
+            </p>
           </div>
 
           <div>
-            <h3 className="text-2xl font-semibold mb-2">Email</h3>
-            <p>support@brightrose.in</p>
+            <h3 className="text-2xl font-light mb-3">Collaborations & Media</h3>
+            <p className="text-gray-700">
+              For influencer, stylist or magazine collaborations  
+              <br />
+              <span className="font-medium">media@brightrose.in</span>
+            </p>
           </div>
 
           <div>
-            <h3 className="text-2xl font-semibold mb-2">Phone</h3>
-            <p>+91 98765 43210</p>
+            <h3 className="text-2xl font-light mb-3">Bespoke Orders</h3>
+            <p className="text-gray-700">
+              For custom tailoring, bridal or luxury couture:  
+              <br />
+              <span className="font-medium">couture@brightrose.in</span>
+            </p>
           </div>
 
-          <div>
-            <h3 className="text-2xl font-semibold mb-2">Business Hours</h3>
-            <p>Mon – Sat: 10 AM – 7 PM<br />Sunday: Closed</p>
+        </div>
+      </div>
+
+      {/* -------------------------------------------------------
+          MAP SECTION — Minimalist like Gucci stores
+      -------------------------------------------------------- */}
+      <div className="max-w-6xl mx-auto px-6 pb-20">
+        <h3 className="text-2xl font-light mb-4">Find us on the map</h3>
+        <div className="rounded-xl overflow-hidden border border-[#ddd]">
+          <iframe
+            title="map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3559.2398329603967!2d75.7872701!3d26.862305!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db63c70b7efa9%3A0x72d8c31ca68e25ad!2sJaipur!5e0!3m2!1sen!2sin!4v1700000000000"
+            className="w-full h-[350px]"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      {/* -------------------------------------------------------
+          FAQ — Clean, luxury minimal
+      -------------------------------------------------------- */}
+      <div className="bg-white py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-light text-center mb-10">Frequently Asked Questions</h2>
+
+          <div className="space-y-8 text-gray-700">
+            <div>
+              <p className="font-medium">How long does shipping take?</p>
+              <p className="text-sm mt-1">Typically 4–7 business days within India.</p>
+            </div>
+
+            <div>
+              <p className="font-medium">Do you take custom orders?</p>
+              <p className="text-sm mt-1">Yes — we offer couture & bespoke pieces.</p>
+            </div>
+
+            <div>
+              <p className="font-medium">Do you ship internationally?</p>
+              <p className="text-sm mt-1">International shipping is available upon request.</p>
+            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 };

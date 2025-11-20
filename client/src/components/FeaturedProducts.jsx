@@ -2,28 +2,28 @@ import React from "react";
 import Slider from "react-slick";
 import { ShoppingCart, Eye, ArrowLeft, ArrowRight } from "lucide-react";
 
-// Custom Arrows
+// Custom Arrows (Minimal Luxury)
 const PreviousBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !left-2 sm:!left-6 z-20 bg-black/30 hover:bg-black/60 transition rounded-full p-2 flex items-center justify-center`}
+    className={`${className} !left-4 z-20 bg-black/10 hover:bg-black/20 backdrop-blur-md transition rounded-full p-2 flex items-center justify-center`}
     onClick={onClick}
   >
-    <ArrowLeft size={18} color="white" />
+    <ArrowLeft size={18} className="text-black" />
   </div>
 );
 
 const NextBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !right-2 sm:!right-6 z-20 bg-black/30 hover:bg-black/60 transition rounded-full p-2 flex items-center justify-center`}
+    className={`${className} !right-4 z-20 bg-black/10 hover:bg-black/20 backdrop-blur-md transition rounded-full p-2 flex items-center justify-center`}
     onClick={onClick}
   >
-    <ArrowRight size={18} color="white" />
+    <ArrowRight size={18} className="text-black" />
   </div>
 );
 
 const FeaturedProducts = ({
-  title = "Bestsellers",
-  subtitle = "Our most-loved products, handpicked for you",
+  title = "Featured Products",
+  subtitle = "Curated selections from our finest creations",
   products = [],
   onAddToCart = () => {},
   onQuickView = () => {},
@@ -48,51 +48,69 @@ const FeaturedProducts = ({
   };
 
   return (
-    <section className="w-full py-12 sm:py-16 bg-white overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-20">
+    <section className="w-full py-20 bg-[#FAF7F3] overflow-hidden">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
+
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#AD000F]">
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-gray-900">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-neutral-600 mt-2 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-3 text-base sm:text-lg font-light max-w-2xl mx-auto">
               {subtitle}
             </p>
           )}
+          <div className="w-16 h-[1.5px] bg-gray-800/40 mx-auto mt-6"></div>
         </div>
 
         {/* Product Slider */}
         <Slider {...settings}>
           {products.map((product, index) => (
-            <div key={index} className="px-2 sm:px-3 py-3">
+            <div key={index} className="px-3 py-5">
               <div
-                className="group relative bg-white border border-neutral-200 rounded-2xl 
-                overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 
-                flex flex-col h-[500px] md:h-[520px] lg:h-[500px] xl:h-[480px]"
+                className="
+                  group relative bg-white border border-neutral-200 
+                  rounded-3xl overflow-hidden 
+                  transition-all duration-500
+                  hover:shadow-md
+                  flex flex-col h-[480px] md:h-[500px] lg:h-[480px]
+                "
               >
                 {/* Product Image */}
-                <div className="relative w-full aspect-[3/4] bg-neutral-50 flex items-center justify-center overflow-hidden">
+                <div className="relative w-full aspect-[3/4] bg-neutral-50 overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
                     loading="lazy"
-                    className="w-full h-full object-cover rounded-t-2xl transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[900ms] ease-out"
                   />
 
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-4 transition-all duration-500">
+                  {/* Minimal Overlay (more luxury) */}
+                  <div className="
+                    absolute inset-0 bg-black/5 backdrop-blur-sm 
+                    opacity-0 group-hover:opacity-100 
+                    flex items-center justify-center gap-4 
+                    transition-all duration-500
+                  ">
                     <button
                       onClick={() => onQuickView(product)}
-                      className="bg-white text-[#AD000F] p-3 rounded-full hover:bg-[#AD000F] hover:text-white transition-all"
-                      aria-label="Quick View"
+                      className="
+                        bg-white text-black p-3 rounded-full
+                        shadow-sm border border-gray-200
+                        hover:bg-black hover:text-white
+                        transition-all
+                      "
                     >
                       <Eye size={18} />
                     </button>
+
                     <button
                       onClick={() => onAddToCart(product)}
-                      className="bg-[#AD000F] text-white p-3 rounded-full hover:bg-[#8c000c] transition-all"
-                      aria-label="Add to Cart"
+                      className="
+                        bg-black text-white p-3 rounded-full
+                        hover:bg-neutral-800 transition-all
+                      "
                     >
                       <ShoppingCart size={18} />
                     </button>
@@ -100,37 +118,23 @@ const FeaturedProducts = ({
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 sm:p-5 text-center flex flex-col justify-between flex-grow">
+                <div className="p-5 text-center flex flex-col justify-between flex-grow">
+
                   <div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-1 line-clamp-2 h-[46px]">
+                    <h3 className="text-lg font-light text-gray-900 mb-1 line-clamp-2">
                       {product.name}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 h-[40px] mb-2">
+
+                    <p className="text-sm text-gray-500 line-clamp-2 mb-2 font-light">
                       {product.description}
                     </p>
                   </div>
 
-                  {/* Price Section (Discount + Actual) */}
-                  <div className="flex justify-center items-baseline gap-2 mt-1">
-                    <p className="text-lg sm:text-xl font-semibold text-[#AD000F]">
-                      ₹{product.discountPrice ?? product.price}
-                    </p>
-                    {product.discountPrice && (
-                      <>
-                        <p className="text-sm text-gray-500 line-through">
-                          ₹{product.price}
-                        </p>
-                        <p className="text-sm text-green-600 font-medium">
-                          {Math.round(
-                            ((product.price - product.discountPrice) /
-                              product.price) *
-                              100
-                          )}
-                          % off
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  {/* Price Section (Luxury format – single price only) */}
+                  <p className="text-xl font-normal text-gray-900 tracking-wide">
+                    ₹{product.price?.toLocaleString()}
+                  </p>
+
                 </div>
               </div>
             </div>
