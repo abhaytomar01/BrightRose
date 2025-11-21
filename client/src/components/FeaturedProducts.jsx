@@ -87,7 +87,7 @@ const FeaturedProducts = ({
                   />
 
                   {/* Minimal Overlay (more luxury) */}
-                  <div className="
+                  {/* <div className="
                     absolute inset-0 bg-black/5 backdrop-blur-sm 
                     opacity-0 group-hover:opacity-100 
                     flex items-center justify-center gap-4 
@@ -114,7 +114,7 @@ const FeaturedProducts = ({
                     >
                       <ShoppingCart size={18} />
                     </button>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Product Info */}

@@ -85,7 +85,7 @@ const Header = () => {
     ${hideAnnouncement ? "opacity-0 h-0 py-0 pointer-events-none" : "opacity-100 py-2"}
   `}
 >
-  For any customisation or personal assistance, please contact us
+  For any customisation or personal assistance, contact us
 </Link>
 
 

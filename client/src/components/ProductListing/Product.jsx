@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../context/auth";
 import fallbackImage from "../../assets/images/fallback.jpg";
 
-
 const Product = ({
   _id,
   images,
@@ -47,8 +46,7 @@ const Product = ({
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.35 }}
+      // ❌ REMOVED scale hover
       className="relative bg-white rounded-2xl border border-[#e7dfd4] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
     >
       {/* Wishlist Button */}
@@ -68,7 +66,7 @@ const Product = ({
             alt={name}
             className="object-cover w-full h-full rounded-t-2xl"
             initial={{ scale: 1 }}
-            whileHover={{ scale: 1.08 }}
+            // ❌ REMOVED: whileHover={{ scale: 1.08 }}
             transition={{ duration: 0.5 }}
           />
 
@@ -89,19 +87,10 @@ const Product = ({
           {name}
         </h2>
 
-        {/* PRICE (Single Price Only) */}
+        {/* PRICE */}
         <p className="text-lg font-semibold tracking-wide text-[#AD000F]">
           ₹{price?.toLocaleString()}
         </p>
-
-        {/* Rating */}
-        <div className="flex items-center gap-1 text-gray-600 text-xs mt-1">
-          <span className="text-yellow-500 flex items-center gap-1">
-            <StarIcon sx={{ fontSize: 15 }} />
-            {ratings?.toFixed(1) || "4.8"}
-          </span>
-          <span>({numOfReviews || 0})</span>
-        </div>
       </div>
     </motion.div>
   );

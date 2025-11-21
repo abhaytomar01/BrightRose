@@ -58,7 +58,7 @@ const BrandStory = ({
               onClick={() => setShowMore(!showMore)}
               className="lg:hidden bg-black text-white px-6 py-2.5 rounded-full text-sm tracking-wide hover:bg-neutral-800 transition-all"
             >
-              {showMore ? "Show Less" : "Learn More"}
+              {showMore ? "Show Less" : "Read More"}
             </button>
 
             {/* Desktop “Read More” */}
