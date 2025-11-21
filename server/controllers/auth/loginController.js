@@ -7,7 +7,7 @@ export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Basic validation
+    // Validate
     if (!email || !password) {
       return res.status(400).send({
         success: false,
@@ -24,8 +24,8 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Compare passwords
-    const match = await comparePassword(password, user.password);
+    // Compare password
+    const match = await comparePassword(password, user.passwordHash);
     if (!match) {
       return res.status(400).send({
         success: false,
@@ -33,11 +33,11 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Detect login type
-    const isAdminLogin = req.originalUrl.includes("admin-login");
-    const isUserLogin = req.originalUrl.includes("login");
+    // Detect login route accurately
+    const isAdminLogin = req.originalUrl.includes("/admin-login");
+    const isUserLogin = req.originalUrl.includes("/login");
 
-    // Admin login validation
+    // Admin only check
     if (isAdminLogin && user.role !== "admin") {
       return res.status(403).send({
         success: false,
@@ -45,20 +45,18 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // User login validation
-    if (isUserLogin && !isAdminLogin && user.role === "admin") {
+    // Stop admins logging through normal login
+    if (isUserLogin && user.role === "admin") {
       return res.status(403).send({
         success: false,
         message: "Admins must login via admin-login",
       });
     }
 
-    // Generate JWT
-    const token = JWT.sign(
-      { _id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // Generate token
+    const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     return res.status(200).send({
       success: true,

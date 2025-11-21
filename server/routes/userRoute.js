@@ -10,6 +10,13 @@ import getOrderDetail from "../controllers/user/getOrderDetail.js";
 import getAdminOrders from "../controllers/user/getAdminOrders.js";
 import updateOrder from "../controllers/user/updateOrder.js";
 import getAllUserOrder from "../controllers/user/getAllUserOrder.js";
+import {
+  getAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  setDefaultAddress,
+} from "../controllers/user/addressController.js";
 
 //router object
 const router = express.Router();
@@ -23,6 +30,13 @@ router.post("/update-wishlist", requireSignIn, updateWishlist);
 
 // get wishlist products
 router.get("/wishlist-products", requireSignIn, getWishlistProducts);
+
+
+router.get("/addresses", requireSignIn, getAddresses);
+router.post("/address", requireSignIn, addAddress);
+router.put("/address/:addressId", requireSignIn, updateAddress);
+router.delete("/address/:addressId", requireSignIn, deleteAddress);
+router.put("/address/:addressId/default", requireSignIn, setDefaultAddress);
 
 // checkout session - stripe payment
 router.post("/create-checkout-session", createSession);
