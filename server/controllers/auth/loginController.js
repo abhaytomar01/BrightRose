@@ -3,12 +3,11 @@ import JWT from "jsonwebtoken";
 import { comparePassword } from "../../helper/authHelper.js";
 import userModel from "../../models/userModel.js";
 
-// Login Controller (User + Admin)
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate
+    // Basic validation
     if (!email || !password) {
       return res.status(400).send({
         success: false,
@@ -25,7 +24,7 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Compare password
+    // Compare passwords
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.status(400).send({
@@ -34,11 +33,11 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Detect correct route (exact match)
-    const isAdminLogin = req.originalUrl === "/api/v1/auth/admin-login";
-    const isUserLogin = req.originalUrl === "/api/v1/auth/login";
+    // Detect login type
+    const isAdminLogin = req.originalUrl.includes("admin-login");
+    const isUserLogin = req.originalUrl.includes("login");
 
-    // Admin login rules
+    // Admin login validation
     if (isAdminLogin && user.role !== "admin") {
       return res.status(403).send({
         success: false,
@@ -46,20 +45,21 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // User login rules
-    if (isUserLogin && user.role === "admin") {
+    // User login validation
+    if (isUserLogin && !isAdminLogin && user.role === "admin") {
       return res.status(403).send({
         success: false,
         message: "Admins must login via admin-login",
       });
     }
 
-    // Generate token
-    const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    // Generate JWT
+    const token = JWT.sign(
+      { _id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-    // Success
     return res.status(200).send({
       success: true,
       message: "Login successful",
