@@ -1,10 +1,10 @@
 //-----------------------------------------------------------
-// PRODUCT DETAILS PAGE (FINAL WITHOUT HEART ICON)
+// PRODUCT DETAILS PAGE (FINAL WITH RELATED PRODUCTS)
 //-----------------------------------------------------------
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCart } from "../../context/cart";
 import fallbackImage from "../../assets/images/fallback.jpg";
@@ -18,33 +18,34 @@ export default function ProductDetails() {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [related, setRelated] = useState([]);
+
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
   const [accordionOpen, setAccordionOpen] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // Mobile sticky bar
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
 
-  // LIGHTBOX STATES
+  // Lightbox
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // -----------------------------
-  // Sticky bar logic
-  // -----------------------------
+  // ---------------------------------------------------
+  // Sticky bar visibility
+  // ---------------------------------------------------
   useEffect(() => {
     const handleScroll = () => {
       setShowStickyBar(!footerVisible);
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [footerVisible]);
 
-  // Hide sticky bar when footer appears
+  // Footer detection
   useEffect(() => {
     const footer = document.querySelector("footer");
     if (!footer) return;
@@ -60,9 +61,9 @@ export default function ProductDetails() {
     return () => obs.disconnect();
   }, []);
 
-  // -----------------------------
-  // Fetch product
-  // -----------------------------
+  // ---------------------------------------------------
+  // Fetch product + related
+  // ---------------------------------------------------
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -71,14 +72,16 @@ export default function ProductDetails() {
         );
 
         if (res.data.success) {
-          setProduct(res.data.product);
+          const p = res.data.product;
+          setProduct(p);
 
-          const firstImg =
-            res.data.product.images?.[0]?.url ||
-            res.data.product.images?.[0] ||
-            fallbackImage;
+          // Set default image
+          setSelectedImage(
+            p.images?.[0]?.url || p.images?.[0] || fallbackImage
+          );
 
-          setSelectedImage(firstImg);
+          // Fetch all products to filter related
+          fetchRelated(p);
         }
       } catch (error) {
         console.log(error);
@@ -90,24 +93,44 @@ export default function ProductDetails() {
     fetchProduct();
   }, [productId]);
 
+  // ---------------------------------------------------
+  // Fetch related products
+  // ---------------------------------------------------
+  const fetchRelated = async (current) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
+      );
+
+      if (res.data?.success) {
+        const all = res.data.products;
+
+        let filtered = all.filter(
+          (item) =>
+            item._id !== current._id &&
+            (item.category === current.category ||
+              item.color === current.color)
+        );
+
+        if (filtered.length === 0) filtered = all.slice(0, 8);
+
+        setRelated(filtered.slice(0, 8));
+      }
+    } catch (error) {
+      console.log("Related fetch failed", error);
+    }
+  };
+
   if (loading)
     return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
 
   if (!product)
     return <div className="min-h-screen flex items-center justify-center">Not Found</div>;
 
-  // -----------------------------
-  // Handlers
-  // -----------------------------
-  const handleQuantity = (type) => {
-    setQuantity((prev) =>
-      type === "inc" ? prev + 1 : prev > 1 ? prev - 1 : prev
-    );
-  };
-
-  // Force gallery to have 4+ images for lightbox testing
+  // ---------------------------------------------------
+  // Lightbox gallery setup
+  // ---------------------------------------------------
   let gallery = product.images?.map((img) => img.url || img) || [];
-
   if (gallery.length < 4) {
     gallery = [
       ...gallery,
@@ -118,9 +141,13 @@ export default function ProductDetails() {
     ].slice(0, 5);
   }
 
-  const toggleAccordion = (id) => {
+  const toggleAccordion = (id) =>
     setAccordionOpen(accordionOpen === id ? null : id);
-  };
+
+  const handleQuantity = (type) =>
+    setQuantity((prev) =>
+      type === "inc" ? prev + 1 : prev > 1 ? prev - 1 : prev
+    );
 
   const handleAddToCart = () => {
     if (!selectedSize) return toast.error("Please select size");
@@ -137,32 +164,32 @@ export default function ProductDetails() {
     toast.success("Added to cart");
   };
 
-  // LIGHTBOX functions
   const openLightbox = (index) => {
     setLightboxIndex(index);
     setIsLightboxOpen(true);
   };
 
-  const closeLightbox = () => setIsLightboxOpen(false);
-
   const nextImage = () =>
     setLightboxIndex((prev) => (prev + 1) % gallery.length);
 
   const prevImage = () =>
-    setLightboxIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+    setLightboxIndex((prev) =>
+      prev === 0 ? gallery.length - 1 : prev - 1
+    );
 
-  // -----------------------------
+  // ---------------------------------------------------
   // Render
-  // -----------------------------
+  // ---------------------------------------------------
   return (
     <div className="max-w-7xl mx-auto px-4 pt-28 md:pt-36 pb-36 bg-[#FCF7F1] text-gray-800">
+    
+      {/* ---------------------------------------------------
+          PRODUCT MAIN SECTION
+      --------------------------------------------------- */}
+      <div className="grid md:grid-cols-2 mt-4 md:mt-8 gap-10 items-start">
 
-      <div className="grid md:grid-cols-2 gap-10 mt-4 md:mt-8 items-start">
-
-        {/* LEFT SIDE — GALLERY */}
+        {/* LEFT — GALLERY */}
         <div className="flex gap-5">
-          
-          {/* Thumbnails */}
           <div className="hidden md:flex flex-col gap-4 w-[110px]">
             {gallery.map((img, idx) => (
               <div
@@ -172,7 +199,7 @@ export default function ProductDetails() {
                   setSelectedIndex(idx);
                   openLightbox(idx);
                 }}
-                className={`w-full h-28 rounded-md overflow-hidden cursor-pointer border ${
+                className={`w-full h-28 rounded-md border overflow-hidden cursor-pointer ${
                   selectedIndex === idx ? "border-black" : "border-gray-300"
                 }`}
               >
@@ -181,54 +208,47 @@ export default function ProductDetails() {
             ))}
           </div>
 
-          {/* Main Image */}
-          <div className="flex-1 relative">
+          <div className="flex-1">
             <img
               src={selectedImage}
-              onError={(e) => (e.target.src = fallbackImage)}
+              className="w-full h-[550px] rounded-lg object-cover cursor-pointer"
               onClick={() => openLightbox(selectedIndex)}
-              className="w-full h-[550px] object-cover rounded-lg cursor-pointer"
+              onError={(e) => (e.target.src = fallbackImage)}
             />
           </div>
         </div>
 
-        {/* RIGHT SIDE — DETAILS */}
-        <div className="flex flex-col gap-4 text-gray-800 mt-2">
-
-          <h1 className="text-lg md:text-xl font-semibold tracking-wide leading-tight">
+        {/* RIGHT — DETAILS */}
+        <div className="flex flex-col gap-4">
+          <h1 className="text-lg md:text-xl font-semibold tracking-wide">
             {product.name}
           </h1>
 
           {/* Logos */}
-          <div className="flex items-center gap-4 mt-1">
+          <div className="flex items-center gap-4">
             <img src={Handloom} className="h-16 object-contain" />
             <img src={Silkmark} className="h-16 object-contain" />
           </div>
 
           {/* Price */}
-          <div className="text-sm mt-1">
-            <span className="text-gray-600">Price: </span>
-            <span className="text-[#AD000F] font-medium text-base">
-              ₹{product.price}
-            </span>
-          </div>
+          <p className="text-[#AD000F] font-medium text-base">₹{product.price}</p>
 
           {/* Color */}
-          <div className="text-sm">{product.color || "-"}</div>
+          <p className="text-sm">{product.color || "-"}</p>
 
           {/* Fabric */}
-          <div className="text-sm text-gray-600">{product.fabric}</div>
+          <p className="text-sm text-gray-600">{product.fabric}</p>
 
-          {/* Weaving Art */}
-          <div className="text-sm text-gray-600">
-            Weaving Art - {product.weavingArt}
-          </div>
+          {/* Weaving */}
+          <p className="text-sm text-gray-600">
+            Weaving Art – {product.weavingArt}
+          </p>
 
-          {/* Size */}
+          {/* Sizes */}
           <div>
             <p className="text-sm text-gray-600 mb-1">Size</p>
             <div className="flex gap-3">
-              {(product.sizes?.length ? product.sizes : ["S","M","L","XL"]).map(
+              {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
                 (s) => (
                   <button
                     key={s}
@@ -256,12 +276,11 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* One of a kind */}
-          <p className="text-lg text-gray-600 mt-2">One of a kind</p>
+          <p className="text-md text-gray-600">One of a kind</p>
 
           {/* Accordions */}
-          <div className="mt-2 flex flex-col gap-2">
-            {[ 
+          <div className="mt-1">
+            {[
               { id: "desc", title: "Product Description", content: product.description },
               { id: "spec", title: "Specification", content: product.specification },
               { id: "care", title: "Care", content: product.care },
@@ -281,14 +300,13 @@ export default function ProductDetails() {
                     ⌄
                   </span>
                 </button>
+
                 <div
                   className={`overflow-hidden transition-all duration-300 ${
                     accordionOpen === item.id ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <div className="text-sm text-gray-700 pb-3">
-                    {item.content}
-                  </div>
+                  <div className="text-sm text-gray-700 pb-3">{item.content}</div>
                 </div>
               </div>
             ))}
@@ -305,7 +323,7 @@ export default function ProductDetails() {
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="flex-1 border border-gray-400 py-3 rounded-md text-sm flex items-center justify-center"
+              className="flex-1 border border-gray-400 py-3 rounded-md text-sm text-center"
             >
               ☎ Happy to help
             </a>
@@ -313,28 +331,89 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      {/* LIGHTBOX */}
+      {/* ---------------------------------------------------
+          RELATED PRODUCTS SECTION
+      --------------------------------------------------- */}
+      {/* ---------------------------------------------------
+    RELATED PRODUCTS SECTION (FIXED + PREMIUM)
+--------------------------------------------------- */}
+<div className="mt-20">
+  <h2 className="text-2xl font-light tracking-wide mb-6">
+    Related Products
+  </h2>
+
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {related.map((item) => (
+      <Link
+        to={`/product/${item._id}`}
+        key={item._id}
+        className="block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+      >
+        {/* FIXED PERFECT IMAGE WRAPPER */}
+        <div className="relative w-full aspect-[4/5] overflow-hidden bg-gray-100">
+          <img
+            src={item.images?.[0]?.url || fallbackImage}
+            alt={item.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            onError={(e) => (e.target.src = fallbackImage)}
+          />
+        </div>
+
+        {/* DETAILS */}
+        <div className="p-4 text-center">
+          <p className="text-gray-900 text-sm font-medium line-clamp-1">
+            {item.name}
+          </p>
+
+          <p className="text-gray-700 text-sm mt-1 font-medium">
+            ₹{item.price?.toLocaleString()}
+          </p>
+        </div>
+      </Link>
+    ))}
+  </div>
+</div>
+
+
+      {/* ---------------------------------------------------
+          LIGHTBOX
+      --------------------------------------------------- */}
       {isLightboxOpen && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
-          <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-3xl">
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-6 right-6 text-white text-3xl"
+          >
             ✕
           </button>
-          <button onClick={prevImage} className="absolute left-4 md:left-10 text-white text-4xl">
+
+          <button
+            onClick={prevImage}
+            className="absolute left-6 text-white text-4xl"
+          >
             ❮
           </button>
 
-          <img src={gallery[lightboxIndex]} className="max-w-[90vw] max-h-[90vh] object-contain" />
+          <img
+            src={gallery[lightboxIndex]}
+            className="max-w-[90vw] max-h-[90vh] object-contain"
+          />
 
-          <button onClick={nextImage} className="absolute right-4 md:right-10 text-white text-4xl">
+          <button
+            onClick={nextImage}
+            className="absolute right-6 text-white text-4xl"
+          >
             ❯
           </button>
         </div>
       )}
 
-      {/* MOBILE STICKY BAR */}
+      {/* ---------------------------------------------------
+          MOBILE STICKY BAR
+      --------------------------------------------------- */}
       {showStickyBar && !footerVisible && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-          <div className="flex w-full shadow-xl">
+          <div className="flex">
             <button
               onClick={handleAddToCart}
               className="w-1/2 bg-black text-white py-3 text-sm"
@@ -344,7 +423,7 @@ export default function ProductDetails() {
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="w-1/2 bg-white border py-3 text-sm flex justify-center items-center"
+              className="w-1/2 bg-white border py-3 text-sm text-center"
             >
               ☎ Help
             </a>

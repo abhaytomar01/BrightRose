@@ -8,7 +8,15 @@ export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // find user
+    // Validate
+    if (!email || !password) {
+      return res.status(400).send({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    // Find user
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(404).send({
@@ -17,61 +25,58 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // compare password
+    // Compare password
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.status(400).send({
         success: false,
-        message: "Invalid password",
+        message: "Incorrect password",
       });
     }
 
-    // Detect current route
-    const isAdminLogin = req.originalUrl.includes("/admin-login");
-    const isUserLogin = req.originalUrl.includes("/login");
+    // Detect correct route (exact match)
+    const isAdminLogin = req.originalUrl === "/api/v1/auth/admin-login";
+    const isUserLogin = req.originalUrl === "/api/v1/auth/login";
 
-    // ADMIN LOGIN ONLY
-    if (isAdminLogin) {
-      if (user.role !== "admin") {
-        return res.status(403).send({
-          success: false,
-          message: "Access denied. Admin login only.",
-        });
-      }
+    // Admin login rules
+    if (isAdminLogin && user.role !== "admin") {
+      return res.status(403).send({
+        success: false,
+        message: "Admin access required",
+      });
     }
 
-    // USER LOGIN ONLY
-    if (isUserLogin && !isAdminLogin) {
-      if (user.role === "admin") {
-        return res.status(403).send({
-          success: false,
-          message: "Admins must login using /admin-login",
-        });
-      }
+    // User login rules
+    if (isUserLogin && user.role === "admin") {
+      return res.status(403).send({
+        success: false,
+        message: "Admins must login via admin-login",
+      });
     }
 
-    // generate token
+    // Generate token
     const token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    res.status(200).send({
+    // Success
+    return res.status(200).send({
       success: true,
       message: "Login successful",
       user: {
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        _id: user._id,
       },
       token,
     });
+
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
+    console.log("LOGIN ERROR:", error);
+    return res.status(500).send({
       success: false,
-      message: "Login error",
-      error,
+      message: "Server error",
     });
   }
 };

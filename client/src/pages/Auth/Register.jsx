@@ -35,20 +35,21 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "https://thebrightrose.com/api/v1/auth/register",
-        {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          address: form.address,
-          password: form.password,
-        }
-      );
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/register`,
+  { name, email, password, phone }
+);
 
-      if (res.data?.success) {
-        toast.success("Registration successful!");
-        navigate("/login");
-      } else {
+if (res.data.success) {
+  localStorage.setItem("auth", JSON.stringify({
+    user: res.data.user,
+    token: res.data.token,
+  }));
+
+  toast.success("Registered & logged in");
+  navigate("/");
+}
+
+ else {
         toast.error(res.data?.message || "Registration failed");
       }
     } catch (err) {
