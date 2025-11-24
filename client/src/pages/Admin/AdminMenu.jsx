@@ -63,7 +63,7 @@ const AdminMenu = ({ toggleMenu }) => {
                             </div>
                         </NavLink>
 
-                        <NavLink
+                        {/* <NavLink
                             to="./address"
                             onClick={scrollToTop}
                             className={({ isActive }) =>
@@ -75,9 +75,9 @@ const AdminMenu = ({ toggleMenu }) => {
                             <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
                                 Manage Addresses
                             </div>
-                        </NavLink>
+                        </NavLink> */}
 
-                        <NavLink
+                        {/* <NavLink
                             to="./pan"
                             onClick={scrollToTop}
                             className={({ isActive }) =>
@@ -89,7 +89,7 @@ const AdminMenu = ({ toggleMenu }) => {
                             <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
                                 Pan Card
                             </div>
-                        </NavLink>
+                        </NavLink> */}
                     </div>
                 </div>
 

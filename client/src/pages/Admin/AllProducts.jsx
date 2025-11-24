@@ -193,7 +193,7 @@ const AllProducts = () => {
                         </h1>
                         <Link
                             to="/admin/dashboard/add-product"
-                            className="py-2 px-4 rounded shadow font-[500] text-white bg-primaryBlue hover:shadow-lg"
+                            className="py-2 px-4 rounded shadow font-[500] text-black bg-primaryBlue hover:shadow-lg"
                         >
                             New Product
                         </Link>

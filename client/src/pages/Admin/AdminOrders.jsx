@@ -42,9 +42,9 @@ const AdminOrders = () => {
 
     return (
         <>
-            <SeoData title="Admin Orders | Flipkart" />
+            <SeoData title="Admin Orders | Bright Rose" />
 
-            <main className="w-full px-4 sm:px-10 py-4 ">
+            <main className="w-full px-4 sm:px-10 py-4 pt-32 md:pt-40">
                 {/* <!-- row --> */}
                 {/* <!-- orders column --> */}
                 <div className="flex gap-3.5 w-full ">

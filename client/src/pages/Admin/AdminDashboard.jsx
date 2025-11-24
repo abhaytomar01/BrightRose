@@ -28,7 +28,7 @@ const AdminDashboard = () => {
     <>
       <SeoData title="Admin Dashboard" />
 
-      <div className="py-[5px] h-full">
+      <div className="py-[5px] pt-28 md:pt-32 h-full">
         <div className="flex items-start justify-between text-[14px] h-full px-2 sm:px-[50px] py-2 sm:py-[40px] gap-5">
 
           {/* LEFT MENU */}

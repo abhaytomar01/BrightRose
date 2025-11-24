@@ -43,8 +43,8 @@ const CreateProduct = () => {
     const [isSubmit, setIsSubmit] = useState(false);
 
     // max image size 500kb
-    const MAX_IMAGE_SIZE = 500 * 1024;
-    const MAX_IMAGES_COUNT = 4; // Maximum number of allowed images
+    const MAX_IMAGE_SIZE = 50 * 1024 * 1024; // 50 MB
+    const MAX_IMAGES_COUNT = 10; // Maximum number of allowed images
 
     const handleSpecsChange = (e) => {
         setSpecsInput({ ...specsInput, [e.target.name]: e.target.value });
@@ -448,7 +448,7 @@ const CreateProduct = () => {
                                 />
                             ))}
                         </div>
-                        <label className="rounded font-medium bg-primaryBlue text-center cursor-pointer text-white p-2 shadow hover:shadow-lg my-2">
+                        <label className="rounded font-medium bg-primaryBlue text-center cursor-pointer text-black p-2 shadow hover:shadow-lg my-2">
                             <input
                                 type="file"
                                 name="images"
@@ -464,7 +464,7 @@ const CreateProduct = () => {
                             <input
                                 form="mainForm"
                                 type="submit"
-                                className="bg-orange uppercase w-full p-3 text-white font-medium rounded shadow hover:shadow-lg cursor-pointer"
+                                className="bg-orange uppercase w-full p-3 text-black font-medium rounded shadow hover:shadow-lg cursor-pointer"
                                 value="Submit"
                             />
                         </div>
