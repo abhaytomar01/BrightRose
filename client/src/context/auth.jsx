@@ -1,31 +1,54 @@
-import { createContext, useState, useEffect, useContext } from "react";
+// src/context/auth.jsx
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Auth = createContext();
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
-    user: JSON.parse(localStorage.getItem("user")) || null,
-    token: localStorage.getItem("token") || "",
-  });
+  const navigate = useNavigate();
+  const [auth, setAuthState] = useState({ user: null, token: "" });
+  const [isContextLoading, setIsContextLoading] = useState(true);
 
   useEffect(() => {
-    if (auth.user && auth.token) {
-      localStorage.setItem("user", JSON.stringify(auth.user));
-      localStorage.setItem("token", auth.token);
+    // Restore auth from single localStorage key "auth"
+    try {
+      const raw = localStorage.getItem("auth");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.user && parsed?.token) {
+          setAuthState({ user: parsed.user, token: parsed.token });
+        }
+      }
+    } catch (err) {
+      console.error("Error restoring auth:", err);
+    } finally {
+      setIsContextLoading(false);
     }
-  }, [auth]);
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    setAuth({ user: null, token: "" });
+  const setAuth = ({ user, token }) => {
+    setAuthState({ user, token });
+    try {
+      localStorage.setItem("auth", JSON.stringify({ user, token }));
+    } catch (err) {
+      console.error("Error saving auth:", err);
+    }
+  };
+
+  const logout = (opts = { redirect: "/login" }) => {
+    localStorage.removeItem("auth");
+    setAuthState({ user: null, token: "" });
+    if (opts.redirect) navigate(opts.redirect);
   };
 
   return (
-    <Auth.Provider value={{ auth, setAuth, logout }}>
+    <AuthContext.Provider
+      value={{ auth, setAuth, logout, isContextLoading }}
+    >
       {children}
-    </Auth.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(Auth);
+export const useAuth = () => useContext(AuthContext);
+export default AuthContext;

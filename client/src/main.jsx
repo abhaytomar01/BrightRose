@@ -9,10 +9,12 @@ import { AuthProvider } from "./context/auth.jsx";
 import { CartProvider } from "./context/cart.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <AuthProvider>
+    
         <CartProvider>
             <BrowserRouter>
+            <AuthProvider>
                 <App />
+                </AuthProvider>
             </BrowserRouter>
             <ToastContainer
                 style={{
@@ -22,5 +24,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 autoClose={2000}
             />
         </CartProvider>
-    </AuthProvider>
+    
 );

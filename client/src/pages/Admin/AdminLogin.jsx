@@ -1,3 +1,4 @@
+// src/pages/Admin/AdminLogin.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,38 +16,27 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-login`,
         { email, password }
       );
 
-      if (res.data.success) {
-  toast.success("Admin Login Successful!");
+      if (res.data?.success) {
+        toast.success("Admin Login Successful!");
 
-  const authData = {
-    user: res.data.user,
-    token: res.data.token,
-  };
+        const authData = { user: res.data.user, token: res.data.token };
+        setAuth(authData);
+        localStorage.setItem("auth", JSON.stringify(authData));
 
-  setAuth(authData);
-  
-  localStorage.setItem(
-  "auth",
-  JSON.stringify({
-    user: res.data.user,
-    token: res.data.token,
-  })
-);
-
-
-  navigate("/admin/dashboard");
-}
-
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Login Failed");
+        // Redirect to admin dashboard profile
+        navigate("/admin/dashboard/profile", { replace: true });
+      } else {
+        toast.error(res.data?.message || "Login failed");
+      }
+    } catch (err) {
+      console.error("Admin login error:", err);
+      toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -55,14 +45,10 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center p-4 pt-28 md:pt-36">
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 border border-gray-200">
-
-        {/* Logo */}
         <h1 className="text-center text-2xl font-serif tracking-widest mb-6">
           THE BRIGHT ROSE
         </h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">
-          Admin Panel Access
-        </p>
+        <p className="text-center text-gray-600 mb-6 text-sm">Admin Panel Access</p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
@@ -74,6 +60,7 @@ const AdminLogin = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-black"
               placeholder="admin@example.com"
+              autoComplete="username"
             />
           </div>
 
@@ -86,6 +73,7 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full mt-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-black"
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 
@@ -98,9 +86,7 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        <p className="text-center mt-6 text-xs text-gray-400">
-          © The Bright Rose • Admin Only
-        </p>
+        <p className="text-center mt-6 text-xs text-gray-400">© The Bright Rose • Admin Only</p>
       </div>
     </div>
   );

@@ -136,7 +136,7 @@ const Products = () => {
     <>
       <SeoData title="All Products | Bright Rose" />
 
-      <main className="w-full pt-2 pb-5 mt-24 md:mt-36">
+      <main className="w-full pt-2 pb-5 mt-32 md:mt-36">
         <div className="flex flex-col-reverse lg:flex-row gap-0 lg:gap-3 mt-2 w-full px-2 sm:px-4 md:px-6">
 
           {/* Sidebar */}

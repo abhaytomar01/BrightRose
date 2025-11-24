@@ -5,6 +5,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 
+
+
 const Login = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
@@ -13,10 +15,14 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
+  
 
   useEffect(() => {
-    if (auth?.token) navigate("/user/dashboard", { replace: true });
-  }, [auth?.token]);
+  if (auth?.token && auth?.user?.role === "user") {
+    navigate("/user/dashboard/profile");
+  }
+}, [auth]);
+
 
   const handleChange = (e) =>
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -41,7 +47,7 @@ const Login = () => {
             JSON.stringify({ user: res.data.user, token: res.data.token })
           );
 
-        navigate("/user/dashboard");
+        navigate("/user/dashboard/profile");
       } else {
         toast.error(res.data?.message || "Invalid credentials");
       }

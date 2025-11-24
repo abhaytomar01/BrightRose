@@ -24,7 +24,7 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Compare password
+    // Compare password (note: field name passwordHash)
     const match = await comparePassword(password, user.passwordHash);
     if (!match) {
       return res.status(400).send({
@@ -33,17 +33,12 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Detect login route accurately
-    if (isAdminLogin && user.role !== "admin") {
-  return res.status(403).send({
-    success: false,
-    message: "Admin access required",
-  });
-}
+    // Detect whether hitting /admin-login or /login
+    const orig = req.originalUrl || req.url || "";
+    const isAdminLogin = orig === "/api/v1/auth/admin-login" || orig.endsWith("/admin-login");
+    const isUserLogin = orig === "/api/v1/auth/login" || orig.endsWith("/login");
 
-    const isUserLogin = req.originalUrl.includes("/login");
-
-    // Admin only check
+    // Admin login rules
     if (isAdminLogin && user.role !== "admin") {
       return res.status(403).send({
         success: false,
@@ -51,7 +46,7 @@ export const loginController = async (req, res) => {
       });
     }
 
-    // Stop admins logging through normal login
+    // Disallow admin logging in from user login
     if (isUserLogin && user.role === "admin") {
       return res.status(403).send({
         success: false,
@@ -64,6 +59,7 @@ export const loginController = async (req, res) => {
       expiresIn: "7d",
     });
 
+    // Return user (omit sensitive fields)
     return res.status(200).send({
       success: true,
       message: "Login successful",
@@ -75,12 +71,12 @@ export const loginController = async (req, res) => {
       },
       token,
     });
-
   } catch (error) {
-    console.log("LOGIN ERROR:", error);
+    console.error("LOGIN ERROR:", error);
     return res.status(500).send({
       success: false,
       message: "Server error",
+      error: error.message,
     });
   }
 };

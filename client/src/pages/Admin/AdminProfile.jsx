@@ -4,7 +4,7 @@ const AdminProfile = () => {
   const { auth } = useAuth();
 
   return (
-    <div className="p-6">
+    <div className="p-6 pt-32 md:pt-36 bg-[#f8f5f0] min-h-screen">
 
       <h1 className="text-3xl font-semibold text-gray-800 mb-6">
         Admin Dashboard

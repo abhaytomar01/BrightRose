@@ -1,9 +1,14 @@
+// controllers/auth/registerController.js
+import JWT from "jsonwebtoken";
+import { hashPassword } from "../../helper/authHelper.js";
+import userModel from "../../models/userModel.js";
+
 export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
-    const userExist = await userModel.findOne({ email });
-    if (userExist) {
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
       return res.status(400).send({
         success: false,
         message: "Email already registered",
@@ -16,7 +21,7 @@ export const registerController = async (req, res) => {
       name,
       email,
       phone,
-      password: hashed,
+      passwordHash: hashed,   // ✅ FIXED
       role: "user",
     });
 
@@ -32,7 +37,7 @@ export const registerController = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    console.log("REGISTER ERROR:", error);
     return res.status(500).send({
       success: false,
       message: "Register error",
