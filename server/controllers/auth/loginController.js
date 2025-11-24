@@ -34,7 +34,13 @@ export const loginController = async (req, res) => {
     }
 
     // Detect login route accurately
-    const isAdminLogin = req.originalUrl.includes("/admin-login");
+    if (isAdminLogin && user.role !== "admin") {
+  return res.status(403).send({
+    success: false,
+    message: "Admin access required",
+  });
+}
+
     const isUserLogin = req.originalUrl.includes("/login");
 
     // Admin only check

@@ -1,57 +1,25 @@
-// ==================================================
-// AUTH CONTEXT (Fixed + Production Ready)
-// ==================================================
 import { createContext, useState, useEffect, useContext } from "react";
-import axios from "axios";
 
 const Auth = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
-    user: null,
-    token: "",
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    token: localStorage.getItem("token") || "",
   });
 
-  // -----------------------------------------------
-  // 🟢 Load auth from localStorage on first load
-  // -----------------------------------------------
   useEffect(() => {
-    const storedAuth = localStorage.getItem("auth");
-
-    if (storedAuth) {
-      const parsed = JSON.parse(storedAuth);
-      setAuth({
-        user: parsed.user,
-        token: parsed.token,
-      });
+    if (auth.user && auth.token) {
+      localStorage.setItem("user", JSON.stringify(auth.user));
+      localStorage.setItem("token", auth.token);
     }
-  }, []);
-
-  // -----------------------------------------------
-  // 🟢 Automatically attach token to all axios requests
-  // -----------------------------------------------
-  useEffect(() => {
-    if (auth.token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${auth.token}`;
-    } else {
-      delete axios.defaults.headers.common["Authorization"];
-    }
-
-    // Persist to localStorage
-    localStorage.setItem("auth", JSON.stringify(auth));
-
   }, [auth]);
 
-
-  // -----------------------------------------------
-  // 🔴 LOGOUT
-  // -----------------------------------------------
   const logout = () => {
-    localStorage.removeItem("auth");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setAuth({ user: null, token: "" });
-    window.location.href = "/login";   // forces refresh + clears protected routes
   };
-
 
   return (
     <Auth.Provider value={{ auth, setAuth, logout }}>
