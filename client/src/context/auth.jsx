@@ -1,31 +1,57 @@
+// ==================================================
+// AUTH CONTEXT (Fixed + Production Ready)
+// ==================================================
 import { createContext, useState, useEffect, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Auth = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     user: null,
-    token: localStorage.getItem("token") || "", 
+    token: "",
   });
 
-  // const navigate = useNavigate();
-
-  // ✅ Restore user from localStorage if available
+  // -----------------------------------------------
+  // 🟢 Load auth from localStorage on first load
+  // -----------------------------------------------
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
-    if (storedUser && storedToken) {
-      setAuth({ user: JSON.parse(storedUser), token: storedToken });
+    const storedAuth = localStorage.getItem("auth");
+
+    if (storedAuth) {
+      const parsed = JSON.parse(storedAuth);
+      setAuth({
+        user: parsed.user,
+        token: parsed.token,
+      });
     }
   }, []);
 
-  // ✅ Logout function
+  // -----------------------------------------------
+  // 🟢 Automatically attach token to all axios requests
+  // -----------------------------------------------
+  useEffect(() => {
+    if (auth.token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${auth.token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+
+    // Persist to localStorage
+    localStorage.setItem("auth", JSON.stringify(auth));
+
+  }, [auth]);
+
+
+  // -----------------------------------------------
+  // 🔴 LOGOUT
+  // -----------------------------------------------
   const logout = () => {
-    localStorage.removeItem("auth"); // remove token + user
+    localStorage.removeItem("auth");
     setAuth({ user: null, token: "" });
-    navigate("/login"); // redirect
+    window.location.href = "/login";   // forces refresh + clears protected routes
   };
+
 
   return (
     <Auth.Provider value={{ auth, setAuth, logout }}>

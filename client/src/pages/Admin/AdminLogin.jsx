@@ -23,17 +23,19 @@ const AdminLogin = () => {
       );
 
       if (res.data.success) {
-        toast.success("Admin Login Successful!");
+  toast.success("Admin Login Successful!");
 
-        // Save in context + localStorage
-        setAuth({
-          user: res.data.user,
-          token: res.data.token,
-        });
-        localStorage.setItem("auth", JSON.stringify(res.data));
+  const authData = {
+    user: res.data.user,
+    token: res.data.token,
+  };
 
-        navigate("/admin/dashboard");
-      }
+  setAuth(authData);
+  localStorage.setItem("auth", JSON.stringify(authData));
+
+  navigate("/admin/dashboard");
+}
+
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Login Failed");

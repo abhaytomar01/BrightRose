@@ -5,6 +5,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // =====================
+// Cloudinary Config  ✅
+// =====================
+import cloudinary from "cloudinary";
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+  secure: true,
+});
+
+// =====================
 // Packages 
 // =====================
 import express from "express";
@@ -24,6 +36,8 @@ import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
+
+import fileUpload from "express-fileupload";
 
 // =====================
 // Setup dirname
@@ -72,6 +86,15 @@ app.get("/", (req, res) => {
 });
 
 // =====================
+// File Upload (for Cloudinary + multer)
+// =====================
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
+
+// =====================
 // API Routes
 // =====================
 app.use("/api/v1/auth", authRoute);
@@ -80,7 +103,6 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
-
 
 // =====================
 // Subscription Test

@@ -41,10 +41,10 @@ const Orders = () => {
 
     return (
         <>
-            <SeoData title="My Orders | Flipkart" />
+            <SeoData title="My Orders | Bright Rose" />
 
             <MinCategory />
-            <main className="w-full px-4 sm:px-10 py-4 ">
+            <main className="w-full px-4 sm:px-10 py-4 pt-28 md:pt-40 bg-[#F8F6F3] min-h-screen">
                 {/* <!-- row --> */}
                 {/* <!-- orders column --> */}
                 <div className="flex gap-3.5 w-full ">
