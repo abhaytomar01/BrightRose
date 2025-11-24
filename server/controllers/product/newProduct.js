@@ -1,46 +1,127 @@
 import productModel from "../../models/productModel.js";
 import cloudinary from "cloudinary";
 
-// -----------------------------
-// CREATE NEW PRODUCT
-// -----------------------------
 const newProduct = async (req, res) => {
   try {
-    // 1️⃣ Upload product images using req.files
-    let uploadedImages = [];
+    let {
+      name,
+      description,
+      price,
+      discountPrice,
+      category,
+      stock,
+      warranty,
+      brandName,
+      logo,
+      images,
+      highlights,
+      specifications,
+    } = req.body;
 
-    if (req.files && req.files.length > 0) {
-      for (let file of req.files) {
-        const uploaded = await cloudinary.v2.uploader.upload(file.path, {
-          folder: "products",
-        });
+    // ----------------------------------------
+    // 🔍 BASIC VALIDATION
+    // ----------------------------------------
+    if (!name || !description || !price || !category || !stock) {
+      return res.status(400).json({
+        success: false,
+        message: "Required product fields missing",
+      });
+    }
 
-        uploadedImages.push({
-          url: uploaded.secure_url,
-          public_id: uploaded.public_id,
-        });
+    if (!logo) {
+      return res.status(400).json({
+        success: false,
+        message: "Brand logo is required",
+      });
+    }
+
+    // ----------------------------------------
+    // 🔧 NORMALIZE IMAGES FIELD
+    // ----------------------------------------
+    // If images arrives as string (common with FormData)
+    if (typeof images === "string") {
+      try {
+        images = JSON.parse(images);
+      } catch {
+        images = [images];
       }
     }
 
-    // 2️⃣ Parse specifications (if sent as JSON strings)
-    let specs = [];
-    if (req.body.specifications) {
-      specs = JSON.parse(req.body.specifications);
+    if (!Array.isArray(images) || images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "At least one product image required",
+      });
     }
 
-    // 3️⃣ Create product in DB
+    // ----------------------------------------
+    // 🔧 NORMALIZE HIGHLIGHTS
+    // ----------------------------------------
+    if (typeof highlights === "string") {
+      try {
+        highlights = JSON.parse(highlights);
+      } catch {
+        highlights = [highlights];
+      }
+    }
+    if (!Array.isArray(highlights)) highlights = [];
+
+    // ----------------------------------------
+    // 🔧 NORMALIZE SPECIFICATIONS
+    // ----------------------------------------
+    if (typeof specifications === "string") {
+      try {
+        specifications = JSON.parse(specifications);
+      } catch {
+        specifications = [specifications];
+      }
+    }
+    if (!Array.isArray(specifications)) specifications = [];
+
+    // ----------------------------------------
+    // 📤 UPLOAD LOGO (BASE64)
+    // ----------------------------------------
+    const logoUpload = await cloudinary.v2.uploader.upload(logo, {
+      folder: "brands",
+    });
+
+    // ----------------------------------------
+    // 📤 UPLOAD ALL PRODUCT IMAGES
+    // ----------------------------------------
+    const uploadedImages = [];
+    for (const img of images) {
+      const upload = await cloudinary.v2.uploader.upload(img, {
+        folder: "products",
+      });
+
+      uploadedImages.push({
+        url: upload.secure_url,
+        public_id: upload.public_id,
+      });
+    }
+
+    // ----------------------------------------
+    // 🛒 CREATE PRODUCT ENTRY
+    // ----------------------------------------
     const product = await productModel.create({
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      category: req.body.category,
-      color: req.body.color,
-      fabric: req.body.fabric,
-      weavingArt: req.body.weavingArt,
-      sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
+      name,
+      description,
+      price,
+      discountPrice,
+      category,
+      stock,
+      warranty,
+      brand: {
+        name: brandName,
+        logo: {
+          url: logoUpload.secure_url,
+          public_id: logoUpload.public_id,
+        },
+      },
       images: uploadedImages,
+      highlights,
+      specifications,
       seller: req.user._id,
-      specifications: specs,
     });
 
     return res.status(201).json({
@@ -51,9 +132,10 @@ const newProduct = async (req, res) => {
 
   } catch (error) {
     console.error("❌ NEW PRODUCT ERROR:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Error creating product",
+      error: error.message,
     });
   }
 };

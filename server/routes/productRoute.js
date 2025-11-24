@@ -1,5 +1,6 @@
 import express from "express";
 import { requireSignIn, isAdmin } from "../middleware/authMiddleware.js";
+
 import newProduct from "../controllers/product/newProduct.js";
 import getSellerProducts from "../controllers/product/getSellerProducts.js";
 import deleteProduct from "../controllers/product/deleteProduct.js";
@@ -10,29 +11,18 @@ import searchProductController from "../controllers/product/searchProductControl
 
 import productModel from "../models/productModel.js";
 
-// ⬅️ Multer upload middleware (Cloudinary storage)
-import upload from "../utils/multer.js";
-
 const router = express.Router();
 
 /* =====================================
-   📸 PRODUCT IMAGE UPLOAD + CREATE
-   This route will upload images to Cloudinary
-   & then create the product in MongoDB
+   📸 CREATE NEW PRODUCT (Base64 Images)
 ===================================== */
-router.post(
-  "/new-product",
-  requireSignIn,
-  isAdmin,
-  upload.array("images", 6), // Accept up to 6 images
-  newProduct
-);
+router.post("/new-product", requireSignIn, isAdmin, newProduct);
 
 /* =====================================
    📌 PUBLIC ROUTES
 ===================================== */
 
-// GET all products (same as /products)
+// Get all products
 router.get("/", async (req, res) => {
   try {
     const products = await productModel.find().sort({ createdAt: -1 });
@@ -42,7 +32,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET All Products (duplicate but kept if you need older API)
+// Duplicate old endpoint (optional)
 router.get("/products", async (req, res) => {
   try {
     const products = await productModel.find({});
@@ -52,26 +42,26 @@ router.get("/products", async (req, res) => {
   }
 });
 
-// Find filtered product
+// Filtered products
 router.get("/filtered-products", getFilteredProducts);
 
-// Search
+// Search products
 router.get("/search/:keyword", searchProductController);
 
-// Product Details Page (Single Product)
+// Get single product details
 router.get("/:id", findProduct);
 
 /* =====================================
    🔐 ADMIN ROUTES
 ===================================== */
 
-// Seller products
+// Get seller products
 router.get("/seller-product", requireSignIn, isAdmin, getSellerProducts);
 
 // Delete product
 router.post("/delete-product", requireSignIn, isAdmin, deleteProduct);
 
-// Update product
-router.patch("/update/:id", requireSignIn, isAdmin, upload.array("images", 6), updateProduct);
+// Update product (base64 images)
+router.patch("/update/:id", requireSignIn, isAdmin, updateProduct);
 
 export default router;

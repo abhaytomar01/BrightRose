@@ -5,19 +5,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // =====================
-// Cloudinary Config  ✅
+// Cloudinary Config
 // =====================
 import cloudinary from "cloudinary";
-
 cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_SECRET,
   secure: true,
 });
 
 // =====================
-// Packages 
+// Packages
 // =====================
 import express from "express";
 import morgan from "morgan";
@@ -37,11 +36,6 @@ import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 
-import fileUpload from "express-fileupload";
-
-// =====================
-// Setup dirname
-// =====================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -51,7 +45,7 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // =====================
-// Middlewares
+// CORS
 // =====================
 app.use(
   cors({
@@ -59,19 +53,22 @@ app.use(
       "https://thebrightrose.com",
       "https://www.thebrightrose.com",
       "http://localhost:5173",
-      "http://localhost:3000"
+      "http://localhost:3000",
     ],
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
-app.options("*", cors());
-app.use(express.json());
+// =====================
+// Body Parsers (allow base64 uploads)
+// =====================
+app.use(express.json({ limit: "50mb" }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+
 app.use(morgan("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // =====================
 // Connect DB
@@ -79,24 +76,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 connectDB();
 
 // =====================
-// Basic Route
+// Routes
 // =====================
 app.get("/", (req, res) => {
-  res.send("✅ Server is running successfully!");
+  res.send("Server is running...");
 });
 
-// =====================
-// File Upload (for Cloudinary + multer)
-// =====================
-app.use(
-  fileUpload({
-    useTempFiles: true,
-  })
-);
-
-// =====================
-// API Routes
-// =====================
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/products", productRoute);
 app.use("/api/v1/user", userRoute);
@@ -105,22 +90,9 @@ app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 
 // =====================
-// Subscription Test
-// =====================
-app.post("/api/subscribe", (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ message: "Email is required" });
-  }
-  console.log("New subscriber:", email);
-  return res.json({ message: "Subscription successful" });
-});
-
-// =====================
-// Port Setup
+// Port
 // =====================
 const PORT = process.env.PORT || 8080;
-
 app.listen(PORT, () => {
-  console.log(`✅ SERVER RUNNING ON PORT ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
