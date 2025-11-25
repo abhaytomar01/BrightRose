@@ -11,20 +11,18 @@ const AdminRoute = () => {
 
   useEffect(() => {
     const check = async () => {
-      if (!authAdmin.token) return setOk(false);
+      if (!authAdmin?.token) return setOk(false);
 
       try {
-        const res = await api.get("/auth/admin-auth", {
-          headers: { Authorization: `Bearer ${authAdmin.token}` },
-        });
-        setOk(res.data.ok === true);
+        const res = await api.get("/auth/admin-auth");
+        setOk(res.data?.ok === true);
       } catch (err) {
         setOk(false);
       }
     };
 
     if (!loading) check();
-  }, [authAdmin.token, loading]);
+  }, [authAdmin?.token, loading]);
 
   if (loading || ok === null) return <Spinner />;
   if (!ok) return <Navigate to="/admin/login" replace />;
