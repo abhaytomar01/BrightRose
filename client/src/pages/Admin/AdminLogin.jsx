@@ -1,5 +1,5 @@
 // src/pages/Admin/AdminLogin.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -7,11 +7,45 @@ import { useAuth } from "../../context/auth";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const { setAuth } = useAuth();
+  const authCtx = useAuth(); // may contain setAuth or loginAdmin depending on your context
+  // prefer loginAdmin if your updated context has it, otherwise fallback to setAuth
+  const loginAdminFn = authCtx?.loginAdmin || authCtx?.setAuth || null;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // If admin already logged in (localStorage or context), redirect to admin dashboard
+  useEffect(() => {
+    try {
+      // 1) If new context has admin state
+      if (authCtx?.authAdmin?.token && authCtx?.authAdmin?.user?.role === "admin") {
+        navigate("/admin/dashboard/profile", { replace: true });
+        return;
+      }
+
+      // 2) If legacy single auth context has admin role
+      if (authCtx?.auth?.user?.role === "admin" && authCtx?.auth?.token) {
+        navigate("/admin/dashboard/profile", { replace: true });
+        return;
+      }
+
+      // 3) Local storage fallback (isolated admin session)
+      const storedAdmin = localStorage.getItem("auth_admin");
+      if (storedAdmin) {
+        const parsed = JSON.parse(storedAdmin);
+        if (parsed?.token && parsed?.user?.role === "admin") {
+          // Optionally sync into context if loginAdmin exists
+          if (authCtx?.loginAdmin) authCtx.loginAdmin(parsed);
+          navigate("/admin/dashboard/profile", { replace: true });
+        }
+      }
+    } catch (err) {
+      // ignore and let user login
+      // console.error("Admin restore check error:", err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,28 +54,33 @@ const AdminLogin = () => {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-login`,
-        { email, password }
+        { email, password },
+        {
+          // Preflight/headers handled by browser; no special headers here.
+        }
       );
 
       if (res.data?.success) {
         toast.success("Admin Login Successful!");
 
-        const user = res.data?.user || {};
-        const token = res.data?.token || "";
+        const adminPayload = { user: res.data.user, token: res.data.token };
 
-        // VERY IMPORTANT:
-        // Force role to admin if backend did not send role
-        const role = user.role || "admin";
+        // 1) If your context exposes loginAdmin, use it (recommended)
+        if (authCtx?.loginAdmin) {
+          authCtx.loginAdmin(adminPayload);
+        } else if (authCtx?.setAuth) {
+          // 2) Otherwise, try to set single auth (legacy) — but mark role admin will be inside user object.
+          // This can conflict with user session — only do this if you intentionally want single auth.
+          // Uncomment the next line if you want to reuse single auth (NOT recommended if you want strict separation):
+          // authCtx.setAuth({ user: res.data.user, token: res.data.token });
+        }
 
-        const authData = {
-          user: { ...user, role },
-          token,
-          role,
-        };
-
-        // Save in context + localStorage
-        setAuth(authData);
-        localStorage.setItem("auth", JSON.stringify(authData));
+        // 3) Always save isolated admin session in localStorage (won't break user auth)
+        try {
+          localStorage.setItem("auth_admin", JSON.stringify(adminPayload));
+        } catch (err) {
+          console.warn("Could not save admin session to localStorage", err);
+        }
 
         // Redirect to admin dashboard
         navigate("/admin/dashboard/profile", { replace: true });
@@ -50,7 +89,7 @@ const AdminLogin = () => {
       }
     } catch (err) {
       console.error("Admin login error:", err);
-      toast.error(err.response?.data?.message || "Login failed");
+      toast.error(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -62,9 +101,7 @@ const AdminLogin = () => {
         <h1 className="text-center text-2xl font-serif tracking-widest mb-6">
           THE BRIGHT ROSE
         </h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">
-          Admin Panel Access
-        </p>
+        <p className="text-center text-gray-600 mb-6 text-sm">Admin Panel Access</p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
@@ -102,9 +139,7 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        <p className="text-center mt-6 text-xs text-gray-400">
-          © The Bright Rose • Admin Only
-        </p>
+        <p className="text-center mt-6 text-xs text-gray-400">© The Bright Rose • Admin Only</p>
       </div>
     </div>
   );

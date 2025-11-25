@@ -1,65 +1,63 @@
 // src/context/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 
 const AuthContext = createContext();
 
-
 export const AuthProvider = ({ children }) => {
-const navigate = useNavigate();
-// add role to state
-const [auth, setAuthState] = useState({ user: null, token: "", role: null });
-const [isContextLoading, setIsContextLoading] = useState(true);
+  const [authUser, setAuthUser] = useState({ user: null, token: "" });
+  const [authAdmin, setAuthAdmin] = useState({ user: null, token: "" });
+  const [loading, setLoading] = useState(true);
 
+  // Load from localStorage
+  useEffect(() => {
+    try {
+      const user = localStorage.getItem("auth_user");
+      const admin = localStorage.getItem("auth_admin");
 
-useEffect(() => {
-try {
-const raw = localStorage.getItem("auth");
-if (raw) {
-const parsed = JSON.parse(raw);
-if (parsed?.user && parsed?.token) {
-setAuthState({
-user: parsed.user,
-token: parsed.token,
-role: parsed.role || parsed.user?.role || null,
-});
-}
-}
-} catch (err) {
-console.error("Error restoring auth:", err);
-} finally {
-setIsContextLoading(false);
-}
-}, []);
+      if (user) setAuthUser(JSON.parse(user));
+      if (admin) setAuthAdmin(JSON.parse(admin));
+    } catch (err) {
+      console.error("Auth restore error:", err);
+    }
+    setLoading(false);
+  }, []);
 
+  const loginUser = (data) => {
+    setAuthUser(data);
+    localStorage.setItem("auth_user", JSON.stringify(data));
+  };
 
-// setAuth expects { user, token, role }
-const setAuth = ({ user, token, role }) => {
-const finalRole = role || user?.role || null;
-setAuthState({ user, token, role: finalRole });
-try {
-localStorage.setItem("auth", JSON.stringify({ user, token, role: finalRole }));
-} catch (err) {
-console.error("Error saving auth:", err);
-}
+  const loginAdmin = (data) => {
+    setAuthAdmin(data);
+    localStorage.setItem("auth_admin", JSON.stringify(data));
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem("auth_user");
+    setAuthUser({ user: null, token: "" });
+  };
+
+  const logoutAdmin = () => {
+    localStorage.removeItem("auth_admin");
+    setAuthAdmin({ user: null, token: "" });
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        authUser,
+        authAdmin,
+        loginUser,
+        loginAdmin,
+        logoutUser,
+        logoutAdmin,
+        loading,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
-
-const logout = (opts = { redirect: "/login" }) => {
-localStorage.removeItem("auth");
-setAuthState({ user: null, token: "", role: null });
-if (opts.redirect) navigate(opts.redirect);
-};
-
-
-return (
-<AuthContext.Provider value={{ auth, setAuth, logout, isContextLoading }}>
-{children}
-</AuthContext.Provider>
-);
-};
-
 
 export const useAuth = () => useContext(AuthContext);
 export default AuthContext;
