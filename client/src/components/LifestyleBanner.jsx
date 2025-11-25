@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom"; // optional if using routing
+import { Link } from "react-router-dom";
 
 const LifestyleBanner = ({
   title = "The Red Gold Edit — Luxury with Simplicity",
@@ -8,25 +8,38 @@ const LifestyleBanner = ({
   imageUrl = "",
 }) => {
   return (
-    <section className="w-full relative bg-[#FCF7F1]">
-      {/* Background Image */}
+    <section className="w-full relative bg-pureWhite">
+      {/* Banner Image */}
       <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] relative overflow-hidden">
         <img
           src={imageUrl}
           alt="Lifestyle Banner"
-          className="w-full h-full object-cover brightness-90"
+          className="w-full h-full object-cover brightness-95"
         />
-        {/* Gold Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/40"></div>
 
-        {/* Text Overlay */}
+        {/* Gold + Neutral Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralLight/20 to-neutralDark/40"></div>
+
+        {/* Central Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
+          <h2 className="text-primaryRed text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 drop-shadow-lg tracking-tight">
             {title}
           </h2>
+
           <Link
             to={buttonLink}
-            className="bg-[#AD000F] text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-[#8c000c] hover:shadow-lg transition-all duration-300 border border-[#D4AF37]"
+            className="
+              bg-primaryRed
+              text-white
+              px-8
+              py-3
+              rounded-full
+              text-lg
+              font-medium
+              border border-accentGold
+              transition-all duration-300
+              hover:bg-red-800 hover:shadow-xl
+            "
           >
             {buttonText}
           </Link>

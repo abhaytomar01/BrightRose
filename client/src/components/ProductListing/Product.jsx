@@ -47,16 +47,16 @@ const Product = ({
   return (
     <motion.div
       // ❌ REMOVED scale hover
-      className="relative bg-white rounded-2xl border border-[#e7dfd4] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+      className="relative bg-white rounded-2xl border border-[#e7dfd4] shadow-sm hover:shadow-lg transition-all duration-300 ml-2 md:ml-4 overflow-hidden"
     >
       {/* Wishlist Button */}
-      <button
+      {/* <button
         onClick={handleWishlist}
         className={`absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm transition hover:shadow-md
           ${itemInWishlist ? "text-[#d6001c]" : "text-gray-500 hover:text-[#d6001c]"}`}
       >
         <FavoriteIcon sx={{ fontSize: 20 }} />
-      </button>
+      </button> */}
 
       {/* Image */}
       <Link to={`/product/${_id}`}>

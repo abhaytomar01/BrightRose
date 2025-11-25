@@ -6,25 +6,24 @@ import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-// import your images or videos
 import hermesbanner from "../../../assets/images/Banners/hermes-banner.webp";
-// import bannerVideo from "../../../assets/videos/banner.mp4";
 
+// Custom Arrow Buttons - Neutral + Gold Accent
 export const PreviousBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !left-3 sm:!left-5 z-20 bg-black/30 hover:bg-black/60 transition-all rounded-full p-2 flex items-center justify-center`}
+    className={`${className} !left-3 sm:!left-5 z-20 bg-neutral-200/70 hover:bg-neutral-300 transition-all rounded-full p-2 flex items-center justify-center border border-accentGold/60`}
     onClick={onClick}
   >
-    <ArrowBackIosIcon sx={{ fontSize: 20, color: "white" }} />
+    <ArrowBackIosIcon sx={{ fontSize: 20, color: "#B30024" }} /> 
   </div>
 );
 
 export const NextBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !right-3 sm:!right-5 z-20 bg-black/30 hover:bg-black/60 transition-all rounded-full p-2 flex items-center justify-center`}
+    className={`${className} !right-3 sm:!right-5 z-20 bg-neutral-200/70 hover:bg-neutral-300 transition-all rounded-full p-2 flex items-center justify-center border border-accentGold/60`}
     onClick={onClick}
   >
-    <ArrowForwardIosIcon sx={{ fontSize: 20, color: "white" }} />
+    <ArrowForwardIosIcon sx={{ fontSize: 20, color: "#B30024" }} />
   </div>
 );
 
@@ -46,22 +45,21 @@ const Banner = () => {
         <ul className="flex gap-2">{dots}</ul>
       </div>
     ),
+
+    // PAGINATION DOTS: muted gray + gold active
     customPaging: () => (
-      <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-white/70 hover:bg-white transition-all duration-300" />
+      <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-mutedGray hover:bg-accentGold transition-all duration-300" />
     ),
   };
 
-  const banners = [
-    { type: "image", src: hermesbanner },
-    // { type: "video", src: bannerVideo },
-  ];
+  const banners = [{ type: "image", src: hermesbanner }];
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black p-0 m-0">
+    <section className="relative w-full h-screen overflow-hidden bg-white p-0 m-0">
       <Slider {...settings} className="h-full">
         {banners.map((el, i) => (
           <div key={i} className="relative w-full h-screen overflow-hidden">
-            {/* MEDIA */}
+
             {el.type === "video" ? (
               <video
                 src={el.src}
@@ -80,24 +78,14 @@ const Banner = () => {
               />
             )}
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
-
-            {/* Optional Text Overlay */}
-            {/* <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-3 drop-shadow-lg">
-                Discover Timeless Luxury
-              </h1>
-              <button className="bg-[#AD000F] border border-[#D4AF37] px-6 sm:px-8 py-2 sm:py-3 rounded-full hover:bg-[#8C000C] transition-all duration-300 font-medium">
-                Shop Now
-              </button>
-            </div> */}
+            {/* LIGHT LUXURY OVERLAY */}
+            <div className="absolute inset-0 bg-gradient-to-t from-neutralLight/70 via-white/40 to-white/10"></div>
           </div>
         ))}
       </Slider>
 
-      {/* Subtle top/bottom border */}
-      <div className="absolute inset-0 border-t border-b border-white/10 pointer-events-none"></div>
+      {/* GOLD TOP/BOTTOM BORDER */}
+      <div className="absolute inset-0 border-t border-b border-accentGold/40 pointer-events-none"></div>
     </section>
   );
 };

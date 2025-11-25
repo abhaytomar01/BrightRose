@@ -40,47 +40,50 @@ const subcategories = [
 ];
 
 /* ------------------------------
-   Page Component (Luxury UI)
+   Luxury UI Page
 ------------------------------ */
 const StyleCollection = () => {
   return (
-    <div className="bg-[#F8F6F3] text-[#1a1a1a] min-h-screen">
+    <div className="bg-pureWhite text-neutralDark min-h-screen">
 
-      {/* ------------------------------
-          H E R O  (Minimal editorial)
-      ------------------------------ */}
+      {/* --------------------------------------
+          HERO (Luxury Editorial Banner)
+      -------------------------------------- */}
       <section className="relative h-[60vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
+
+        {/* Background Image */}
         <img
           src="https://images.unsplash.com/photo-1602810318383-e7b3d15b3b1f?auto=format&fit=crop&w=1600&q=80"
           alt="Style Collection Hero"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover brightness-95"
         />
 
-        {/* Soft luxury overlay */}
-        <div className="absolute inset-0 bg-black/35"></div>
+        {/* Soft Neutral-Gold Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60"></div>
 
+        {/* Text */}
         <motion.div
           initial={{ opacity: 0, y: 35 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           className="relative z-10 text-center px-6"
         >
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-light tracking-tight">
+          <h1 className="text-primaryRed text-4xl sm:text-5xl md:text-6xl font-light tracking-tight drop-shadow-lg">
             The Style Collection
           </h1>
 
-          <p className="text-white/90 text-base sm:text-lg md:text-xl max-w-xl mx-auto mt-3 font-light leading-relaxed">
+          <p className="text-neutralLight text-base sm:text-lg md:text-xl max-w-xl mx-auto mt-3 font-light leading-relaxed drop-shadow">
             A curation of classic tailoring and modern silhouettes.
           </p>
         </motion.div>
       </section>
 
-      {/* ------------------------------
-          S U B C A T E G O R Y  G R I D
-          (Hermès card layout)
-      ------------------------------ */}
+      {/* --------------------------------------
+          GRID (Luxury Card Layout)
+      -------------------------------------- */}
       <section className="max-w-[1500px] mx-auto px-6 md:px-12 lg:px-20 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
 
           {subcategories.map((sub, index) => (
             <motion.div
@@ -92,8 +95,8 @@ const StyleCollection = () => {
             >
               <Link to={sub.link} className="block group">
 
-                {/* Image */}
-                <div className="overflow-hidden rounded-xl bg-[#f3f1ed]">
+                {/* Image Block */}
+                <div className="overflow-hidden rounded-2xl bg-neutralLight border border-mutedGray/80 hover:border-accentGold/60 transition-all duration-300">
                   <img
                     src={sub.image}
                     alt={sub.name}
@@ -103,11 +106,11 @@ const StyleCollection = () => {
 
                 {/* Text */}
                 <div className="mt-5 space-y-1">
-                  <h3 className="text-xl font-light tracking-wide">
+                  <h3 className="text-xl font-light tracking-wide text-primaryRed">
                     {sub.name}
                   </h3>
 
-                  <p className="text-sm text-gray-600 leading-relaxed font-extralight">
+                  <p className="text-sm text-neutralDark/80 leading-relaxed font-extralight max-w-xs">
                     {sub.desc}
                   </p>
                 </div>
@@ -117,6 +120,7 @@ const StyleCollection = () => {
           ))}
 
         </div>
+
       </section>
 
     </div>

@@ -4,18 +4,13 @@ export default {
     theme: {
         extend: {
             colors: {
-        'primary-red': '#AD000F',
-        'gold': '#D4AF37',
-        'page-white': '#ffffff',
-        'section-bg': '#F8F6F3',
-        'neutral-light': '#E6E6E6',
-        // 'neutral-dark': '#333333',
-        'text':  '2C2C2C',
-        'second-bg': 'F1F1F1',
+        primaryRed: '#AD000F',
+        accentGold: "#d4af37",
+      neutralLight: "#f7f7f7",
+      neutralDark: "#444444",
+      mutedGray: "#d9d9d9",
+      pureWhite: "#ffffff",
             },
-            fontFamily: {
-        playfair: ['Playfair Display', 'serif'],
-      },
       backgroundColor: {
         // Set default theme background color if needed
         page: '#FFFFFF',

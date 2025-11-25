@@ -21,7 +21,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
-    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,21 +35,24 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-  `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/register`,
-  { name, email, password, phone }
-);
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/register`,
+        {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          password: form.password,
+        }
+      );
 
-if (res.data.success) {
-  localStorage.setItem("auth", JSON.stringify({
-    user: res.data.user,
-    token: res.data.token,
-  }));
+      if (res.data.success) {
+        localStorage.setItem(
+          "auth",
+          JSON.stringify({ user: res.data.user, token: res.data.token })
+        );
 
-  toast.success("Registered & logged in");
-  navigate("/");
-}
-
- else {
+        toast.success("Registered & logged in");
+        navigate("/");
+      } else {
         toast.error(res.data?.message || "Registration failed");
       }
     } catch (err) {
@@ -60,23 +63,23 @@ if (res.data.success) {
   };
 
   return (
-    <section className="min-h-screen bg-[#FCF7F1] flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+    <section className="min-h-screen bg-pureWhite flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
 
       <div className="w-full max-w-lg text-center">
 
-        {/* LUXURY TITLE */}
-        <h1 className="text-4xl sm:text-5xl font-light tracking-[6px] text-[#B88646] uppercase mb-10">
+        {/* TITLE */}
+        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-primaryRed uppercase mb-10">
           Register
         </h1>
 
         {/* FORM CARD */}
-        <div className="bg-white border border-[#e6ddce] rounded-xl p-10 shadow-sm">
+        <div className="bg-white border border-mutedGray/70 rounded-2xl p-10 shadow-sm">
 
           <form onSubmit={handleSubmit} className="space-y-6 text-left">
 
             {/* FULL NAME */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Full Name
               </label>
               <input
@@ -88,19 +91,19 @@ if (res.data.success) {
                 placeholder="John Doe"
                 className="
                   w-full px-4 py-3 
-                  bg-[#FDFDFC]
-                  border border-[#d4c5ae]
+                  bg-neutralLight
+                  border border-mutedGray
                   rounded-md
-                  focus:outline-none focus:border-[#B88646]
-                  text-[#704214]
-                  placeholder-[#c1a98b]
+                  focus:outline-none focus:border-accentGold
+                  text-neutralDark
+                  placeholder-gray-400
                 "
               />
             </div>
 
             {/* EMAIL */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Email Address
               </label>
               <input
@@ -112,19 +115,19 @@ if (res.data.success) {
                 placeholder="you@example.com"
                 className="
                   w-full px-4 py-3 
-                  bg-[#FDFDFC]
-                  border border-[#d4c5ae]
+                  bg-neutralLight
+                  border border-mutedGray
                   rounded-md
-                  focus:outline-none focus:border-[#B88646]
-                  text-[#704214]
-                  placeholder-[#c1a98b]
+                  focus:outline-none focus:border-accentGold
+                  text-neutralDark
+                  placeholder-gray-400
                 "
               />
             </div>
 
             {/* PHONE */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Phone Number
               </label>
               <input
@@ -136,19 +139,19 @@ if (res.data.success) {
                 placeholder="9876543210"
                 className="
                   w-full px-4 py-3 
-                  bg-[#FDFDFC]
-                  border border-[#d4c5ae]
+                  bg-neutralLight
+                  border border-mutedGray
                   rounded-md
-                  focus:outline-none focus:border-[#B88646]
-                  text-[#704214]
-                  placeholder-[#c1a98b]
+                  focus:outline-none focus:border-accentGold
+                  text-neutralDark
+                  placeholder-gray-400
                 "
               />
             </div>
 
             {/* ADDRESS */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Address
               </label>
               <input
@@ -160,19 +163,19 @@ if (res.data.success) {
                 placeholder="Your full address"
                 className="
                   w-full px-4 py-3 
-                  bg-[#FDFDFC]
-                  border border-[#d4c5ae]
+                  bg-neutralLight
+                  border border-mutedGray
                   rounded-md
-                  focus:outline-none focus:border-[#B88646]
-                  text-[#704214]
-                  placeholder-[#c1a98b]
+                  focus:outline-none focus:border-accentGold
+                  text-neutralDark
+                  placeholder-gray-400
                 "
               />
             </div>
 
             {/* PASSWORD */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Password
               </label>
               <div className="relative">
@@ -185,18 +188,18 @@ if (res.data.success) {
                   placeholder="Create password"
                   className="
                     w-full px-4 py-3 pr-12
-                    bg-[#FDFDFC]
-                    border border-[#d4c5ae]
+                    bg-neutralLight
+                    border border-mutedGray
                     rounded-md
-                    focus:outline-none focus:border-[#B88646]
-                    text-[#704214]
-                    placeholder-[#c1a98b]
+                    focus:outline-none focus:border-accentGold
+                    text-neutralDark
+                    placeholder-gray-400
                   "
                 />
 
                 <button
                   type="button"
-                  className="absolute right-3 top-3 text-gray-600 hover:text-[#704214]"
+                  className="absolute right-3 top-3 text-neutralDark/60 hover:text-neutralDark"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -206,7 +209,7 @@ if (res.data.success) {
 
             {/* CONFIRM PASSWORD */}
             <div>
-              <label className="block text-sm tracking-wide text-[#704214] mb-1">
+              <label className="block text-sm tracking-wide text-neutralDark mb-1">
                 Confirm Password
               </label>
               <div className="relative">
@@ -219,18 +222,18 @@ if (res.data.success) {
                   placeholder="Re-enter password"
                   className="
                     w-full px-4 py-3 pr-12
-                    bg-[#FDFDFC]
-                    border border-[#d4c5ae]
+                    bg-neutralLight
+                    border border-mutedGray
                     rounded-md
-                    focus:outline-none focus:border-[#B88646]
-                    text-[#704214]
-                    placeholder-[#c1a98b]
+                    focus:outline-none focus:border-accentGold
+                    text-neutralDark
+                    placeholder-gray-400
                   "
                 />
 
                 <button
                   type="button"
-                  className="absolute right-3 top-3 text-gray-600 hover:text-[#704214]"
+                  className="absolute right-3 top-3 text-neutralDark/60 hover:text-neutralDark"
                   onClick={() => setShowConfirm(!showConfirm)}
                 >
                   {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -245,10 +248,10 @@ if (res.data.success) {
               className="
                 w-full py-3 
                 text-sm tracking-[3px]
-                uppercase border border-[#B88646] 
-                text-[#704214]
+                uppercase border border-accentGold 
+                text-primaryRed
                 rounded-md
-                hover:bg-[#B88646]/10
+                hover:bg-accentGold/10
                 transition
               "
             >
@@ -262,15 +265,16 @@ if (res.data.success) {
           </div>
 
           {/* LOGIN LINK */}
-          <p className="text-center text-sm text-[#704214]">
+          <p className="text-center text-sm text-neutralDark">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-[#AD000F] underline hover:text-[#8c000c]"
+              className="text-primaryRed underline hover:text-[#8c000c]"
             >
               Login
             </Link>
           </p>
+
         </div>
       </div>
     </section>

@@ -10,21 +10,22 @@ const WhyChooseUs = ({
   ],
 }) => {
   return (
-    <section className="w-full bg-[#FAF7F3] py-20">
+    <section className="w-full bg-pureWhite py-20">
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 text-center">
 
         {/* Section Title */}
-        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-primaryRed">
           Why Choose Us
         </h2>
 
-        <p className="text-gray-600 text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
+        <p className="text-neutralDark text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
           Simple values that reflect our commitment to quality and authenticity.
         </p>
 
-        <div className="w-20 h-[1px] bg-gray-700/40 mx-auto mt-6 mb-16"></div>
+        {/* Gold Divider */}
+        <div className="w-20 h-[2px] bg-accentGold mx-auto mt-6 mb-16"></div>
 
-        {/* Grid */}
+        {/* Highlights Grid */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {highlights.map((item, index) => (
@@ -35,25 +36,25 @@ const WhyChooseUs = ({
                 transition-all duration-300
               "
             >
-              {/* Minimal Icon */}
+              {/* Icon Circle */}
               <div
                 className="
                   w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center
-                  border border-gray-400/40 hover:border-gray-700/60
+                  border border-accentGold/50 hover:border-accentGold
                   rounded-full mb-5
-                  transition-all duration-300
+                  transition-all duration-300 bg-neutralLight
                 "
               >
-                <div className="text-gray-800">{item.icon}</div>
+                <div className="text-primaryRed">{item.icon}</div>
               </div>
 
               {/* Title */}
-              <h3 className="text-base sm:text-lg md:text-xl font-light text-gray-900 mb-2">
+              <h3 className="text-base sm:text-lg md:text-xl font-light text-neutralDark mb-2">
                 {item.title}
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-[230px]">
+              <p className="text-neutralDark/80 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-[230px]">
                 {item.description}
               </p>
             </div>

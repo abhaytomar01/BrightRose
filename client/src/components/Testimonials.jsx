@@ -45,59 +45,61 @@ const Testimonials = ({
   };
 
   return (
-    <section className="w-full bg-[#FAF7F3] py-20 overflow-hidden">
+    <section className="w-full bg-pureWhite py-20 overflow-hidden">
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 text-center">
 
         {/* HEADER */}
-        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-gray-900">
+        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-primaryRed">
           What Our Customers Say
         </h2>
 
-        <p className="text-gray-600 text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
+        <p className="text-neutralDark text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
           Real experiences from people who love our craftsmanship.
         </p>
 
-        <div className="w-24 h-[1px] bg-gray-700/30 mx-auto mt-8 mb-16"></div>
+        {/* Gold Divider */}
+        <div className="w-24 h-[2px] bg-accentGold mx-auto mt-8 mb-16"></div>
 
-        {/* GRID — Desktop */}
+        {/* GRID — DESKTOP */}
         <div className="hidden lg:grid grid-cols-4 gap-10">
           {reviews.map((review, index) => (
             <div
               key={index}
               className="
                 bg-white p-8 rounded-xl 
-                border border-gray-300/40 
+                border border-mutedGray/60 
+                hover:border-accentGold/60
+                shadow-sm hover:shadow-md
                 transition-all duration-300
-                hover:border-gray-800/40
               "
             >
-              {/* Rating */}
+              {/* Rating (Stars in Gold/Red Luxe Tone) */}
               <div className="flex justify-center mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
                     size={18}
                     className={`${
-                      i < review.rating ? "text-gray-800" : "text-gray-300"
+                      i < review.rating ? "text-accentGold" : "text-mutedGray"
                     }`}
                   />
                 ))}
               </div>
 
               {/* Quote */}
-              <p className="text-gray-700 text-sm md:text-base italic font-light leading-relaxed mb-4">
+              <p className="text-neutralDark/80 text-sm md:text-base italic font-light leading-relaxed mb-4">
                 “{review.quote}”
               </p>
 
               {/* Name */}
-              <h4 className="text-gray-900 font-light text-base tracking-wide">
+              <h4 className="text-neutralDark font-light text-base tracking-wide">
                 — {review.name}
               </h4>
             </div>
           ))}
         </div>
 
-        {/* SLIDER — Mobile/Tablet */}
+        {/* SLIDER — MOBILE/TABLET */}
         <div className="block lg:hidden mt-6">
           <Slider {...sliderSettings}>
             {reviews.map((review, index) => (
@@ -105,8 +107,9 @@ const Testimonials = ({
                 <div
                   className="
                     bg-white p-8 rounded-xl max-w-sm mx-auto 
-                    border border-gray-300/40 
-                    hover:border-gray-800/40
+                    border border-mutedGray/60 
+                    hover:border-accentGold/60
+                    shadow-sm hover:shadow-md
                     transition-all duration-300
                   "
                 >
@@ -117,19 +120,19 @@ const Testimonials = ({
                         key={i}
                         size={18}
                         className={`${
-                          i < review.rating ? "text-gray-800" : "text-gray-300"
+                          i < review.rating ? "text-accentGold" : "text-mutedGray"
                         }`}
                       />
                     ))}
                   </div>
 
                   {/* Quote */}
-                  <p className="text-gray-700 text-sm sm:text-base italic font-light leading-relaxed mb-4">
+                  <p className="text-neutralDark/80 text-sm sm:text-base italic font-light leading-relaxed mb-4">
                     “{review.quote}”
                   </p>
 
                   {/* Name */}
-                  <h4 className="text-gray-900 font-light text-base tracking-wide">
+                  <h4 className="text-neutralDark font-light text-base tracking-wide">
                     — {review.name}
                   </h4>
                 </div>

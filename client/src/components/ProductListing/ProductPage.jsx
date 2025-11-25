@@ -1,5 +1,5 @@
 //-----------------------------------------------------------
-// PRODUCT DETAILS PAGE (FINAL WITH RELATED PRODUCTS)
+// PRODUCT DETAILS PAGE — LUXURY THEME APPLIED
 //-----------------------------------------------------------
 
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ export default function ProductDetails() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
+  // State
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [related, setRelated] = useState([]);
@@ -33,27 +34,24 @@ export default function ProductDetails() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  // ---------------------------------------------------
-  // Sticky bar visibility
-  // ---------------------------------------------------
+  //-----------------------------------------------------
+  // Sticky Bar
+  //-----------------------------------------------------
   useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyBar(!footerVisible);
-    };
-
+    const handleScroll = () => setShowStickyBar(!footerVisible);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [footerVisible]);
 
-  // Footer detection
+  //-----------------------------------------------------
+  // Footer Visibility
+  //-----------------------------------------------------
   useEffect(() => {
     const footer = document.querySelector("footer");
     if (!footer) return;
 
     const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => setFooterVisible(entry.isIntersecting));
-      },
+      (entries) => entries.forEach((e) => setFooterVisible(e.isIntersecting)),
       { threshold: 0.1 }
     );
 
@@ -61,9 +59,9 @@ export default function ProductDetails() {
     return () => obs.disconnect();
   }, []);
 
-  // ---------------------------------------------------
-  // Fetch product + related
-  // ---------------------------------------------------
+  //-----------------------------------------------------
+  // Fetch Product
+  //-----------------------------------------------------
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -75,12 +73,7 @@ export default function ProductDetails() {
           const p = res.data.product;
           setProduct(p);
 
-          // Set default image
-          setSelectedImage(
-            p.images?.[0]?.url || p.images?.[0] || fallbackImage
-          );
-
-          // Fetch all products to filter related
+          setSelectedImage(p.images?.[0]?.url || fallbackImage);
           fetchRelated(p);
         }
       } catch (error) {
@@ -93,9 +86,9 @@ export default function ProductDetails() {
     fetchProduct();
   }, [productId]);
 
-  // ---------------------------------------------------
-  // Fetch related products
-  // ---------------------------------------------------
+  //-----------------------------------------------------
+  // Fetch Related
+  //-----------------------------------------------------
   const fetchRelated = async (current) => {
     try {
       const res = await axios.get(
@@ -117,78 +110,64 @@ export default function ProductDetails() {
         setRelated(filtered.slice(0, 8));
       }
     } catch (error) {
-      console.log("Related fetch failed", error);
+      console.log("Failed to load related", error);
     }
   };
 
   if (loading)
-    return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-700">
+        Loading…
+      </div>
+    );
 
   if (!product)
-    return <div className="min-h-screen flex items-center justify-center">Not Found</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-700">
+        Product Not Found
+      </div>
+    );
 
-  // ---------------------------------------------------
-  // Lightbox gallery setup
-  // ---------------------------------------------------
+  //-----------------------------------------------------
+  // Gallery Setup
+  //-----------------------------------------------------
   let gallery = product.images?.map((img) => img.url || img) || [];
-  if (gallery.length < 4) {
-    gallery = [
-      ...gallery,
-      fallbackImage,
-      fallbackImage,
-      fallbackImage,
-      fallbackImage,
-    ].slice(0, 5);
-  }
+  if (gallery.length < 4)
+    gallery = [...gallery, fallbackImage, fallbackImage, fallbackImage].slice(
+      0,
+      5
+    );
 
   const toggleAccordion = (id) =>
     setAccordionOpen(accordionOpen === id ? null : id);
 
   const handleQuantity = (type) =>
-    setQuantity((prev) =>
-      type === "inc" ? prev + 1 : prev > 1 ? prev - 1 : prev
-    );
+    setQuantity((q) => (type === "inc" ? q + 1 : q > 1 ? q - 1 : q));
 
   const handleAddToCart = () => {
     if (!selectedSize) return toast.error("Please select size");
-
     addToCart(
-      {
-        ...product,
-        selectedSize,
-        productId: product._id,
-      },
+      { ...product, selectedSize, productId: product._id },
       quantity
     );
-
     toast.success("Added to cart");
   };
 
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
+  const openLightbox = (i) => {
+    setLightboxIndex(i);
     setIsLightboxOpen(true);
   };
 
-  const nextImage = () =>
-    setLightboxIndex((prev) => (prev + 1) % gallery.length);
-
-  const prevImage = () =>
-    setLightboxIndex((prev) =>
-      prev === 0 ? gallery.length - 1 : prev - 1
-    );
-
-  // ---------------------------------------------------
-  // Render
-  // ---------------------------------------------------
+  //-----------------------------------------------------
+  // RENDER
+  //-----------------------------------------------------
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-28 md:pt-36 pb-36 bg-[#FCF7F1] text-gray-800">
-    
-      {/* ---------------------------------------------------
-          PRODUCT MAIN SECTION
-      --------------------------------------------------- */}
-      <div className="grid md:grid-cols-2 mt-4 md:mt-8 gap-10 items-start">
+    <div className="max-w-7xl mx-auto px-4 pt-28 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
 
-        {/* LEFT — GALLERY */}
+      {/* PRODUCT MAIN */}
+      <div className="grid md:grid-cols-2 gap-12 mt-8">
+
+        {/* LEFT – GALLERY */}
         <div className="flex gap-5">
           <div className="hidden md:flex flex-col gap-4 w-[110px]">
             {gallery.map((img, idx) => (
@@ -199,8 +178,10 @@ export default function ProductDetails() {
                   setSelectedIndex(idx);
                   openLightbox(idx);
                 }}
-                className={`w-full h-28 rounded-md border overflow-hidden cursor-pointer ${
-                  selectedIndex === idx ? "border-black" : "border-gray-300"
+                className={`w-full h-28 rounded-md overflow-hidden cursor-pointer border ${
+                  selectedIndex === idx
+                    ? "border-[#AD000F]"
+                    : "border-neutral-300"
                 }`}
               >
                 <img src={img} className="w-full h-full object-cover" />
@@ -211,43 +192,40 @@ export default function ProductDetails() {
           <div className="flex-1">
             <img
               src={selectedImage}
-              className="w-full h-[550px] rounded-lg object-cover cursor-pointer"
+              className="w-full h-[560px] rounded-xl object-cover cursor-pointer shadow-sm"
               onClick={() => openLightbox(selectedIndex)}
               onError={(e) => (e.target.src = fallbackImage)}
             />
           </div>
         </div>
 
-        {/* RIGHT — DETAILS */}
+        {/* RIGHT – DETAILS */}
         <div className="flex flex-col gap-4">
-          <h1 className="text-lg md:text-xl font-semibold tracking-wide">
+
+          <h1 className="text-2xl font-light tracking-wide">
             {product.name}
           </h1>
 
-          {/* Logos */}
+          {/* Badges */}
           <div className="flex items-center gap-4">
-            <img src={Handloom} className="h-16 object-contain" />
-            <img src={Silkmark} className="h-16 object-contain" />
+            <img src={Handloom} className="h-16" />
+            <img src={Silkmark} className="h-16" />
           </div>
 
-          {/* Price */}
-          <p className="text-[#AD000F] font-medium text-base">₹{product.price}</p>
+          <p className="text-primaryRed font-medium text-lg">
+            ₹{product.price}
+          </p>
 
-          {/* Color */}
-          <p className="text-sm">{product.color || "-"}</p>
-
-          {/* Fabric */}
-          <p className="text-sm text-gray-600">{product.fabric}</p>
-
-          {/* Weaving */}
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-neutralDark/70">{product.color || "-"}</p>
+          <p className="text-sm text-neutralDark/60">{product.fabric}</p>
+          <p className="text-sm text-neutralDark/60">
             Weaving Art – {product.weavingArt}
           </p>
 
-          {/* Sizes */}
+          {/* SIZES */}
           <div>
-            <p className="text-sm text-gray-600 mb-1">Size</p>
-            <div className="flex gap-3">
+            <p className="text-sm text-neutralDark/70 mb-1">Size</p>
+            <div className="flex gap-2">
               {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
                 (s) => (
                   <button
@@ -256,7 +234,7 @@ export default function ProductDetails() {
                     className={`px-3 py-1 rounded border text-sm ${
                       selectedSize === s
                         ? "bg-black text-white border-black"
-                        : "border-gray-300"
+                        : "border-neutral-300"
                     }`}
                   >
                     {s}
@@ -266,30 +244,34 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* Quantity */}
-          <div className="flex items-center gap-3">
+          {/* QUANTITY */}
+          <div className="flex items-center gap-4 mt-1">
             <p className="text-sm font-medium">QUANTITY</p>
-            <div className="flex items-center border rounded-md">
-              <button onClick={() => handleQuantity("dec")} className="px-3 py-1">-</button>
+            <div className="flex items-center border border-neutral-300 rounded-md">
+              <button onClick={() => handleQuantity("dec")} className="px-3 py-1">
+                –
+              </button>
               <span className="px-4">{quantity}</span>
-              <button onClick={() => handleQuantity("inc")} className="px-3 py-1">+</button>
+              <button onClick={() => handleQuantity("inc")} className="px-3 py-1">
+                +
+              </button>
             </div>
           </div>
 
-          <p className="text-md text-red-600">One of a kind</p>
+          <p className="text-primaryRed font-medium">One of a kind</p>
 
-          {/* Accordions */}
-          <div className="mt-1">
+          {/* ACCORDIONS */}
+          <div className="mt-2">
             {[
               { id: "desc", title: "Product Description", content: product.description },
               { id: "spec", title: "Specification", content: product.specification },
               { id: "care", title: "Care", content: product.care },
-              { id: "delivery", title: "Delivery & Returns", content: "Free delivery & 7-day returns." },
+              { id: "delivery", title: "Delivery & Returns", content: "Free delivery & 7-day returns." }
             ].map((item) => (
-              <div key={item.id} className="border-b pb-2">
+              <div key={item.id} className="border-b border-neutral-300/70 pb-2">
                 <button
                   onClick={() => toggleAccordion(item.id)}
-                  className="w-full flex justify-between items-center py-3 text-sm font-medium"
+                  className="w-full flex justify-between items-center py-3 text-sm font-medium tracking-wide"
                 >
                   {item.title}
                   <span
@@ -303,27 +285,32 @@ export default function ProductDetails() {
 
                 <div
                   className={`overflow-hidden transition-all duration-300 ${
-                    accordionOpen === item.id ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+                    accordionOpen === item.id
+                      ? "max-h-80 opacity-100"
+                      : "max-h-0 opacity-0"
                   }`}
                 >
-                  <div className="text-sm text-gray-700 pb-3">{item.content}</div>
+                  <div className="text-sm text-neutralDark/70 pb-3">
+                    {item.content}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Desktop Add to Cart */}
+          {/* ADD TO CART */}
           <div className="hidden md:flex gap-4 mt-6">
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-black text-white py-3 rounded-md text-sm"
+              className="flex-1 bg-black text-white py-3 rounded-md text-sm tracking-wide hover:bg-neutral-900 transition"
             >
               Add to cart
             </button>
+
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="flex-1 border border-gray-400 py-3 rounded-md text-sm text-center"
+              className="flex-1 border border-neutral-400 py-3 rounded-md text-sm text-center hover:bg-neutral-100 transition"
             >
               ☎ Happy to help
             </a>
@@ -331,53 +318,39 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      {/* ---------------------------------------------------
-          RELATED PRODUCTS SECTION
-      --------------------------------------------------- */}
-      {/* ---------------------------------------------------
-    RELATED PRODUCTS SECTION (FIXED + PREMIUM)
---------------------------------------------------- */}
-<div className="mt-20">
-  <h2 className="text-2xl font-light tracking-wide mb-6">
-    Related Products
-  </h2>
+      {/* RELATED PRODUCTS */}
+      <div className="mt-20">
+        <h2 className="text-2xl font-light tracking-wide mb-6">Related Products</h2>
 
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-    {related.map((item) => (
-      <Link
-        to={`/product/${item._id}`}
-        key={item._id}
-        className="block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
-      >
-        {/* FIXED PERFECT IMAGE WRAPPER */}
-        <div className="relative w-full aspect-[4/5] overflow-hidden bg-gray-100">
-          <img
-            src={item.images?.[0]?.url || fallbackImage}
-            alt={item.name}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-            onError={(e) => (e.target.src = fallbackImage)}
-          />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {related.map((item) => (
+            <Link
+              to={`/product/${item._id}`}
+              key={item._id}
+              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
+            >
+              <div className="relative w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
+                <img
+                  src={item.images?.[0]?.url || fallbackImage}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+
+              <div className="p-4 text-center">
+                <p className="text-neutralDark text-sm font-medium line-clamp-1">
+                  {item.name}
+                </p>
+
+                <p className="text-neutralDark/70 text-sm mt-1 font-medium">
+                  ₹{item.price?.toLocaleString()}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
+      </div>
 
-        {/* DETAILS */}
-        <div className="p-4 text-center">
-          <p className="text-gray-900 text-sm font-medium line-clamp-1">
-            {item.name}
-          </p>
-
-          <p className="text-gray-700 text-sm mt-1 font-medium">
-            ₹{item.price?.toLocaleString()}
-          </p>
-        </div>
-      </Link>
-    ))}
-  </div>
-</div>
-
-
-      {/* ---------------------------------------------------
-          LIGHTBOX
-      --------------------------------------------------- */}
+      {/* LIGHTBOX */}
       {isLightboxOpen && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
           <button
@@ -388,7 +361,9 @@ export default function ProductDetails() {
           </button>
 
           <button
-            onClick={prevImage}
+            onClick={() =>
+              setLightboxIndex((i) => (i === 0 ? gallery.length - 1 : i - 1))
+            }
             className="absolute left-6 text-white text-4xl"
           >
             ❮
@@ -400,7 +375,9 @@ export default function ProductDetails() {
           />
 
           <button
-            onClick={nextImage}
+            onClick={() =>
+              setLightboxIndex((i) => (i + 1) % gallery.length)
+            }
             className="absolute right-6 text-white text-4xl"
           >
             ❯
@@ -408,9 +385,7 @@ export default function ProductDetails() {
         </div>
       )}
 
-      {/* ---------------------------------------------------
-          MOBILE STICKY BAR
-      --------------------------------------------------- */}
+      {/* MOBILE STICKY BAR */}
       {showStickyBar && !footerVisible && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
           <div className="flex">
@@ -423,7 +398,7 @@ export default function ProductDetails() {
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="w-1/2 bg-white border py-3 text-sm text-center"
+              className="w-1/2 bg-white border border-neutral-400 py-3 text-sm text-center"
             >
               ☎ Help
             </a>

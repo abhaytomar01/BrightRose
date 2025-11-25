@@ -32,44 +32,42 @@ const Home = () => {
             <SeoData title="The Bright Rose" />
             <ScrollToTopOnRouteChange />
             {/* <Categories /> */}
-            <main className="flex flex-col items-center gap-3 pb-5">
-                {/* <pre className="min-h-[60vh]">
-                    {JSON.stringify(auth, null, 3)}
-                </pre> */}
-                <Banner />
-            <FeaturedCollections
-                 title="Explore Our Collections"
+           <main className="flex flex-col items-center gap-6 pb-10 bg-pureWhite text-neutralDark">
+
+    <Banner />
+
+    <FeaturedCollections
+        title="Explore Our Collections"
         subtitle="Discover timeless pieces crafted for modern living"
         categories={electronicProducts}
-        // isLoading={loading} 
-             />
-       
-       
-       <BrandStory 
-            title="Our Story"
-            description1="Bright Rose is an endeavor to bring back Indian Handloom so that we can clothe the world once again in a natural way through the beauty of INTRICATE WEAVES."
-            description2="Rose is known as the Queen of Flowers for its intricate petal structure, wide spectrum of colors, and diverse forms. Similarly, our garments reflect intricate weaves, vibrant and bold hues, and a variety of weaves, each with its own distinctive character, just like you."
-            description3="“Our knowledge of weaving is often deeply valued within families and seen as a time-honored tradition. Some skilled artisans become masters of the craft to the point where they can weave with their eyes closed” - as quoted by Master weaver, Chand from Varanasi."
-            imageUrl="client/public/ourstoryImage.jpg"
-            learnMoreLink="/about"
-       />
-       
-       <FeaturedProducts
+    />
+
+    <BrandStory
+        title="Our Story"
+        description1="Bright Rose is an endeavor..."
+        description2="Rose is known as the Queen..."
+        description3="Our knowledge of weaving..."
+        imageUrl="client/public/ourstoryImage.jpg"
+        learnMoreLink="/about"
+    />
+
+    <FeaturedProducts
         title="BestSellers"
         subtitle="Our most-loved products, handpicked for you"
         products={fashionProducts}
-       />
-        <WhyChooseUs />
-         <LifestyleBanner
-          title="The Red Gold Edit — Luxury with Simplicity"
-        subtitle="Experience the elegance of handloom fashion reimagined for modern lifestyles."
+    />
+
+    <WhyChooseUs />
+
+    <LifestyleBanner
+        title="The Red Gold Edit — Luxury with Simplicity"
+        subtitle="Experience the elegance of handloom fashion reimagined..."
         buttonText="Explore the Look"
         buttonLink="/collections"
         imageUrl="../../src/assets/images/lifestyle.jpg"
-      />
-      {/* <Newsletter /> */}
-      <Testimonials />
+    />
 
+    <Testimonials />
         {/* <ProductCard
             title="Sample Product"
             product={fashionProducts[0]}

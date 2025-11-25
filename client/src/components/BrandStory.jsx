@@ -14,7 +14,7 @@ const BrandStory = ({
   const [showMore, setShowMore] = useState(false);
 
   return (
-    <section className="w-full bg-[#FAF7F3] py-20 px-4 sm:px-6 md:px-12 xl:px-24">
+    <section className="w-full bg-pureWhite py-20 px-4 sm:px-6 md:px-12 xl:px-24">
       <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row items-center gap-14">
 
         {/* TEXT SECTION */}
@@ -25,22 +25,22 @@ const BrandStory = ({
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          {/* Minimal Title */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-900 tracking-tight mb-6">
+          {/* Title */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-primaryRed tracking-tight mb-6">
             {title}
           </h2>
 
-          {/* Thin Divider */}
-          <div className="w-16 h-[1.5px] bg-gray-800/40 mb-10"></div>
+          {/* Gold Divider */}
+          <div className="w-20 h-[2px] bg-accentGold mb-10"></div>
 
-          {/* First paragraph */}
-          <p className="text-gray-700 text-base sm:text-lg leading-relaxed mb-6">
+          {/* Description 1 */}
+          <p className="text-neutralDark text-base sm:text-lg leading-relaxed mb-6">
             {description1}
           </p>
 
-          {/* Expandable Extra Text (mobile only) */}
+          {/* Expandable Extra Text */}
           <div
-            className={`text-gray-700 text-base sm:text-lg leading-relaxed transition-all duration-500 overflow-hidden ${
+            className={`text-neutralDark text-base sm:text-lg leading-relaxed transition-all duration-500 overflow-hidden ${
               showMore
                 ? "max-h-[600px] opacity-100"
                 : "max-h-0 opacity-0 lg:max-h-none lg:opacity-100"
@@ -53,28 +53,27 @@ const BrandStory = ({
           {/* Buttons */}
           <div className="flex gap-5 mt-6">
 
-            {/* Mobile Learn More Toggle */}
+            {/* Mobile Toggle */}
             <button
               onClick={() => setShowMore(!showMore)}
-              className="lg:hidden bg-black text-white px-6 py-2.5 rounded-full text-sm tracking-wide hover:bg-neutral-800 transition-all"
+              className="lg:hidden bg-primaryRed text-white px-6 py-2.5 rounded-full text-sm tracking-wide hover:bg-red-800 transition-all border border-accentGold"
             >
               {showMore ? "Show Less" : "Read More"}
             </button>
 
-            {/* Desktop “Read More” */}
+            {/* Desktop Button */}
             <Link
               to={learnMoreLink}
-              className="hidden lg:inline-block bg-black text-white px-8 py-3 rounded-full text-sm tracking-wide hover:bg-neutral-800 transition-all"
+              className="hidden lg:inline-block bg-primaryRed text-white px-8 py-3 rounded-full text-sm tracking-wide hover:bg-red-800 transition-all border border-accentGold"
             >
               Read More
             </Link>
-
           </div>
         </motion.div>
 
         {/* IMAGE / VIDEO SECTION */}
         <motion.div
-          className="flex-1 order-1 lg:order-2 w-full rounded-3xl overflow-hidden shadow"
+          className="flex-1 order-1 lg:order-2 w-full rounded-3xl overflow-hidden shadow-lg border border-accentGold/30"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

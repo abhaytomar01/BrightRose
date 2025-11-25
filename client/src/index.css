@@ -58,3 +58,22 @@
   font-size: 22px;
   letter-spacing: 1px;
 }
+
+.section-title {
+  color: var(--primary-red);
+  font-weight: 700;
+}
+
+.section-subtitle {
+  color: var(--neutral-dark);
+}
+
+.btn-gold {
+  background-color: var(--accent-gold);
+  color: #fff;
+  border-radius: 4px;
+}
+
+.btn-gold:hover {
+  background-color: #b9952f;
+}
