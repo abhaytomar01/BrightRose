@@ -2,10 +2,18 @@
 // Load Environment Variables FIRST
 // ==============================
 import dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Path helpers
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env manually from backend folder
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 // ==============================
-// Cloudinary Config (AFTER dotenv)
+// Cloudinary Config
 // ==============================
 import cloudinary from "cloudinary";
 
@@ -23,8 +31,6 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 // ==============================
 // Local Imports
@@ -37,25 +43,21 @@ import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 
-// Needed for static paths later if required
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 // ==============================
 // Express App
 // ==============================
 const app = express();
 
 // ==============================
-// CORS FIXED (no duplicate origins, clean)
+// CORS FIX (Full working)
 // ==============================
+
+// app.use(cors());
 app.use(
   cors({
     origin: [
-      "https://thebrightrose.com",
       "https://www.thebrightrose.com",
       "http://localhost:5173",
-      "http://localhost:3000",
     ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -64,7 +66,7 @@ app.use(
 );
 
 // ==============================
-// Body Parser (Base64 Support)
+// Body Parser
 // ==============================
 app.use(express.json({ limit: "50mb" }));
 app.use(bodyParser.json({ limit: "50mb" }));
@@ -81,10 +83,10 @@ app.use(morgan("dev"));
 connectDB();
 
 // ==============================
-// Basic Route
+// Base Route
 // ==============================
 app.get("/", (req, res) => {
-  res.send("✅ Server is running successfully!");
+  res.send("✅ Server running successfully!");
 });
 
 // ==============================

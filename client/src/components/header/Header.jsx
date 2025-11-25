@@ -67,84 +67,144 @@ const Header = () => {
     return () => window.removeEventListener("keydown", closeOnEsc);
   }, []);
 
-  // Decide account link based on role
-  const accountLink = auth?.user
-    ? auth.user.role === "admin"
-      ? "/admin/dashboard/profile"
-      : "/user/dashboard/profile"
-    : null;
+// Decide account link based on role
+const accountLink = auth?.user
+? auth.user.role === "admin"
+? "/admin/dashboard/profile"
+: "/user/dashboard/profile"
+: null;
 
   return (
-    <header className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ease-in-out ${isScrolled ? "backdrop-blur-sm bg-[#FCF7F1]" : "bg-transparent"}`}>
-      <Link to="/contact" className={`block w-full text-center bg-[#F4EFE9] text-gray-800 text-[11px] md:text-[12px] tracking-wide font-medium uppercase transition-all duration-500 ease-in-out cursor-pointer ${hideAnnouncement ? "opacity-0 h-0 py-0 pointer-events-none" : "opacity-100 py-2"}`}>
-        For any customisation or personal assistance, contact us
-      </Link>
+    <header
+      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ease-in-out ${
+        isScrolled ? "backdrop-blur-sm bg-[#FCF7F1]" : "bg-transparent"
+      }`}
+    >
+      {/* Announcement Bar */}
+      <Link
+  to="/contact"
+  className={`
+    block w-full text-center bg-[#F4EFE9] text-gray-800 
+    text-[11px] md:text-[12px] tracking-wide 
+    font-medium uppercase 
+    transition-all duration-500 ease-in-out cursor-pointer
+    ${hideAnnouncement ? "opacity-0 h-0 py-0 pointer-events-none" : "opacity-100 py-2"}
+  `}
+>
+  For any customisation or personal assistance, contact us
+</Link>
 
+
+      {/* Header Content */}
       <div className="grid grid-cols-3 items-center px-4 py-2 md:px-6 border-b">
+
+        {/* Mobile Hamburger */}
         <div className="flex items-center md:hidden">
-          <button aria-label="menu" onClick={() => setOpen(true)}>
-            <Menu size={28} />
-          </button>
-        </div>
+  <button aria-label="menu" onClick={() => setOpen(true)}>
+    <Menu size={28} />
+  </button>
+</div>
 
-        <div className="hidden md:flex items-center gap-2">
-          <Search className="w-5 h-5 text-gray-600" />
-          <span className="text-sm text-gray-600">Search</span>
-        </div>
+<div className="hidden md:flex items-center gap-2">
+  <Search className="w-5 h-5 text-gray-600" />
+  <span className="text-sm text-gray-600">Search</span>
+</div>
 
+
+        {/* Logo */}
         <div className="flex justify-center">
-          <Link to="/" className="flex items-center justify-center">
-            <img className="w-24 md:w-28 h-16 object-contain" src={Logo} alt="Logo" />
-          </Link>
-        </div>
+  <Link to="/" className="flex items-center justify-center">
+    <img
+      className="w-24 md:w-28 h-16 object-contain"
+      src={Logo}
+      alt="Logo"
+    />
+  </Link>
+</div>
 
-        <div className="flex items-center justify-end gap-4">
-          {/* Use accountLink if logged; otherwise show admin login route if admin login icon clicked? */}
-          {accountLink ? (
-            <Link to={accountLink} className="text-gray-700 hover:text-black">
-              <User className="w-5 h-5" />
-            </Link>
-          ) : (
-            // If no auth, clicking User should lead to login (user login), but keep admin login accessible from admin page
-            <Link to="/login" className="text-gray-700 hover:text-black">
-              <User className="w-5 h-5" />
-            </Link>
-          )}
 
-          <Link to="/cart" className="text-gray-700 hover:text-black">
-            <ShoppingBag className="w-5 h-5" />
-          </Link>
-        </div>
+
+        {/* Icons */}
+      {/* Icons */}
+<div className="flex items-center justify-end gap-4">
+<Link to={accountLink || "/admin/login"} className="text-gray-700 hover:text-black">
+<User className="w-5 h-5" />
+</Link>
+<Link to="/cart" className="text-gray-700 hover:text-black">
+<ShoppingBag className="w-5 h-5" />
+</Link>
+</div>
+
       </div>
 
       {/* Desktop Navigation */}
       <nav className="hidden md:flex justify-center space-x-8 text-[12px] uppercase text-black font-semibold py-2 relative">
-        <Link to="/" className="hover:text-[#AD000F] transition">Home</Link>
-        <Link to="/ourheritage" className="hover:text-[#AD000F] transition">Our Heritage</Link>
+        <Link to="/" className="hover:text-[#AD000F] transition">
+          Home
+        </Link>
+        <Link to="/ourheritage" className="hover:text-[#AD000F] transition">
+          Our Heritage
+        </Link>
 
-        <div className="relative group" onMouseEnter={() => setIsSubmenuVisible(true)} onMouseLeave={() => setIsSubmenuVisible(false)}>
-          <button className="cursor-default flex items-center gap-1 focus:outline-none uppercase" onClick={(e) => e.preventDefault()}>
+        {/* Dropdown */}
+        <div
+          className="relative group"
+          onMouseEnter={() => setIsSubmenuVisible(true)}
+          onMouseLeave={() => setIsSubmenuVisible(false)}
+        >
+          <button
+            className="cursor-default flex items-center gap-1 focus:outline-none uppercase"
+            onClick={(e) => e.preventDefault()}
+          >
             COLLECTIONS
-            <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${isSubmenuVisible ? "rotate-180 text-[#AD000F]" : "group-hover:text-[#AD000F]"}`} />
+            <ChevronDown
+              className={`w-4 h-4 text-gray-600 transition-transform duration-300 ${
+                isSubmenuVisible
+                  ? "rotate-180 text-[#AD000F]"
+                  : "group-hover:text-[#AD000F]"
+              }`}
+            />
           </button>
 
-          <div className={`absolute left-1/2 -translate-x-1/2 mt-2 bg-white shadow-lg rounded-md py-3 px-4 min-w-[220px] border border-gray-100 z-50 transition-all duration-200 ease-in-out ${isSubmenuVisible ? "opacity-100 visible" : "opacity-0 invisible"}`}>
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 mt-2 bg-white shadow-lg rounded-md py-3 px-4 min-w-[220px] border border-gray-100 z-50 transition-all duration-200 ease-in-out ${
+              isSubmenuVisible ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
+          >
             <ul className="space-y-2 text-sm font-medium text-gray-700">
-              <li><Link to="/weavecollection" className="block hover:text-[#AD000F] transition-colors duration-200">WEAVES</Link></li>
-              <li><Link to="/stylecollection" className="block hover:text-[#AD000F] transition-colors duration-200">STYLE</Link></li>
+              <li>
+                <Link
+                  to="/weavecollection"
+                  className="block hover:text-[#AD000F] transition-colors duration-200"
+                >
+                  WEAVES
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/stylecollection"
+                  className="block hover:text-[#AD000F] transition-colors duration-200"
+                >
+                  STYLE
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
 
-        <Link to="/products" className="hover:text-[#AD000F] transition">Shop</Link>
-
+        <Link to="/products" className="hover:text-[#AD000F] transition">
+          Shop
+        </Link>
         {!auth?.token ? (
-          <Link to="/login" className="hover:text-[#AD000F] transition">Login</Link>
-        ) : (
-          <Link to={accountLink || "/user/dashboard"} className="hover:text-[#AD000F] transition">My Account</Link>
-        )}
-
-        <Link to="/contact" className="hover:text-[#AD000F] transition">Contact</Link>
+<Link to="/login" className="hover:text-[#AD000F] transition">Login</Link>
+) : auth?.role === "admin" || auth?.user?.role === "admin" ? (
+<Link to="/admin/dashboard/profile" className="hover:text-[#AD000F] transition">My Account</Link>
+) : (
+<Link to="/user/dashboard" className="hover:text-[#AD000F] transition">My Account</Link>
+)}
+        <Link to="/contact" className="hover:text-[#AD000F] transition">
+          Contact
+        </Link>
       </nav>
 
       {/* Mobile Menu */}

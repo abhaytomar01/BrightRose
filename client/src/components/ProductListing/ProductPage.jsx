@@ -276,7 +276,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <p className="text-md text-gray-600">One of a kind</p>
+          <p className="text-md text-red-600">One of a kind</p>
 
           {/* Accordions */}
           <div className="mt-1">

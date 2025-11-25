@@ -16,6 +16,7 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-login`,
@@ -25,11 +26,24 @@ const AdminLogin = () => {
       if (res.data?.success) {
         toast.success("Admin Login Successful!");
 
-        const authData = { user: res.data.user, token: res.data.token };
+        const user = res.data?.user || {};
+        const token = res.data?.token || "";
+
+        // VERY IMPORTANT:
+        // Force role to admin if backend did not send role
+        const role = user.role || "admin";
+
+        const authData = {
+          user: { ...user, role },
+          token,
+          role,
+        };
+
+        // Save in context + localStorage
         setAuth(authData);
         localStorage.setItem("auth", JSON.stringify(authData));
 
-        // Redirect to admin dashboard profile
+        // Redirect to admin dashboard
         navigate("/admin/dashboard/profile", { replace: true });
       } else {
         toast.error(res.data?.message || "Login failed");
@@ -48,7 +62,9 @@ const AdminLogin = () => {
         <h1 className="text-center text-2xl font-serif tracking-widest mb-6">
           THE BRIGHT ROSE
         </h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">Admin Panel Access</p>
+        <p className="text-center text-gray-600 mb-6 text-sm">
+          Admin Panel Access
+        </p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
@@ -86,7 +102,9 @@ const AdminLogin = () => {
           </button>
         </form>
 
-        <p className="text-center mt-6 text-xs text-gray-400">© The Bright Rose • Admin Only</p>
+        <p className="text-center mt-6 text-xs text-gray-400">
+          © The Bright Rose • Admin Only
+        </p>
       </div>
     </div>
   );
