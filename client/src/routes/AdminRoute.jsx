@@ -1,12 +1,13 @@
+// src/routes/AdminRoute.jsx
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
 import { Outlet, Navigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/apiClient";
 import Spinner from "../components/Spinner";
 
 const AdminRoute = () => {
   const [ok, setOk] = useState(null);
-  const { auth } = useAuth();
+  const { auth, isContextLoading } = useAuth();
 
   useEffect(() => {
     const verifyAdmin = async () => {
@@ -16,27 +17,19 @@ const AdminRoute = () => {
           return;
         }
 
-        const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/admin-auth`,
-          {
-            headers: {
-              Authorization: `Bearer ${auth.token}`,
-            },
-          }
-        );
-
-        setOk(res.data.ok === true);
+        // api already adds Authorization header
+        const res = await api.get("/auth/admin-auth");
+        setOk(res.data?.ok === true);
       } catch (err) {
         setOk(false);
       }
     };
 
-    verifyAdmin();
-  }, [auth?.token]);
+    if (!isContextLoading) verifyAdmin();
+  }, [auth?.token, isContextLoading]);
 
-  if (ok === null) return <Spinner />;
+  if (isContextLoading || ok === null) return <Spinner />;
   if (!ok) return <Navigate to="/admin/login" replace />;
-
   return <Outlet />;
 };
 

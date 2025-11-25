@@ -2,14 +2,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
 import { Outlet, Navigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/apiClient";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 
 const PrivateRoute = () => {
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { auth, logout } = useAuth();
+  const { auth, logout, isContextLoading } = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -20,10 +20,7 @@ const PrivateRoute = () => {
           return;
         }
 
-        const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/auth/user-auth`, {
-          headers: { Authorization: `Bearer ${auth.token}` },
-        });
-
+        const res = await api.get("/auth/user-auth");
         if (res.data?.ok) setOk(true);
         else {
           setOk(false);
@@ -39,13 +36,11 @@ const PrivateRoute = () => {
       }
     };
 
-    checkAuth();
-  }, [auth?.token, logout]);
+    if (!isContextLoading) checkAuth();
+  }, [auth?.token, logout, isContextLoading]);
 
-  if (loading) return <Spinner />;
-
+  if (isContextLoading || loading) return <Spinner />;
   if (!ok) return <Navigate to="/login" replace />;
-
   return <Outlet />;
 };
 

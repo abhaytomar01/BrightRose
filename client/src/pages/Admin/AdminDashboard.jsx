@@ -50,7 +50,6 @@ const AdminDashboard = () => {
             >
               {isMenuOpen ? "Close" : <GiHamburgerMenu />}
             </button>
-
             <Routes>
               <Route path="profile" element={<AdminProfile />} />
               <Route path="add-product" element={<CreateProduct />} />

@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [isContextLoading, setIsContextLoading] = useState(true);
 
   useEffect(() => {
-    // Restore auth from single localStorage key "auth"
     try {
       const raw = localStorage.getItem("auth");
       if (raw) {
@@ -26,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // setAuth expects { user, token } - token must be the raw JWT (no "Bearer ")
   const setAuth = ({ user, token }) => {
     setAuthState({ user, token });
     try {
@@ -42,9 +42,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ auth, setAuth, logout, isContextLoading }}
-    >
+    <AuthContext.Provider value={{ auth, setAuth, logout, isContextLoading }}>
       {children}
     </AuthContext.Provider>
   );
