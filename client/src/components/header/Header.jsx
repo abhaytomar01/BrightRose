@@ -1,3 +1,7 @@
+// -------------------------------------------------------
+// FIXED + OPTIMIZED HEADER
+// -------------------------------------------------------
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/images/brightrose-logo.png";
@@ -18,6 +22,7 @@ const Header = () => {
   const [open, setOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
   const [isSubmenuVisible, setIsSubmenuVisible] = useState(false);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -25,37 +30,28 @@ const Header = () => {
 
   const { authUser, authAdmin } = useAuth();
 
-  // ---------------------------
-  // USER LOGIN SYSTEM (NAV)
-  // ---------------------------
   const isUserLoggedIn = !!authUser?.token;
-
-  // ---------------------------
-  // ADMIN LOGIN SYSTEM (ICON)
-  // ---------------------------
   const isAdminLoggedIn = !!authAdmin?.token;
 
-  // ADMIN ICON LINK
   const adminIconLink = isAdminLoggedIn
     ? "/admin/dashboard/profile"
     : "/admin/login";
 
-  // ---------------------------
-  // Search
-  // ---------------------------
+  // -------------------------------------------------------
+  // SEARCH
+  // -------------------------------------------------------
   const handleSearch = async (term) => {
     if (!term.trim()) {
       setSearchResults([]);
       return;
     }
+
     try {
       setLoading(true);
-      const res = await api.get(
-        `/products/search/${encodeURIComponent(term)}`
-      );
+      const res = await api.get(`/products/search/${encodeURIComponent(term)}`);
       setSearchResults(res.data.products || []);
-    } catch (error) {
-      console.error("Search failed:", error);
+    } catch (e) {
+      console.log("Search failed", e);
     } finally {
       setLoading(false);
     }
@@ -66,96 +62,90 @@ const Header = () => {
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
+  // -------------------------------------------------------
+  // SCROLL EFFECT
+  // -------------------------------------------------------
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       setHideAnnouncement(window.scrollY > 24);
       setIsScrolled(window.scrollY > 0);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ---------------------------
-  // HEADER UI
-  // ---------------------------
+  // -------------------------------------------------------
+  // RETURN
+  // -------------------------------------------------------
   return (
     <header
-      className={`fixed top-0 left-0 z-50 w-full transition-all duration-500 ease-in-out ${
-        isScrolled ? "backdrop-blur-sm bg-white" : "bg-transparent"
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        isScrolled ? "bg-white shadow-sm" : "bg-transparent"
       }`}
     >
-      {/* Announcement Bar */}
+      {/* Announcement */}
       <Link
         to="/contact"
         className={`block w-full text-center bg-[#F4EFE9] text-gray-800 
-          text-[11px] md:text-[12px] tracking-wide font-medium uppercase 
-          transition-all duration-500 cursor-pointer ${
-            hideAnnouncement
-              ? "opacity-0 h-0 py-0 pointer-events-none"
-              : "opacity-100 py-2"
+          text-[11px] md:text-[12px] tracking-wide font-medium uppercase transition-all ${
+            hideAnnouncement ? "opacity-0 h-0 py-0" : "opacity-100 py-2"
           }`}
       >
         For any customisation or personal assistance, contact us
       </Link>
 
-      {/* Header */}
+      {/* Header Main */}
       <div className="grid grid-cols-3 items-center px-4 py-2 md:px-6 border-b">
 
-        {/* Mobile Hamburger */}
+        {/* MOBILE HAMBURGER */}
         <div className="flex items-center md:hidden">
           <button aria-label="menu" onClick={() => setOpen(true)}>
             <Menu size={28} />
           </button>
         </div>
 
-        {/* Desktop Search Text */}
-        <div className="hidden md:flex items-center gap-2">
+        {/* Desktop Search */}
+        <div className="hidden md:flex items-center gap-2 cursor-pointer"
+             onClick={() => setIsSearchOpen(true)}>
           <Search className="w-5 h-5 text-gray-600" />
           <span className="text-sm text-gray-600">Search</span>
         </div>
 
-        {/* Logo */}
+        {/* LOGO */}
         <div className="flex justify-center">
           <Link to="/">
-            <img
-              src={Logo}
-              className="w-24 md:w-28 h-16 object-contain"
-              alt="Logo"
-            />
+            <img src={Logo} className="w-24 md:w-28 h-16 object-contain" />
           </Link>
         </div>
 
-        {/* Icons (ADMIN + CART) */}
+        {/* ICONS */}
         <div className="flex items-center justify-end gap-4">
 
-          {/* ADMIN ICON */}
-          <Link
-            to={adminIconLink}
-            className="text-gray-700 hover:text-black"
-          >
+          {/* Admin Login Icon */}
+          <Link to={adminIconLink} className="text-gray-700 hover:text-black">
             <User className="w-5 h-5" />
           </Link>
 
-          {/* CART */}
           <Link to="/cart" className="text-gray-700 hover:text-black">
             <ShoppingBag className="w-5 h-5" />
           </Link>
         </div>
       </div>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex justify-center space-x-8 text-[12px] uppercase text-black font-semibold py-2">
+      {/* DESKTOP MENU */}
+      <nav className="hidden md:flex justify-center space-x-8 text-[12px] font-semibold py-2 uppercase">
 
         <Link to="/" className="hover:text-[#AD000F]">Home</Link>
         <Link to="/ourheritage" className="hover:text-[#AD000F]">Our Heritage</Link>
 
-        {/* COLLECTIONS */}
+        {/* COLLECTIONS DROPDOWN */}
         <div
           className="relative group"
           onMouseEnter={() => setIsSubmenuVisible(true)}
           onMouseLeave={() => setIsSubmenuVisible(false)}
         >
-          <button className="cursor-default flex items-center gap-1">
+          <button className="flex items-center gap-1">
             COLLECTIONS
             <ChevronDown
               className={`w-4 h-4 transition-transform ${
@@ -165,10 +155,9 @@ const Header = () => {
           </button>
 
           <div
-            className={`absolute left-1/2 -translate-x-1/2 mt-2 bg-white shadow-lg 
-              rounded-md py-3 px-4 min-w-[220px] border border-gray-100 z-50 ${
-                isSubmenuVisible ? "opacity-100" : "opacity-0 invisible"
-              }`}
+            className={`absolute left-1/2 -translate-x-1/2 mt-2 bg-white border p-3 rounded shadow-lg min-w-[200px] ${
+              isSubmenuVisible ? "opacity-100" : "opacity-0 invisible"
+            }`}
           >
             <ul className="space-y-2 text-sm text-gray-700">
               <li><Link to="/weavecollection" className="hover:text-[#AD000F]">WEAVES</Link></li>
@@ -179,20 +168,130 @@ const Header = () => {
 
         <Link to="/products" className="hover:text-[#AD000F]">Shop</Link>
 
-        {/* USER LOGIN ONLY */}
+        {/* USER LOGIN */}
         {!isUserLoggedIn ? (
           <Link to="/login" className="hover:text-[#AD000F]">Login</Link>
         ) : (
-          <Link
-            to="/user/dashboard/profile"
-            className="hover:text-[#AD000F]"
-          >
+          <Link to="/user/dashboard/profile" className="hover:text-[#AD000F]">
             My Account
           </Link>
         )}
 
         <Link to="/contact" className="hover:text-[#AD000F]">Contact</Link>
       </nav>
+
+      {/* ----------------------------------------------------
+      MOBILE MENU
+      ---------------------------------------------------- */}
+      {open && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setOpen(false)}
+          />
+
+          {/* Side Drawer */}
+          <div className="fixed top-0 left-0 w-[80%] max-w-xs h-full bg-white z-50 p-6 shadow-xl overflow-y-auto">
+
+            <button onClick={() => setOpen(false)} className="mb-6">
+              <X size={28} />
+            </button>
+
+            <nav className="flex flex-col gap-4 text-[15px]">
+              <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+              <Link to="/ourheritage" onClick={() => setOpen(false)}>Our Heritage</Link>
+
+              {/* MOBILE SUBMENU */}
+              <div>
+                <button
+                  className="flex justify-between w-full"
+                  onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
+                >
+                  Collections
+                  <ChevronDown
+                    className={`transition-transform ${
+                      mobileSubmenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {mobileSubmenuOpen && (
+                  <div className="ml-4 mt-2 space-y-2 text-gray-700">
+                    <Link to="/weavecollection" onClick={() => setOpen(false)}>WEAVES</Link>
+                    <Link to="/stylecollection" onClick={() => setOpen(false)}>STYLE</Link>
+                  </div>
+                )}
+              </div>
+
+              <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
+
+              {/* USER LOGIN */}
+              {!isUserLoggedIn ? (
+                <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+              ) : (
+                <Link to="/user/dashboard/profile" onClick={() => setOpen(false)}>My Account</Link>
+              )}
+
+              <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+            </nav>
+          </div>
+        </>
+      )}
+
+      {/* ----------------------------------------------------
+      SEARCH OVERLAY
+      ---------------------------------------------------- */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-white/95 backdrop-blur-xl z-[9999] p-6 flex flex-col items-center">
+          <button
+            className="absolute top-6 right-6"
+            onClick={() => setIsSearchOpen(false)}
+          >
+            <X size={30} />
+          </button>
+
+          <input
+            autoFocus
+            type="text"
+            value={searchTerm}
+            placeholder="Search for sarees, skirts, accessories..."
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full max-w-2xl border border-gray-300 rounded-full px-6 py-3 text-lg shadow-md"
+          />
+
+          <div className="w-full max-w-3xl mt-6 h-[60vh] overflow-y-auto">
+            {loading ? (
+              <p className="text-center text-gray-500 mt-4">Searching…</p>
+            ) : searchResults.length ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {searchResults.map((p) => (
+                  <Link
+                    key={p._id}
+                    to={`/product/${p._id}`}
+                    onClick={() => setIsSearchOpen(false)}
+                    className="border rounded-xl overflow-hidden shadow hover:shadow-lg"
+                  >
+                    <img
+                      src={p.images?.[0]?.url}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-3">
+                      <p className="font-medium">{p.name}</p>
+                      <p className="text-sm text-gray-500">₹{p.price}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center mt-6 text-gray-400">
+                Type to search…
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
     </header>
   );
 };
