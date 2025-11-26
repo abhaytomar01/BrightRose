@@ -284,7 +284,7 @@ export default function ProductDetails() {
           <p className="text-neutralDark/90 font-medium text-sm md:text-lg">
             ₹{product.price} <br/><span className="text-sm text-neutralDark/70">(Inclusive of All Taxes)</span>
           </p>
-          <p className="text-neutralDark/80 text-md md:text-lg">One of a kind</p>
+          <p className="text-neutralDark/80 text-md md:text-lg">ONE - OF - A - KIND</p>
 
        
           <p className="text-sm text-neutralDark/80">
@@ -294,7 +294,7 @@ export default function ProductDetails() {
 
           {/* SIZES */}
           <div>
-            <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size</b></p>
+            <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size </b></p>
             <div className="flex gap-2">
               {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
                 (s) => (
