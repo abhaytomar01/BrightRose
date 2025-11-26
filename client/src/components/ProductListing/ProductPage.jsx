@@ -162,69 +162,162 @@ export default function ProductDetails() {
   // RENDER
   //-----------------------------------------------------
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-28 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
+    <div className="max-w-7xl mx-auto px-0 pt-28 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
 
       {/* PRODUCT MAIN */}
-      <div className="grid md:grid-cols-2 gap-12 mt-8">
+      <div className="grid md:grid-cols-2 gap-6 mt-4">
 
         {/* LEFT – GALLERY */}
-        <div className="flex gap-5">
-          <div className="hidden md:flex flex-col gap-4 w-[110px]">
-            {gallery.map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() => {
-                  setSelectedImage(img);
-                  setSelectedIndex(idx);
-                  openLightbox(idx);
-                }}
-                className={`w-full h-28 rounded-md overflow-hidden cursor-pointer border ${
-                  selectedIndex === idx
-                    ? "border-[#AD000F]"
-                    : "border-neutral-300"
-                }`}
-              >
-                <img src={img} className="w-full h-full object-cover" />
-              </div>
-            ))}
-          </div>
+<div className="flex gap-5">
 
-          <div className="flex-1">
-            <img
-              src={selectedImage}
-              className="w-full h-[560px] rounded-xl object-cover cursor-pointer shadow-sm"
-              onClick={() => openLightbox(selectedIndex)}
-              onError={(e) => (e.target.src = fallbackImage)}
-            />
-          </div>
-        </div>
+  {/* DESKTOP THUMBNAILS (auto count) */}
+  <div className="hidden md:flex flex-col gap-4 w-[110px] overflow-auto max-h-[600px] pr-1">
+    {gallery.map((img, idx) => (
+      <div
+        key={idx}
+        onClick={() => {
+          setSelectedImage(img);
+          setSelectedIndex(idx);
+        }}
+        className={`w-full h-28 overflow-hidden cursor-pointer border
+        ${selectedIndex === idx ? "border-[#AD000F] border-2" : "border-neutral-300"}`}
+      >
+        <img src={img} className="w-full h-full object-cover" />
+      </div>
+    ))}
+  </div>
+
+  {/* MAIN IMAGE AREA */}
+  <div className="flex-1 relative">
+
+    {/* DESKTOP ZOOM IMAGE */}
+<div
+  className="hidden md:block w-full h-[560px] overflow-hidden relative"
+  style={{
+    backgroundImage: `url(${selectedImage})`,
+    backgroundSize: "100%",          // normal size
+    backgroundPosition: "center",
+    transition: "background-size 0.3s ease",
+    cursor: "zoom-in",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.backgroundSize = "160%"; // zoom level
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.backgroundSize = "100%"; // reset
+    e.currentTarget.style.backgroundPosition = "center";
+  }}
+  onMouseMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    e.currentTarget.style.backgroundPosition = `${x}% ${y}%`;
+  }}
+  onClick={() => openLightbox(selectedIndex)}
+>
+  {/* transparent img just for container sizing */}
+  <img
+    src={selectedImage}
+    className="opacity-0 w-full h-full object-cover"
+    onError={(e) => (e.target.src = fallbackImage)}
+  />
+</div>
+
+
+    {/* MOBILE SLIDER */}
+    <div className="md:hidden relative w-full overflow-hidden">
+      <div
+        className="flex transition-transform duration-500"
+        style={{ transform: `translateX(-${selectedIndex * 100}%)` }}
+      >
+        {gallery.map((img, idx) => (
+          <img
+            key={idx}
+            src={img}
+            onClick={() => openLightbox(idx)}
+            className="w-full h-[500px] object-cover"
+          />
+        ))}
+      </div>
+
+      {/* MOBILE PREV */}
+      <button
+        onClick={() =>
+          setSelectedIndex((prev) =>
+            prev === 0 ? gallery.length - 1 : prev - 1
+          )
+        }
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-white text-3xl bg-black/40 px-2 rounded-full"
+      >
+        ❮
+      </button>
+
+      {/* MOBILE NEXT */}
+      <button
+        onClick={() =>
+          setSelectedIndex((prev) => (prev + 1) % gallery.length)
+        }
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-white text-3xl bg-black/40 px-2 rounded-full"
+      >
+        ❯
+      </button>
+    </div>
+
+    {/* MOBILE THUMBNAILS */}
+    <div className="md:hidden flex gap-2 mt-3 overflow-x-auto pb-2">
+      {gallery.map((img, idx) => (
+        <img
+          key={idx}
+          src={img}
+          className={`h-20 w-16 rounded-lg object-cover border cursor-pointer ${
+            selectedIndex === idx ? "border-[#AD000F] border-2" : "border-gray-300"
+          }`}
+          onClick={() => {
+            setSelectedIndex(idx);
+            setSelectedImage(img);
+          }}
+        />
+      ))}
+    </div>
+  </div>
+</div>
 
         {/* RIGHT – DETAILS */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 px-2">
 
-          <h1 className="text-2xl font-light tracking-wide">
+          <h1 className="text-md md:text-2xl font-light tracking-wide">
             {product.name}
           </h1>
 
           {/* Badges */}
-          <div className="flex items-center gap-4">
-            <img src={Handloom} className="h-16" />
-            <img src={Silkmark} className="h-16" />
-          </div>
+<div className="flex items-center gap-4">
+  <div className="border border-neutral-300 rounded-md shadow-sm">
+    <img src={Handloom} className="h-20 w-auto object-contain" />
+  </div>
 
-          <p className="text-primaryRed font-medium text-lg">
+  <div className="border border-neutral-300 rounded-md shadow-sm">
+    <img src={Silkmark} className="h-20 w-auto object-contain" />
+  </div>
+</div>
+
+
+          <p className="text-primaryRed font-medium text-sm md:text-md"><b className="mr-2">Price :</b>
             ₹{product.price}
           </p>
 
-          <p className="text-sm text-neutralDark/70">{product.color || "-"}</p>
-          <p className="text-sm text-neutralDark/60">{product.fabric}</p>
+          <p className="text-neutralDark/70 text-md md:text-lg">Specification & Care</p>
+
+          <p className="text-sm text-neutralDark/70"><b>Color</b> :{product.color || ""}</p>
+          <p className="text-sm text-neutralDark/60"><b>Fabric :</b>{product.fabric}</p>
           <p className="text-sm text-neutralDark/60">
-            Weaving Art – {product.weavingArt}
+            <b>Weaving Art </b>: {product.weavingArt}
           </p>
+          <p className="text-neutralDark/70 text-md md:text-lg">One of a kind</p>
+
 
           {/* SIZES */}
           <div>
-            <p className="text-sm text-neutralDark/70 mb-1">Size</p>
+            <p className="text-sm text-neutralDark/70 mb-1"><b>Size</b></p>
             <div className="flex gap-2">
               {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
                 (s) => (
@@ -246,7 +339,7 @@ export default function ProductDetails() {
 
           {/* QUANTITY */}
           <div className="flex items-center gap-4 mt-1">
-            <p className="text-sm font-medium">QUANTITY</p>
+            <p className="text-sm font-medium"><b>Quantity</b></p>
             <div className="flex items-center border border-neutral-300 rounded-md">
               <button onClick={() => handleQuantity("dec")} className="px-3 py-1">
                 –
@@ -258,15 +351,72 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <p className="text-primaryRed font-medium">One of a kind</p>
 
           {/* ACCORDIONS */}
-          <div className="mt-2">
+          <div className="mt-0">
             {[
               { id: "desc", title: "Product Description", content: product.description },
               { id: "spec", title: "Specification", content: product.specification },
               { id: "care", title: "Care", content: product.care },
-              { id: "delivery", title: "Delivery & Returns", content: "Free delivery & 7-day returns." }
+              {
+  id: "delivery",
+  title: "Delivery & Returns",
+  content: (
+    <div className="space-y-3 leading-relaxed text-sm text-neutral-700">
+
+      <p>
+        In order to minimise any discrepancies, almost all our products for direct sale on our website are free of
+        conventional sizing. This mitigates the need for most return issues concerning inaccurate fit. However, if you
+        are unsure of any aspect of the purchase, we encourage you to contact our client services team before placing
+        any orders.
+      </p>
+
+      <p>Your purchase is eligible for return or exchange only if it meets the following conditions:</p>
+
+      <ul className="list-disc pl-5 space-y-1">
+        <li>An incorrect product has been delivered to you.</li>
+        <li>The product you receive has a genuine manufacturing defect.</li>
+      </ul>
+
+      <p>
+        Each return or exchange request is considered individually. Refunds cannot be offered if an incorrect or incomplete
+        shipping address was provided, if our shipping partner attempted delivery three (3) times unsuccessfully, or if the
+        package was refused by the recipient.
+      </p>
+
+      <p>If your request meets our return criteria, please contact us within three (3) days of delivery with:</p>
+
+      <ul className="list-disc pl-5 space-y-1">
+        <li>Your Order Number</li>
+        <li>
+          The reason for return — in the case of a defective/incorrect product, include an image of the received garment.
+        </li>
+      </ul>
+
+      <p>
+        <b className="font-medium">IMPORTANT:</b> Do not send back garments without written confirmation from our
+        client services team. Returns sent without approval will not be eligible for a refund.
+      </p>
+
+      <p className="pt-2">
+        <b>Contact Us:</b><br />
+        Email: <a href="mailto:brightrose.india@gmail.com" className="underline">brightrose.india@gmail.com</a><br />
+        WhatsApp: <span className="underline">+91 XXXXXXXXXX</span>
+      </p>
+
+      {/* READ MORE LINK */}
+      <div className="pt-4">
+        <Link
+          to="/exchange-return"
+          className="text-[#AD000F] underline font-medium hover:text-black transition"
+        >
+          Read full Return & Exchange policy →
+        </Link>
+      </div>
+    </div>
+  )
+}
+
             ].map((item) => (
               <div key={item.id} className="border-b border-neutral-300/70 pb-2">
                 <button
@@ -319,8 +469,8 @@ export default function ProductDetails() {
       </div>
 
       {/* RELATED PRODUCTS */}
-      <div className="mt-20">
-        <h2 className="text-2xl font-light tracking-wide mb-6">Related Products</h2>
+      <div className="mt-12 px-2">
+        <h2 className="text-lg md:text-2xl font-light tracking-wide mb-6">Related Products</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {related.map((item) => (
