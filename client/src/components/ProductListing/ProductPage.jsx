@@ -371,38 +371,7 @@ export default function ProductDetails() {
         any orders.
       </p>
 
-      <p>Your purchase is eligible for return or exchange only if it meets the following conditions:</p>
-
-      <ul className="list-disc pl-5 space-y-1">
-        <li>An incorrect product has been delivered to you.</li>
-        <li>The product you receive has a genuine manufacturing defect.</li>
-      </ul>
-
-      <p>
-        Each return or exchange request is considered individually. Refunds cannot be offered if an incorrect or incomplete
-        shipping address was provided, if our shipping partner attempted delivery three (3) times unsuccessfully, or if the
-        package was refused by the recipient.
-      </p>
-
-      <p>If your request meets our return criteria, please contact us within three (3) days of delivery with:</p>
-
-      <ul className="list-disc pl-5 space-y-1">
-        <li>Your Order Number</li>
-        <li>
-          The reason for return — in the case of a defective/incorrect product, include an image of the received garment.
-        </li>
-      </ul>
-
-      <p>
-        <b className="font-medium">IMPORTANT:</b> Do not send back garments without written confirmation from our
-        client services team. Returns sent without approval will not be eligible for a refund.
-      </p>
-
-      <p className="pt-2">
-        <b>Contact Us:</b><br />
-        Email: <a href="mailto:brightrose.india@gmail.com" className="underline">brightrose.india@gmail.com</a><br />
-        WhatsApp: <span className="underline">+91 XXXXXXXXXX</span>
-      </p>
+      
 
       {/* READ MORE LINK */}
       <div className="pt-4">
