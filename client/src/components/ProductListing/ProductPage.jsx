@@ -301,8 +301,8 @@ export default function ProductDetails() {
 </div>
 
 
-          <p className="text-primaryRed font-medium text-sm md:text-md"><b className="mr-2">Price :</b>
-            ₹{product.price}
+          <p className="text-primaryRed font-medium text-sm md:text-lg">
+            ₹{product.price} <br/><span className="text-sm text-neutralDark/70">(Inclusive of All Taxes)</span>
           </p>
 
           <p className="text-neutralDark/70 text-md md:text-lg">Specification & Care</p>
