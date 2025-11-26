@@ -77,3 +77,16 @@
 .btn-gold:hover {
   background-color: #b9952f;
 }
+
+.admin-link {
+  padding: 12px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+.admin-link:hover {
+  background: #f1f3f5;
+}
+.active {
+  background: #e5efff !important;
+  color: #0070f3 !important;
+}
