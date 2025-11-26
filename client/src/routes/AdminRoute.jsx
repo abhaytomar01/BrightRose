@@ -14,7 +14,11 @@ const AdminRoute = () => {
       if (!authAdmin?.token) return setOk(false);
 
       try {
-        const res = await api.get("/auth/admin-auth");
+        const res = await api.get("/api/v1/auth/admin-auth", {
+          headers: {
+            Authorization: `Bearer ${authAdmin.token}`,
+          },
+        });
         setOk(res.data?.ok === true);
       } catch (err) {
         setOk(false);

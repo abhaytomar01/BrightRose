@@ -13,7 +13,7 @@ const PrivateRoute = () => {
       if (!authUser.token) return setOk(false);
 
       try {
-        const res = await api.get("/auth/user-auth", {
+       await api.get("/api/v1/auth/user-auth",  {
           headers: { Authorization: `Bearer ${authUser.token}` },
         });
         setOk(res.data.ok === true);
