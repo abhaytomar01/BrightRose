@@ -140,31 +140,32 @@ const Header = () => {
         <Link to="/ourheritage" className="hover:text-[#AD000F]">Our Heritage</Link>
 
         {/* COLLECTIONS DROPDOWN */}
-        <div
-          className="relative group"
-          onMouseEnter={() => setIsSubmenuVisible(true)}
-          onMouseLeave={() => setIsSubmenuVisible(false)}
-        >
-          <button className="flex items-center gap-1">
-            COLLECTIONS
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${
-                isSubmenuVisible ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+<div className="relative group">
+  <button className="flex items-center gap-1 cursor-pointer">
+    COLLECTIONS
+    <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+  </button>
 
-          <div
-            className={`absolute left-1/2 -translate-x-1/2 mt-2 bg-white border p-3 rounded shadow-lg min-w-[200px] ${
-              isSubmenuVisible ? "opacity-100" : "opacity-0 invisible"
-            }`}
-          >
-            <ul className="space-y-2 text-sm text-gray-700">
-              <li><Link to="/weavecollection" className="hover:text-[#AD000F]">WEAVES</Link></li>
-              <li><Link to="/stylecollection" className="hover:text-[#AD000F]">STYLE</Link></li>
-            </ul>
-          </div>
-        </div>
+  {/* FIXED DROPDOWN — now does NOT hide when moving cursor */}
+  <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-[220px]
+                  bg-white border border-gray-200 rounded-md shadow-lg
+                  opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                  transition-all duration-200">
+    <ul className="py-3 px-4 space-y-3 text-sm text-gray-700">
+      <li>
+        <Link to="/weavecollection" className="hover:text-[#AD000F] block">
+          WEAVES
+        </Link>
+      </li>
+      <li>
+        <Link to="/stylecollection" className="hover:text-[#AD000F] block">
+          STYLE
+        </Link>
+      </li>
+    </ul>
+  </div>
+</div>
+
 
         <Link to="/products" className="hover:text-[#AD000F]">Shop</Link>
 
@@ -203,26 +204,40 @@ const Header = () => {
               <Link to="/ourheritage" onClick={() => setOpen(false)}>Our Heritage</Link>
 
               {/* MOBILE SUBMENU */}
-              <div>
-                <button
-                  className="flex justify-between w-full"
-                  onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
-                >
-                  Collections
-                  <ChevronDown
-                    className={`transition-transform ${
-                      mobileSubmenuOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+<div>
+  <button
+    className="flex justify-between items-center w-full py-2"
+    onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
+  >
+    <span>Collections</span>
+    <ChevronDown
+      className={`w-5 h-5 transition-transform ${
+        mobileSubmenuOpen ? "rotate-180" : ""
+      }`}
+    />
+  </button>
 
-                {mobileSubmenuOpen && (
-                  <div className="ml-4 mt-2 space-y-2 text-gray-700">
-                    <Link to="/weavecollection" onClick={() => setOpen(false)}>WEAVES</Link>
-                    <Link to="/stylecollection" onClick={() => setOpen(false)}>STYLE</Link>
-                  </div>
-                )}
-              </div>
+  {mobileSubmenuOpen && (
+    <div className="ml-4 mt-2 space-y-3 text-gray-700 text-[15px]">
+      <Link
+        to="/weavecollection"
+        onClick={() => setOpen(false)}
+        className="block"
+      >
+        Weaves
+      </Link>
+
+      <Link
+        to="/stylecollection"
+        onClick={() => setOpen(false)}
+        className="block"
+      >
+        Styles
+      </Link>
+    </div>
+  )}
+</div>
+
 
               <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
 
