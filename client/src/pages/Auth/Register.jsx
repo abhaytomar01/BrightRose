@@ -68,7 +68,7 @@ const Register = () => {
       <div className="w-full max-w-lg text-center">
 
         {/* TITLE */}
-        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-primaryRed uppercase mb-10">
+        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-neutralDark/80 uppercase mb-10">
           Register
         </h1>
 
@@ -249,7 +249,7 @@ const Register = () => {
                 w-full py-3 
                 text-sm tracking-[3px]
                 uppercase border border-accentGold 
-                text-primaryRed
+                text-neutralDark/80
                 rounded-md
                 hover:bg-accentGold/10
                 transition
@@ -269,7 +269,7 @@ const Register = () => {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="text-primaryRed underline hover:text-[#8c000c]"
+              className="text-neutralDark/80 underline hover:text-neutralDark/70"
             >
               Login
             </Link>

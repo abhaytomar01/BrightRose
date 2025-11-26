@@ -8,7 +8,7 @@ const Footer = () => {
 
         {/* INFORMATION */}
         <div>
-          <h3 className="text-lg font-medium tracking-wide text-primaryRed mb-4">
+          <h3 className="text-lg font-medium tracking-wide text-neutralDark/70 mb-4">
             INFORMATION
           </h3>
 
@@ -16,7 +16,7 @@ const Footer = () => {
             <li>
               <a
                 href="/ourheritage"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 About us
               </a>
@@ -24,7 +24,7 @@ const Footer = () => {
             <li>
               <a
                 href="/products"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Shop
               </a>
@@ -32,7 +32,7 @@ const Footer = () => {
             <li>
               <a
                 href="/weavecollection"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Weave
               </a>
@@ -40,7 +40,7 @@ const Footer = () => {
             <li>
               <a
                 href="/contact"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Contact
               </a>
@@ -50,7 +50,7 @@ const Footer = () => {
 
         {/* SERVICE */}
         <div>
-          <h3 className="text-lg font-medium tracking-wide text-primaryRed mb-4">
+          <h3 className="text-lg font-medium tracking-wide text-neutralDark/70 mb-4">
             SERVICE
           </h3>
 
@@ -58,7 +58,7 @@ const Footer = () => {
             <li>
               <a
                 href="/terms"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Terms & Conditions
               </a>
@@ -66,7 +66,7 @@ const Footer = () => {
             <li>
               <a
                 href="/privacy"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Privacy Policy
               </a>
@@ -74,7 +74,7 @@ const Footer = () => {
             <li>
               <a
                 href="/customer-service"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Customer Service
               </a>
@@ -82,7 +82,7 @@ const Footer = () => {
             <li>
               <a
                 href="/exchange-return"
-                className="text-sm text-neutralDark/80 hover:text-primaryRed transition"
+                className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
                 Exchange & Return
               </a>
@@ -92,21 +92,21 @@ const Footer = () => {
 
         {/* FOLLOW US */}
         <div>
-          <h3 className="text-lg font-medium tracking-wide text-primaryRed mb-4">
+          <h3 className="text-lg font-medium tracking-wide text-neutralDark/70 mb-4">
             FOLLOW US
           </h3>
 
           <div className="flex items-center gap-5">
             <a
               href="https://www.facebook.com/share/16JsCKdwXn/"
-              className="text-accentGold hover:text-primaryRed transition"
+              className="text-accentGold hover:text-neutralDark/70 transition"
             >
               <Facebook size={24} />
             </a>
 
             <a
               href="https://www.instagram.com/brightrose_india/"
-              className="text-accentGold hover:text-primaryRed transition"
+              className="text-accentGold hover:text-neutralDark/70 transition"
             >
               <Instagram size={24} />
             </a>
@@ -115,7 +115,7 @@ const Footer = () => {
 
         {/* PAYMENTS / COPYRIGHT */}
         <div>
-          <h3 className="text-lg font-medium tracking-wide text-primaryRed mb-4">
+          <h3 className="text-lg font-medium tracking-wide text-neutralDark/70 mb-4">
             WE ACCEPT
           </h3>
 

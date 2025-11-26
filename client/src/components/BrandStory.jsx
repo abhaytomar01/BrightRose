@@ -26,7 +26,7 @@ const BrandStory = ({
           transition={{ duration: 0.7 }}
         >
           {/* Title */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-primaryRed tracking-tight mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-neutralDark/80 tracking-tight mb-6">
             {title}
           </h2>
 
@@ -56,7 +56,7 @@ const BrandStory = ({
             {/* Mobile Toggle */}
             <button
               onClick={() => setShowMore(!showMore)}
-              className="lg:hidden bg-primaryRed text-white px-6 py-2.5 rounded-full text-sm tracking-wide hover:bg-red-800 transition-all border border-accentGold"
+              className="lg:hidden bg-neutralDark/80 text-white px-6 py-2.5 rounded-full text-sm tracking-wide hover:neutralDark/90 transition-all border border-accentGold"
             >
               {showMore ? "Show Less" : "Read More"}
             </button>
@@ -64,7 +64,7 @@ const BrandStory = ({
             {/* Desktop Button */}
             <Link
               to={learnMoreLink}
-              className="hidden lg:inline-block bg-primaryRed text-white px-8 py-3 rounded-full text-sm tracking-wide hover:bg-red-800 transition-all border border-accentGold"
+              className="hidden lg:inline-block bg-neutralDark/80 text-white px-8 py-3 rounded-full text-sm tracking-wide hover:neutralDark/90 transition-all border border-accentGold"
             >
               Read More
             </Link>

@@ -17,7 +17,7 @@ const NextBtn = ({ className, onClick }) => (
     className={`${className} !right-4 z-20 bg-neutralLight/60 hover:bg-neutralLight/80 backdrop-blur-md transition rounded-full p-2 flex items-center justify-center border border-accentGold/60`}
     onClick={onClick}
   >
-    <ArrowRight size={18} className="text-primaryRed" />
+    <ArrowRight size={18} className="text-neutralDark/80" />
   </div>
 );
 
@@ -53,7 +53,7 @@ const FeaturedProducts = ({
 
         {/* Header Section */}
         <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-primaryRed">
+          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutralDark/80">
             {title}
           </h2>
 
@@ -105,7 +105,7 @@ const FeaturedProducts = ({
                   </div>
 
                   {/* Price */}
-                  <p className="text-xl font-normal text-primaryRed tracking-wide">
+                  <p className="text-xl font-normal text-neutralDark/80 tracking-wide">
                     ₹{product.price?.toLocaleString()}
                   </p>
 

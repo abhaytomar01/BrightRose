@@ -86,7 +86,7 @@ const CartItem = ({ item }) => {
       </div>
 
       {/* PRICE */}
-      <div className="text-xl font-semibold text-[#AD000F] mt-3 sm:mt-0">
+      <div className="text-xl font-semibold text-neutralDark/80 mt-3 sm:mt-0">
         ₹{item.price}
       </div>
 
@@ -96,8 +96,8 @@ const CartItem = ({ item }) => {
           onClick={handleDecrease}
           className="
             px-3 py-1 rounded-md 
-            bg-[#f1e8dc] text-[#704214]
-            hover:bg-[#e7dccd] 
+            bg-neutralDark/10 text-neutralDark/70
+            hover:bg-neutralDark/30 
             transition
           "
         >
@@ -110,8 +110,8 @@ const CartItem = ({ item }) => {
           onClick={handleIncrease}
           className="
             px-3 py-1 rounded-md 
-            bg-[#f1e8dc] text-[#704214]
-            hover:bg-[#e7dccd] 
+            bg-neutralDark/10 text-neutralDark/70
+            hover:neutralDark/30 
             transition
           "
         >
@@ -125,7 +125,7 @@ const CartItem = ({ item }) => {
           onClick={handleSaveForLater}
           className="
             px-4 py-1.5 rounded-md text-sm font-medium
-            border border-[#D4AF37] text-[#704214]
+            border border-neutralDark text-neutralDark/80
             hover:bg-[#f9f5ef]
             transition-all
           "
@@ -137,7 +137,7 @@ const CartItem = ({ item }) => {
           onClick={handleRemove}
           className="
             px-4 py-1.5 rounded-md text-sm font-medium
-            border border-[#AD000F] text-[#AD000F]
+            border border-neutralDark/80 text-neutralDark/90
             hover:bg-[#fff4f4]
             transition-all
           "

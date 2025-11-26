@@ -87,8 +87,8 @@ const Cart = () => {
                         onClick={() => moveToCartFromSaveLater(it.key)}
                         className="
                           px-4 py-2 rounded-lg 
-                          text-white bg-[#AD000F] 
-                          hover:bg-[#8c000c]
+                          text-white bg-neutralDark/80 
+                          hover:bg-neutralDark/90
                           text-sm transition
                         "
                       >
@@ -144,7 +144,7 @@ const Cart = () => {
                   className="
                     mt-6 w-full py-3 rounded-lg 
                     text-white font-medium text-lg
-                    bg-[#AD000F] hover:bg-[#8c000c]
+                    bg-neutralDark/80 hover:bg-neutralDark/90
                     transition-all shadow-sm
                   "
                 >

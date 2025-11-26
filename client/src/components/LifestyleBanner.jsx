@@ -22,23 +22,23 @@ const LifestyleBanner = ({
 
         {/* Central Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-          <h2 className="text-primaryRed text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 drop-shadow-lg tracking-tight">
+          <h2 className="text-neutralDark/80 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-6 drop-shadow-lg tracking-tight">
             {title}
           </h2>
 
           <Link
             to={buttonLink}
             className="
-              bg-primaryRed
+              bg-neutralDark/80
               text-white
               px-8
               py-3
               rounded-full
               text-lg
               font-medium
-              border border-accentGold
+              border border-neutralDark/70
               transition-all duration-300
-              hover:bg-red-800 hover:shadow-xl
+              hover:neutralDark/80 hover:shadow-xl
             "
           >
             {buttonText}

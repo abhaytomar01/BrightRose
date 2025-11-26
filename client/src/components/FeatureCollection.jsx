@@ -69,7 +69,7 @@ const FeaturedCollections = ({
         {/* Title Section */}
         {/* -------------------------------- */}
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-light text-primaryRed tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-light text-neutralDark/80 tracking-tight">
             {title}
           </h2>
 
@@ -148,7 +148,7 @@ const FeaturedCollections = ({
             to="/products"
             className="
               inline-block 
-              bg-primaryRed 
+              bg-neutralDark/80 
               text-white 
               px-8 
               py-3 
@@ -157,7 +157,7 @@ const FeaturedCollections = ({
               tracking-wide 
               transition-all 
               border border-accentGold
-              hover:bg-red-800
+              hover:bg-neutralDark/90
             "
           >
             View All Products

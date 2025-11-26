@@ -81,10 +81,10 @@ const Contact = () => {
           transition={{ duration: 1 }}
           className="relative z-10 text-center px-6"
         >
-          <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-light tracking-tight">
+          <h1 className="text-neutralDark text-4xl sm:text-5xl md:text-6xl font-light tracking-tight">
             Contact Us
           </h1>
-          <p className="text-white/90 mt-4 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="text-neutralDark mt-4 text-base sm:text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
             We would love to hear from you — queries, orders, collaborations or appointments.
           </p>
         </motion.div>
@@ -175,7 +175,7 @@ const Contact = () => {
                   bg-neutral-50
                   border border-neutral-300
                   rounded-md
-                  focus:ring-2 focus:ring-primaryRed/30
+                  focus:ring-2 focus:ring-neutralDark/80
                 "
               />
             </div>
@@ -185,11 +185,11 @@ const Contact = () => {
               disabled={!recaptchaReady || loading}
               className="
                 w-full py-3 
-                bg-primaryRed 
+                bg-neutralDark/80
                 text-white 
                 rounded-md 
                 tracking-wide
-                hover:bg-[#8c0018]
+                hover:bg-neutralDark/90
                 transition-all
               "
             >

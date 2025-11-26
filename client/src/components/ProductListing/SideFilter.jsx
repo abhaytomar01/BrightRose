@@ -3,15 +3,6 @@ import Slider from "@mui/material/Slider";
 import { Collapse } from "@mui/material";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-/*  
-    LUXURY FILTER STYLING:
-    - Minimal borders
-    - Gold divider
-    - Soft hover
-    - Large spacing
-    - Thin text
-*/
-
 const SideFilter = ({
   price = [0, 10000],
   setPrice,
@@ -32,7 +23,7 @@ const SideFilter = ({
 
   const [tempPrice, setTempPrice] = useState(price);
 
-  /* Dropdown Options */
+  /* FILTER OPTIONS */
   const categories = [
     "All",
     "Dresses",
@@ -76,65 +67,51 @@ const SideFilter = ({
     "Corsets & Tops",
   ];
 
-  /* Smooth price update */
-  const handlePriceChange = (_, newValue) => {
-    setTempPrice(newValue);
-  };
+  /* PRICE HANDLER */
+  const handlePriceChange = (_, newValue) => setTempPrice(newValue);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (JSON.stringify(price) !== JSON.stringify(tempPrice)) {
-        setPrice(tempPrice);
-      }
-    }, 400);
-
+    const timer = setTimeout(() => setPrice(tempPrice), 300);
     return () => clearTimeout(timer);
   }, [tempPrice]);
 
-  /* Section header element */
+  /* SECTION HEADER */
   const SectionHeader = ({ label, openState, setOpenState }) => (
     <div
-      className="flex justify-between items-center px-2 py-4 cursor-pointer border-b border-[#ece7df] hover:bg-[#f6f2ec] transition rounded-lg"
+      className="flex justify-between items-center py-3 cursor-pointer border-b border-[#eae6df]"
       onClick={() => setOpenState(!openState)}
     >
-      <h3 className="text-[15px] font-medium tracking-wide text-gray-800">
-        {label}
-      </h3>
-
+      <h3 className="text-[15px] font-semibold tracking-wide">{label}</h3>
       {openState ? (
-        <ChevronDown className="w-5 h-5 text-gray-600 transition-transform rotate-180" />
+        <ChevronDown className="w-5 h-5 rotate-180 text-gray-600" />
       ) : (
         <ChevronRight className="w-5 h-5 text-gray-600" />
       )}
     </div>
   );
 
-  /* Option Item */
+  /* OPTION UI */
   const Option = ({ text, isActive, onClick }) => (
     <li
       onClick={onClick}
-      className={`cursor-pointer px-3 py-1.5 rounded-md text-sm transition-all 
-      ${
-        isActive
-          ? "bg-[#AD000F] text-white shadow-sm"
-          : "text-gray-700 hover:bg-gray-100"
-      }`}
+      className={`cursor-pointer px-3 py-2 rounded-md text-sm transition 
+        ${
+          isActive
+            ? "bg-neutralDark/70 text-white"
+            : "text-gray-700 hover:bg-gray-100"
+        }`}
     >
       {text}
     </li>
   );
 
   return (
-    <aside className="w-full bg-white border border-[#eae6df] rounded-2xl shadow-sm p-4">
+    <aside className="w-full bg-white">
 
       {/* CATEGORY */}
-      <SectionHeader
-        label="Category"
-        openState={openCategory}
-        setOpenState={setOpenCategory}
-      />
+      <SectionHeader label="Category" openState={openCategory} setOpenState={setOpenCategory} />
       <Collapse in={openCategory}>
-        <ul className="py-3 space-y-1">
+        <ul className="py-2 space-y-1">
           {categories.map((cat) => (
             <Option
               key={cat}
@@ -147,13 +124,9 @@ const SideFilter = ({
       </Collapse>
 
       {/* WEAVES */}
-      <SectionHeader
-        label="Weaves"
-        openState={openWeaves}
-        setOpenState={setOpenWeaves}
-      />
+      <SectionHeader label="Weaves" openState={openWeaves} setOpenState={setOpenWeaves} />
       <Collapse in={openWeaves}>
-        <ul className="py-3 space-y-1">
+        <ul className="py-2 space-y-1">
           {weavesSubcategories.map((w) => (
             <Option
               key={w}
@@ -166,13 +139,9 @@ const SideFilter = ({
       </Collapse>
 
       {/* STYLE */}
-      <SectionHeader
-        label="Style"
-        openState={openStyle}
-        setOpenState={setOpenStyle}
-      />
+      <SectionHeader label="Style" openState={openStyle} setOpenState={setOpenStyle} />
       <Collapse in={openStyle}>
-        <ul className="py-3 space-y-1">
+        <ul className="py-2 space-y-1">
           {styleSubcategories.map((sty) => (
             <Option
               key={sty}
@@ -185,21 +154,17 @@ const SideFilter = ({
       </Collapse>
 
       {/* COLOR */}
-      <SectionHeader
-        label="Color"
-        openState={openColor}
-        setOpenState={setOpenColor}
-      />
+      <SectionHeader label="Color" openState={openColor} setOpenState={setOpenColor} />
       <Collapse in={openColor}>
-        <ul className="py-3 grid grid-cols-2 gap-2">
+        <ul className="py-2 grid grid-cols-2 gap-2">
           {colors.map((col) => (
             <li
               key={col}
               onClick={() => setColor(col === "All" ? "" : col)}
-              className={`flex items-center px-3 py-1.5 rounded-md text-sm cursor-pointer transition 
+              className={`flex items-center px-3 py-2 rounded-md text-sm cursor-pointer transition 
               ${
                 (!color && col === "All") || color === col
-                  ? "bg-[#AD000F] text-white"
+                  ? "bg-neutralDark/80 text-white"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
@@ -216,22 +181,17 @@ const SideFilter = ({
       </Collapse>
 
       {/* PRICE */}
-      <SectionHeader
-        label="Price"
-        openState={openPrice}
-        setOpenState={setOpenPrice}
-      />
+      <SectionHeader label="Price" openState={openPrice} setOpenState={setOpenPrice} />
       <Collapse in={openPrice}>
-        <div className="py-4">
-
-          <div className="flex justify-between text-xs text-gray-600 mb-2 px-1">
-            <div className="text-center">
+        <div className="py-3">
+          <div className="flex justify-between text-xs text-gray-700 mb-3">
+            <div>
               <p className="text-[11px] text-gray-500">MIN</p>
-              <p className="font-medium">₹{tempPrice[0].toLocaleString()}</p>
+              <p className="font-medium">₹{tempPrice[0]}</p>
             </div>
-            <div className="text-center">
+            <div>
               <p className="text-[11px] text-gray-500">MAX</p>
-              <p className="font-medium">₹{tempPrice[1].toLocaleString()}</p>
+              <p className="font-medium">₹{tempPrice[1]}</p>
             </div>
           </div>
 
@@ -242,11 +202,11 @@ const SideFilter = ({
             max={10000}
             step={500}
             sx={{
-              color: "#AD000F",
+              color: "#444444",
               "& .MuiSlider-thumb": {
                 width: 16,
                 height: 16,
-                backgroundColor: "#AD000F",
+                backgroundColor: "#444444",
               },
             }}
           />

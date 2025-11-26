@@ -1,94 +1,38 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import StarIcon from "@mui/icons-material/Star";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { useAuth } from "../../context/auth";
 import fallbackImage from "../../assets/images/fallback.jpg";
+import { motion } from "framer-motion";
 
 const Product = ({
   _id,
   images,
   name,
-  ratings,
-  numOfReviews,
   price,
-  wishlistItems,
-  setWishlistItems,
 }) => {
-  const { auth } = useAuth();
-  const itemInWishlist = wishlistItems?.includes(_id);
-
-  const updateWishlistUI = (add) => {
-    setWishlistItems((prev) =>
-      add ? [...prev, _id] : prev.filter((id) => id !== _id)
-    );
-  };
-
-  const handleWishlist = async () => {
-    const type = itemInWishlist ? "remove" : "add";
-
-    try {
-      updateWishlistUI(type === "add");
-
-      await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/update-wishlist`,
-        { productId: _id, type },
-        { headers: { Authorization: auth?.token } }
-      );
-    } catch (err) {
-      toast.error("Could not update wishlist!");
-      updateWishlistUI(type !== "add");
-    }
-  };
-
   return (
     <motion.div
-      // ❌ REMOVED scale hover
-      className="relative bg-white rounded-2xl border border-[#e7dfd4] shadow-sm hover:shadow-lg transition-all duration-300 ml-2 md:ml-4 overflow-hidden"
+      className="w-full bg-white overflow-hidden cursor-pointer"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
     >
-      {/* Wishlist Button */}
-      {/* <button
-        onClick={handleWishlist}
-        className={`absolute top-3 right-3 z-20 p-2 rounded-full bg-white/80 backdrop-blur-md border border-gray-200 shadow-sm transition hover:shadow-md
-          ${itemInWishlist ? "text-[#d6001c]" : "text-gray-500 hover:text-[#d6001c]"}`}
-      >
-        <FavoriteIcon sx={{ fontSize: 20 }} />
-      </button> */}
-
-      {/* Image */}
+      {/* IMAGE */}
       <Link to={`/product/${_id}`}>
-        <div className="relative w-full h-[310px] bg-[#faf7f2] overflow-hidden flex items-center justify-center">
-          <motion.img
+        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md">
+          <img
             src={images?.[0]?.url || fallbackImage}
+            className="w-full h-full object-cover transition-all duration-500"
             alt={name}
-            className="object-cover w-full h-full rounded-t-2xl"
-            initial={{ scale: 1 }}
-            // ❌ REMOVED: whileHover={{ scale: 1.08 }}
-            transition={{ duration: 0.5 }}
           />
-
-          {/* Hover Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            className="absolute inset-0 bg-black/20 text-white flex items-center justify-center text-sm tracking-wide"
-          >
-            View Details
-          </motion.div>
         </div>
       </Link>
 
-      {/* Info Section */}
-      <div className="px-4 py-5 flex flex-col gap-2">
-        <h2 className="text-[15px] leading-tight font-medium text-gray-900 tracking-wide line-clamp-2">
+      {/* TEXT */}
+      <div className="text-center py-3">
+        <h3 className="text-[15px] font-medium tracking-wide line-clamp-2">
           {name}
-        </h2>
+        </h3>
 
-        {/* PRICE */}
-        <p className="text-lg font-semibold tracking-wide text-[#AD000F]">
+        <p className="text-[16px] font-semibold mt-1">
           ₹{price?.toLocaleString()}
         </p>
       </div>

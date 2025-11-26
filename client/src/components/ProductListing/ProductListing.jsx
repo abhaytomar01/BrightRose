@@ -44,17 +44,16 @@ const ProductListing = ({
         <>
 
           {/* PRODUCT GRID */}
-          <div className="
-            grid 
-            grid-cols-2 
-            sm:grid-cols-3 
-            md:grid-cols-3 
-            lg:grid-cols-4 
-            gap-4 
-            w-full
-            px-2 md:px-4
-            place-content-start
-          ">
+         <div
+  className="
+    grid 
+    grid-cols-2 
+    gap-x-2 
+    gap-y-6
+    w-full
+  "
+>
+
             {currentProducts.map((product) => (
               <div
                 key={product._id}
@@ -90,7 +89,29 @@ const ProductListing = ({
           )}
         </>
       )}
+      {/* MOBILE FILTER / SORT BAR */}
+<div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-[999] flex md:hidden">
+  
+  <button
+    className="flex-1 py-3 text-center font-medium text-[14px] border-r"
+    onClick={() => setSortOpen(!sortOpen)}
+  >
+    SORT BY ▴
+  </button>
+
+  <button
+    className="flex-1 py-3 text-center font-medium text-[14px]"
+    onClick={() => setShowFilters(!showFilters)}
+  >
+    <span className="inline-flex items-center gap-1">
+      <svg width="18" height="18" fill="currentColor"><path d="M3 5h14M6 10h10M10 15h6" stroke="currentColor" strokeWidth="2"/></svg>
+      SHOW FILTERS
+    </span>
+  </button>
+</div>
+
     </div>
+    
   );
 };
 

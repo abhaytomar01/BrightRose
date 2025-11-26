@@ -8,6 +8,7 @@ import axios from "axios";
 import SeoData from "../../SEO/SeoData";
 import SideFilter from "../../components/ProductListing/SideFilter";
 import { useAuth } from "../../context/auth";
+import { SlidersHorizontal } from "lucide-react";
 
 const Products = () => {
   const location = useLocation();
@@ -130,51 +131,59 @@ const Products = () => {
     if (auth?.token && !isAdmin) fetchWishlistItems();
   }, [auth?.token, isAdmin]);
 
-  const [showFilters, setShowFilters] = useState(false);
+  // NEW → Mobile Filter Popup
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
 
   return (
     <>
       <SeoData title="All Products | Bright Rose" />
 
+      {/* FULL SCREEN MOBILE FILTER OVERLAY */}
+      {showFilterPopup && (
+        <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
+          {/* Header */}
+          <div className="flex justify-between items-center border-b pb-3 mb-4">
+            <h2 className="text-xl font-semibold">Filters</h2>
+            <button
+              onClick={() => setShowFilterPopup(false)}
+              className="text-lg font-semibold"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Full Screen SideFilter */}
+          <SideFilter
+            price={price}
+            category={category}
+            ratings={ratings}
+            setPrice={setPrice}
+            setCategory={setCategory}
+            setRatings={setRatings}
+            color={color}
+            setColor={setColor}
+            weave={weave}
+            setWeave={setWeave}
+            style={style}
+            setStyle={setStyle}
+          />
+
+          {/* Apply Button */}
+          <button
+            className="w-full mt-5 bg-black text-white text-center py-4 rounded-lg text-sm tracking-wide"
+            onClick={() => setShowFilterPopup(false)}
+          >
+            APPLY FILTERS
+          </button>
+        </div>
+      )}
+
       <main className="w-full pt-2 pb-5 mt-32 md:mt-36 bg-pureWhite">
-        <div className="flex flex-col-reverse lg:flex-row gap-0 lg:gap-3 mt-2 w-full px-2 sm:px-4 md:px-6">
+        <div className="flex flex-col-reverse lg:flex-row gap-3 w-full px-2 sm:px-4 md:px-6 mt-2 md:mt-4">
 
-          {/* Sidebar */}
-          <div className="w-full lg:w-[23%] lg:min-w-[320px] mb-4 lg:mb-0">
-            
-            {/* Mobile Filter Btn */}
-            <div className="block lg:hidden">
-              <button
-                type="button"
-                className="w-full text-left bg-primaryRed text-white rounded-lg p-2 mb-2 font-medium flex items-center justify-between border border-accentGold"
-                onClick={() => setShowFilters(v => !v)}
-              >
-                {showFilters ? "Hide Filters" : "Show Filters"}
-                <span className="ml-2">{showFilters ? "▲" : "▼"}</span>
-              </button>
-
-              {showFilters && (
-                <div className="bg-white rounded-lg shadow-md border border-mutedGray/60 py-3 px-4 mb-3">
-                  <SideFilter
-                    price={price}
-                    category={category}
-                    ratings={ratings}
-                    setPrice={setPrice}
-                    setCategory={setCategory}
-                    setRatings={setRatings}
-                    color={color}
-                    setColor={setColor}
-                    weave={weave}
-                    setWeave={setWeave}
-                    style={style}
-                    setStyle={setStyle}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Desktop Filter */}
-            <div className="hidden lg:block border border-mutedGray/60 rounded-lg p-4">
+          {/* Desktop Sidebar Filter */}
+          <div className="hidden lg:block w-[23%] min-w-[280px]">
+            <div className="border border-mutedGray/60 rounded-lg p-4">
               <SideFilter
                 price={price}
                 category={category}
@@ -192,12 +201,11 @@ const Products = () => {
             </div>
           </div>
 
-          {/* Products Section */}
+          {/* Product Grid */}
           <div className="w-full lg:w-[77%] relative">
 
             {loading && <Spinner />}
 
-            {/* If no products */}
             {!loading && products.length === 0 && (
               <div className="flex flex-col items-center justify-center mt-12 gap-3 bg-neutralLight shadow-sm rounded-lg py-10 px-4 border border-mutedGray/60">
                 <img
@@ -213,12 +221,18 @@ const Products = () => {
               </div>
             )}
 
-            {/* Product Grid */}
             {!loading && products.length > 0 && (
-              <div className="flex flex-col gap-4 pb-4 items-center bg-neutralLight rounded-lg border border-mutedGray/40 pt-4">
-
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 w-full min-h-[350px]">
-                  {currentProducts.map(product => (
+              <>
+                <div className="
+                  grid 
+                  grid-cols-2 
+                  md:grid-cols-3 
+                  lg:grid-cols-4 
+                  gap-4 
+                  w-full
+                  place-content-start
+                ">
+                  {currentProducts.map((product) => (
                     <Product
                       key={product._id}
                       {...product}
@@ -235,16 +249,25 @@ const Products = () => {
                     page={currentPage}
                     onChange={(e, page) => setCurrentPage(page)}
                     color="primary"
-                    className="my-4"
+                    className="my-6"
                   />
                 )}
-
-              </div>
+              </>
             )}
-
           </div>
         </div>
       </main>
+
+      {/* MOBILE STICKY FILTER BUTTON */}
+      <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t z-[999] py-3 px-6 flex items-center justify-center shadow-md">
+        <button
+          onClick={() => setShowFilterPopup(true)}
+          className="flex items-center gap-2 text-lg font-medium tracking-wider"
+        >
+          <SlidersHorizontal size={20} />
+          SHOW FILTERS
+        </button>
+      </div>
     </>
   );
 };

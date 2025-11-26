@@ -49,7 +49,7 @@ const Testimonials = ({
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 text-center">
 
         {/* HEADER */}
-        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-primaryRed">
+        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutralDark/80">
           What Our Customers Say
         </h2>
 
@@ -68,7 +68,6 @@ const Testimonials = ({
               className="
                 bg-white p-8 rounded-xl 
                 border border-mutedGray/60 
-                hover:border-accentGold/60
                 shadow-sm hover:shadow-md
                 transition-all duration-300
               "
@@ -108,7 +107,6 @@ const Testimonials = ({
                   className="
                     bg-white p-8 rounded-xl max-w-sm mx-auto 
                     border border-mutedGray/60 
-                    hover:border-accentGold/60
                     shadow-sm hover:shadow-md
                     transition-all duration-300
                   "

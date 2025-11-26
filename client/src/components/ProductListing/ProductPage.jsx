@@ -162,7 +162,7 @@ export default function ProductDetails() {
   // RENDER
   //-----------------------------------------------------
   return (
-    <div className="max-w-7xl mx-auto px-0 pt-28 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
+    <div className="max-w-8xl mx-2 px-0 pt-28 md:pt-40 pb-36 bg-white text-[#1A1A1A]">
 
       {/* PRODUCT MAIN */}
       <div className="grid md:grid-cols-2 gap-6 mt-4">
@@ -180,7 +180,7 @@ export default function ProductDetails() {
           setSelectedIndex(idx);
         }}
         className={`w-full h-28 overflow-hidden cursor-pointer border
-        ${selectedIndex === idx ? "border-[#AD000F] border-2" : "border-neutral-300"}`}
+        ${selectedIndex === idx ? "border-neutralDark/60 border-2" : "border-neutral-300"}`}
       >
         <img src={img} className="w-full h-full object-cover" />
       </div>
@@ -225,43 +225,23 @@ export default function ProductDetails() {
 
 
     {/* MOBILE SLIDER */}
-    <div className="md:hidden relative w-full overflow-hidden">
-      <div
-        className="flex transition-transform duration-500"
-        style={{ transform: `translateX(-${selectedIndex * 100}%)` }}
-      >
-        {gallery.map((img, idx) => (
-          <img
-            key={idx}
-            src={img}
-            onClick={() => openLightbox(idx)}
-            className="w-full h-[500px] object-cover"
-          />
-        ))}
-      </div>
-
-      {/* MOBILE PREV */}
-      <button
-        onClick={() =>
-          setSelectedIndex((prev) =>
-            prev === 0 ? gallery.length - 1 : prev - 1
-          )
-        }
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-white text-3xl bg-black/40 px-2 rounded-full"
-      >
-        ❮
-      </button>
-
-      {/* MOBILE NEXT */}
-      <button
-        onClick={() =>
-          setSelectedIndex((prev) => (prev + 1) % gallery.length)
-        }
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-white text-3xl bg-black/40 px-2 rounded-full"
-      >
-        ❯
-      </button>
+    {/* MOBILE – SWIPE SCROLL IMAGES */}
+<div className="md:hidden w-full overflow-x-scroll snap-x snap-mandatory flex scroll-smooth no-scrollbar">
+  {gallery.map((img, idx) => (
+    <div
+      key={idx}
+      onClick={() => openLightbox(idx)}
+      className="snap-start w-full shrink-0"
+    >
+      <img
+        src={img}
+        className="w-full h-[500px] object-cover"
+        alt=""
+      />
     </div>
+  ))}
+</div>
+
 
     {/* MOBILE THUMBNAILS */}
     <div className="md:hidden flex gap-2 mt-3 overflow-x-auto pb-2">
@@ -270,7 +250,7 @@ export default function ProductDetails() {
           key={idx}
           src={img}
           className={`h-20 w-16 rounded-lg object-cover border cursor-pointer ${
-            selectedIndex === idx ? "border-[#AD000F] border-2" : "border-gray-300"
+            selectedIndex === idx ? "border-neutralDark/70 border-2" : "border-gray-300"
           }`}
           onClick={() => {
             setSelectedIndex(idx);
@@ -301,23 +281,20 @@ export default function ProductDetails() {
 </div>
 
 
-          <p className="text-primaryRed font-medium text-sm md:text-lg">
+          <p className="text-neutralDark/90 font-medium text-sm md:text-lg">
             ₹{product.price} <br/><span className="text-sm text-neutralDark/70">(Inclusive of All Taxes)</span>
           </p>
+          <p className="text-neutralDark/80 text-md md:text-lg">One of a kind</p>
 
-          <p className="text-neutralDark/70 text-md md:text-lg">Specification & Care</p>
-
-          <p className="text-sm text-neutralDark/70"><b>Color</b> :{product.color || ""}</p>
-          <p className="text-sm text-neutralDark/60"><b>Fabric :</b>{product.fabric}</p>
-          <p className="text-sm text-neutralDark/60">
-            <b>Weaving Art </b>: {product.weavingArt}
+       
+          <p className="text-sm text-neutralDark/80">
+            <b className=" text-neutralDark/90">Weaving Art </b>: {product.weavingArt}
           </p>
-          <p className="text-neutralDark/70 text-md md:text-lg">One of a kind</p>
 
 
           {/* SIZES */}
           <div>
-            <p className="text-sm text-neutralDark/70 mb-1"><b>Size</b></p>
+            <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size</b></p>
             <div className="flex gap-2">
               {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
                 (s) => (
@@ -339,7 +316,7 @@ export default function ProductDetails() {
 
           {/* QUANTITY */}
           <div className="flex items-center gap-4 mt-1">
-            <p className="text-sm font-medium"><b>Quantity</b></p>
+            <p className="text-sm font-medium text-neutralDark/80"><b>Quantity</b></p>
             <div className="flex items-center border border-neutral-300 rounded-md">
               <button onClick={() => handleQuantity("dec")} className="px-3 py-1">
                 –
@@ -355,7 +332,9 @@ export default function ProductDetails() {
           {/* ACCORDIONS */}
           <div className="mt-0">
             {[
-              { id: "desc", title: "Product Description", content: product.description },
+              { id: "col", title: " Color", content: product.color },
+              { id: "fab", title: " Fabric", content: product.fabric },
+              { id: "desc", title: " Description", content: product.description },
               { id: "spec", title: "Specification", content: product.specification },
               { id: "care", title: "Care", content: product.care },
               {
@@ -377,7 +356,7 @@ export default function ProductDetails() {
       <div className="pt-4">
         <Link
           to="/exchange-return"
-          className="text-[#AD000F] underline font-medium hover:text-black transition"
+          className="text-neutral underline font-medium hover:text-black transition"
         >
           Read full Return & Exchange policy →
         </Link>

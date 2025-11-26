@@ -76,7 +76,7 @@ const HeroParallax = ({ title, subtitle }) => {
       {/* Text */}
       <div className="absolute inset-0 flex items-center justify-start px-6 md:px-20 lg:px-28">
         <div className="max-w-xl">
-          <h1 className="text-primaryRed text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight leading-tight drop-shadow-lg">
+          <h1 className="text-neutralDark/80 text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight leading-tight drop-shadow-lg">
             {title}
           </h1>
           {subtitle && (
@@ -121,7 +121,7 @@ function TimelineItem({ item, index }) {
         <p className="text-accentGold text-sm tracking-wider mb-1">
           {item.year}
         </p>
-        <h3 className="text-2xl md:text-3xl text-primaryRed font-light mb-2">
+        <h3 className="text-2xl md:text-3xl text-neutralDark/80 font-light mb-2">
           {item.title}
         </h3>
         <p className="text-neutralDark leading-relaxed text-base md:text-lg font-extralight">
@@ -138,7 +138,7 @@ function TimelineItem({ item, index }) {
 const Timeline = ({ items }) => (
   <section className="bg-pureWhite py-20 px-4 md:px-20">
     <div className="max-w-5xl mx-auto">
-      <h2 className="text-center text-3xl md:text-4xl font-light text-primaryRed tracking-tight mb-14">
+      <h2 className="text-center text-3xl md:text-4xl font-light text-neutralDark/80 tracking-tight mb-14">
         Our Story
       </h2>
 
@@ -175,9 +175,8 @@ const FinalCTA = () => (
             href="/collections"
             className="
               inline-block px-10 py-3 
-              border border-accentGold 
+              border border-neutralDark/70 
               text-white text-sm tracking-wide 
-              hover:bg-accentGold hover:text-black 
               transition-all duration-300
             "
           >

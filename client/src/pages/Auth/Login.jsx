@@ -60,7 +60,7 @@ const Login = () => {
       <div className="w-full max-w-md text-center">
 
         {/* TITLE */}
-        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-primaryRed uppercase mb-10">
+        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-neutralDark/80 uppercase mb-10">
           Login
         </h1>
 
@@ -146,7 +146,7 @@ const Login = () => {
 
               <Link
                 to="/forgot-password"
-                className="text-primaryRed underline hover:text-[#8c000c]"
+                className="text-neutralDark/80 underline hover:text-neutralDark/70"
               >
                 Forgot password?
               </Link>
@@ -160,7 +160,7 @@ const Login = () => {
                 w-full py-3 
                 text-sm tracking-[3px]
                 uppercase border border-accentGold 
-                text-primaryRed
+                text-neutralDark/80
                 rounded-md
                 hover:bg-accentGold/10
                 transition
@@ -178,7 +178,7 @@ const Login = () => {
             New to Bright Rose?{" "}
             <Link
               to="/register"
-              className="text-primaryRed underline hover:text-[#8c000c]"
+              className="text-neutralDark/80 underline hover:text-[#8c000c]"
             >
               Create account
             </Link>

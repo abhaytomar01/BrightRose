@@ -48,7 +48,7 @@ const Home = () => {
         description2="Rose is known as the Queen..."
         description3="Our knowledge of weaving..."
         imageUrl="client/public/ourstoryImage.jpg"
-        learnMoreLink="/about"
+        learnMoreLink="/ourheritage"
     />
 
     <FeaturedProducts
