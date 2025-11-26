@@ -12,6 +12,7 @@ import Users from "./Users";
 import EditProduct from "./EditProduct";
 import SeoData from "../../SEO/SeoData";
 import AdminOrders from "./AdminOrders";
+import AdminLayout from "../../layouts/AdminLayout";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -24,46 +25,44 @@ const AdminDashboard = () => {
     }
   }, [location.pathname]);
 
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-
   return (
     <>
       <SeoData title="Admin Dashboard" />
 
-      <div className="pt-24 md:pt-36 pb-4 min-h-screen bg-[#f5f5f5]">
+      <AdminLayout>
         <div className="flex relative w-full">
 
-          {/* LEFT SIDEBAR */}
+          {/* SIDEBAR */}
           <div
             className={`
-              fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 
+              fixed top-[90px] left-0 h-[calc(100vh-90px)] w-64 bg-white shadow-lg z-50 
               transform transition-transform duration-300
               ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}
-              sm:static sm:translate-x-0 sm:w-1/4 sm:block
+              sm:static sm:translate-x-0 sm:w-64 sm:h-auto
             `}
           >
-            <AdminMenu toggleMenu={toggleMenu} />
+            <AdminMenu toggleMenu={() => setIsMenuOpen(!isMenuOpen)} />
           </div>
 
-          {/* OVERLAY (MOBILE ONLY) */}
+          {/* OVERLAY */}
           {isMenuOpen && (
             <div
-              onClick={toggleMenu}
+              onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-black bg-opacity-40 z-40 sm:hidden"
             ></div>
           )}
 
-          {/* RIGHT CONTENT PANEL */}
-          <div className="w-full sm:w-3/4 px-2 sm:px-6">
-            {/* Mobile Menu Button */}
+          {/* RIGHT PANEL */}
+          <div className="w-full sm:pl-6">
+            {/* Mobile menu button */}
             <button
-              onClick={toggleMenu}
-              className="sm:hidden text-2xl mb-3 mt-2"
+              onClick={() => setIsMenuOpen(true)}
+              className="sm:hidden text-2xl mb-4 ml-1"
             >
               <GiHamburgerMenu />
             </button>
 
-            <div className="bg-white shadow rounded-lg p-3 sm:p-6 min-h-[75vh]">
+            <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 min-h-[70vh]">
               <Routes>
                 <Route path="profile" element={<AdminProfile />} />
                 <Route path="add-product" element={<CreateProduct />} />
@@ -74,9 +73,8 @@ const AdminDashboard = () => {
               </Routes>
             </div>
           </div>
-
         </div>
-      </div>
+      </AdminLayout>
     </>
   );
 };
