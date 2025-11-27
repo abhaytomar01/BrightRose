@@ -1,16 +1,20 @@
+// src/pages/Admin/CreateProduct.jsx
+
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
-import { useAuth } from "../../context/auth";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { useAuth } from "../../context/auth";
+import SeoData from "../../SEO/SeoData";
+import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
 
-const AddProduct = () => {
+const CreateProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
+  const [isSubmit, setIsSubmit] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
-  // product fields
+  // PRODUCT FIELDS
   const [form, setForm] = useState({
     name: "",
     fabric: "",
@@ -24,126 +28,175 @@ const AddProduct = () => {
     sku: "",
     price: "",
     stock: "",
-    tags: "",
   });
 
-  const [images, setImages] = useState([]);
-  const [previewImages, setPreviewImages] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
 
-  const handleChange = (e) => {
+  // IMAGES (BASE64)
+  const MAX_IMAGES = 10;
+  const MAX_SIZE = 50 * 1024 * 1024;
+
+  const [imagesPreview, setImagesPreview] = useState([]);
+  const [imagesBase64, setImagesBase64] = useState([]);
+
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const addTag = () => {
+    if (!tagInput.trim()) return;
+    setTags([...tags, tagInput.trim()]);
+    setTagInput("");
   };
 
-  // convert file → base64
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
+  const removeTag = (i) => {
+    setTags(tags.filter((_, idx) => idx !== i));
+  };
 
-  // multiple image upload
-  const handleImages = async (e) => {
+  const handleImages = (e) => {
     const files = Array.from(e.target.files);
-
-    for (let f of files) {
-      const base64 = await toBase64(f);
-      setImages((prev) => [...prev, base64]);
-      setPreviewImages((prev) => [...prev, base64]);
+    if (imagesBase64.length + files.length > MAX_IMAGES) {
+      toast.warning(`Max ${MAX_IMAGES} images allowed`);
+      return;
     }
+
+    files.forEach((file) => {
+      if (file.size > MAX_SIZE) {
+        toast.warning("Image exceeds 50MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagesPreview((p) => [...p, reader.result]);
+        setImagesBase64((p) => [...p, reader.result]); // BASE64
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleSubmit = async (e) => {
+  const removeImage = (i) => {
+    setImagesPreview(imagesPreview.filter((_, idx) => idx !== i));
+    setImagesBase64(imagesBase64.filter((_, idx) => idx !== i));
+  };
+
+  const submitHandler = async (e) => {
     e.preventDefault();
+    setIsSubmit(true);
 
-    if (!form.name || !form.price || !form.stock) {
-      toast.error("Name, price and stock are required");
+    if (!form.name.trim()) {
+      toast.error("Product name required");
+      setIsSubmit(false);
       return;
     }
-    if (images.length === 0) {
-      toast.error("Please add at least 1 image");
-      return;
-    }
-
-    setLoading(true);
 
     try {
+      const formData = new FormData();
+
+      Object.keys(form).forEach((field) => {
+        formData.append(field, form[field]);
+      });
+
+      formData.append("tags", JSON.stringify(tags));
+      formData.append("images", JSON.stringify(imagesBase64));
+
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/products/new-product`,
-        { ...form, images },
-        {
-          headers: {
-            Authorization: `Bearer ${authAdmin?.token}`,
-          },
-        }
+        formData,
+        { headers: { Authorization: `Bearer ${authAdmin.token}` } }
       );
 
       if (res.data.success) {
-        toast.success("Product added successfully!");
+        toast.success("Product created successfully");
         navigate("/admin/dashboard/all-products");
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Error adding product");
+      toast.error(err.response?.data?.message || "Error creating product");
+    } finally {
+      setIsSubmit(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="pt-24 p-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4 text-center">Add New Product</h2>
+    <>
+      <SeoData title="Create Product" />
+      <ScrollToTopOnRouteChange />
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white shadow p-4 rounded-lg"
-      >
-        {Object.keys(form).map((key) => (
-          <div key={key} className="flex flex-col">
-            <label className="text-sm font-medium capitalize">
-              {key}
-            </label>
+      {isSubmit ? (
+        <Spinner />
+      ) : (
+        <form
+          onSubmit={submitHandler}
+          className="bg-white p-4 rounded shadow flex flex-col gap-4"
+        >
+          {/* --- Inputs --- */}
+          {Object.keys(form).map((key) => (
             <input
-              type="text"
+              key={key}
               name={key}
+              placeholder={key}
               value={form[key]}
               onChange={handleChange}
               className="border p-2 rounded"
             />
-          </div>
-        ))}
+          ))}
 
-        {/* Images */}
-        <div>
-          <label className="font-medium">Product Images (Base64)</label>
-          <input
-            type="file"
-            multiple
-            onChange={handleImages}
-            className="block mt-1"
-            accept="image/*"
-          />
-
-          <div className="flex gap-2 overflow-x-auto mt-2">
-            {previewImages.map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                className="w-20 h-20 rounded border object-contain"
+          {/* Tags */}
+          <div>
+            <div className="flex gap-2">
+              <input
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                placeholder="Add tag"
+                className="border p-2 flex-1"
               />
-            ))}
-          </div>
-        </div>
+              <button type="button" onClick={addTag} className="bg-blue-500 text-white px-4 rounded">
+                Add
+              </button>
+            </div>
 
-        <button
-          disabled={loading}
-          className="w-full bg-black text-white py-2 rounded"
-        >
-          {loading ? "Saving..." : "Add Product"}
-        </button>
-      </form>
-    </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tags.map((t, i) => (
+                <span
+                  key={i}
+                  className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2"
+                >
+                  {t}
+                  <button onClick={() => removeTag(i)}>x</button>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Images */}
+          <div>
+            <label className="block font-medium mb-2">Product Images (Base64)</label>
+
+            <div className="flex gap-2 overflow-x-auto">
+              {imagesPreview.map((img, i) => (
+                <div key={i} className="relative">
+                  <img src={img} className="w-20 h-20 object-cover border" />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="absolute top-0 right-0 bg-red-600 text-white px-1"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <input type="file" multiple accept="image/*" onChange={handleImages} />
+          </div>
+
+          <button className="bg-orange-500 text-white w-full p-2 rounded">
+            Submit
+          </button>
+        </form>
+      )}
+    </>
   );
 };
 
-export default AddProduct;
+export default CreateProduct;

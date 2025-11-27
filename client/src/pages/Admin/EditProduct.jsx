@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+// src/pages/Admin/EditProduct.jsx
+
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Spinner from "../../components/Spinner";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/auth";
-import { useNavigate, useParams } from "react-router-dom";
+import SeoData from "../../SEO/SeoData";
+import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
 
 const EditProduct = () => {
   const { authAdmin } = useAuth();
@@ -10,7 +15,9 @@ const EditProduct = () => {
   const { productId } = useParams();
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Product fields
   const [form, setForm] = useState({
     name: "",
     fabric: "",
@@ -24,150 +31,192 @@ const EditProduct = () => {
     sku: "",
     price: "",
     stock: "",
-    tags: "",
   });
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  // Tags
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+
+  const addTag = () => {
+    if (!tagInput.trim()) return;
+    setTags([...tags, tagInput.trim()]);
+    setTagInput("");
+  };
+  const removeTag = (i) => {
+    setTags(tags.filter((_, idx) => idx !== i));
+  };
+
+  // IMAGES
+  const MAX_IMAGES = 10;
+  const MAX_SIZE = 50 * 1024 * 1024;
 
   const [oldImages, setOldImages] = useState([]);
   const [removedImages, setRemovedImages] = useState([]);
 
-  const [newImages, setNewImages] = useState([]);
-  const [newPreview, setNewPreview] = useState([]);
+  const [newImagesBase64, setNewImagesBase64] = useState([]);
+  const [newImagesPreview, setNewImagesPreview] = useState([]);
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-    });
+  const removeOldImage = (public_id) => {
+    setOldImages(oldImages.filter((img) => img.public_id !== public_id));
+    setRemovedImages([...removedImages, public_id]);
+  };
 
-  const handleNewImages = async (e) => {
+  const removeNewImage = (i) => {
+    setNewImagesBase64(newImagesBase64.filter((_, idx) => idx !== i));
+    setNewImagesPreview(newImagesPreview.filter((_, idx) => idx !== i));
+  };
+
+  const handleNewImages = (e) => {
     const files = Array.from(e.target.files);
 
-    for (let f of files) {
-      const base64 = await toBase64(f);
-      setNewImages((p) => [...p, base64]);
-      setNewPreview((p) => [...p, base64]);
+    if (oldImages.length + newImagesBase64.length + files.length > MAX_IMAGES) {
+      toast.warning(`Max ${MAX_IMAGES} images allowed`);
+      return;
     }
+
+    files.forEach((file) => {
+      if (file.size > MAX_SIZE) {
+        toast.warning("Image exceeds 50MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setNewImagesPreview((p) => [...p, reader.result]);
+        setNewImagesBase64((p) => [...p, reader.result]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const loadProduct = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/products/${productId}`
-      );
-
-      const p = res.data.product;
-
-      setForm({
-        name: p.name,
-        fabric: p.fabric,
-        color: p.color,
-        weavingArt: p.weavingArt,
-        uniqueness: p.uniqueness,
-        sizeInfo: p.sizeInfo,
-        description: p.description,
-        specification: p.specification,
-        care: p.care,
-        sku: p.sku,
-        price: p.price,
-        stock: p.stock,
-        tags: p.tags?.join(", "),
-      });
-
-      setOldImages(p.images);
-    } catch (err) {
-      toast.error("Unable to load product");
-    }
-    setLoading(false);
-  };
-
+  // LOAD PRODUCT
   useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products/${productId}`
+        );
+
+        const p = res.data.product;
+
+        setForm({
+          name: p.name,
+          fabric: p.fabric,
+          color: p.color,
+          weavingArt: p.weavingArt,
+          uniqueness: p.uniqueness,
+          sizeInfo: p.sizeInfo,
+          description: p.description,
+          specification: p.specification,
+          care: p.care,
+          sku: p.sku,
+          price: p.price,
+          stock: p.stock,
+        });
+
+        setTags(p.tags || []);
+        setOldImages(p.images || []);
+      } catch (err) {
+        toast.error("Unable to load product");
+      } finally {
+        setLoading(false);
+      }
+    };
     loadProduct();
   }, []);
 
-  const removeOld = (pid) => {
-    setOldImages((prev) => prev.filter((img) => img.public_id !== pid));
-    setRemovedImages((prev) => [...prev, pid]);
-  };
-
-  const removeNew = (i) => {
-    setNewImages((p) => p.filter((_, idx) => idx !== i));
-    setNewPreview((p) => p.filter((_, idx) => idx !== i));
-  };
-
-  const handleSubmit = async (e) => {
+  // SUBMIT UPDATE
+  const submitHandler = async (e) => {
     e.preventDefault();
-
-    setLoading(true);
+    setSaving(true);
 
     try {
+      const formData = new FormData();
+
+      Object.keys(form).forEach((field) =>
+        formData.append(field, form[field])
+      );
+
+      formData.append("tags", JSON.stringify(tags));
+      formData.append("oldImages", JSON.stringify(oldImages));
+      formData.append("removedImages", JSON.stringify(removedImages));
+      formData.append("images", JSON.stringify(newImagesBase64));
+
       const res = await axios.patch(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/products/update/${productId}`,
-        {
-          ...form,
-          tags: form.tags.split(",").map((t) => t.trim()),
-          oldImages,
-          removedImages,
-          images: newImages,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authAdmin?.token}`,
-          },
-        }
+        formData,
+        { headers: { Authorization: `Bearer ${authAdmin.token}` } }
       );
 
       if (res.data.success) {
-        toast.success("Product updated!");
+        toast.success("Product updated successfully");
         navigate("/admin/dashboard/all-products");
       }
-    } catch (error) {
-      toast.error("Update failed");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Update failed");
+    } finally {
+      setSaving(false);
     }
-
-    setLoading(false);
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (loading || saving) return <Spinner />;
 
   return (
-    <div className="pt-24 p-4 max-w-xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4 text-center">
-        Edit Product
-      </h2>
+    <>
+      <SeoData title="Edit Product" />
+      <ScrollToTopOnRouteChange />
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white shadow p-4 rounded-lg"
-      >
+      <form onSubmit={submitHandler} className="bg-white p-4 rounded shadow flex flex-col gap-6">
+        {/* Fields */}
         {Object.keys(form).map((key) => (
-          <div key={key} className="flex flex-col">
-            <label className="text-sm font-medium capitalize">
-              {key}
-            </label>
-            <input
-              name={key}
-              value={form[key]}
-              onChange={(e) =>
-                setForm({ ...form, [e.target.name]: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-          </div>
+          <input
+            key={key}
+            name={key}
+            value={form[key]}
+            onChange={handleChange}
+            placeholder={key}
+            className="border p-2 rounded"
+          />
         ))}
 
-        {/* OLD IMAGES */}
-        <h3 className="font-medium mt-4">Current Images</h3>
+        {/* Tags */}
+        <div>
+          <div className="flex gap-2">
+            <input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              placeholder="Add tag"
+              className="border p-2 flex-1"
+            />
+            <button
+              type="button"
+              onClick={addTag}
+              className="bg-blue-500 text-white px-4"
+            >
+              Add
+            </button>
+          </div>
+
+          <div className="flex gap-2 flex-wrap mt-2">
+            {tags.map((t, i) => (
+              <span key={i} className="bg-gray-200 p-2 rounded flex gap-2">
+                {t} <button onClick={() => removeTag(i)}>x</button>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Old Images */}
+        <h3 className="font-medium">Existing Images</h3>
         <div className="flex gap-2 overflow-x-auto">
           {oldImages.map((img) => (
             <div key={img.public_id} className="relative">
-              <img
-                src={img.url}
-                className="w-20 h-20 border rounded object-contain"
-              />
+              <img src={img.url} className="w-20 h-20 object-cover border" />
               <button
-                onClick={() => removeOld(img.public_id)}
+                onClick={() => removeOldImage(img.public_id)}
                 type="button"
                 className="absolute top-0 right-0 bg-red-600 text-white px-1"
               >
@@ -177,19 +226,16 @@ const EditProduct = () => {
           ))}
         </div>
 
-        {/* NEW IMAGES */}
+        {/* New Uploads */}
         <h3 className="font-medium">Add New Images</h3>
         <input type="file" multiple accept="image/*" onChange={handleNewImages} />
 
-        <div className="flex gap-2 mt-2">
-          {newPreview.map((img, i) => (
+        <div className="flex gap-2 overflow-x-auto">
+          {newImagesPreview.map((img, i) => (
             <div key={i} className="relative">
-              <img
-                src={img}
-                className="w-20 h-20 border rounded object-contain"
-              />
+              <img src={img} className="w-20 h-20 object-cover border" />
               <button
-                onClick={() => removeNew(i)}
+                onClick={() => removeNewImage(i)}
                 type="button"
                 className="absolute top-0 right-0 bg-red-600 text-white px-1"
               >
@@ -199,11 +245,18 @@ const EditProduct = () => {
           ))}
         </div>
 
-        <button className="w-full bg-black text-white py-2 rounded">
-          Save Changes
+        <button className="bg-orange-500 text-white w-full p-2 rounded">
+          Update
         </button>
+
+        <Link
+          to="/admin/dashboard/all-products"
+          className="bg-red-600 text-center text-white w-full p-2 rounded"
+        >
+          Cancel
+        </Link>
       </form>
-    </div>
+    </>
   );
 };
 
