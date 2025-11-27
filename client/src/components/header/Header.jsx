@@ -113,11 +113,29 @@ const Header = () => {
         </div>
 
         {/* LOGO */}
-        <div className="flex justify-center">
+        {/* <div className="flex justify-center">
           <Link to="/">
             <img src={Logo} className="w-24 md:w-28 h-16 object-contain" />
           </Link>
-        </div>
+        </div> */}
+
+        <div className="flex justify-center">
+  <Link to="/" className="select-none">
+    <h1
+      className="
+        font-[Cinzel] 
+        text-[20px] 
+        md:text-[28px] 
+        font-semibold 
+        tracking-[0.15em] 
+        text-[#8C0013]
+      "
+    >
+      BRIGHT ROSE
+    </h1>
+  </Link>
+</div>
+
 
         {/* ICONS */}
         <div className="flex items-center justify-end gap-4">
