@@ -133,17 +133,6 @@ const EditProduct = () => {
     e.preventDefault();
     setIsSubmit(true);
 
-    if (specs.length < 2) {
-      toast.warning("Add at least 2 specifications");
-      setIsSubmit(false);
-      return;
-    }
-
-    if (oldImages.length + newImages.length === 0) {
-      toast.warning("Add at least 1 product image");
-      setIsSubmit(false);
-      return;
-    }
 
     try {
       const formData = new FormData();
