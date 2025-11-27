@@ -48,8 +48,8 @@ const EditProduct = () => {
   const [logoPreview, setLogoPreview] = useState("");
   const [oldLogo, setOldLogo] = useState(null);
 
-  const MAX_IMAGE_SIZE = 500 * 1024; // keep as earlier (500KB)
-  const MAX_IMAGES = 4;
+  const MAX_IMAGE_SIZE = 50 * 1024 * 1024; // keep as earlier (50MB)
+  const MAX_IMAGES = 10;
 
   // ---------- helpers ----------
   const addSpecs = () => {
