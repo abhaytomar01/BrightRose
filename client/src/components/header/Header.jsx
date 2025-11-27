@@ -124,7 +124,7 @@ const Header = () => {
     <h1
       className="
         font-[Cinzel] 
-        text-[20px] 
+        text-[14px] 
         md:text-[28px] 
         font-semibold 
         tracking-[0.15em] 
