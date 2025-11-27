@@ -286,23 +286,7 @@ const [touchEnd, setTouchEnd] = useState(0);
 </div>
 
 
-    {/* MOBILE DOT INDICATORS */}
-    <div className="md:hidden flex justify-center gap-2 mt-3">
-      {gallery.map((_, idx) => (
-        <button
-          key={idx}
-          onClick={() => {
-            setSelectedIndex(idx);
-            setSelectedImage(gallery[idx]);
-          }}
-          className={`h-3 w-3 rounded-full ${
-            selectedIndex === idx
-              ? "bg-black scale-110"
-              : "bg-gray-400"
-          } transition-all`}
-        />
-      ))}
-    </div>
+
 
   </div>
 </div>
