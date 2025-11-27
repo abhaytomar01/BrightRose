@@ -13,18 +13,6 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 
 // ==============================
-// Cloudinary Config
-// ==============================
-import cloudinary from "./config/cloudinary.js";
-
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_SECRET,
-  secure: true,
-});
-
-// ==============================
 // Packages
 // ==============================
 import express from "express";
@@ -51,8 +39,6 @@ const app = express();
 // ==============================
 // CORS FIX (Full working)
 // ==============================
-
-// app.use(cors());
 app.use(
   cors({
     origin: [
