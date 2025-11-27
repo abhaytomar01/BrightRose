@@ -174,16 +174,18 @@ export default function ProductDetails() {
   <div className="hidden md:flex flex-col gap-4 w-[110px] overflow-auto max-h-[600px] pr-1">
     {gallery.map((img, idx) => (
       <div
-        key={idx}
-        onClick={() => {
-          setSelectedImage(img);
-          setSelectedIndex(idx);
-        }}
-        className={`w-full h-28 overflow-hidden cursor-pointer border
-        ${selectedIndex === idx ? "border-neutralDark/60 border-2" : "border-neutral-300"}`}
-      >
-        <img src={img} className="w-full h-full object-cover" />
-      </div>
+  key={idx}
+  onClick={() => {
+    setSelectedImage(img);
+    setSelectedIndex(idx);
+  }}
+  className={`w-[110px] h-[160px] bg-white overflow-hidden cursor-pointer border rounded-md
+    ${selectedIndex === idx ? "border-black" : "border-neutral-300"}`}
+>
+  <img src={img} className="w-full h-[550px] object-contain bg-neutral-100" />
+
+</div>
+
     ))}
   </div>
 
@@ -192,7 +194,7 @@ export default function ProductDetails() {
 
     {/* DESKTOP ZOOM IMAGE */}
 <div
-  className="hidden md:block w-full h-[560px] overflow-hidden relative"
+  className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-100 rounded-lg overflow-hidden relative"
   style={{
     backgroundImage: `url(${selectedImage})`,
     backgroundSize: "100%",          // normal size
@@ -218,8 +220,8 @@ export default function ProductDetails() {
   {/* transparent img just for container sizing */}
   <img
     src={selectedImage}
-    className="opacity-0 w-full h-full object-cover"
-    onError={(e) => (e.target.src = fallbackImage)}
+    className="max-h-full max-w-full object-contain"
+    alt=""
   />
 </div>
 
