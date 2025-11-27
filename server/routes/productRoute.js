@@ -4,10 +4,17 @@ import { upload } from "../config/multer.js";
 
 import newProduct from "../controllers/product/newProduct.js";
 import updateProduct from "../controllers/product/updateProduct.js";
+import getAllProducts from "../controllers/product/getAllProducts.js";
+import getSingleProduct from "../controllers/product/getSingleProduct.js";
+import deleteProduct from "../controllers/product/deleteProduct.js";
 
 const router = express.Router();
 
-// CREATE PRODUCT
+// PUBLIC
+router.get("/", getAllProducts);
+router.get("/:id", getSingleProduct);
+
+// ADMIN
 router.post(
   "/new-product",
   requireSignIn,
@@ -16,13 +23,19 @@ router.post(
   newProduct
 );
 
-// UPDATE PRODUCT
 router.patch(
   "/update/:id",
   requireSignIn,
   isAdmin,
   upload.array("images", 10),
   updateProduct
+);
+
+router.delete(
+  "/delete/:id",
+  requireSignIn,
+  isAdmin,
+  deleteProduct
 );
 
 export default router;
