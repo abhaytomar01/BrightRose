@@ -15,7 +15,7 @@ dotenv.config({ path: path.join(__dirname, ".env") });
 // ==============================
 // Cloudinary Config
 // ==============================
-import cloudinary from "cloudinary";
+import cloudinary from "./config/cloudinary.js";
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
