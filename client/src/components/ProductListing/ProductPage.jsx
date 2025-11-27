@@ -24,6 +24,9 @@ export default function ProductDetails() {
   const [isZoom, setIsZoom] = useState(false);
 const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
+const [touchStart, setTouchStart] = useState(0);
+const [touchEnd, setTouchEnd] = useState(0);
+
 
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -230,27 +233,58 @@ const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 </div>
 
 
-    {/* MOBILE SWIPE SLIDER (new) */}
-    <div className="md:hidden w-full overflow-hidden relative">
+   {/* MOBILE IMAGE SLIDER (real swipe) */}
+<div
+  className="md:hidden relative w-full overflow-hidden"
+  onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
+  onTouchMove={(e) => setTouchEnd(e.touches[0].clientX)}
+  onTouchEnd={() => {
+    if (touchStart - touchEnd > 50) {
+      // swipe left → next
+      setSelectedIndex((prev) =>
+        prev === gallery.length - 1 ? prev : prev + 1
+      );
+    }
+    if (touchStart - touchEnd < -50) {
+      // swipe right → previous
+      setSelectedIndex((prev) => (prev === 0 ? 0 : prev - 1));
+    }
+  }}
+>
+  {/* Slider wrapper */}
+  <div
+    className="flex transition-transform duration-500"
+    style={{
+      transform: `translateX(-${selectedIndex * 100}%)`,
+    }}
+  >
+    {gallery.map((img, idx) => (
       <div
-        className="flex transition-transform duration-500"
-        style={{ transform: `translateX(-${selectedIndex * 100}%)` }}
+        key={idx}
+        className="w-full flex-shrink-0 flex justify-center bg-neutral-50"
+        onClick={() => openLightbox(idx)}
       >
-        {gallery.map((img, idx) => (
-          <div
-            key={idx}
-            className="w-full flex-shrink-0 flex justify-center bg-neutral-100"
-            onClick={() => openLightbox(idx)}
-          >
-            <img
-              src={img}
-              className="max-h-[550px] w-auto object-contain"
-              alt=""
-            />
-          </div>
-        ))}
+        <img
+          src={img}
+          className="max-h-[550px] object-contain"
+        />
       </div>
-    </div>
+    ))}
+  </div>
+
+  {/* DOT INDICATORS */}
+  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+    {gallery.map((_, idx) => (
+      <div
+        key={idx}
+        className={`w-3 h-3 rounded-full ${
+          selectedIndex === idx ? "bg-black" : "bg-gray-300"
+        }`}
+      ></div>
+    ))}
+  </div>
+</div>
+
 
     {/* MOBILE DOT INDICATORS */}
     <div className="md:hidden flex justify-center gap-2 mt-3">
