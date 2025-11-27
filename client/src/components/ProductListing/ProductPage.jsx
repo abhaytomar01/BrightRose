@@ -168,101 +168,81 @@ export default function ProductDetails() {
       <div className="grid md:grid-cols-2 gap-6 mt-4">
 
         {/* LEFT – GALLERY */}
+{/* LEFT – GALLERY */}
 <div className="flex gap-5">
 
-  {/* DESKTOP THUMBNAILS (auto count) */}
-  <div className="hidden md:flex flex-col gap-4 w-[110px] overflow-auto max-h-[600px] pr-1">
+  {/* DESKTOP THUMBNAILS */}
+  <div className="hidden md:flex flex-col gap-3 w-[110px] overflow-auto max-h-[650px] pr-1">
     {gallery.map((img, idx) => (
       <div
-  key={idx}
-  onClick={() => {
-    setSelectedImage(img);
-    setSelectedIndex(idx);
-  }}
-  className={`w-[110px] h-[160px] bg-white overflow-hidden cursor-pointer border rounded-md
-    ${selectedIndex === idx ? "border-black" : "border-neutral-300"}`}
->
-  <img src={img} className="w-full h-[550px] object-contain bg-neutral-100" />
-
-</div>
-
+        key={idx}
+        onClick={() => {
+          setSelectedImage(img);
+          setSelectedIndex(idx);
+        }}
+        className={`w-full h-[150px] bg-white rounded-md overflow-hidden cursor-pointer border
+        ${selectedIndex === idx ? "border-black" : "border-neutral-300"}`}
+      >
+        <img
+          src={img}
+          className="w-full h-full object-contain bg-neutral-50"
+        />
+      </div>
     ))}
   </div>
 
   {/* MAIN IMAGE AREA */}
   <div className="flex-1 relative">
 
-    {/* DESKTOP ZOOM IMAGE */}
-<div
-  className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-100 rounded-lg overflow-hidden relative"
-  style={{
-    backgroundImage: `url(${selectedImage})`,
-    backgroundSize: "100%",          // normal size
-    backgroundPosition: "center",
-    transition: "background-size 0.3s ease",
-    cursor: "zoom-in",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.backgroundSize = "160%"; // zoom level
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.backgroundSize = "100%"; // reset
-    e.currentTarget.style.backgroundPosition = "center";
-  }}
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    e.currentTarget.style.backgroundPosition = `${x}% ${y}%`;
-  }}
-  onClick={() => openLightbox(selectedIndex)}
->
-  {/* transparent img just for container sizing */}
-  <img
-    src={selectedImage}
-    className="max-h-full max-w-full object-contain"
-    alt=""
-  />
-</div>
-
-
-    {/* MOBILE SLIDER */}
-    {/* MOBILE – SWIPE SCROLL IMAGES */}
-<div className="md:hidden w-full overflow-x-scroll snap-x snap-mandatory flex scroll-smooth no-scrollbar">
-  {gallery.map((img, idx) => (
-    <div
-      key={idx}
-      onClick={() => openLightbox(idx)}
-      className="snap-start w-full shrink-0"
+    {/* DESKTOP MAIN IMAGE – CLEAN, NO CROP */}
+    <div className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-50 rounded-lg overflow-hidden relative cursor-zoom-in"
+      onClick={() => openLightbox(selectedIndex)}
     >
       <img
-        src={img}
-        className="w-full h-[500px] object-cover"
-        alt=""
+        src={selectedImage}
+        className="max-h-full max-w-full object-contain"
       />
     </div>
-  ))}
-</div>
 
+    {/* MOBILE SLIDER */}
+    <div className="md:hidden w-full overflow-x-scroll snap-x snap-mandatory flex scroll-smooth no-scrollbar">
+      {gallery.map((img, idx) => (
+        <div
+          key={idx}
+          onClick={() => openLightbox(idx)}
+          className="snap-start w-full shrink-0 flex justify-center bg-neutral-100"
+        >
+          <img
+            src={img}
+            className="max-h-[550px] w-auto object-contain"
+          />
+        </div>
+      ))}
+    </div>
 
     {/* MOBILE THUMBNAILS */}
     <div className="md:hidden flex gap-2 mt-3 overflow-x-auto pb-2">
       {gallery.map((img, idx) => (
-        <img
+        <div
           key={idx}
-          src={img}
-          className={`h-20 w-16 rounded-lg object-cover border cursor-pointer ${
-            selectedIndex === idx ? "border-neutralDark/70 border-2" : "border-gray-300"
-          }`}
           onClick={() => {
             setSelectedIndex(idx);
             setSelectedImage(img);
           }}
-        />
+          className={`h-20 w-14 rounded-md overflow-hidden border cursor-pointer
+            ${selectedIndex === idx ? "border-black" : "border-gray-300"}`}
+        >
+          <img
+            src={img}
+            className="w-full h-full object-contain bg-neutral-50"
+          />
+        </div>
       ))}
     </div>
+
   </div>
 </div>
+
 
         {/* RIGHT – DETAILS */}
         <div className="flex flex-col gap-4 px-2">
