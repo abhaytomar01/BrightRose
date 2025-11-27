@@ -250,7 +250,7 @@ const EditProduct = () => {
           <div>
             <div className="flex gap-2">
               <input className="border p-2 flex-1" value={highlightInput} onChange={(e) => setHighlightInput(e.target.value)} placeholder="Highlight" />
-              <button type="button" onClick={addHighlight} className="bg-primaryBlue text-white px-4">Add</button>
+              <button type="button" onClick={addHighlight} className="bg-primaryBlue text-neutralDark/80 px-4">Add</button>
             </div>
             <div className="flex flex-col gap-2 mt-2">
               {highlights.map((h, i) => (
@@ -267,7 +267,7 @@ const EditProduct = () => {
             <div className="flex gap-2">
               <TextField value={specsInput.title} onChange={(e) => setSpecsInput({ ...specsInput, title: e.target.value })} name="title" label="Name" size="small" />
               <TextField value={specsInput.description} onChange={(e) => setSpecsInput({ ...specsInput, description: e.target.value })} name="description" label="Description" size="small" />
-              <button type="button" onClick={addSpecs} className="bg-primaryBlue text-white px-4">Add</button>
+              <button type="button" onClick={addSpecs} className="bg-primaryBlue text-neutralDark/80 px-4">Add</button>
             </div>
             <div className="flex flex-col gap-2 mt-2">
               {specs.map((spec, i) => (
@@ -291,7 +291,7 @@ const EditProduct = () => {
             <div className="w-24 h-24 border flex items-center justify-center overflow-hidden">
               {oldLogo ? <img src={oldLogo.url} alt="logo" className="w-full h-full object-contain" /> : logoPreview ? <img src={logoPreview} alt="logo" className="w-full h-full object-contain" /> : <ImageIcon />}
             </div>
-            <label className="bg-primaryBlue text-white px-3 py-2 rounded cursor-pointer">
+            <label className="bg-primaryBlue text-neutralDark/80 px-3 py-2 rounded cursor-pointer">
               <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
               Choose Logo
             </label>
@@ -302,26 +302,26 @@ const EditProduct = () => {
             {imagesPreview.map((img, i) => (
               <div key={i} className="w-20 h-20 relative border">
                 <img src={img} alt={`new-${i}`} className="w-full h-full object-contain" />
-                <button type="button" onClick={() => removeNewImage(i)} className="absolute top-0 right-0 text-white bg-red-600 px-1">X</button>
+                <button type="button" onClick={() => removeNewImage(i)} className="absolute top-0 right-0 text-neutralDark/80 bg-red-600 px-1">X</button>
               </div>
             ))}
             {oldImages.map((img) => (
               <div key={img.public_id} className="w-20 h-20 relative border group">
                 <img src={img.url} alt="old" className="w-full h-full object-contain group-hover:opacity-30" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <button type="button" onClick={() => removeOldImage(img.public_id)} className="bg-red-600 text-white px-2 py-1 rounded">Remove</button>
+                  <button type="button" onClick={() => removeOldImage(img.public_id)} className="bg-red-600 text-neutralDark/80 px-2 py-1 rounded">Remove</button>
                 </div>
               </div>
             ))}
           </div>
 
-          <label className="bg-primaryBlue text-white px-3 py-2 rounded cursor-pointer">
+          <label className="bg-primaryBlue text-neutralDark/80 px-3 py-2 rounded cursor-pointer">
             <input type="file" accept="image/*" multiple onChange={handleProductImageChange} className="hidden" />
             Add Images
           </label>
 
           <div className="flex gap-2">
-            <input form="mainForm" type="submit" className="bg-orange uppercase w-full p-2 text-white rounded cursor-pointer" value="Update" />
+            <input form="mainForm" type="submit" className="bg-orange uppercase w-full p-2 text-neutralDark/80 rounded cursor-pointer" value="Update" />
             <Link to="/admin/dashboard/all-products" className="bg-red-600 uppercase w-full p-2 text-white rounded text-center">Cancel</Link>
           </div>
         </div>
