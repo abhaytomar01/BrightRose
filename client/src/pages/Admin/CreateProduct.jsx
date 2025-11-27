@@ -6,14 +6,15 @@ import axios from "axios";
 import Spinner from "../../components/Spinner";
 import { useAuth } from "../../context/auth";
 import SeoData from "../../SEO/SeoData";
-import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
+
+const MAX_IMAGES = 10;
+const MAX_SIZE = 50 * 1024 * 1024; // 50MB each (server limit)
 
 const CreateProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
 
-  // PRODUCT FIELDS
   const [form, setForm] = useState({
     name: "",
     fabric: "",
@@ -27,120 +28,96 @@ const CreateProduct = () => {
     sku: "",
     price: "",
     stock: "",
+    brandName: "",
   });
 
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
 
-  // IMAGES (BASE64)
-  const MAX_IMAGES = 10;
-  const MAX_SIZE = 50 * 1024 * 1024; // 50MB
-
-  const [imagesPreview, setImagesPreview] = useState([]); // base64 strings for preview
-  const [imagesBase64, setImagesBase64] = useState([]); // base64 strings to send
+  const [imagesPreview, setImagesPreview] = useState([]);
+  const [imagesFiles, setImagesFiles] = useState([]);
+  const [logoPreview, setLogoPreview] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const addTag = () => {
     if (!tagInput.trim()) return;
-    setTags((p) => [...p, tagInput.trim()]);
+    setTags((s) => [...s, tagInput.trim()]);
     setTagInput("");
   };
-  const removeTag = (i) => setTags((p) => p.filter((_, idx) => idx !== i));
+  const removeTag = (i) => setTags((s) => s.filter((_, idx) => idx !== i));
 
-  // convert file -> base64
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (err) => reject(err);
-    });
-
-  const handleImages = async (e) => {
+  // images
+  const handleImages = (e) => {
     const files = Array.from(e.target.files || []);
-    if (imagesBase64.length + files.length > MAX_IMAGES) {
+    if (imagesFiles.length + files.length > MAX_IMAGES) {
       toast.warning(`Max ${MAX_IMAGES} images allowed`);
       return;
     }
-
-    for (const file of files) {
+    files.forEach((file) => {
       if (file.size > MAX_SIZE) {
-        toast.warning("One image exceeds 50MB");
-        continue;
+        toast.warning("Image exceeds max size 50MB");
+        return;
       }
-      try {
-        const b64 = await fileToBase64(file);
-        setImagesPreview((p) => [...p, b64]);
-        setImagesBase64((p) => [...p, b64]);
-      } catch (err) {
-        console.error("File read error", err);
-        toast.error("Failed to read an image file");
-      }
-    }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagesPreview((p) => [...p, reader.result]);
+      };
+      reader.readAsDataURL(file);
+      setImagesFiles((p) => [...p, file]);
+    });
   };
 
   const removeImage = (i) => {
     setImagesPreview((p) => p.filter((_, idx) => idx !== i));
-    setImagesBase64((p) => p.filter((_, idx) => idx !== i));
+    setImagesFiles((p) => p.filter((_, idx) => idx !== i));
+  };
+
+  // logo
+  const handleLogo = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > MAX_SIZE) {
+      toast.warning("Logo exceeds max size 50MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setLogoPreview(reader.result);
+    reader.readAsDataURL(f);
+    setLogoFile(f);
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmit(true);
-
     try {
-      // basic validation
-      if (!form.name?.trim()) {
-        toast.error("Product name required");
-        setIsSubmit(false);
-        return;
-      }
-      if (!form.price) {
-        toast.error("Price required");
-        setIsSubmit(false);
-        return;
-      }
-      if (!form.stock) {
-        toast.error("Stock required");
-        setIsSubmit(false);
-        return;
-      }
-      if (imagesBase64.length === 0) {
-        toast.error("Add at least one image");
-        setIsSubmit(false);
-        return;
-      }
+      if (!form.name.trim()) { toast.error("Product name required"); setIsSubmit(false); return; }
 
-      // Build JSON payload
-      const payload = {
-        ...form,
-        price: form.price,
-        stock: form.stock,
-        tags: tags,
-        images: imagesBase64,
-      };
+      const fd = new FormData();
+      // fields
+      Object.keys(form).forEach((k) => fd.append(k, form[k]));
+      fd.append("tags", JSON.stringify(tags));
+
+      // files
+      imagesFiles.forEach((f) => fd.append("images", f));
+      if (logoFile) fd.append("logo", logoFile);
 
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/products/new-product`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${authAdmin?.token}`,
-            "Content-Type": "application/json",
-          },
-        }
+        fd,
+        { headers: { Authorization: `Bearer ${authAdmin.token}` } }
       );
 
-      if (res.data?.success) {
+      if (res.data.success) {
         toast.success("Product created successfully");
         navigate("/admin/dashboard/all-products");
       } else {
-        toast.error(res.data?.message || "Failed to create product");
+        toast.error(res.data.message || "Create failed");
       }
     } catch (err) {
       console.error("Create error:", err);
-      toast.error(err.response?.data?.message || "Error creating product");
+      toast.error(err.response?.data?.message || err.message || "Error creating product");
     } finally {
       setIsSubmit(false);
     }
@@ -149,61 +126,44 @@ const CreateProduct = () => {
   return (
     <>
       <SeoData title="Create Product" />
-      <ScrollToTopOnRouteChange />
-
-      {isSubmit ? (
-        <Spinner />
-      ) : (
+      {isSubmit ? (<Spinner />) : (
         <form onSubmit={submitHandler} className="bg-white p-4 rounded shadow flex flex-col gap-4">
-          {/* Inputs */}
-          <div className="grid grid-cols-1 gap-3">
-            <input name="name" placeholder="Name" value={form.name} onChange={handleChange} className="border p-2 rounded" />
-            <input name="fabric" placeholder="Fabric" value={form.fabric} onChange={handleChange} className="border p-2 rounded" />
-            <input name="color" placeholder="Color" value={form.color} onChange={handleChange} className="border p-2 rounded" />
-            <input name="weavingArt" placeholder="Weaving Art" value={form.weavingArt} onChange={handleChange} className="border p-2 rounded" />
-            <input name="uniqueness" placeholder="Uniqueness" value={form.uniqueness} onChange={handleChange} className="border p-2 rounded" />
-            <input name="sizeInfo" placeholder="Size Info" value={form.sizeInfo} onChange={handleChange} className="border p-2 rounded" />
-            <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="border p-2 rounded" rows={3} />
-            <textarea name="specification" placeholder="Specification" value={form.specification} onChange={handleChange} className="border p-2 rounded" rows={2} />
-            <textarea name="care" placeholder="Care Instructions" value={form.care} onChange={handleChange} className="border p-2 rounded" rows={2} />
-            <input name="sku" placeholder="SKU" value={form.sku} onChange={handleChange} className="border p-2 rounded" />
-            <div className="flex gap-2">
-              <input name="price" placeholder="Price" value={form.price} onChange={handleChange} type="number" className="border p-2 rounded flex-1" />
-              <input name="stock" placeholder="Stock" value={form.stock} onChange={handleChange} type="number" className="border p-2 rounded w-28" />
-            </div>
-          </div>
+          {Object.keys(form).map((key) => (
+            <input key={key} name={key} placeholder={key} value={form[key]} onChange={handleChange} className="border p-2 rounded" />
+          ))}
 
-          {/* Tags */}
           <div>
-            <div className="flex gap-2">
-              <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add tag" className="border p-2 flex-1 rounded" />
-              <button type="button" onClick={addTag} className="bg-blue-600 text-white px-4 rounded">Add</button>
-            </div>
-            <div className="mt-2 flex gap-2 flex-wrap">
+            <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add tag" className="border p-2" />
+            <button type="button" onClick={addTag} className="ml-2 bg-blue-500 text-white px-3 rounded">Add</button>
+            <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((t, i) => (
                 <div key={i} className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2">
-                  <span>{t}</span>
-                  <button type="button" onClick={() => removeTag(i)} className="text-red-600">x</button>
+                  {t} <button onClick={() => removeTag(i)}>x</button>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Images */}
           <div>
-            <label className="block mb-2 font-medium">Product Images (max {MAX_IMAGES})</label>
+            <label className="block font-medium mb-2">Product Images</label>
             <div className="flex gap-2 overflow-x-auto mb-2">
               {imagesPreview.map((img, i) => (
                 <div key={i} className="relative">
-                  <img src={img} className="w-24 h-24 object-cover border rounded" alt={`preview-${i}`} />
-                  <button type="button" onClick={() => removeImage(i)} className="absolute top-0 right-0 bg-red-600 text-white px-1 rounded">X</button>
+                  <img src={img} alt={`img-${i}`} className="w-20 h-20 object-cover border" />
+                  <button type="button" onClick={() => removeImage(i)} className="absolute top-0 right-0 bg-red-600 text-white px-1">X</button>
                 </div>
               ))}
             </div>
             <input type="file" multiple accept="image/*" onChange={handleImages} />
           </div>
 
-          <button type="submit" className="bg-orange-500 text-white p-2 rounded w-full">Submit</button>
+          <div>
+            <label className="block font-medium mb-2">Brand Logo</label>
+            {logoPreview && <img src={logoPreview} className="w-28 h-28 object-contain mb-2" />}
+            <input type="file" accept="image/*" onChange={handleLogo} />
+          </div>
+
+          <button className="bg-orange-500 text-white w-full p-2 rounded">Submit</button>
         </form>
       )}
     </>

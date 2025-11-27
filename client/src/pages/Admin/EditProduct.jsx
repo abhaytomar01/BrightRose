@@ -6,7 +6,9 @@ import Spinner from "../../components/Spinner";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/auth";
 import SeoData from "../../SEO/SeoData";
-import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
+
+const MAX_IMAGES = 10;
+const MAX_SIZE = 50 * 1024 * 1024;
 
 const EditProduct = () => {
   const { authAdmin } = useAuth();
@@ -16,7 +18,6 @@ const EditProduct = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Product fields
   const [form, setForm] = useState({
     name: "",
     fabric: "",
@@ -30,73 +31,24 @@ const EditProduct = () => {
     sku: "",
     price: "",
     stock: "",
+    brandName: "",
   });
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  // Tags
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
 
-  const addTag = () => {
-    if (!tagInput.trim()) return;
-    setTags((p) => [...p, tagInput.trim()]);
-    setTagInput("");
-  };
-  const removeTag = (i) => setTags((p) => p.filter((_, idx) => idx !== i));
-
-  // IMAGES
-  const MAX_IMAGES = 10;
-  const MAX_SIZE = 50 * 1024 * 1024; // 50MB
-
-  const [oldImages, setOldImages] = useState([]); // [{url, public_id}]
+  // existing images array of { url, filename }
+  const [oldImages, setOldImages] = useState([]);
   const [removedImages, setRemovedImages] = useState([]);
 
-  const [newImagesBase64, setNewImagesBase64] = useState([]); // base64 strings
-  const [newImagesPreview, setNewImagesPreview] = useState([]);
+  // new images files + previews
+  const [newFiles, setNewFiles] = useState([]);
+  const [newPreviews, setNewPreviews] = useState([]);
 
-  const fileToBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (err) => reject(err);
-    });
+  // logo
+  const [logoPreview, setLogoPreview] = useState("");
+  const [logoFile, setLogoFile] = useState(null);
 
-  const removeOldImage = (public_id) => {
-    setOldImages((p) => p.filter((img) => img.public_id !== public_id));
-    setRemovedImages((p) => [...p, public_id]);
-  };
-
-  const removeNewImage = (i) => {
-    setNewImagesBase64((p) => p.filter((_, idx) => idx !== i));
-    setNewImagesPreview((p) => p.filter((_, idx) => idx !== i));
-  };
-
-  const handleNewImages = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (oldImages.length + newImagesBase64.length + files.length > MAX_IMAGES) {
-      toast.warning(`Max ${MAX_IMAGES} images allowed (existing + new)`);
-      return;
-    }
-
-    for (const file of files) {
-      if (file.size > MAX_SIZE) {
-        toast.warning("One image exceeds 50MB");
-        continue;
-      }
-      try {
-        const b64 = await fileToBase64(file);
-        setNewImagesPreview((p) => [...p, b64]);
-        setNewImagesBase64((p) => [...p, b64]);
-      } catch (err) {
-        console.error("File read error", err);
-        toast.error("Failed to read an image file");
-      }
-    }
-  };
-
-  // LOAD PRODUCT
   useEffect(() => {
     const loadProduct = async () => {
       try {
@@ -115,51 +67,98 @@ const EditProduct = () => {
           sku: p.sku || "",
           price: p.price || "",
           stock: p.stock || "",
+          brandName: p.brand?.name || "",
         });
         setTags(p.tags || []);
         setOldImages(p.images || []);
+        setLogoPreview(p.brand?.logo?.url || "");
       } catch (err) {
-        console.error(err);
         toast.error("Unable to load product");
       } finally {
         setLoading(false);
       }
     };
     loadProduct();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId]);
 
-  // SUBMIT UPDATE
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const addTag = () => {
+    if (!tagInput.trim()) return;
+    setTags((s) => [...s, tagInput.trim()]);
+    setTagInput("");
+  };
+  const removeTag = (i) => setTags((s) => s.filter((_, idx) => idx !== i));
+
+  const removeOldImage = (filename) => {
+    setOldImages((prev) => prev.filter((img) => img.filename !== filename));
+    setRemovedImages((prev) => [...prev, filename]);
+  };
+
+  const handleNewImages = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (oldImages.length + newFiles.length + files.length > MAX_IMAGES) {
+      toast.warning(`Max ${MAX_IMAGES} images allowed`);
+      return;
+    }
+    files.forEach((file) => {
+      if (file.size > MAX_SIZE) {
+        toast.warning("Image exceeds max size 50MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => setNewPreviews((p) => [...p, reader.result]);
+      reader.readAsDataURL(file);
+      setNewFiles((p) => [...p, file]);
+    });
+  };
+
+  const removeNewImage = (i) => {
+    setNewPreviews((p) => p.filter((_, idx) => idx !== i));
+    setNewFiles((p) => p.filter((_, idx) => idx !== i));
+  };
+
+  const handleLogo = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    if (f.size > MAX_SIZE) {
+      toast.warning("Logo exceeds max size 50MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setLogoPreview(reader.result);
+    reader.readAsDataURL(f);
+    setLogoFile(f);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setSaving(true);
-
     try {
-      // Build JSON payload (not FormData)
-      const payload = {
-        ...form,
-        tags: tags,
-        oldImages: oldImages, // array of {url, public_id}
-        removedImages: removedImages, // array of public_id strings
-        images: newImagesBase64, // base64 array (new uploads)
-      };
+      const fd = new FormData();
+      Object.keys(form).forEach((k) => fd.append(k, form[k]));
+      fd.append("tags", JSON.stringify(tags));
+      fd.append("oldImages", JSON.stringify(oldImages)); // array of {url, filename}
+      fd.append("removedImages", JSON.stringify(removedImages)); // array of filenames
 
-      const res = await axios.patch(`${import.meta.env.VITE_SERVER_URL}/api/v1/products/update/${productId}`, payload, {
-        headers: {
-          Authorization: `Bearer ${authAdmin?.token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      newFiles.forEach((f) => fd.append("images", f));
+      if (logoFile) fd.append("logo", logoFile);
 
-      if (res.data?.success) {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/products/update/${productId}`,
+        fd,
+        { headers: { Authorization: `Bearer ${authAdmin.token}` } }
+      );
+
+      if (res.data.success) {
         toast.success("Product updated successfully");
         navigate("/admin/dashboard/all-products");
       } else {
-        toast.error(res.data?.message || "Update failed");
+        toast.error(res.data.message || "Update failed");
       }
     } catch (err) {
       console.error("Update error:", err);
-      toast.error(err.response?.data?.message || "Update failed");
+      toast.error(err.response?.data?.message || err.message || "Update failed");
     } finally {
       setSaving(false);
     }
@@ -170,67 +169,46 @@ const EditProduct = () => {
   return (
     <>
       <SeoData title="Edit Product" />
-      <ScrollToTopOnRouteChange />
+      <form onSubmit={submitHandler} className="bg-white p-4 rounded shadow flex flex-col gap-4">
+        {Object.keys(form).map((key) => (
+          <input key={key} name={key} placeholder={key} value={form[key]} onChange={handleChange} className="border p-2 rounded" />
+        ))}
 
-      <form onSubmit={submitHandler} className="bg-white p-4 rounded shadow flex flex-col gap-6">
-        {/* Fields */}
-        <div className="grid grid-cols-1 gap-3">
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Name" className="border p-2 rounded" />
-          <input name="fabric" value={form.fabric} onChange={handleChange} placeholder="Fabric" className="border p-2 rounded" />
-          <input name="color" value={form.color} onChange={handleChange} placeholder="Color" className="border p-2 rounded" />
-          <input name="weavingArt" value={form.weavingArt} onChange={handleChange} placeholder="Weaving Art" className="border p-2 rounded" />
-          <input name="uniqueness" value={form.uniqueness} onChange={handleChange} placeholder="Uniqueness" className="border p-2 rounded" />
-          <input name="sizeInfo" value={form.sizeInfo} onChange={handleChange} placeholder="Size Info" className="border p-2 rounded" />
-          <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" rows={3} className="border p-2 rounded" />
-          <textarea name="specification" value={form.specification} onChange={handleChange} placeholder="Specification" rows={2} className="border p-2 rounded" />
-          <textarea name="care" value={form.care} onChange={handleChange} placeholder="Care" rows={2} className="border p-2 rounded" />
-          <div className="flex gap-2">
-            <input name="sku" value={form.sku} onChange={handleChange} placeholder="SKU" className="border p-2 rounded flex-1" />
-            <input name="price" value={form.price} onChange={handleChange} placeholder="Price" type="number" className="border p-2 rounded w-32" />
-            <input name="stock" value={form.stock} onChange={handleChange} placeholder="Stock" type="number" className="border p-2 rounded w-24" />
-          </div>
-        </div>
-
-        {/* Tags */}
         <div>
-          <div className="flex gap-2">
-            <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add tag" className="border p-2 flex-1 rounded" />
-            <button type="button" onClick={addTag} className="bg-blue-600 text-white px-4 rounded">Add</button>
-          </div>
-          <div className="flex gap-2 flex-wrap mt-2">
-            {tags.map((t, i) => (
-              <div key={i} className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2">
-                <span>{t}</span>
-                <button type="button" onClick={() => removeTag(i)} className="text-red-600">x</button>
-              </div>
-            ))}
-          </div>
+          <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add tag" className="border p-2" />
+          <button type="button" onClick={addTag} className="ml-2 bg-blue-500 text-white px-3 rounded">Add</button>
+          <div className="flex flex-wrap gap-2 mt-2">{tags.map((t, i) => <div key={i} className="bg-gray-200 px-3 py-1 rounded">{t} <button onClick={() => removeTag(i)}>x</button></div>)}</div>
         </div>
 
-        {/* Old Images */}
-        <h3 className="font-medium">Existing Images</h3>
-        <div className="flex gap-2 overflow-x-auto mb-2">
+        <h3>Existing Images</h3>
+        <div className="flex gap-2 overflow-x-auto">
           {oldImages.map((img) => (
-            <div key={img.public_id} className="relative">
-              <img src={img.url} className="w-24 h-24 object-cover border rounded" alt="" />
-              <button type="button" onClick={() => removeOldImage(img.public_id)} className="absolute top-0 right-0 bg-red-600 text-white px-1 rounded">X</button>
+            <div key={img.filename} className="relative">
+              <img src={img.url} className="w-20 h-20 object-cover border" />
+              <button type="button" onClick={() => removeOldImage(img.filename)} className="absolute top-0 right-0 bg-red-600 text-white px-1">X</button>
             </div>
           ))}
         </div>
 
-        {/* New Uploads */}
-        <h3 className="font-medium">Add New Images</h3>
+        <h3>Add New Images</h3>
         <input type="file" multiple accept="image/*" onChange={handleNewImages} />
-        <div className="flex gap-2 overflow-x-auto mt-2">
-          {newImagesPreview.map((img, i) => (
+        <div className="flex gap-2 overflow-x-auto">
+          {newPreviews.map((p, i) => (
             <div key={i} className="relative">
-              <img src={img} className="w-24 h-24 object-cover border rounded" alt={`new-${i}`} />
-              <button type="button" onClick={() => removeNewImage(i)} className="absolute top-0 right-0 bg-red-600 text-white px-1 rounded">X</button>
+              <img src={p} className="w-20 h-20 object-cover border" />
+              <button type="button" onClick={() => removeNewImage(i)} className="absolute top-0 right-0 bg-red-600 text-white px-1">X</button>
             </div>
           ))}
         </div>
 
-        <button type="submit" className="bg-orange-500 text-white w-full p-2 rounded">Update</button>
+        <div>
+          <label>Brand Logo</label>
+          {logoPreview && <img src={logoPreview} className="w-28 h-28 object-contain" />}
+          <input type="file" accept="image/*" onChange={handleLogo} />
+        </div>
+
+        <button className="bg-orange-500 text-white w-full p-2 rounded">Update</button>
+
         <Link to="/admin/dashboard/all-products" className="bg-red-600 text-white w-full p-2 rounded text-center">Cancel</Link>
       </form>
     </>

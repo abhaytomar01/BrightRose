@@ -9,13 +9,13 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env manually from backend folder
+// Load .env manually (same folder as server.js)
 dotenv.config({ path: path.join(__dirname, ".env") });
-console.log("Cloudinary ENV Loaded:", {
-  CLOUD_NAME: process.env.CLOUD_NAME,
-  API_KEY: process.env.CLOUD_API_KEY,
-});
 
+console.log("ENV Loaded:", {
+  PORT: process.env.PORT,
+  MODE: process.env.NODE_ENV,
+});
 
 // ==============================
 // Packages
@@ -25,24 +25,12 @@ import morgan from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-// ==============================
-// Local Imports
-// ==============================
-import connectDB from "./config/database.js";
-import authRoute from "./routes/authRoute.js";
-import productRoute from "./routes/productRoute.js";
-import userRoute from "./routes/userRoute.js";
-import cartRoute from "./routes/cartRoute.js";
-import contactRoute from "./routes/contactRoute.js";
-import paymentRoute from "./routes/paymentRoute.js";
-
-// ==============================
-// Express App
-// ==============================
+// Serve static files
+import fs from "fs";
 const app = express();
 
 // ==============================
-// CORS FIX (Full working)
+// CORS FIX
 // ==============================
 app.use(
   cors({
@@ -51,8 +39,8 @@ app.use(
       "http://localhost:5173",
     ],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -67,6 +55,23 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "300mb" }));
 // Logger
 // ==============================
 app.use(morgan("dev"));
+
+// ==============================
+// Make /uploads folder public
+// (IMPORTANT FOR LOCAL IMAGE STORAGE)
+// ==============================
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+// ==============================
+// Local Imports
+// ==============================
+import connectDB from "./config/database.js";
+import authRoute from "./routes/authRoute.js";
+import productRoute from "./routes/productRoute.js";
+import userRoute from "./routes/userRoute.js";
+import cartRoute from "./routes/cartRoute.js";
+import contactRoute from "./routes/contactRoute.js";
+import paymentRoute from "./routes/paymentRoute.js";
 
 // ==============================
 // Connect Database

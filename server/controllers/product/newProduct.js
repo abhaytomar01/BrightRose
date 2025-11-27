@@ -1,10 +1,20 @@
 import productModel from "../../models/productModel.js";
-import cloudinary from "../../config/cloudinary.js";
+import fs from "fs-extra";
+import path from "path";
 
+/**
+ * Expects multipart/form-data with:
+ * - fields for product (name, price, etc.)
+ * - files: images (multiple), logo (single)
+ *
+ * Images are saved to /uploads/products and logo to /uploads/brands
+ * Product.images will be [{ url, filename }]
+ */
 
 const newProduct = async (req, res) => {
   try {
-    let {
+    // req.body contains text fields
+    const {
       name,
       fabric,
       color,
@@ -18,38 +28,48 @@ const newProduct = async (req, res) => {
       price,
       stock,
       tags,
-      images
     } = req.body;
 
     if (!name || !price || !stock) {
-      return res.status(400).json({
-        success: false,
-        message: "name, price & stock are required"
-      });
+      return res.status(400).json({ success: false, message: "name, price & stock are required" });
     }
 
-    // Parse JSON strings
-    if (typeof tags === "string") tags = JSON.parse(tags);
-    if (!Array.isArray(tags)) tags = [];
-
-    if (typeof images === "string") images = JSON.parse(images);
-    if (!Array.isArray(images) || images.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one product image is required"
-      });
+    // parse tags if sent as string
+    let parsedTags = [];
+    try {
+      if (tags) parsedTags = typeof tags === "string" ? JSON.parse(tags) : tags;
+      if (!Array.isArray(parsedTags)) parsedTags = [];
+    } catch {
+      parsedTags = [];
     }
 
-    // Upload images
-    const uploadedImages = [];
-    for (const img of images) {
-      const upload = await cloudinary.v2.uploader.upload(img, {
-        folder: "brightrose/products"
-      });
-      uploadedImages.push({
-        url: upload.secure_url,
-        public_id: upload.public_id
-      });
+    // files are in req.files (multer)
+    // images: req.files['images'] (array)
+    // logo: req.files['logo'] (array with 1)
+    const imagesFiles = (req.files && req.files["images"]) || [];
+    const logoFiles = (req.files && req.files["logo"]) || [];
+
+    if (!imagesFiles.length) {
+      return res.status(400).json({ success: false, message: "At least one product image is required" });
+    }
+
+    // Build uploaded images array (public URLs)
+    const host = req.get("origin") || `${req.protocol}://${req.get("host")}`; // prefer origin
+    const uploadedImages = imagesFiles.map((f) => ({
+      url: `${host}/uploads/products/${f.filename}`,
+      filename: f.filename,
+    }));
+
+    let brandObj = null;
+    if (logoFiles.length) {
+      const lf = logoFiles[0];
+      brandObj = {
+        name: req.body.brandName || "",
+        logo: {
+          url: `${host}/uploads/brands/${lf.filename}`,
+          filename: lf.filename,
+        },
+      };
     }
 
     const product = await productModel.create({
@@ -63,23 +83,24 @@ const newProduct = async (req, res) => {
       specification,
       care,
       sku,
-      price,
-      stock,
-      tags,
-      images: uploadedImages
+      price: Number(price),
+      stock: Number(stock),
+      tags: parsedTags,
+      images: uploadedImages,
+      brand: brandObj,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Product created",
-      product
+      product,
     });
   } catch (err) {
     console.error("CREATE PRODUCT ERROR:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
-      error: err.message
+      error: err.message,
     });
   }
 };
