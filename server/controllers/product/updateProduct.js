@@ -1,10 +1,10 @@
 import productModel from "../../models/productModel.js";
-import fs from "fs";
-import path from "path";
+import cloudinary from "../../config/cloudinary.js";
 
 const updateProduct = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id);
+    const productId = req.params.id;
+    const product = await productModel.findById(productId);
 
     if (!product) {
       return res.status(404).json({
@@ -13,57 +13,91 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Parse JSON arrays
-    let tags = [];
-    try { tags = JSON.parse(req.body.tags || "[]"); } catch {}
+    let {
+      name,
+      fabric,
+      color,
+      weavingArt,
+      uniqueness,
+      sizeInfo,
+      description,
+      specification,
+      care,
+      sku,
+      price,
+      stock,
+      tags,
+      oldImages,
+      removedImages,
+      brandName
+    } = req.body;
 
-    let oldImages = [];
-    try { oldImages = JSON.parse(req.body.oldImages || "[]"); } catch {}
+    // Parse JSON
+    oldImages = JSON.parse(oldImages || "[]");
+    removedImages = JSON.parse(removedImages || "[]");
+    tags = JSON.parse(tags || "[]");
 
-    let removedImages = [];
-    try { removedImages = JSON.parse(req.body.removedImages || "[]"); } catch {}
-
-    // Delete removed images from server
-    removedImages.forEach((filename) => {
-      const filePath = path.join(process.cwd(), "uploads/products", filename);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    });
-
-    // New uploads (multer)
-    let newImages = [];
-    if (req.files && req.files.images) {
-      newImages = req.files.images.map((file) => ({
-        url: `/uploads/products/${file.filename}`,
-        filename: file.filename,
-      }));
+    // Delete removed files from Cloudinary
+    for (const public_id of removedImages) {
+      try {
+        await cloudinary.uploader.destroy(public_id);
+      } catch (err) {
+        console.log("Cloudinary delete error:", err.message);
+      }
     }
 
-    // Final images
-    product.images = [...oldImages, ...newImages];
+    // Upload new images (req.files.images)
+    const newUploads = [];
+    if (req.files?.images && req.files.images.length > 0) {
+      for (const img of req.files.images) {
+        const upload = await cloudinary.uploader.upload(img.path, {
+          folder: "brightrose/products",
+        });
 
-    // Update fields
-    Object.assign(product, {
-      name: req.body.name,
-      fabric: req.body.fabric,
-      color: req.body.color,
-      weavingArt: req.body.weavingArt,
-      uniqueness: req.body.uniqueness,
-      sizeInfo: req.body.sizeInfo,
-      description: req.body.description,
-      specification: req.body.specification,
-      care: req.body.care,
-      sku: req.body.sku,
-      price: req.body.price,
-      stock: req.body.stock,
-      tags,
-    });
+        newUploads.push({
+          url: upload.secure_url,
+          public_id: upload.public_id,
+        });
+      }
+    }
 
-    await product.save();
+    // Upload logo (if provided)
+    let logo = product.brand?.logo || null;
+    if (req.files?.logo && req.files.logo[0]) {
+      const upload = await cloudinary.uploader.upload(req.files.logo[0].path, {
+        folder: "brightrose/brand",
+      });
+      logo = {
+        url: upload.secure_url,
+        public_id: upload.public_id,
+      };
+    }
 
-    return res.json({
+    // Update product
+    product.name = name;
+    product.fabric = fabric;
+    product.color = color;
+    product.weavingArt = weavingArt;
+    product.uniqueness = uniqueness;
+    product.sizeInfo = sizeInfo;
+    product.description = description;
+    product.specification = specification;
+    product.care = care;
+    product.sku = sku;
+    product.price = price;
+    product.stock = stock;
+    product.tags = tags;
+
+    product.images = [...oldImages, ...newUploads];
+
+    product.brand = { name: brandName, logo };
+
+    const updated = await product.save();
+
+    res.json({
       success: true,
       message: "Product updated successfully",
-      product,
+      product: updated,
     });
 
   } catch (err) {
