@@ -1,30 +1,35 @@
 import mongoose from "mongoose";
 
+const imageSchema = new mongoose.Schema({
+  url: { type: String, required: true },     // Example: /uploads/products/abc.jpg
+  filename: { type: String, required: true } // Example: abc.jpg
+});
+
 const productSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
-    fabric: { type: String, trim: true },
-    color: { type: String, trim: true },
-    weavingArt: { type: String, trim: true },
-    uniqueness: { type: String, trim: true },
-    sizeInfo: { type: String, trim: true },
-    description: { type: String, trim: true },
-    specification: { type: String, trim: true },
-    care: { type: String, trim: true },
+    name: { type: String, required: true },
+    fabric: String,
+    color: String,
+    weavingArt: String,
+    uniqueness: String,
+    sizeInfo: String,
+    description: String,
+    specification: String,
+    care: String,
+    sku: String,
+    price: Number,
+    stock: Number,
+    tags: { type: [String], default: [] },
 
-    // ⭐ Cloudinary compatible image structure
-    images: [
-      {
-        url: { type: String, required: true },
-        public_id: { type: String, required: true }
-      }
-    ],
+    images: {
+      type: [imageSchema],
+      default: []
+    },
 
-    sku: { type: String, unique: false, sparse: true },
-    price: { type: Number, default: 0 },
-    stock: { type: Number, default: 0 },
-
-    tags: { type: [String], default: [] }
+    brand: {
+      name: String,
+      logo: imageSchema
+    }
   },
   { timestamps: true }
 );
