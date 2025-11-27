@@ -296,7 +296,7 @@ export default function ProductDetails() {
           <div>
             <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size </b></p>
             <div className="flex gap-2">
-              {(product.sizes?.length ? product.sizes : ["S", "M", "L", "XL"]).map(
+              {(product.sizes?.length ? product.sizes : ["XS","S", "M", "L", "XL", "XXL"]).map(
                 (s) => (
                   <button
                     key={s}
