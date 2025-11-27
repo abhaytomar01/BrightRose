@@ -1,27 +1,23 @@
-import cloudinary from "../../config/cloudinary.js";
-
+import path from "path";
+import fs from "fs";
 
 export const uploadImageController = async (req, res) => {
   try {
-    const { image } = req.body;
-
-    // Validate
-    if (!image) {
+    // Check file
+    if (!req.file) {
       return res.status(400).json({
         success: false,
-        message: "No image provided",
+        message: "No image uploaded",
       });
     }
 
-    // Upload to Cloudinary
-    const result = await cloudinary.v2.uploader.upload(image, {
-      folder: "brightrose/products",
-    });
+    // Build URL
+    const fileUrl = `${process.env.CLIENT_URL}/uploads/products/${req.file.filename}`;
 
     return res.status(200).json({
       success: true,
-      url: result.secure_url,
-      public_id: result.public_id,
+      url: fileUrl,
+      filename: req.file.filename,
       message: "Image uploaded successfully",
     });
 
@@ -30,7 +26,7 @@ export const uploadImageController = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Image upload failed",
+      message: "Local upload failed",
       error: error.message,
     });
   }

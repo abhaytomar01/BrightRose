@@ -2,10 +2,11 @@
 // Load Environment Variables FIRST
 // ==============================
 import dotenv from "dotenv";
-import path from "path";
+
 import { fileURLToPath } from "url";
 
 // Path helpers
+import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -60,6 +61,7 @@ app.use(morgan("dev"));
 // Make /uploads folder public
 // (IMPORTANT FOR LOCAL IMAGE STORAGE)
 // ==============================
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // ==============================
