@@ -11,6 +11,11 @@ const __dirname = path.dirname(__filename);
 
 // Load .env manually from backend folder
 dotenv.config({ path: path.join(__dirname, ".env") });
+console.log("Cloudinary ENV Loaded:", {
+  CLOUD_NAME: process.env.CLOUD_NAME,
+  API_KEY: process.env.CLOUD_API_KEY,
+});
+
 
 // ==============================
 // Packages
