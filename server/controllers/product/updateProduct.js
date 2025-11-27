@@ -1,5 +1,6 @@
 import productModel from "../../models/productModel.js";
-import cloudinary from "cloudinary";
+import cloudinary from "../../config/cloudinary.js";
+
 
 const updateProduct = async (req, res) => {
   try {
