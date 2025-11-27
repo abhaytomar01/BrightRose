@@ -21,6 +21,10 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [related, setRelated] = useState([]);
 
+  const [isZoom, setIsZoom] = useState(false);
+const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState("");
@@ -191,31 +195,40 @@ export default function ProductDetails() {
   <div className="flex-1 relative">
 
     {/* DESKTOP MAIN IMAGE + HOVER ZOOM */}
-    <div
-      className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-50 rounded-lg overflow-hidden relative cursor-zoom-in"
+    {/* DESKTOP MAIN IMAGE – REAL IMAGE + HOVER ZOOM */}
+<div
+  className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-50 rounded-lg relative overflow-hidden"
+  onMouseEnter={() => setIsZoom(true)}
+  onMouseLeave={() => setIsZoom(false)}
+  onMouseMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPos({ x, y });
+  }}
+  onClick={() => openLightbox(selectedIndex)}
+>
+  {/* BASE IMAGE (always visible, perfectly sized) */}
+  <img
+    src={selectedImage}
+    className="max-h-full max-w-full object-contain transition-opacity duration-200"
+  />
+
+  {/* ZOOMED IMAGE (only visible on hover) */}
+  {isZoom && (
+    <img
+      src={selectedImage}
+      className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
       style={{
-        backgroundImage: `url(${selectedImage})`,
-        backgroundSize: "100%",
-        backgroundPosition: "center",
-        transition: "background-size 0.25s ease",
+        transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
+        transform: "scale(2.2)",
+        opacity: 1,
+        transition: "transform 0.2s ease-out",
       }}
-      onClick={() => openLightbox(selectedIndex)}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundSize = "160%";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundSize = "100%";
-        e.currentTarget.style.backgroundPosition = "center";
-      }}
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        e.currentTarget.style.backgroundPosition = `${x}% ${y}%`;
-      }}
-    >
-      <img src={selectedImage} className="opacity-0 w-full h-full" />
-    </div>
+    />
+  )}
+</div>
+
 
     {/* MOBILE SWIPE SLIDER (new) */}
     <div className="md:hidden w-full overflow-hidden relative">
