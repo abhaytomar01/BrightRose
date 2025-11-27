@@ -2,24 +2,35 @@ import cloudinary from "../config/cloudinary.js";
 
 export const uploadImageController = async (req, res) => {
   try {
-    if (!req.files || !req.files.image) {
-      return res.status(400).send({ success: false, message: "No image uploaded" });
+    const { image } = req.body;
+
+    // Validate
+    if (!image) {
+      return res.status(400).json({
+        success: false,
+        message: "No image provided",
+      });
     }
 
-    const result = await cloudinary.uploader.upload(
-      req.files.image.tempFilePath,
-      {
-        folder: "brightrose/products",
-      }
-    );
+    // Upload to Cloudinary
+    const result = await cloudinary.v2.uploader.upload(image, {
+      folder: "brightrose/products",
+    });
 
-    res.status(200).send({
+    return res.status(200).json({
       success: true,
       url: result.secure_url,
       public_id: result.public_id,
+      message: "Image uploaded successfully",
     });
+
   } catch (error) {
-    console.log("UPLOAD ERROR:", error);
-    res.status(500).send({ success: false, message: "Upload failed" });
+    console.error("UPLOAD ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Image upload failed",
+      error: error.message,
+    });
   }
 };

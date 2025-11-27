@@ -1,5 +1,4 @@
 // src/pages/Admin/CreateProduct.jsx
-
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -35,82 +34,112 @@ const CreateProduct = () => {
 
   // IMAGES (BASE64)
   const MAX_IMAGES = 10;
-  const MAX_SIZE = 50 * 1024 * 1024;
+  const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 
-  const [imagesPreview, setImagesPreview] = useState([]);
-  const [imagesBase64, setImagesBase64] = useState([]);
+  const [imagesPreview, setImagesPreview] = useState([]); // base64 strings for preview
+  const [imagesBase64, setImagesBase64] = useState([]); // base64 strings to send
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const addTag = () => {
     if (!tagInput.trim()) return;
-    setTags([...tags, tagInput.trim()]);
+    setTags((p) => [...p, tagInput.trim()]);
     setTagInput("");
   };
+  const removeTag = (i) => setTags((p) => p.filter((_, idx) => idx !== i));
 
-  const removeTag = (i) => {
-    setTags(tags.filter((_, idx) => idx !== i));
-  };
+  // convert file -> base64
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
 
-  const handleImages = (e) => {
-    const files = Array.from(e.target.files);
+  const handleImages = async (e) => {
+    const files = Array.from(e.target.files || []);
     if (imagesBase64.length + files.length > MAX_IMAGES) {
       toast.warning(`Max ${MAX_IMAGES} images allowed`);
       return;
     }
 
-    files.forEach((file) => {
+    for (const file of files) {
       if (file.size > MAX_SIZE) {
-        toast.warning("Image exceeds 50MB");
-        return;
+        toast.warning("One image exceeds 50MB");
+        continue;
       }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImagesPreview((p) => [...p, reader.result]);
-        setImagesBase64((p) => [...p, reader.result]); // BASE64
-      };
-      reader.readAsDataURL(file);
-    });
+      try {
+        const b64 = await fileToBase64(file);
+        setImagesPreview((p) => [...p, b64]);
+        setImagesBase64((p) => [...p, b64]);
+      } catch (err) {
+        console.error("File read error", err);
+        toast.error("Failed to read an image file");
+      }
+    }
   };
 
   const removeImage = (i) => {
-    setImagesPreview(imagesPreview.filter((_, idx) => idx !== i));
-    setImagesBase64(imagesBase64.filter((_, idx) => idx !== i));
+    setImagesPreview((p) => p.filter((_, idx) => idx !== i));
+    setImagesBase64((p) => p.filter((_, idx) => idx !== i));
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmit(true);
 
-    if (!form.name.trim()) {
-      toast.error("Product name required");
-      setIsSubmit(false);
-      return;
-    }
-
     try {
-      const formData = new FormData();
+      // basic validation
+      if (!form.name?.trim()) {
+        toast.error("Product name required");
+        setIsSubmit(false);
+        return;
+      }
+      if (!form.price) {
+        toast.error("Price required");
+        setIsSubmit(false);
+        return;
+      }
+      if (!form.stock) {
+        toast.error("Stock required");
+        setIsSubmit(false);
+        return;
+      }
+      if (imagesBase64.length === 0) {
+        toast.error("Add at least one image");
+        setIsSubmit(false);
+        return;
+      }
 
-      Object.keys(form).forEach((field) => {
-        formData.append(field, form[field]);
-      });
-
-      formData.append("tags", JSON.stringify(tags));
-      formData.append("images", JSON.stringify(imagesBase64));
+      // Build JSON payload
+      const payload = {
+        ...form,
+        price: form.price,
+        stock: form.stock,
+        tags: tags,
+        images: imagesBase64,
+      };
 
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/products/new-product`,
-        formData,
-        { headers: { Authorization: `Bearer ${authAdmin.token}` } }
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${authAdmin?.token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      if (res.data.success) {
+      if (res.data?.success) {
         toast.success("Product created successfully");
         navigate("/admin/dashboard/all-products");
+      } else {
+        toast.error(res.data?.message || "Failed to create product");
       }
     } catch (err) {
+      console.error("Create error:", err);
       toast.error(err.response?.data?.message || "Error creating product");
     } finally {
       setIsSubmit(false);
@@ -125,74 +154,56 @@ const CreateProduct = () => {
       {isSubmit ? (
         <Spinner />
       ) : (
-        <form
-          onSubmit={submitHandler}
-          className="bg-white p-4 rounded shadow flex flex-col gap-4"
-        >
-          {/* --- Inputs --- */}
-          {Object.keys(form).map((key) => (
-            <input
-              key={key}
-              name={key}
-              placeholder={key}
-              value={form[key]}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-          ))}
+        <form onSubmit={submitHandler} className="bg-white p-4 rounded shadow flex flex-col gap-4">
+          {/* Inputs */}
+          <div className="grid grid-cols-1 gap-3">
+            <input name="name" placeholder="Name" value={form.name} onChange={handleChange} className="border p-2 rounded" />
+            <input name="fabric" placeholder="Fabric" value={form.fabric} onChange={handleChange} className="border p-2 rounded" />
+            <input name="color" placeholder="Color" value={form.color} onChange={handleChange} className="border p-2 rounded" />
+            <input name="weavingArt" placeholder="Weaving Art" value={form.weavingArt} onChange={handleChange} className="border p-2 rounded" />
+            <input name="uniqueness" placeholder="Uniqueness" value={form.uniqueness} onChange={handleChange} className="border p-2 rounded" />
+            <input name="sizeInfo" placeholder="Size Info" value={form.sizeInfo} onChange={handleChange} className="border p-2 rounded" />
+            <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="border p-2 rounded" rows={3} />
+            <textarea name="specification" placeholder="Specification" value={form.specification} onChange={handleChange} className="border p-2 rounded" rows={2} />
+            <textarea name="care" placeholder="Care Instructions" value={form.care} onChange={handleChange} className="border p-2 rounded" rows={2} />
+            <input name="sku" placeholder="SKU" value={form.sku} onChange={handleChange} className="border p-2 rounded" />
+            <div className="flex gap-2">
+              <input name="price" placeholder="Price" value={form.price} onChange={handleChange} type="number" className="border p-2 rounded flex-1" />
+              <input name="stock" placeholder="Stock" value={form.stock} onChange={handleChange} type="number" className="border p-2 rounded w-28" />
+            </div>
+          </div>
 
           {/* Tags */}
           <div>
             <div className="flex gap-2">
-              <input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                placeholder="Add tag"
-                className="border p-2 flex-1"
-              />
-              <button type="button" onClick={addTag} className="bg-blue-500 text-white px-4 rounded">
-                Add
-              </button>
+              <input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add tag" className="border p-2 flex-1 rounded" />
+              <button type="button" onClick={addTag} className="bg-blue-600 text-white px-4 rounded">Add</button>
             </div>
-
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-2 flex gap-2 flex-wrap">
               {tags.map((t, i) => (
-                <span
-                  key={i}
-                  className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2"
-                >
-                  {t}
-                  <button onClick={() => removeTag(i)}>x</button>
-                </span>
+                <div key={i} className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2">
+                  <span>{t}</span>
+                  <button type="button" onClick={() => removeTag(i)} className="text-red-600">x</button>
+                </div>
               ))}
             </div>
           </div>
 
           {/* Images */}
           <div>
-            <label className="block font-medium mb-2">Product Images (Base64)</label>
-
-            <div className="flex gap-2 overflow-x-auto">
+            <label className="block mb-2 font-medium">Product Images (max {MAX_IMAGES})</label>
+            <div className="flex gap-2 overflow-x-auto mb-2">
               {imagesPreview.map((img, i) => (
                 <div key={i} className="relative">
-                  <img src={img} className="w-20 h-20 object-cover border" />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(i)}
-                    className="absolute top-0 right-0 bg-red-600 text-white px-1"
-                  >
-                    X
-                  </button>
+                  <img src={img} className="w-24 h-24 object-cover border rounded" alt={`preview-${i}`} />
+                  <button type="button" onClick={() => removeImage(i)} className="absolute top-0 right-0 bg-red-600 text-white px-1 rounded">X</button>
                 </div>
               ))}
             </div>
-
             <input type="file" multiple accept="image/*" onChange={handleImages} />
           </div>
 
-          <button className="bg-orange-500 text-white w-full p-2 rounded">
-            Submit
-          </button>
+          <button type="submit" className="bg-orange-500 text-white p-2 rounded w-full">Submit</button>
         </form>
       )}
     </>
