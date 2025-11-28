@@ -3,11 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 
-const Login = () => {
+const Login = ({ onClose }) => {
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
+
+  // correct context
+  const { authUser, loginUser } = useAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -15,16 +17,17 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
 
   useEffect(() => {
-    if (auth?.token && auth?.user?.role === "user") {
+    if (authUser?.token) {
       navigate("/user/dashboard/profile");
     }
-  }, [auth]);
+  }, [authUser]);
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       setLoading(true);
 
@@ -35,156 +38,136 @@ const Login = () => {
 
       if (res.data?.success) {
         toast.success("Login successful!");
-        setAuth({ user: res.data.user, token: res.data.token });
 
-        if (remember)
+        // correct login function
+        loginUser({
+          user: res.data.user,
+          token: res.data.token,
+        });
+
+        // remember me using correct key
+        if (remember) {
           localStorage.setItem(
-            "auth",
+            "auth_user",
             JSON.stringify({ user: res.data.user, token: res.data.token })
           );
+        }
 
+        if (onClose) onClose(); // close popup if open
         navigate("/user/dashboard/profile");
       } else {
-        toast.error(res.data?.message || "Invalid credentials");
+        toast.error(res.data.message || "Invalid credentials");
       }
     } catch (err) {
-      toast.error("Something went wrong!");
+      toast.error(err.response?.data?.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="min-h-screen bg-pureWhite flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+    <section className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[9999] px-4">
+      
+      <div className="bg-white w-full max-w-md rounded-2xl p-8 shadow-xl relative">
 
-      <div className="w-full max-w-md text-center">
+        {/* CLOSE BUTTON */}
+        {onClose && (
+          <button 
+            className="absolute right-4 top-4 text-gray-600 hover:text-black"
+            onClick={onClose}
+          >
+            <X size={26} />
+          </button>
+        )}
 
-        {/* TITLE */}
-        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-neutralDark/80 uppercase mb-10">
+        <h1 className="text-3xl text-center font-light tracking-[4px] uppercase text-neutralDark mb-8">
           Login
         </h1>
 
-        {/* FORM CARD */}
-        <div className="bg-white border border-mutedGray/70 rounded-2xl p-10 shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-6">
 
-          <form onSubmit={handleSubmit} className="space-y-6 text-left">
+          {/* Email */}
+          <div>
+            <label className="block text-sm text-neutralDark mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              value={form.email}
+              onChange={handleChange}
+              placeholder="yourname@example.com"
+              className="w-full px-4 py-3 bg-neutralLight border border-mutedGray rounded-md"
+            />
+          </div>
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm tracking-wide text-neutralDark mb-1">
-                Email Address
-              </label>
+          {/* Password */}
+          <div>
+            <label className="block text-sm text-neutralDark mb-1">
+              Password
+            </label>
 
+            <div className="relative">
               <input
-                type="email"
-                name="email"
-                autoComplete="email"
+                type={showPassword ? "text" : "password"}
+                name="password"
                 required
-                placeholder="yourname@example.com"
-                value={form.email}
+                value={form.password}
                 onChange={handleChange}
-                className="
-                  w-full px-4 py-3 
-                  bg-neutralLight
-                  border border-mutedGray
-                  rounded-md
-                  focus:outline-none 
-                  focus:border-accentGold
-                  text-neutralDark
-                  placeholder-gray-400
-                "
+                placeholder="••••••••"
+                className="w-full px-4 py-3 pr-12 bg-neutralLight border border-mutedGray rounded-md"
               />
-            </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm tracking-wide text-neutralDark mb-1">
-                Password
-              </label>
-
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  autoComplete="current-password"
-                  required
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={handleChange}
-                  className="
-                    w-full px-4 py-3 pr-12
-                    bg-neutralLight
-                    border border-mutedGray
-                    rounded-md
-                    focus:outline-none 
-                    focus:border-accentGold
-                    text-neutralDark
-                    placeholder-gray-400
-                  "
-                />
-
-                <button
-                  type="button"
-                  className="absolute right-3 top-3 text-neutralDark/60 hover:text-neutralDark"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember + Forgot */}
-            <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center gap-2 text-neutralDark">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                />
-                Remember me
-              </label>
-
-              <Link
-                to="/forgot-password"
-                className="text-neutralDark/80 underline hover:text-neutralDark/70"
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-neutralDark/60"
+                onClick={() => setShowPassword(!showPassword)}
               >
-                Forgot password?
-              </Link>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
+          </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="
-                w-full py-3 
-                text-sm tracking-[3px]
-                uppercase border border-accentGold 
-                text-neutralDark/80
-                rounded-md
-                hover:bg-accentGold/10
-                transition
-              "
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
+          {/* Remember */}
+          <div className="flex justify-between text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+              />
+              Remember me
+            </label>
 
-          {/* Divider */}
-          <p className="text-center text-gray-500 text-sm my-6">OR</p>
-
-          {/* Register Link */}
-          <p className="text-center text-sm text-neutralDark">
-            New to Bright Rose?{" "}
-            <Link
-              to="/register"
-              className="text-neutralDark/80 underline hover:text-[#8c000c]"
-            >
-              Create account
+            <Link to="/forgot-password" className="underline">
+              Forgot password?
             </Link>
-          </p>
+          </div>
 
-        </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 border border-accentGold text-neutralDark tracking-[3px] uppercase rounded-md hover:bg-accentGold/10"
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+        </form>
+
+        {/* Register link */}
+        <p className="mt-6 text-center text-sm">
+          New to Bright Rose?{" "}
+          <span
+            className="underline cursor-pointer"
+            onClick={() => {
+              if (onClose) onClose();
+              navigate("/register");
+            }}
+          >
+            Create account
+          </span>
+        </p>
       </div>
     </section>
   );

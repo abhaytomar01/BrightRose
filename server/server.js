@@ -76,6 +76,7 @@ import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
+import wishlistRoutes from  "./routes/wishlistRoute.js"
 
 // ==============================
 // Connect Database
@@ -98,6 +99,7 @@ app.use("/api/v1/user", userRoute);
 app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
+app.use("/api/v1/wishlist", wishlistRoutes);
 
 // ==============================
 // Start Server
@@ -107,3 +109,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
+
