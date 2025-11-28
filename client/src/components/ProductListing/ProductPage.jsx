@@ -194,7 +194,7 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   // RENDER
   //-----------------------------------------------------
   return (
-    <div className="max-w-8xl mx-2 px-0 pt-28 md:pt-40 pb-36 bg-white text-[#1A1A1A]">
+    <div className="max-w-8xl mx-2 px-0 pt-24 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
 
       {/* PRODUCT MAIN */}
       <div className="grid md:grid-cols-2 gap-6 mt-4">
@@ -319,17 +319,13 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
 
          {/* PRODUCT TITLE */}
-  <h1 className="text-xl md:text-3xl font-light tracking-wide leading-snug">
+  <h1 className="text-md md:text-2xl font-light tracking-wide leading-snug">
     {product.name}
   </h1>
 
-  {/* SHORT SUBTITLE (optional you can remove if not needed) */}
-  <p className="text-neutral-500 text-xs md:text-sm tracking-wide">
-    {product.weavingArt}
-  </p>
 
    {/* PRICE */}
-  <div className="mt-1">
+  <div>
     <p className="text-[22px] md:text-[26px] font-light text-neutral-900">
       ₹{product.price}
     </p>
@@ -338,11 +334,16 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
     </p>
   </div>
  
-
   {/* Label ONE OF A KIND */}
-  <p className="text-[12px] text-neutral-600 tracking-[0.15em] uppercase">
+  <p className="text-[12px] text-neutral-600 bg-neutral-300 px-4 py-4 tracking-[0.15em] uppercase">
     One - of - a - kind
   </p>
+  
+  {/* SHORT SUBTITLE (optional you can remove if not needed) */}
+  <p className="text-neutral-700 text-sm md:text-sm tracking-wide">
+     <a className="font-medium text-neutral-700 text-sm">Weave</a> : {product.weavingArt}
+  </p>
+
 
   {/* SIZE SECTION */}
   <div className="mt-2">

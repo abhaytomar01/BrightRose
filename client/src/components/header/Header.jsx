@@ -87,8 +87,8 @@ const Header = () => {
       {/* Announcement */}
       <Link
         to="/contact"
-        className={`block w-full text-center bg-[#F4EFE9] text-gray-800 
-          text-[11px] md:text-[12px] tracking-wide font-medium uppercase transition-all ${
+        className={`block w-full text-center bg-neutralDark/10 text-gray-800 
+          text-[10px] md:text-[12px] tracking-wide font-medium uppercase transition-all ${
             hideAnnouncement ? "opacity-0 h-0 py-0" : "opacity-100 py-2"
           }`}
       >
@@ -130,13 +130,13 @@ const Header = () => {
     <Link to="/" className="select-none">
       <h1
         className="
-          font-[Cinzel]
+          font-[PlayfairDisplay]
           text-[18px]
           sm:text-[20px]
           md:text-[28px]
-          font-semibold
+          font-normal
           tracking-[0.10em]
-          text-[#8A0014]
+          text-[#000000]
           leading-none
           whitespace-nowrap
         "
