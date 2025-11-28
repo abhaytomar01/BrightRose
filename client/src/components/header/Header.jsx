@@ -126,7 +126,7 @@ const Header = () => {
   </div>
 
   {/* LOGO – stays perfectly centered */}
-  <div className="flex justify-center">
+  <div className="flex justify-center logofont">
     <Link to="/" className="select-none">
       <h1
         className="
