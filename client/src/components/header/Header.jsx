@@ -87,7 +87,7 @@ const Header = () => {
       {/* Announcement */}
       <Link
         to="/contact"
-        className={`block w-full text-center bg-neutralDark/10 text-gray-800 
+        className={`block w-full text-center bg-neutralDark/40 text-white 
           text-[10px] md:text-[12px] tracking-wide font-medium uppercase transition-all ${
             hideAnnouncement ? "opacity-0 h-0 py-0" : "opacity-100 py-2"
           }`}
