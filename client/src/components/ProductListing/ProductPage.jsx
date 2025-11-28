@@ -315,170 +315,195 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
 
         {/* RIGHT – DETAILS */}
-        <div className="flex flex-col gap-4 px-2">
-
-          <h1 className="text-md md:text-2xl font-light tracking-wide">
-            {product.name}
-          </h1>
-
-          {/* Badges */}
-<div className="flex items-center gap-4">
-  <div className="border border-neutral-300 rounded-md shadow-sm">
-    <img src={Handloom} className="h-20 w-auto object-contain" />
-  </div>
-
-  <div className="border border-neutral-300 rounded-md shadow-sm">
-    <img src={Silkmark} className="h-20 w-auto object-contain" />
-  </div>
-</div>
+        <div className="flex flex-col gap-6 px-2 pr-6">
 
 
-          <p className="text-neutralDark/90 font-medium text-sm md:text-lg">
-            ₹{product.price} <br/><span className="text-sm text-neutralDark/70">(Inclusive of All Taxes)</span>
-          </p>
-          <p className="text-neutralDark/80 text-md md:text-lg">ONE - OF - A - KIND</p>
+         {/* PRODUCT TITLE */}
+  <h1 className="text-xl md:text-3xl font-light tracking-wide leading-snug">
+    {product.name}
+  </h1>
 
-       
-          <p className="text-sm text-neutralDark/80">
-            <b className=" text-neutralDark/90">Weaving Art </b>: {product.weavingArt}
-          </p>
-
-
-          {/* SIZES */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-  <p className="text-sm text-neutralDark/80">
-    <b className="text-neutralDark/80">Size</b>
+  {/* SHORT SUBTITLE (optional you can remove if not needed) */}
+  <p className="text-neutral-500 text-xs md:text-sm tracking-wide">
+    {product.weavingArt}
   </p>
 
-  <button
-    onClick={() => setIsSizeChartOpen(true)}
-    className="text-sm underline text-neutralDark/70 hover:text-black transition"
-  >
-    Size Guide
-  </button>
-</div>
+   {/* PRICE */}
+  <div className="mt-1">
+    <p className="text-[22px] md:text-[26px] font-light text-neutral-900">
+      ₹{product.price}
+    </p>
+    <p className="text-[11px] text-neutral-500 mt-1 tracking-wide">
+      (Inclusive of all taxes)
+    </p>
+  </div>
+ 
 
-            <div className="flex gap-2 flex-wrap">
-              {(ALL_SIZES).map(
-                (s) => {
-                  const available = Array.isArray(product.sizes) && product.sizes.length
-                    ? product.sizes.includes(s)
-                    : true;
+  {/* Label ONE OF A KIND */}
+  <p className="text-[12px] text-neutral-600 tracking-[0.15em] uppercase">
+    One - of - a - kind
+  </p>
 
-                  if (!available) {
-                    return (
-                      <button
-                        key={s}
-                        type="button"
-                        className="px-3 py-1 rounded border text-sm opacity-40 line-through cursor-not-allowed border-neutral-200"
-                        title={`${s} not available`}
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        {s}
-                      </button>
-                    );
-                  }
+  {/* SIZE SECTION */}
+  <div className="mt-2">
+    <div className="flex items-center justify-between mb-2">
+      <p className="text-sm font-medium text-neutral-700 tracking-wide">Sizes</p>
 
-                  return (
-                    <button
-                      key={s}
-                      onClick={() => setSelectedSize(s)}
-                      className={`px-3 py-1 rounded border text-sm ${
-                        selectedSize === s
-                          ? "bg-black text-white border-black"
-                          : "border-neutral-300"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  );
-                }
-              )}
-            </div>
+      <button
+        onClick={() => setIsSizeChartOpen(true)}
+        className="text-xs underline text-neutral-500 hover:text-black transition"
+      >
+        Size guide
+      </button>
+    </div>
+
+    {/* SIZE BUTTONS DIOR STYLE */}
+    <div className="flex gap-2 flex-wrap mt-2">
+      {ALL_SIZES.map((s) => {
+        const available =
+          Array.isArray(product.sizes) && product.sizes.length
+            ? product.sizes.includes(s)
+            : true;
+
+        if (!available) {
+          return (
+            <button
+              key={s}
+              type="button"
+              className="px-4 py-2 rounded-md border text-xs opacity-30 line-through cursor-not-allowed border-neutral-200"
+            >
+              {s}
+            </button>
+          );
+        }
+
+        return (
+          <button
+            key={s}
+            onClick={() => setSelectedSize(s)}
+            className={`px-4 py-2 text-xs rounded-md border transition-all tracking-wide
+              ${
+                selectedSize === s
+                  ? "bg-black text-white border-black"
+                  : "border-neutral-300 hover:border-neutral-500"
+              }
+            `}
+          >
+            {s}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+
+  {/* QUANTITY */}
+  <div className="flex items-center gap-4 mt-4">
+    <p className="text-xs md:text-sm font-medium text-neutral-700">Quantity</p>
+
+    <div className="flex items-center border border-neutral-300 rounded-md">
+      <button
+        onClick={() => handleQuantity("dec")}
+        className="px-3 py-1 text-sm"
+      >
+        –
+      </button>
+      <span className="px-4 text-sm">{quantity}</span>
+      <button
+        onClick={() => handleQuantity("inc")}
+        className={`px-3 py-1 text-sm ${
+          quantity >= allowedMax ? "opacity-40 cursor-not-allowed" : ""
+        }`}
+        disabled={quantity >= allowedMax}
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+
+         {/* ACCORDIONS */}
+<div className="mt-0">
+  {[
+    { id: "col", title: " Color", content: product.color },
+    { id: "fab", title: " Fabric", content: product.fabric },
+    { id: "desc", title: " Description", content: product.description },
+    { id: "spec", title: "Specification", content: product.specification },
+    { id: "care", title: "Care", content: product.care },
+
+    // ✅ NEW BADGES ACCORDION
+    {
+      id: "badge",
+      title: "Authenticity Certificates",
+      content: (
+        <div className="flex items-center gap-4 py-2">
+
+          <div className="border border-neutral-300 rounded-md shadow-sm p-2">
+            <img src={Handloom} className="h-14 object-contain" />
           </div>
 
-          {/* QUANTITY */}
-          <div className="flex items-center gap-4 mt-1">
-            <p className="text-sm font-medium text-neutralDark/80"><b>Quantity</b></p>
-            <div className="flex items-center border border-neutral-300 rounded-md">
-              <button onClick={() => handleQuantity("dec")} className="px-3 py-1">
-                –
-              </button>
-              <span className="px-4">{quantity}</span>
-              <button onClick={() => handleQuantity("inc")} className={`px-3 py-1 ${quantity >= allowedMax ? "opacity-40 cursor-not-allowed" : ""}`} disabled={quantity >= allowedMax} title={quantity >= allowedMax ? `Max ${allowedMax} allowed` : "Increase"}>
-                +
-              </button>
-            </div>
+          <div className="border border-neutral-300 rounded-md shadow-sm p-2">
+            <img src={Silkmark} className="h-14 object-contain" />
           </div>
 
+        </div>
+      )
+    },
 
-          {/* ACCORDIONS */}
-          <div className="mt-0">
-            {[
-              { id: "col", title: " Color", content: product.color },
-              { id: "fab", title: " Fabric", content: product.fabric },
-              { id: "desc", title: " Description", content: product.description },
-              { id: "spec", title: "Specification", content: product.specification },
-              { id: "care", title: "Care", content: product.care },
-              {
-  id: "delivery",
-  title: "Delivery & Returns",
-  content: (
-    <div className="space-y-3 leading-relaxed text-sm text-neutral-700">
+    // DELIVERY ACCORDION
+    {
+      id: "delivery",
+      title: "Delivery & Returns",
+      content: (
+        <div className="space-y-3 leading-relaxed text-sm text-neutral-700">
+          <p>
+            In order to minimise any discrepancies, almost all our products for direct
+            sale on our website are free of conventional sizing. This mitigates the need
+            for most return issues concerning inaccurate fit. However, if you are unsure 
+            of any aspect of the purchase, please contact our client services before ordering.
+          </p>
 
-      <p>
-        In order to minimise any discrepancies, almost all our products for direct sale on our website are free of
-        conventional sizing. This mitigates the need for most return issues concerning inaccurate fit. However, if you
-        are unsure of any aspect of the purchase, we encourage you to contact our client services team before placing
-        any orders.
-      </p>
-
-      
-
-      {/* READ MORE LINK */}
-      <div className="pt-4">
-        <Link
-          to="/exchange-return"
-          className="text-neutral underline font-medium hover:text-black transition"
+          <div className="pt-4">
+            <Link
+              to="/exchange-return"
+              className="text-neutral underline font-medium hover:text-black transition"
+            >
+              Read full Return & Exchange policy →
+            </Link>
+          </div>
+        </div>
+      )
+    }
+  ].map((item) => (
+    <div key={item.id} className="border-b border-neutral-300/70 pb-2">
+      <button
+        onClick={() => toggleAccordion(item.id)}
+        className="w-full flex justify-between items-center py-3 text-sm font-medium tracking-wide"
+      >
+        {item.title}
+        <span
+          className={`transition-transform ${
+            accordionOpen === item.id ? "rotate-180" : ""
+          }`}
         >
-          Read full Return & Exchange policy →
-        </Link>
+          ⌄
+        </span>
+      </button>
+
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          accordionOpen === item.id
+            ? "max-h-80 opacity-100"
+            : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="text-sm text-neutralDark/70 pb-3">
+          {item.content}
+        </div>
       </div>
     </div>
-  )
-}
+  ))}
+</div>
 
-            ].map((item) => (
-              <div key={item.id} className="border-b border-neutral-300/70 pb-2">
-                <button
-                  onClick={() => toggleAccordion(item.id)}
-                  className="w-full flex justify-between items-center py-3 text-sm font-medium tracking-wide"
-                >
-                  {item.title}
-                  <span
-                    className={`transition-transform ${
-                      accordionOpen === item.id ? "rotate-180" : ""
-                    }`}
-                  >
-                    ⌄
-                  </span>
-                </button>
-
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    accordionOpen === item.id
-                      ? "max-h-80 opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
-                >
-                  <div className="text-sm text-neutralDark/70 pb-3">
-                    {item.content}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
 
           {/* ADD TO CART */}
           <div className="hidden md:flex gap-4 mt-6">
