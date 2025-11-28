@@ -6,7 +6,20 @@ import productModel from "../../models/productModel.js";
 // ===============================
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await productModel.find().sort({ createdAt: -1 });
+    let products = await productModel.find().sort({ createdAt: -1 });
+
+    // Auto add fallback image if missing
+    products = products.map((p) => {
+      if (!p.images || p.images.length === 0) {
+        p.images = [
+          {
+            url: "https://www.thebrightrose.com/uploads/fallback.jpg",
+            filename: "fallback.jpg",
+          },
+        ];
+      }
+      return p;
+    });
 
     return res.json({
       success: true,
@@ -20,6 +33,7 @@ export const getAllProducts = async (req, res) => {
     });
   }
 };
+
 
 // ===============================
 // GET SINGLE PRODUCT
@@ -35,6 +49,16 @@ export const getSingleProduct = async (req, res) => {
         success: false,
         message: "Product not found",
       });
+    }
+
+    // Auto add fallback image if product has no images
+    if (!product.images || product.images.length === 0) {
+      product.images = [
+        {
+          url: "https://www.thebrightrose.com/uploads/fallback.jpg",
+          filename: "fallback.jpg",
+        },
+      ];
     }
 
     return res.json({
