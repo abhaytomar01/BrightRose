@@ -221,20 +221,21 @@ const Header = () => {
           />
 
           {/* Side Drawer */}
-          <div className="fixed top-0 left-0 w-[80%] max-w-xs h-full bg-white z-50 p-6 shadow-xl overflow-y-auto">
+          <div className="fixed top-0 left-0 w-[80%] max-w-xs h-full bg-white z-50 px-5 py-10 shadow-xl overflow-y-auto">
 
             <button onClick={() => setOpen(false)} className="mb-6">
               <X size={28} />
             </button>
 
-            <nav className="flex flex-col gap-4 text-[15px]">
+            <nav className="flex flex-col gap-4 text-[15px] uppercase">
               <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+              <hr className="h-1 text-neutralDark/80"/>
               <Link to="/ourheritage" onClick={() => setOpen(false)}>Our Heritage</Link>
-
+              <hr className="h-1 text-neutralDark/80"/>
               {/* MOBILE SUBMENU */}
 <div>
   <button
-    className="flex justify-between items-center w-full py-2"
+    className="flex justify-between items-center w-full py-2 uppercase"
     onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
   >
     <span>Collections</span>
@@ -244,7 +245,7 @@ const Header = () => {
       }`}
     />
   </button>
-
+<hr className="h-1 text-neutralDark/80"/>
   {mobileSubmenuOpen && (
     <div className="ml-4 mt-2 space-y-3 text-gray-700 text-[15px]">
       <Link
@@ -254,7 +255,7 @@ const Header = () => {
       >
         Weaves
       </Link>
-
+      <hr className="h-1 text-neutralDark/80"/>
       <Link
         to="/stylecollection"
         onClick={() => setOpen(false)}
@@ -262,21 +263,23 @@ const Header = () => {
       >
         Styles
       </Link>
+      <hr className="h-1 text-neutralDark/80"/>
     </div>
   )}
 </div>
 
 
               <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
-
+<hr className="h-1 text-neutralDark/80"/>
               {/* USER LOGIN */}
               {!isUserLoggedIn ? (
                 <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
               ) : (
                 <Link to="/user/dashboard/profile" onClick={() => setOpen(false)}>My Account</Link>
               )}
-
+<hr className="h-1 text-neutralDark/80"/>
               <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+              <hr className="h-1 text-neutralDark/80"/>
             </nav>
           </div>
         </>
