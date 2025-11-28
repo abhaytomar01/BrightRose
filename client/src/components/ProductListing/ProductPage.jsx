@@ -222,8 +222,7 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   {/* MAIN IMAGE AREA */}
   <div className="flex-1 relative">
 
-    {/* DESKTOP MAIN IMAGE + HOVER ZOOM */}
-    {/* DESKTOP MAIN IMAGE – REAL IMAGE + HOVER ZOOM */}
+  {/* DESKTOP MAIN IMAGE – REAL IMAGE + HOVER ZOOM */}
 <div
   className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-50 rounded-lg relative overflow-hidden"
   onMouseEnter={() => setIsZoom(true)}
@@ -258,20 +257,18 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 </div>
 
 
-   {/* MOBILE IMAGE SLIDER (real swipe) */}
+{/* MOBILE IMAGE SLIDER (real swipe) */}
 <div
   className="md:hidden relative w-full overflow-hidden"
   onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
   onTouchMove={(e) => setTouchEnd(e.touches[0].clientX)}
   onTouchEnd={() => {
     if (touchStart - touchEnd > 50) {
-      // swipe left → next
       setSelectedIndex((prev) =>
         prev === gallery.length - 1 ? prev : prev + 1
       );
     }
     if (touchStart - touchEnd < -50) {
-      // swipe right → previous
       setSelectedIndex((prev) => (prev === 0 ? 0 : prev - 1));
     }
   }}
@@ -296,19 +293,20 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
       </div>
     ))}
   </div>
-
-  {/* DOT INDICATORS */}
-  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-    {gallery.map((_, idx) => (
-      <div
-        key={idx}
-        className={`w-3 h-3 rounded-full ${
-          selectedIndex === idx ? "bg-black" : "bg-gray-300"
-        }`}
-      ></div>
-    ))}
-  </div>
 </div>
+
+{/* DOTS BELOW (NEW POSITION & SMALLER SIZE) */}
+<div className="md:hidden flex justify-center gap-1 mt-3 mb-2">
+  {gallery.map((_, idx) => (
+    <div
+      key={idx}
+      className={`w-2 h-2 rounded-full ${
+        selectedIndex === idx ? "bg-black" : "bg-gray-300"
+      }`}
+    ></div>
+  ))}
+</div>
+
 
   </div>
 </div>
