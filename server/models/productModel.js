@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const imageSchema = new mongoose.Schema({
-  url: { type: String, required: true },     // Example: /uploads/products/abc.jpg
-  filename: { type: String, required: true } // Example: abc.jpg
+  url: { type: String, required: true },
+  filename: { type: String, required: true }
 });
 
 const productSchema = new mongoose.Schema(
@@ -20,6 +20,16 @@ const productSchema = new mongoose.Schema(
     price: Number,
     stock: Number,
     tags: { type: [String], default: [] },
+
+    sizes: {
+      type: [String],
+      default: ["XS", "S", "M", "L", "XL", "XXL"]
+    },
+
+    maxQuantity: {
+      type: Number,
+      default: 10
+    },
 
     images: {
       type: [imageSchema],

@@ -1,7 +1,4 @@
-//-----------------------------------------------------------
-// PRODUCT DETAILS PAGE — LUXURY THEME APPLIED
-//-----------------------------------------------------------
-
+// src/pages/ProductDetails.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -22,10 +19,10 @@ export default function ProductDetails() {
   const [related, setRelated] = useState([]);
 
   const [isZoom, setIsZoom] = useState(false);
-const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
-const [touchStart, setTouchStart] = useState(0);
-const [touchEnd, setTouchEnd] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
 
   const [selectedImage, setSelectedImage] = useState("");
@@ -41,6 +38,7 @@ const [touchEnd, setTouchEnd] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
+  const ALL_SIZES = ["XS","S", "M", "L", "XL", "XXL"];
   //-----------------------------------------------------
   // Sticky Bar
   //-----------------------------------------------------
@@ -148,11 +146,38 @@ const [touchEnd, setTouchEnd] = useState(0);
   const toggleAccordion = (id) =>
     setAccordionOpen(accordionOpen === id ? null : id);
 
+  // Compute allowed max quantity (respect stock and maxQuantity)
+  const allowedMax = Math.min(
+    product.stock ?? Infinity,
+    product.maxQuantity ?? Infinity
+  );
+
   const handleQuantity = (type) =>
-    setQuantity((q) => (type === "inc" ? q + 1 : q > 1 ? q - 1 : q));
+    setQuantity((q) => {
+      if (type === "inc") {
+        if (q >= allowedMax) return q; // don't increase beyond allowed max
+        return q + 1;
+      } else {
+        return q > 1 ? q - 1 : q;
+      }
+    });
 
   const handleAddToCart = () => {
     if (!selectedSize) return toast.error("Please select size");
+    // ensure selected size is available
+    const availableSizes =
+      Array.isArray(product.sizes) && product.sizes.length
+        ? product.sizes
+        : ALL_SIZES;
+
+    if (!availableSizes.includes(selectedSize)) {
+      return toast.error("Selected size is not available");
+    }
+
+    if (quantity > allowedMax) {
+      return toast.error(`Only ${allowedMax} item(s) available`);
+    }
+
     addToCart(
       { ...product, selectedSize, productId: product._id },
       quantity
@@ -164,7 +189,6 @@ const [touchEnd, setTouchEnd] = useState(0);
     setLightboxIndex(i);
     setIsLightboxOpen(true);
   };
-
   //-----------------------------------------------------
   // RENDER
   //-----------------------------------------------------
@@ -285,12 +309,8 @@ const [touchEnd, setTouchEnd] = useState(0);
   </div>
 </div>
 
-
-
-
   </div>
 </div>
-
 
 
         {/* RIGHT – DETAILS */}
@@ -326,21 +346,41 @@ const [touchEnd, setTouchEnd] = useState(0);
           {/* SIZES */}
           <div>
             <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size </b></p>
-            <div className="flex gap-2">
-              {(product.sizes?.length ? product.sizes : ["XS","S", "M", "L", "XL", "XXL"]).map(
-                (s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={`px-3 py-1 rounded border text-sm ${
-                      selectedSize === s
-                        ? "bg-black text-white border-black"
-                        : "border-neutral-300"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                )
+            <div className="flex gap-2 flex-wrap">
+              {(ALL_SIZES).map(
+                (s) => {
+                  const available = Array.isArray(product.sizes) && product.sizes.length
+                    ? product.sizes.includes(s)
+                    : true;
+
+                  if (!available) {
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        className="px-3 py-1 rounded border text-sm opacity-40 line-through cursor-not-allowed border-neutral-200"
+                        title={`${s} not available`}
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        {s}
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      className={`px-3 py-1 rounded border text-sm ${
+                        selectedSize === s
+                          ? "bg-black text-white border-black"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  );
+                }
               )}
             </div>
           </div>
@@ -353,7 +393,7 @@ const [touchEnd, setTouchEnd] = useState(0);
                 –
               </button>
               <span className="px-4">{quantity}</span>
-              <button onClick={() => handleQuantity("inc")} className="px-3 py-1">
+              <button onClick={() => handleQuantity("inc")} className={`px-3 py-1 ${quantity >= allowedMax ? "opacity-40 cursor-not-allowed" : ""}`} disabled={quantity >= allowedMax} title={quantity >= allowedMax ? `Max ${allowedMax} allowed` : "Increase"}>
                 +
               </button>
             </div>
@@ -439,9 +479,19 @@ const [touchEnd, setTouchEnd] = useState(0);
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="flex-1 border border-neutral-400 py-3 rounded-md text-sm text-center hover:bg-neutral-100 transition"
+              rel="noreferrer"
+              className="flex-1 border border-neutral-400 py-3 rounded-md text-sm flex items-center justify-center gap-2 hover:bg-neutral-100 transition"
             >
-              ☎ Happy to help
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12.04 2C6.51 2 2 6.51 2 12.04c0 1.93.54 3.81 1.56 5.45L2 22l4.66-1.53c1.59.87 3.38 1.33 5.38 1.33 5.53 0 10.04-4.51 10.04-10.04S17.57 2 12.04 2zm0 18.12c-1.68 0-3.31-.45-4.74-1.3l-.34-.2-2.76.9.92-2.69-.22-.35a8.08 8.08 0 01-1.25-4.44c0-4.49 3.66-8.14 8.14-8.14s8.14 3.66 8.14 8.14-3.66 8.14-8.14 8.14zm4.46-5.94c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.22-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.38.1-.5.1-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.42-.54-.42-.14 0-.3-.02-.46-.02-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.18 3.58.58.24 1.04.38 1.4.48.58.18 1.1.16 1.52.1.46-.06 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"></path>
+              </svg>
+              Happy to Help
             </a>
           </div>
         </div>
@@ -527,9 +577,19 @@ const [touchEnd, setTouchEnd] = useState(0);
             <a
               href="https://wa.me/919910929099"
               target="_blank"
-              className="w-1/2 bg-white border border-neutral-400 py-3 text-sm text-center"
+              rel="noreferrer"
+              className="w-1/2 bg-black text-white border border-neutral-400 py-3 text-sm flex items-center justify-center gap-2"
             >
-              ☎ Help
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="white"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12.04 2C6.51 2 2 6.51 2 12.04c0 1.93.54 3.81 1.56 5.45L2 22l4.66-1.53c1.59.87 3.38 1.33 5.38 1.33 5.53 0 10.04-4.51 10.04-10.04S17.57 2 12.04 2zm0 18.12c-1.68 0-3.31-.45-4.74-1.3l-.34-.2-2.76.9.92-2.69-.22-.35a8.08 8.08 0 01-1.25-4.44c0-4.49 3.66-8.14 8.14-8.14s8.14 3.66 8.14 8.14-3.66 8.14-8.14 8.14zm4.46-5.94c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.22-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.02-.38.1-.5.1-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.42-.54-.42-.14 0-.3-.02-.46-.02-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.68 2.56 4.18 3.58.58.24 1.04.38 1.4.48.58.18 1.1.16 1.52.1.46-.06 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"></path>
+              </svg>
+              Happy to Help
             </a>
           </div>
         </div>

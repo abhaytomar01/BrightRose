@@ -9,6 +9,7 @@ import SeoData from "../../SEO/SeoData";
 
 const MAX_IMAGES = 10;
 const MAX_SIZE = 50 * 1024 * 1024;
+const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const CreateProduct = () => {
   const { authAdmin } = useAuth();
@@ -29,6 +30,10 @@ const CreateProduct = () => {
     price: "",
     stock: "",
   });
+
+  // sizes selected by admin
+  const [sizes, setSizes] = useState([...ALL_SIZES]); // default all enabled
+  const [maxQuantity, setMaxQuantity] = useState(10); // default
 
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
@@ -76,6 +81,12 @@ const CreateProduct = () => {
     setImagesFiles((p) => p.filter((_, idx) => idx !== i));
   };
 
+  const toggleSize = (s) => {
+    setSizes((prev) =>
+      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+    );
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsSubmit(true);
@@ -87,10 +98,19 @@ const CreateProduct = () => {
         return;
       }
 
+      // at least one size should be selected
+      if (!sizes.length) {
+        toast.error("Please select at least one size");
+        setIsSubmit(false);
+        return;
+      }
+
       const fd = new FormData();
 
-      Object.keys(form).forEach((k) => fd.append(k, form[k]));
+      Object.keys(form).forEach((k) => fd.append(k, form[k] ?? ""));
       fd.append("tags", JSON.stringify(tags));
+      fd.append("sizes", JSON.stringify(sizes));
+      fd.append("maxQuantity", String(maxQuantity));
 
       imagesFiles.forEach((file) => fd.append("images", file));
 
@@ -121,7 +141,10 @@ const CreateProduct = () => {
       {isSubmit ? (
         <Spinner />
       ) : (
-        <form className="bg-white p-4 rounded shadow flex flex-col gap-4" onSubmit={submitHandler}>
+        <form
+          className="bg-white p-4 rounded shadow flex flex-col gap-4"
+          onSubmit={submitHandler}
+        >
           {Object.keys(form).map((key) => (
             <input
               key={key}
@@ -132,6 +155,48 @@ const CreateProduct = () => {
               className="border p-2 rounded"
             />
           ))}
+
+          {/* sizes */}
+          <div>
+            <label className="block font-medium mb-2">Available Sizes</label>
+            <div className="flex gap-2 flex-wrap">
+              {ALL_SIZES.map((s) => {
+                const active = sizes.includes(s);
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => toggleSize(s)}
+                    className={`px-3 py-1 rounded border text-sm transition ${
+                      active
+                        ? "bg-black text-white border-black"
+                        : "border-neutral-300 bg-white text-neutral-700"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-sm text-neutral-500 mt-1">
+              Toggle sizes that are available for this product.
+            </p>
+          </div>
+
+          {/* maxQuantity */}
+          <div>
+            <label className="block font-medium mb-2">Max Quantity per order</label>
+            <input
+              type="number"
+              min={1}
+              value={maxQuantity}
+              onChange={(e) => setMaxQuantity(Math.max(1, Number(e.target.value || 1)))}
+              className="border p-2 rounded w-40"
+            />
+            <p className="text-sm text-neutral-500 mt-1">
+              User cannot increase quantity beyond this number (also limited by stock).
+            </p>
+          </div>
 
           {/* Tags */}
           <div>
@@ -151,7 +216,10 @@ const CreateProduct = () => {
 
             <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((t, i) => (
-                <span key={i} className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2">
+                <span
+                  key={i}
+                  className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2"
+                >
                   {t} <button onClick={() => removeTag(i)}>x</button>
                 </span>
               ))}
