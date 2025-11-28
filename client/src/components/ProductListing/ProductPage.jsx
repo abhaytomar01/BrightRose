@@ -296,7 +296,7 @@ const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 </div>
 
 {/* DOTS BELOW (NEW POSITION & SMALLER SIZE) */}
-<div className="md:hidden flex justify-center gap-1 mt-3 mb-2">
+<div className="md:hidden flex justify-center gap-1 mt-3">
   {gallery.map((_, idx) => (
     <div
       key={idx}
