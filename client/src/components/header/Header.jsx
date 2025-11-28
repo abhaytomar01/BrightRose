@@ -95,66 +95,71 @@ const Header = () => {
         For any customisation or personal assistance, contact us
       </Link>
 
-      {/* Header Main */}
-      <div className="grid grid-cols-3 items-center px-4 py-2 md:px-6 border-b">
+    {/* Header Main */}
+<div className="grid grid-cols-3 items-center px-4 py-4 md:px-6 border-b">
 
-        {/* MOBILE HAMBURGER */}
-        <div className="flex items-center md:hidden">
-          <button aria-label="menu" onClick={() => setOpen(true)}>
-            <Menu size={28} />
-          </button>
-        </div>
+  {/* LEFT SIDE (Mobile: menu + search) */}
+  <div className="flex items-center gap-3">
 
-        {/* Desktop Search */}
-        <div className="hidden md:flex items-center gap-2 cursor-pointer"
-             onClick={() => setIsSearchOpen(true)}>
-          <Search className="w-5 h-5 text-gray-600" />
-          <span className="text-sm text-gray-600">Search</span>
-        </div>
+    {/* MOBILE HAMBURGER */}
+    <button aria-label="menu" onClick={() => setOpen(true)} className="md:hidden">
+      <Menu size={28} />
+    </button>
 
-        {/* LOGO */}
-        {/* <div className="flex justify-center">
-          <Link to="/">
-            <img src={Logo} className="w-24 md:w-28 h-16 object-contain" />
-          </Link>
-        </div> */}
-
-        {/* LOGO – BRIGHT ROSE TEXT */}
-<div className="flex justify-center">
-  <Link to="/" className="select-none">
-    <h1
-      className="
-        font-[Cinzel]
-        text-[18px]          /* smaller for tiny screens */
-        sm:text-[20px]
-        md:text-[28px]
-        font-semibold
-        tracking-[0.10em]    /* reduced spacing to prevent wrap */
-        text-[#8A0014]
-        leading-none
-        whitespace-nowrap    /* prevents wrapping */
-      "
+    {/* MOBILE SEARCH ICON */}
+    <button
+      className="md:hidden"
+      onClick={() => setIsSearchOpen(true)}
     >
-      BRIGHT ROSE
-    </h1>
-  </Link>
+      <Search className="w-5 h-5 text-gray-700" />
+    </button>
+
+    {/* DESKTOP SEARCH */}
+    <div
+      className="hidden md:flex items-center gap-2 cursor-pointer"
+      onClick={() => setIsSearchOpen(true)}
+    >
+      <Search className="w-5 h-5 text-gray-600" />
+      <span className="text-sm text-gray-600">Search</span>
+    </div>
+
+  </div>
+
+  {/* LOGO – stays perfectly centered */}
+  <div className="flex justify-center">
+    <Link to="/" className="select-none">
+      <h1
+        className="
+          font-[Cinzel]
+          text-[18px]
+          sm:text-[20px]
+          md:text-[28px]
+          font-semibold
+          tracking-[0.10em]
+          text-[#8A0014]
+          leading-none
+          whitespace-nowrap
+        "
+      >
+        BRIGHT ROSE
+      </h1>
+    </Link>
+  </div>
+
+  {/* RIGHT SIDE ICONS */}
+  <div className="flex items-center justify-end gap-4">
+
+    {/* Admin/User Icon */}
+    <Link to={adminIconLink} className="text-gray-700 hover:text-black">
+      <User className="w-5 h-5" />
+    </Link>
+
+    {/* Cart Icon */}
+    <Link to="/cart" className="text-gray-700 hover:text-black">
+      <ShoppingBag className="w-5 h-5" />
+    </Link>
+  </div>
 </div>
-
-
-
-        {/* ICONS */}
-        <div className="flex items-center justify-end gap-4">
-
-          {/* Admin Login Icon */}
-          <Link to={adminIconLink} className="text-gray-700 hover:text-black">
-            <User className="w-5 h-5" />
-          </Link>
-
-          <Link to="/cart" className="text-gray-700 hover:text-black">
-            <ShoppingBag className="w-5 h-5" />
-          </Link>
-        </div>
-      </div>
 
       {/* DESKTOP MENU */}
       <nav className="hidden md:flex justify-center space-x-8 text-[12px] font-semibold py-2 uppercase">
