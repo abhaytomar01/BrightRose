@@ -2,7 +2,9 @@ import productModel from "../../models/productModel.js";
 
 const newProduct = async (req, res) => {
   try {
-    // PARSE sizes
+    // ---------------------------
+    // PARSE SIZES
+    // ---------------------------
     let sizes = [];
     try {
       sizes = req.body.sizes ? JSON.parse(req.body.sizes) : [];
@@ -10,7 +12,9 @@ const newProduct = async (req, res) => {
       sizes = [];
     }
 
-    // PARSE tags
+    // ---------------------------
+    // PARSE TAGS
+    // ---------------------------
     let tags = [];
     try {
       tags = req.body.tags ? JSON.parse(req.body.tags) : [];
@@ -18,25 +22,60 @@ const newProduct = async (req, res) => {
       tags = [];
     }
 
-    // CONVERT maxQuantity to number
+    // ---------------------------
+    // MAX QUANTITY
+    // ---------------------------
     const maxQuantity = req.body.maxQuantity
       ? Number(req.body.maxQuantity)
       : 1;
 
-    // Uploaded images
+    // ---------------------------
+    // IMAGES
+    // ---------------------------
     const uploaded =
       req.files?.map((file) => ({
         url: `/uploads/products/${file.filename}`,
         filename: file.filename,
       })) || [];
 
-    const product = await productModel.create({
-      ...req.body,
-      sizes,
-      tags,
-      maxQuantity,
-      images: uploaded,
+    // ---------------------------
+    // SAFE FIELDS (whitelist)
+    // ---------------------------
+    const allowedFields = [
+      "name",
+      "fabric",
+      "color",
+      "weavingArt",
+      "uniqueness",
+      "sizeInfo",
+      "description",
+      "specification",
+      "care",
+      "sku",
+      "price",
+      "stock",
+      "brand",
+      "category"
+    ];
+
+    let data = {};
+
+    allowedFields.forEach((f) => {
+      if (req.body[f] !== undefined) {
+        data[f] = req.body[f];
+      }
     });
+
+    // assign safe parsed fields
+    data.sizes = sizes;
+    data.tags = tags;
+    data.maxQuantity = maxQuantity;
+    data.images = uploaded;
+
+    // ---------------------------
+    // CREATE PRODUCT
+    // ---------------------------
+    const product = await productModel.create(data);
 
     res.json({ success: true, product });
   } catch (err) {

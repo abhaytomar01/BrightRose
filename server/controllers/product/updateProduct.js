@@ -51,7 +51,29 @@ const updateProduct = async (req, res) => {
     }
 
     // UPDATE all other simple fields
-    Object.assign(product, req.body);
+    // Assign only fields that are NOT arrays or special fields
+const allowedFields = [
+  "name",
+  "fabric",
+  "color",
+  "weavingArt",
+  "uniqueness",
+  "sizeInfo",
+  "description",
+  "specification",
+  "care",
+  "sku",
+  "price",
+  "stock",
+  "brand"
+];
+
+allowedFields.forEach((field) => {
+  if (req.body[field] !== undefined) {
+    product[field] = req.body[field];
+  }
+});
+
 
     const updated = await product.save();
 
