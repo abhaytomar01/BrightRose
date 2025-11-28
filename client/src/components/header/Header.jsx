@@ -130,7 +130,7 @@ const Header = () => {
     <Link to="/" className="select-none">
       <h1
         className="
-          font-[Cizel]
+          font-[PlayfairDisplay]
           text-[18px]
           sm:text-[20px]
           md:text-[28px]
