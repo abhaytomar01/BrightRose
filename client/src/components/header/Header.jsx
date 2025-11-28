@@ -119,22 +119,27 @@ const Header = () => {
           </Link>
         </div> */}
 
-        <div className="flex justify-center">
+        {/* LOGO – BRIGHT ROSE TEXT */}
+<div className="flex justify-center">
   <Link to="/" className="select-none">
     <h1
       className="
-        font-[Cinzel] 
-        text-[14px] 
-        md:text-[28px] 
-        font-semibold 
-        tracking-[0.15em] 
-        text-[#8C0013]
+        font-[Cinzel]
+        text-[18px]          /* smaller for tiny screens */
+        sm:text-[20px]
+        md:text-[28px]
+        font-semibold
+        tracking-[0.10em]    /* reduced spacing to prevent wrap */
+        text-[#8A0014]
+        leading-none
+        whitespace-nowrap    /* prevents wrapping */
       "
     >
       BRIGHT ROSE
     </h1>
   </Link>
 </div>
+
 
 
         {/* ICONS */}
