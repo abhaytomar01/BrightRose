@@ -30,6 +30,7 @@ export default function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState("");
   const [accordionOpen, setAccordionOpen] = useState(null);
   const [quantity, setQuantity] = useState(1);
+const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
@@ -345,7 +346,19 @@ export default function ProductDetails() {
 
           {/* SIZES */}
           <div>
-            <p className="text-sm text-neutralDark/80 mb-1"><b className=" text-neutralDark/80">Size </b></p>
+            <div className="flex items-center justify-between mb-1">
+  <p className="text-sm text-neutralDark/80">
+    <b className="text-neutralDark/80">Size</b>
+  </p>
+
+  <button
+    onClick={() => setIsSizeChartOpen(true)}
+    className="text-sm underline text-neutralDark/70 hover:text-black transition"
+  >
+    Size Guide
+  </button>
+</div>
+
             <div className="flex gap-2 flex-wrap">
               {(ALL_SIZES).map(
                 (s) => {

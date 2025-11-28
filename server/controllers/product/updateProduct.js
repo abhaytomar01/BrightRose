@@ -11,24 +11,46 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: "Product not found" });
     }
 
+    // PARSE images info
     const oldImages = JSON.parse(req.body.oldImages || "[]");
     const removed = JSON.parse(req.body.removedImages || "[]");
 
-    // REMOVE old images from server
+    // REMOVE old deleted images from server
     removed.forEach((filename) => {
       const filePath = path.join(process.cwd(), "server", "uploads", "products", filename);
       if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     });
 
-    // ADD new images
-    const newUploads = req.files?.map((file) => ({
-      url: `/uploads/products/${file.filename}`,
-      filename: file.filename,
-    })) || [];
+    // ADD new uploaded images
+    const newUploads =
+      req.files?.map((file) => ({
+        url: `/uploads/products/${file.filename}`,
+        filename: file.filename,
+      })) || [];
 
+    // SET new images array
     product.images = [...oldImages, ...newUploads];
 
-    product.tags = JSON.parse(req.body.tags || "[]");
+    // PARSE sizes
+    try {
+      product.sizes = req.body.sizes ? JSON.parse(req.body.sizes) : product.sizes;
+    } catch (err) {
+      console.log("Sizes parse failed — keeping old sizes");
+    }
+
+    // PARSE tags
+    try {
+      product.tags = req.body.tags ? JSON.parse(req.body.tags) : product.tags;
+    } catch (err) {
+      console.log("Tags parse failed — keeping old tags");
+    }
+
+    // PARSE maxQuantity
+    if (req.body.maxQuantity) {
+      product.maxQuantity = Number(req.body.maxQuantity);
+    }
+
+    // UPDATE all other simple fields
     Object.assign(product, req.body);
 
     const updated = await product.save();
