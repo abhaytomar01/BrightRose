@@ -1,38 +1,43 @@
+import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
 
+// GET wishlist with full product details
+export const getWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate("wishlist");
 
-// wishlistController.js
-
-export const toggleWishlist = async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const { productId } = req.body;
-
-  if (!user) return res.status(404).send({ success: false });
-
-  const exists = user.wishlist.includes(productId);
-
-  if (exists) {
-    user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
-    await user.save();
-    return res.send({
+    return res.status(200).json({
       success: true,
-      action: "removed",
-      wishlist: user.wishlist, // always IDs
+      wishlist: user.wishlist,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load wishlist",
     });
   }
-
-  user.wishlist.push(productId);
-  await user.save();
-  return res.send({
-    success: true,
-    action: "added",
-    wishlist: user.wishlist, // always IDs
-  });
 };
 
+// TOGGLE wishlist
+export const toggleWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await User.findById(req.user._id);
 
-// GET USER WISHLIST IDS
-export const getWishlist = async (req, res) => {
-  const user = await User.findById(req.user._id).select("wishlist");
-  res.send({ success: true, wishlist: user.wishlist });
+    if (user.wishlist.includes(productId)) {
+      user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+      await user.save();
+      return res.status(200).json({ success: true, action: "removed" });
+    }
+
+    user.wishlist.push(productId);
+    await user.save();
+    return res.status(200).json({ success: true, action: "added" });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update wishlist",
+    });
+  }
 };
-

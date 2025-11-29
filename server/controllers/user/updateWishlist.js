@@ -1,34 +1,31 @@
-import userModel from "../../models/userModel.js";
+import User from "../../models/userModel.js";
 
-const updateWishlist = async (req, res) => {
-    try {
-        const { productId, type } = req.body;
+export const toggleWishlist = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await User.findById(req.user._id);
 
-        let response;
-        if (type === "add") {
-            response = await userModel.findByIdAndUpdate(req.user._id, {
-                $push: { wishlist: productId },
-            });
-        } else if (type === "remove") {
-            response = await userModel.findByIdAndUpdate(
-                req.user._id,
-                { $pull: { wishlist: productId } },
-                { new: true }
-            );
-        }
-        // console.log(type, response);
-        const wishlistItems = response.wishlist;
-        res.status(201).send({
-            success: true,
-            wishlistItems,
-        });
-    } catch (error) {
-        console.log("Error in Updating Wishlist Products: " + error);
-        res.status(500).send({
-            success: false,
-            message: "Error in Updating Wishlist Products",
-            error,
-        });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
+
+    // If exists -> remove
+    if (user.wishlist.includes(productId)) {
+      user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+      await user.save();
+      return res.status(200).json({ success: true, action: "removed" });
+    }
+
+    // Else add
+    user.wishlist.push(productId);
+    await user.save();
+    return res.status(200).json({ success: true, action: "added" });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update wishlist",
+      err,
+    });
+  }
 };
-export default updateWishlist;

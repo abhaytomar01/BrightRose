@@ -1,22 +1,19 @@
-import userModel from "../../models/userModel.js";
+import User from "../../models/userModel.js";
+import Product from "../../models/productModel.js";
 
-const getWishlistItems = async (req, res) => {
-    try {
-        const user = await userModel.findById(req.user._id);
-        // console.log(user);
-        const wishlistItems = user.wishlist;
-        // console.log(wishlistItems);
-        res.status(201).send({
-            success: true,
-            wishlistItems,
-        });
-    } catch (error) {
-        console.log("Error in Getting Wishlist Products: " + error);
-        res.status(500).send({
-            success: false,
-            message: "Error in getting Wishlist Products",
-            error,
-        });
-    }
+export const getWishlist = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate("wishlist");
+    
+    return res.status(200).json({
+      success: true,
+      wishlist: user.wishlist,  // FULL product documents
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load wishlist"
+    });
+  }
 };
-export default getWishlistItems;
