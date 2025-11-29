@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderItem from "./OrderItem";
-import MinCategory from "../../../components/MinCategory";
 import Spinner from "../../../components/Spinner";
 import axios from "axios";
 import { useAuth } from "../../../context/auth";
@@ -44,7 +43,6 @@ const Orders = () => {
   return (
     <>
       <SeoData title="My Orders | Bright Rose" />
-      <MinCategory />
 
       <main className="w-full px-4 sm:px-10 py-4 pt-28 md:pt-40 bg-[#F8F6F3] min-h-screen">
         <div className="flex w-full">

@@ -54,30 +54,24 @@ export default function ProductDetails() {
   const currentWishlist = authUser?.token ? wishlist : localWishlist;
 
   // ---------- Fetch wishlist from server (when logged in) ----------
-  const fetchWishlistFromServer = async () => {
-    if (!authUser?.token) return;
-    try {
-      // using /list endpoint (adapt to your backend if different)
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/wishlist/list`,
-        {
-          headers: {
-            Authorization: `Bearer ${authUser.token}`,
-          },
-        }
-      );
+  // correct backend fetch (returns array of product IDs)
+const fetchWishlistFromServer = async () => {
+  if (!authUser?.token) return;
+  try {
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/user/wishlist-products`,
+      { headers: { Authorization: `Bearer ${authUser.token}` } }
+    );
 
-      if (res.data?.success) {
-        const ids = (res.data.wishlist || []).map((item) => item._id);
-        // update global (auth) wishlist and local fallback
-        setWishlist(ids);
-        setLocalWishlist(ids);
-        localStorage.setItem("wishlist", JSON.stringify(ids));
-      }
-    } catch (err) {
-      console.log("WISHLIST FETCH ERROR:", err);
-    }
-  };
+    const ids = (res.data?.wishlistItems || []).map((p) => p._id);
+
+    setWishlist(ids);
+    setLocalWishlist(ids);
+    localStorage.setItem("wishlist", JSON.stringify(ids));
+  } catch (err) {
+    console.log("WISHLIST FETCH ERROR:", err);
+  }
+};
 
   useEffect(() => {
     if (authUser?.token) {
@@ -87,57 +81,54 @@ export default function ProductDetails() {
   }, [authUser?.token]);
 
   // ---------- Wishlist helpers ----------
-  const isWishlisted = (id) => currentWishlist?.includes(id);
+  const isWishlisted = (id) =>
+  (authUser?.token ? wishlist : localWishlist)?.includes(id);
+
 
   const handleWishlist = async (productIdToToggle) => {
-    // Guest -> localStorage
-    if (!authUser?.token) {
-      let updated;
-      if (isWishlisted(productIdToToggle)) {
-        updated = currentWishlist.filter((w) => w !== productIdToToggle);
-        toast.info("Removed from wishlist");
-      } else {
-        updated = [...currentWishlist, productIdToToggle];
-        toast.success("Added to wishlist");
-      }
-      setLocalWishlist(updated);
-      localStorage.setItem("wishlist", JSON.stringify(updated));
-      return;
+  // Guest user → localStorage only
+  if (!authUser?.token) {
+    let updated;
+
+    if (localWishlist.includes(productIdToToggle)) {
+      updated = localWishlist.filter((id) => id !== productIdToToggle);
+      toast.info("Removed from wishlist");
+    } else {
+      updated = [...localWishlist, productIdToToggle];
+      toast.success("Added to wishlist");
     }
 
-    // Logged-in -> backend toggle
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/wishlist/toggle`,
-        { productId: productIdToToggle },
-        { headers: { Authorization: `Bearer ${authUser.token}` } }
-      );
+    setLocalWishlist(updated);
+    localStorage.setItem("wishlist", JSON.stringify(updated));
+    return;
+  }
 
-      // backend should return action: "added" or "removed"
-      if (res.data?.action === "added") {
-        setWishlist((prev = []) => {
-          // avoid duplicates
-          if (!prev.includes(productIdToToggle)) return [...prev, productIdToToggle];
-          return prev;
-        });
-        toast.success("Added to wishlist");
-      } else {
-        setWishlist((prev = []) => prev.filter((id) => id !== productIdToToggle));
-        toast.info("Removed from wishlist");
-      }
+  // Logged-in user → backend
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/user/update-wishlist`,
+      { productId: productIdToToggle, type: "toggle" },
+      { headers: { Authorization: authUser.token } }
+    );
 
-      // also keep localStorage in sync (so guest fallback shows same)
-      const newIds = (res.data?.action === "added")
-        ? [...(wishlist || []), productIdToToggle]
-        : (wishlist || []).filter((id) => id !== productIdToToggle);
+    const updatedIds = res.data?.wishlist?.map((p) => p._id) || [];
 
-      localStorage.setItem("wishlist", JSON.stringify(newIds));
-      setLocalWishlist(newIds);
-    } catch (err) {
-      console.error("Wishlist toggle failed:", err);
-      toast.error("Unable to update wishlist");
-    }
-  };
+    // Update global + local
+    setWishlist(updatedIds);
+    setLocalWishlist(updatedIds);
+    localStorage.setItem("wishlist", JSON.stringify(updatedIds));
+
+    toast.success(
+      updatedIds.includes(productIdToToggle)
+        ? "Added to wishlist"
+        : "Removed from wishlist"
+    );
+  } catch (err) {
+    console.log("WISHLIST ERROR:", err);
+    toast.error("Unable to update wishlist");
+  }
+};
+
 
   // -----------------------------------------------------
   // Sticky Bar
@@ -555,7 +546,7 @@ export default function ProductDetails() {
         }`}
       >
         <div className="text-sm text-neutralDark/70 pb-3">
-          {item.content}
+          {item.content}  
         </div>
       </div>
     </div>

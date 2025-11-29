@@ -1,66 +1,64 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../../src/context/auth";
 import axios from "axios";
-import { useAuth } from "../../context/auth.jsx";
 import { toast } from "react-toastify";
 import { Plus, Trash2, Edit2, X } from "lucide-react";
 
 const AddressComponent = () => {
   const { authUser } = useAuth();
-  const token = authUser?.token;
-
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingAddressId, setEditingAddressId] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
     phone: "",
     pincode: "",
-    address: "",
+    addressLine: "",
     city: "",
     state: "",
   });
 
-  const API = import.meta.env.VITE_SERVER_URL;
-
   // -----------------------------------------------------
-  // Fetch addresses
+  // Fetch addresses from backend
   // -----------------------------------------------------
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const res = await axios.get(`${API}/api/v1/user/addresses`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(`${VITE_SERVER}/api/v1/user/addresses`, {
+  headers: { Authorization: `Bearer ${authUser.token}` }
+});
 
         setAddresses(res.data.addresses || []);
       } catch (err) {
-        console.error("Address fetch error:", err);
-        toast.error("Failed to fetch addresses");
+        console.log("Address fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAddresses();
-  }, [token]);
+  }, []);
 
   // -----------------------------------------------------
   // OPEN MODAL
   // -----------------------------------------------------
-  const openModal = (address = null) => {
-    if (address) {
-      setEditingAddressId(address._id);
-      setForm(address);
+  const openModal = (index = null) => {
+    if (index !== null) {
+      // Edit existing
+      setEditingIndex(index);
+      setForm(addresses[index]);
     } else {
-      setEditingAddressId(null);
+      // Add new
+      setEditingIndex(null);
       setForm({
         name: "",
         phone: "",
         pincode: "",
-        address: "",
+        addressLine: "",
         city: "",
         state: "",
       });
@@ -71,67 +69,63 @@ const AddressComponent = () => {
   const closeModal = () => setIsModalOpen(false);
 
   // -----------------------------------------------------
-  // SAVE (Add OR Update)
+  // SUBMIT (Add or Edit)
   // -----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      if (editingAddressId) {
-        // UPDATE
-        const res = await axios.put(
-          `${API}/api/v1/user/address/${editingAddressId}`,
-          form,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+      let updatedAddresses = [...addresses];
 
-        setAddresses(res.data.addresses);
-        toast.success("Address updated");
+      if (editingIndex !== null) {
+        updatedAddresses[editingIndex] = form;
       } else {
-        // ADD NEW
         if (addresses.length >= 3) {
-          toast.error("You can only add up to 3 addresses");
+          toast.error("You can only add up to 3 addresses.");
           return;
         }
-
-        const res = await axios.post(
-          `${API}/api/v1/user/address`,
-          form,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        setAddresses(res.data.addresses);
-        toast.success("Address added");
+        updatedAddresses.push(form);
       }
 
+      // Update backend
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/update-addresses`,
+        { addresses: updatedAddresses },
+        { headers: { Authorization: `Bearer ${authUser.token}` } }
+      );
+
+      setAddresses(res.data.addresses);
+      toast.success("Address saved successfully");
       closeModal();
     } catch (err) {
-      console.error(err);
+      console.log(err);
       toast.error("Failed to save address");
     }
   };
 
   // -----------------------------------------------------
-  // DELETE Address
+  // DELETE ADDRESS
   // -----------------------------------------------------
-  const deleteAddress = async (id) => {
+  const deleteAddress = async (index) => {
     try {
-      const res = await axios.delete(
-        `${API}/api/v1/user/address/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const updated = addresses.filter((_, i) => i !== index);
+
+      const res = await axios.post(`${VITE_SERVER}/api/v1/user/addresses/update`,
+  { addresses },
+  { headers: { Authorization: `Bearer ${authUser.token}` } }
+);
 
       setAddresses(res.data.addresses);
       toast.success("Address removed");
     } catch (err) {
-      console.error(err);
+      console.log(err);
       toast.error("Failed to delete");
     }
   };
-
   // -----------------------------------------------------
   // UI
   // -----------------------------------------------------
+
   if (loading) return <p className="p-4">Loading addresses...</p>;
 
   return (
@@ -152,9 +146,9 @@ const AddressComponent = () => {
 
       {/* Address List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {addresses.map((addr) => (
+        {addresses.map((addr, index) => (
           <div
-            key={addr._id}
+            key={index}
             className="border border-gray-300 rounded-xl p-5 shadow-sm"
           >
             <div className="flex justify-between">
@@ -163,17 +157,17 @@ const AddressComponent = () => {
                 <Edit2
                   size={18}
                   className="cursor-pointer hover:text-blue-500"
-                  onClick={() => openModal(addr)}
+                  onClick={() => openModal(index)}
                 />
                 <Trash2
                   size={18}
                   className="cursor-pointer hover:text-red-500"
-                  onClick={() => deleteAddress(addr._id)}
+                  onClick={() => deleteAddress(index)}
                 />
               </div>
             </div>
 
-            <p className="mt-2 text-gray-700">{addr.address}</p>
+            <p className="mt-2 text-gray-700">{addr.addressLine}</p>
             <p className="text-gray-700">
               {addr.city}, {addr.state} – {addr.pincode}
             </p>
@@ -193,7 +187,7 @@ const AddressComponent = () => {
             </button>
 
             <h2 className="text-lg font-semibold mb-4">
-              {editingAddressId ? "Edit Address" : "Add Address"}
+              {editingIndex !== null ? "Edit Address" : "Add Address"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -228,9 +222,11 @@ const AddressComponent = () => {
 
               <textarea
                 placeholder="Complete Address"
-                value={form.address}
+                value={form.addressLine}
                 required
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, addressLine: e.target.value })
+                }
                 className="w-full border p-3 rounded-md h-20"
               />
 
