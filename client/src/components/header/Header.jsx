@@ -34,7 +34,7 @@ const Header = () => {
   const isAdminLoggedIn = !!authAdmin?.token;
 
   // FIXED: Show correct destination for admin/user
-  const profileLink = isAdminLoggedIn
+  const adminIconLink = isAdminLoggedIn
     ? "/admin/dashboard/profile"
     : isUserLoggedIn
     ? "/user/dashboard/profile"
