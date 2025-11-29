@@ -1,188 +1,102 @@
 import { useAuth } from "../../context/auth";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import PersonIcon from "@mui/icons-material/Person";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import { Link, NavLink } from "react-router-dom";
 import { GiCrossMark } from "react-icons/gi";
 
-const UserMenu = ({ toggleMenu }) => {
-    const { auth, logout } = useAuth();
-    const navigate = useNavigate();
-    const handleLogout = () => {
-    logout();  // ✅ clears token & redirects to /login
-    
-    };
-    const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    };
-    return (
-        <div className="flex flex-col gap-4 w-full">
-            <div className="flex gap-4 p-3 bg-white rounded-sm shadow-md">
-                <img
-                    src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg"
-                    alt="user svg"
-                />
+const UserMenu = ({ closeMenu }) => {
+  const { authUser, logoutUser } = useAuth();
 
-                <div className="flex flex-col justify-center p-1">
-                    <div className="text-[14px]">Hello,</div>
-                    <div className="font-[600] text-[16px]">
-                        {auth?.user?.name}
-                    </div>
-                </div>
-                <div
-                    className="hover:scale-[1.06] absolute right-4 top-2 cursor-pointer sm:hidden"
-                    onClick={toggleMenu}
-                >
-                    <GiCrossMark />
-                </div>
-            </div>
+  const baseLink =
+    "px-5 py-3 text-[15px] text-gray-700 rounded-md transition-all tracking-wide";
+  const activeLink = "bg-black text-white";
 
-            <div className="bg-white flex flex-col justify-center rounded-sm sm:shadow-md">
-                <div className="flex flex-col justify-center border-b-[1px]">
-                    <div className="flex flex-row items-center gap-6 pl-[10px] py-[8px]">
-                        <PersonIcon className="text-primaryBlue text-[16px]" />
-                        <div className="font-[600] text-[14px] text-slate-500">
-                            ACCOUNT SETTINGS
-                        </div>
-                    </div>
-                    <div className="flex flex-col  text-black font-[300] text-[14px] mb-2 mt-0 ">
-                        <NavLink
-                            to="./profile"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                Profile Information
-                            </div>
-                        </NavLink>
+  return (
+    <div className="w-full">
 
-                        <NavLink
-                            to="./address"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                Manage Addresses
-                            </div>
-                        </NavLink>
-
-                        {/* <NavLink
-                            to="./pan"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                Pan Card
-                            </div>
-                        </NavLink> */}
-                    </div>
-                </div>
-
-                <div className="flex flex-col justify-center border-b-[1px]">
-                    <div className="flex flex-row items-center gap-6 pl-[10px] py-[8px]">
-                        <BarChartIcon className="text-primaryBlue text-[16px]" />
-                        <div className="font-[600] text-[14px] text-slate-500">
-                            DASHBOARD
-                        </div>
-                    </div>
-                    <div className="flex flex-col  text-black font-[300] text-[14px] mb-2 mt-0 ">
-                        <NavLink
-                            to="/user/orders "
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                My Orders
-                            </div>
-                        </NavLink>
-
-                        <NavLink
-                            to="/user/wishlist"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                My Wishlist
-                            </div>
-                        </NavLink>
-
-                        <NavLink
-                            to="./payment-cards"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            {/* <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                Saved Cards
-                            </div> */}
-                        </NavLink>
-
-                        {/* <NavLink
-                            to="./user-review"
-                            onClick={scrollToTop}
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "font-[600] text-primaryBlue bg-[#f1f3f5]"
-                                    : ""
-                            }
-                        >
-                            <div className=" h-[40px] px-[60px] flex items-center hover:text-primaryBlue hover:bg-[#f1f3f5]">
-                                My Reviews
-                            </div>
-                        </NavLink> */}
-                    </div>
-                </div>
-
-                <div className="flex flex-col justify-center border-b-[1px]">
-                    <div className="flex flex-row items-center gap-6 pl-[10px] py-[8px] group">
-                        <PowerSettingsNewIcon className="text-primaryBlue text-[16px]" />
-                        <button
-                            className="font-[600] text-[14px] w-full h-[40px] flex items-center text-slate-500 group-hover:text-primaryBlue"
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </button>
-                    </div>
-                </div>
-                <div className="flex flex-col items-start gap-2 p-4 bg-white rounded-sm shadow">
-                    <span className="text-xs font-medium">
-                        Frequently Visited:
-                    </span>
-                    <div className="flex gap-2.5 text-xs text-gray-500">
-                        <Link to="/forgot-password">Change Password</Link>
-                        <Link to="/user/orders">Track Order</Link>
-                        <Link to="/">Help Center</Link>
-                    </div>
-                </div>
-            </div>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6 relative">
+        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-lg">
+          👤
         </div>
-    );
+
+        <div>
+          <p className="text-gray-500 text-sm">Welcome</p>
+          <p className="font-medium text-lg luxury-title">{authUser?.user?.name}</p>
+        </div>
+
+        {/* Close Mobile */}
+        {closeMenu && (
+          <button
+            className="absolute right-0 top-0 text-xl text-gray-600 md:hidden"
+            onClick={closeMenu}
+          >
+            <GiCrossMark />
+          </button>
+        )}
+      </div>
+
+      {/* Menu Sections */}
+      <div className="space-y-6">
+
+        {/* Account Settings */}
+        <div>
+          <h3 className="luxury-title text-[15px] mb-2 text-gray-700">Account</h3>
+
+          <div className="space-y-2">
+            <NavLink
+              to="./profile"
+              className={({ isActive }) =>
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+              }
+            >
+              Profile Information
+            </NavLink>
+
+            <NavLink
+              to="./address"
+              className={({ isActive }) =>
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+              }
+            >
+              Manage Addresses
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Dashboard Links */}
+        <div>
+          <h3 className="luxury-title text-[15px] mb-2 text-gray-700">Dashboard</h3>
+
+          <div className="space-y-2">
+            <NavLink
+              to="/user/orders"
+              className={({ isActive }) =>
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+              }
+            >
+              My Orders
+            </NavLink>
+
+            <NavLink
+              to="/user/wishlist"
+              className={({ isActive }) =>
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+              }
+            >
+              Wishlist
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Logout */}
+        <button
+          onClick={logoutUser}
+          className="px-5 py-3 text-red-600 hover:bg-red-50 rounded-md text-[15px] tracking-wide"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default UserMenu;
