@@ -7,8 +7,8 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 // import your images or videos
-import hermesbanner from "../../../assets/images/Banners/hermes-banner.webp";
-// import bannerVideo from "../../../assets/videos/banner.mp4";
+// import hermesbanner from "../../../assets/images/Banners/hermes-banner.webp";
+import demovideo from "../../../assets/Kanchipuram/demovideo.mp4";
 
 export const PreviousBtn = ({ className, onClick }) => (
   <div
@@ -52,7 +52,7 @@ const Banner = () => {
   };
 
   const banners = [
-    { type: "image", src: hermesbanner },
+    { type: "video", src: demovideo },
     // { type: "video", src: bannerVideo },
   ];
 
