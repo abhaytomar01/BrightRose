@@ -69,7 +69,7 @@ const Wishlist = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <div className="flex gap-3.5 w-full sm:w-11/12 sm:mt-4 m-auto pb-7">
+        <div className="flex gap-3.5 w-full sm:w-11/12 mt-12 sm:mt-16 m-auto pb-7">
           <div className="flex-1 shadow bg-white">
             <div className="flex flex-col">
               <span className="font-medium text-lg px-4 sm:px-8 py-4 border-b">
