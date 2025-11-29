@@ -28,7 +28,7 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { authUser } = useAuth();
+  const { authUser, authAdmin } = useAuth();
 
   const isUserLoggedIn = !!authUser?.token;
   const isAdminLoggedIn = !!authAdmin?.token;
