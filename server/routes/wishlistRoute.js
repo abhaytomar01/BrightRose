@@ -1,6 +1,7 @@
 import express from "express";
-import { requireSignIn } from "../middleware/authMiddleware.js";
-import { getWishlist, toggleWishlist } from "../controllers/wishlistController.js";
+import { requireSignIn } from "../middlewares/authMiddleware.js";
+import { getWishlist } from "../controllers/user/getWishlist.js";
+import { toggleWishlist } from "../controllers/user/toggleWishlist.js";
 
 const router = express.Router();
 
