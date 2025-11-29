@@ -39,6 +39,8 @@ export default function ProductDetails() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
+
+
   const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
   // ---------- AUTH + WISHLIST ----------
@@ -81,54 +83,43 @@ const fetchWishlistFromServer = async () => {
   }, [authUser?.token]);
 
   // ---------- Wishlist helpers ----------
-  const isWishlisted = (id) =>
-  (authUser?.token ? wishlist : localWishlist)?.includes(id);
+  const isWishlisted = (id) => wishlist.includes(id);
 
 
-  const handleWishlist = async (productIdToToggle) => {
-  // Guest user → localStorage only
+  const handleWishlist = async (id) => {
+
+  // Guest Wishlist
   if (!authUser?.token) {
-    let updated;
-
-    if (localWishlist.includes(productIdToToggle)) {
-      updated = localWishlist.filter((id) => id !== productIdToToggle);
-      toast.info("Removed from wishlist");
-    } else {
-      updated = [...localWishlist, productIdToToggle];
-      toast.success("Added to wishlist");
-    }
+    const exists = localWishlist.includes(id);
+    let updated = exists
+      ? localWishlist.filter(x => x !== id)
+      : [...localWishlist, id];
 
     setLocalWishlist(updated);
-    localStorage.setItem("wishlist", JSON.stringify(updated));
+    localStorage.setItem("wishlist_ids", JSON.stringify(updated));
+
+    toast.success(exists ? "Removed from wishlist" : "Added to wishlist");
     return;
   }
 
-  // Logged-in user → backend
+  // Logged In Wishlist
   try {
-    const res = await axios.post(
-  `${import.meta.env.VITE_SERVER_URL}/api/v1/wishlist/toggle`,
-  { productId: productIdToToggle },
-  { headers: { Authorization: `Bearer ${authUser.token}` } }
-)
+    const res = await toggleWishlistAPI(id, authUser.token);
 
+    if (res.data.action === "added") {
+      setWishlist(prev => [...prev, id]);
+      toast.success("Added to wishlist");
+    } else {
+      setWishlist(prev => prev.filter(item => item !== id));
+      toast.info("Removed from wishlist");
+    }
 
-    const updatedIds = res.data?.wishlist?.map((p) => p._id) || [];
-
-    // Update global + local
-    setWishlist(updatedIds);
-    setLocalWishlist(updatedIds);
-    localStorage.setItem("wishlist", JSON.stringify(updatedIds));
-
-    toast.success(
-      updatedIds.includes(productIdToToggle)
-        ? "Added to wishlist"
-        : "Removed from wishlist"
-    );
   } catch (err) {
-    console.log("WISHLIST ERROR:", err);
-    toast.error("Unable to update wishlist");
+    console.log("Wishlist toggle ERROR:", err);
+    toast.error("Could not update wishlist");
   }
 };
+
 
 
   // -----------------------------------------------------

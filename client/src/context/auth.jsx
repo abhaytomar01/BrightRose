@@ -1,6 +1,6 @@
 // src/context/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getWishlistAPI } from "../api/wishlist"; // <-- IMPORTANT
+import { getWishlistAPI } from "../api/wwishlist";
 
 const AuthContext = createContext();
 
@@ -9,12 +9,21 @@ export const AuthProvider = ({ children }) => {
   const [authAdmin, setAuthAdmin] = useState({ user: null, token: "" });
   const [loading, setLoading] = useState(true);
 
-  // ⭐ Wishlist stored globally for logged-in user
-  const [wishlist, setWishlist] = useState([]);
+  // -----------------------------------------------------
+  // WISHLIST → ALWAYS PRODUCT IDs ONLY
+  // -----------------------------------------------------
+  const [wishlist, setWishlist] = useState(
+    JSON.parse(localStorage.getItem("wishlist_ids") || "[]")
+  );
 
-  // ----------------------------------------------------
-  // Load auth user/admin from localStorage
-  // ----------------------------------------------------
+  // Sync wishlist to LocalStorage
+  useEffect(() => {
+    localStorage.setItem("wishlist_ids", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  // -----------------------------------------------------
+  // Restore auth data on first page load
+  // -----------------------------------------------------
   useEffect(() => {
     try {
       const user = localStorage.getItem("auth_user");
@@ -25,70 +34,74 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error("Auth restore error:", err);
     }
+
     setLoading(false);
   }, []);
 
-  // ----------------------------------------------------
-  // Auto-fetch wishlist when user logs in
-  // ----------------------------------------------------
+  // -----------------------------------------------------
+  // Fetch wishlist AFTER user logs in (only once)
+  // -----------------------------------------------------
   useEffect(() => {
-    const fetchWishlist = async () => {
-      if (!authUser?.token) return;
+    if (!authUser?.token) return; // No login = no fetch
 
+    const loadWishlist = async () => {
       try {
         const res = await getWishlistAPI(authUser.token);
         setWishlist(res.data.wishlist || []);
       } catch (err) {
-        console.error("Failed to load wishlist:", err);
+        console.error("Wishlist load failed:", err);
       }
     };
 
-    fetchWishlist();
-  }, [authUser]);
+    loadWishlist();
+  }, [authUser?.token]); // only refetch when token actually changes
 
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   // LOGIN USER
-  // ----------------------------------------------------
-  const loginUser = (data) => {
-  setAuthUser(data);
-  localStorage.setItem("auth_user", JSON.stringify(data));
+  // -----------------------------------------------------
+  const loginUser = async (data) => {
+    setAuthUser(data);
+    localStorage.setItem("auth_user", JSON.stringify(data));
 
-  if (data?.token) {
-    getWishlistAPI(data.token)
-      .then((res) => setWishlist(res.data.wishlist || []))
-      .catch(() => {});
-  }
-};
+    // Fetch wishlist after login
+    if (data?.token) {
+      try {
+        const res = await getWishlistAPI(data.token);
+        setWishlist(res.data.wishlist || []);
+      } catch {
+        setWishlist([]);
+      }
+    }
+  };
 
-
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   // LOGIN ADMIN
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   const loginAdmin = (data) => {
     setAuthAdmin(data);
     localStorage.setItem("auth_admin", JSON.stringify(data));
   };
 
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   // LOGOUT USER
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   const logoutUser = () => {
     localStorage.removeItem("auth_user");
     setAuthUser({ user: null, token: "" });
-    setWishlist([]); // CLEAR wishlist on logout
+    setWishlist([]); // reset wishlist cleanly
   };
 
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   // LOGOUT ADMIN
-  // ----------------------------------------------------
+  // -----------------------------------------------------
   const logoutAdmin = () => {
     localStorage.removeItem("auth_admin");
     setAuthAdmin({ user: null, token: "" });
   };
 
-  // ----------------------------------------------------
-  // PROVIDER EXPORT
-  // ----------------------------------------------------
+  // -----------------------------------------------------
+  // PROVIDER
+  // -----------------------------------------------------
   return (
     <AuthContext.Provider
       value={{
@@ -100,7 +113,7 @@ export const AuthProvider = ({ children }) => {
         logoutAdmin,
         loading,
         wishlist,
-        setWishlist, // needed for updating after add/remove
+        setWishlist, // important for product details page toggle
       }}
     >
       {children}
@@ -108,6 +121,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Export hook
 export const useAuth = () => useContext(AuthContext);
 export default AuthContext;
