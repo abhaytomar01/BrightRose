@@ -1,112 +1,49 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import CircleIcon from "@mui/icons-material/Circle";
 import { Link } from "react-router-dom";
-import { formatDate } from "../../../utils/functions";
 
-const OrderItem = ({
-    item,
-    orderId,
+const OrderItem = ({ order, item }) => {
+  const {
+    _id,
     orderStatus,
     createdAt,
-    paymentId,
-    buyer,
-    shippingInfo,
     amount,
-}) => {
-    return (
-        <Link
-            to={`./order_details/${orderId}`}
-            className="flex flex-col sm:flex-row items-start bg-white border rounded gap-5 px-4 sm:px-8 py-5 hover:shadow-lg mx-2 sm:mx-10"
-        >
-            {/* <!-- image container --> */}
-            <div className="w-full sm:w-32 h-20">
-                <img
-                    draggable="false"
-                    className="h-full w-full object-contain"
-                    src={item?.image}
-                    alt={item?.name}
-                />
-            </div>
-            {/* <!-- image container --> */}
+  } = order;
 
-            {/* <!-- order desc container --> */}
-            <div className="flex flex-col sm:flex-row justify-between w-full">
-                <div className="flex flex-col w-[300px] gap-1 overflow-hidden">
-                    <p className="text-sm">
-                        {item?.name.length > 40
-                            ? `${item?.name.substring(0, 40)}...`
-                            : item?.name}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                        Quantity: {item?.quantity}
-                    </p>
-                </div>
+  return (
+    <Link
+      to={`/user/orders/order_details/${_id}`}
+      className="flex flex-col sm:flex-row items-start bg-white border rounded-lg shadow-sm p-5 hover:shadow-lg transition"
+    >
+      {/* Image */}
+      <div className="w-full sm:w-28 h-20 mb-3 sm:mb-0">
+        <img
+          src={item?.image || "/fallback.jpg"}
+          alt={item.name}
+          className="w-full h-full object-contain"
+          draggable="false"
+        />
+      </div>
 
-                <div className="flex flex-col sm:flex-row mt-1 sm:mt-0 gap-2 sm:gap-20 sm:w-1/2">
-                    <p className="text-sm w-[100px]">
-                        ₹{item?.discountPrice.toLocaleString()}
-                    </p>
+      {/* Details */}
+      <div className="flex justify-between w-full sm:px-5">
 
-                    <div className="flex flex-col gap-2">
-                        <p className="text-sm font-medium flex items-center gap-1 w-[250px]">
-                            {orderStatus === "Shipped" ? (
-                                <>
-                                    <span className="text-orange pb-0.5">
-                                        <CircleIcon sx={{ fontSize: "14px" }} />
-                                    </span>
-                                    Shipped
-                                </>
-                            ) : orderStatus === "Delivered" ? (
-                                <>
-                                    <span className="text-primaryGreen pb-0.5">
-                                        <CircleIcon sx={{ fontSize: "14px" }} />
-                                    </span>
-                                    Delivered
-                                </>
-                            ) : orderStatus === "Out For Delivery" ? (
-                                <>
-                                    <span className="text-yellow-500 pb-0.5">
-                                        <CircleIcon sx={{ fontSize: "14px" }} />
-                                    </span>
-                                    Out For Delivery
-                                </>
-                            ) : (
-                                <>
-                                    <span className="text-primaryBlue pb-0.5">
-                                        <CircleIcon sx={{ fontSize: "14px" }} />
-                                    </span>
-                                    Ordered on {formatDate(createdAt)}
-                                </>
-                            )}
-                        </p>
-                        {orderStatus === "Delivered" ? (
-                            <p className="text-xs ml-1">
-                                Your item has been Delivered
-                            </p>
-                        ) : orderStatus === "Shipped" ? (
-                            <p className="text-xs ml-1">
-                                Your item has been Shipped
-                            </p>
-                        ) : orderStatus === "Processed" ? (
-                            <p className="text-xs ml-1">
-                                Seller has processed your order
-                            </p>
-                        ) : orderStatus === "Out For Delivery" ? (
-                            <p className="text-xs ml-1">
-                                Your order is Out for Delivery
-                            </p>
-                        ) : (
-                            <p className="text-xs ml-1">
-                                Your order has been placed
-                            </p>
-                        )}
-                    </div>
-                </div>
-            </div>
-            {/* <!-- order desc container --> */}
-        </Link>
-    );
+        <div className="flex flex-col">
+          <p className="text-sm font-medium">{item?.name}</p>
+          <p className="text-gray-500 text-xs">Qty: {item.quantity}</p>
+        </div>
+
+        <div className="text-right">
+          <p className="text-sm font-semibold">₹{amount}</p>
+          <p className="text-xs text-gray-600">
+            Ordered: {new Date(createdAt).toDateString()}
+          </p>
+          <p className="text-xs font-medium text-black mt-1">
+            {orderStatus}
+          </p>
+        </div>
+
+      </div>
+    </Link>
+  );
 };
 
 export default OrderItem;

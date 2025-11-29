@@ -1,138 +1,108 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import OrderItem from "./OrderItem";
-import SearchIcon from "@mui/icons-material/Search";
 import MinCategory from "../../../components/MinCategory";
 import Spinner from "../../../components/Spinner";
 import axios from "axios";
 import { useAuth } from "../../../context/auth";
 import SeoData from "../../../SEO/SeoData";
+import { Search } from "lucide-react";
 
 const Orders = () => {
-    const { auth } = useAuth();
-    const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [orders, setOrders] = useState([]);
+  const { authUser } = useAuth();
+  const token = authUser?.token;
 
-    useEffect(() => {
-        // fetch orders from server
-        const fetchOrders = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(
-                    `${import.meta.env.VITE_SERVER_URL}/api/v1/user/orders`,
-                    {
-                        headers: {
-                            Authorization: auth?.token,
-                        },
-                    }
-                );
-                if (response?.data?.orders) {
-                    setOrders(response.data.orders);
-                    setLoading(false);
-                }
-            } catch (error) {
-                console.log(error);
-                setLoading(false);
-            }
-        };
-        fetchOrders();
-    }, [auth?.token]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
 
-    return (
-        <>
-            <SeoData title="My Orders | Bright Rose" />
+  useEffect(() => {
+    if (!token) return;
 
-            <MinCategory />
-            <main className="w-full px-4 sm:px-10 py-4 pt-28 md:pt-40 bg-[#F8F6F3] min-h-screen">
-                {/* <!-- row --> */}
-                {/* <!-- orders column --> */}
-                <div className="flex gap-3.5 w-full ">
-                    {loading ? (
-                        <Spinner />
-                    ) : (
-                        <div className="flex flex-col gap-3 w-full pb-5 overflow-hidden">
-                            {/* <!-- searchbar --> */}
-                            <form
-                                // onSubmit={searchOrders}
-                                className="flex items-center justify-between mx-auto w-[100%] sm:w-10/12 bg-white border rounded mb-2 hover:shadow-md"
-                            >
-                                <input
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    type="search"
-                                    name="search"
-                                    placeholder="Search your orders here"
-                                    className="p-2 text-sm outline-none flex-1 rounded-l "
-                                />
-                                <button
-                                    type="submit"
-                                    className="h-full text-sm px-1 sm:px-4 py-2.5 text-white bg-primaryBlue hover:bg-blue-600 rounded-r flex items-center gap-1"
-                                >
-                                    <SearchIcon sx={{ fontSize: "20px" }} />
-                                    <p className="text-[10px] sm:text-[14px]">
-                                        Search
-                                    </p>
-                                </button>
-                            </form>
-                            {/* <!-- search bar --> */}
+    const fetchOrders = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/orders`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-                            {orders?.length === 0 && (
-                                <div className="flex items-center flex-col gap-2 p-10 bg-white rounded-sm shadow-md">
-                                    <img
-                                        draggable="false"
-                                        src="https://rukminim1.flixcart.com/www/100/100/promos/23/08/2020/c5f14d2a-2431-4a36-b6cb-8b5b5e283d4f.png"
-                                        alt="Empty Orders"
-                                    />
-                                    <span className="text-lg font-medium">
-                                        Sorry, no orders found
-                                    </span>
-                                    <p>Place a new order from here</p>
-                                    <Link
-                                        to="/products"
-                                        className="bg-primaryBlue py-2 px-4 mt-1 text-white uppercase shadow hover:shadow-lg rounded-sm text-sm"
-                                    >
-                                        Products
-                                    </Link>
-                                </div>
-                            )}
+        setOrders(res.data.orders || []);
+      } catch (err) {
+        console.error("Order fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                            {orders
-                                ?.map((order) => {
-                                    const {
-                                        _id,
-                                        orderStatus,
-                                        buyer,
-                                        createdAt,
-                                        paymentId,
-                                        shippingInfo,
-                                        amount,
-                                        products,
-                                    } = order;
+    fetchOrders();
+  }, [token]);
 
-                                    return products.map((item, index) => (
-                                        <OrderItem
-                                            item={item}
-                                            key={index}
-                                            orderId={_id}
-                                            orderStatus={orderStatus}
-                                            createdAt={createdAt}
-                                            paymentId={paymentId}
-                                            buyer={buyer}
-                                            shippingInfo={shippingInfo}
-                                            amount={amount}
-                                        />
-                                    ));
-                                })
-                                .reverse()}
-                        </div>
-                    )}
+  return (
+    <>
+      <SeoData title="My Orders | Bright Rose" />
+      <MinCategory />
+
+      <main className="w-full px-4 sm:px-10 py-4 pt-28 md:pt-40 bg-[#F8F6F3] min-h-screen">
+        <div className="flex w-full">
+          {loading ? (
+            <Spinner />
+          ) : (
+            <div className="flex flex-col gap-5 w-full">
+
+              {/* Search */}
+              <form className="flex items-center w-full sm:w-9/12 bg-white border rounded shadow-sm">
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search your orders..."
+                  className="flex-1 p-3 text-sm outline-none"
+                />
+                <button className="px-5 bg-black text-white flex items-center gap-2">
+                  <Search size={18} />
+                  Search
+                </button>
+              </form>
+
+              {/* Empty */}
+              {orders.length === 0 && (
+                <div className="flex flex-col items-center bg-white p-10 rounded shadow">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/1376/1376786.png"
+                    className="w-24 opacity-80"
+                    draggable="false"
+                  />
+                  <p className="mt-4 text-xl font-medium">No Orders Found</p>
+                  <Link
+                    to="/products"
+                    className="mt-4 bg-black text-white px-5 py-2 rounded"
+                  >
+                    Shop Now
+                  </Link>
                 </div>
-                {/* <!-- orders column --> */}
-                {/* <!-- row --> */}
-            </main>
-        </>
-    );
+              )}
+
+              {/* Orders List */}
+              {orders
+                .map((order) =>
+                  order.products.map((item, i) => (
+                    <OrderItem
+                      key={i}
+                      order={order}
+                      item={item}
+                    />
+                  ))
+                )
+                .reverse()}
+            </div>
+          )}
+        </div>
+      </main>
+    </>
+  );
 };
 
 export default Orders;
