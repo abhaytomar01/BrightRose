@@ -50,19 +50,16 @@ export const AuthProvider = ({ children }) => {
   // LOGIN USER
   // ----------------------------------------------------
   const loginUser = (data) => {
-  setAuthUser({
-    user: data.user,
-    token: data.token,
-  });
+  setAuthUser(data);
+  localStorage.setItem("auth_user", JSON.stringify(data));
 
-  localStorage.setItem(
-    "auth_user",
-    JSON.stringify({
-      user: data.user,
-      token: data.token,
-    })
-  );
+  if (data?.token) {
+    getWishlistAPI(data.token)
+      .then((res) => setWishlist(res.data.wishlist || []))
+      .catch(() => {});
+  }
 };
+
 
   // ----------------------------------------------------
   // LOGIN ADMIN

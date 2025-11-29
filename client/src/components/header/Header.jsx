@@ -198,11 +198,12 @@ const Header = () => {
 
         <Link to="/products" className="hover:text-[#AD000F]">Shop</Link>
 
-        {isUserLoggedIn ? (
+       {authUser?.token ? (
   <Link to="/user/dashboard/profile">My Account</Link>
 ) : (
   <Link to="/login">Login</Link>
 )}
+
 
 
         <Link to="/contact" className="hover:text-[#AD000F]">Contact</Link>
@@ -271,11 +272,12 @@ const Header = () => {
               <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
 <hr className="h-1 text-neutralDark/80"/>
               {/* USER LOGIN */}
-              {!isUserLoggedIn ? (
-                <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
-              ) : (
-                <Link to="/user/dashboard/profile" onClick={() => setOpen(false)}>My Account</Link>
-              )}
+              {authUser?.token ? (
+  <Link to="/user/dashboard/profile">My Account</Link>
+) : (
+  <Link to="/login">Login</Link>
+)}
+
 <hr className="h-1 text-neutralDark/80"/>
               <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
               <hr className="h-1 text-neutralDark/80"/>

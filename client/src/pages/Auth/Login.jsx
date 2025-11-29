@@ -25,43 +25,51 @@ const Login = () => {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      setLoading(true);
+  if (loading) return; // ⛔ PREVENT DOUBLE SUBMIT
+  setLoading(true);
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
-        form
-      );
-
-      if (res.data?.success) {
-
-  loginUser({
-    user: res.data.user,
-    token: res.data.token,
-  });
-
-  if (remember) {
-    localStorage.setItem(
-      "auth_user",
-      JSON.stringify({ user: res.data.user, token: res.data.token })
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
+      { email: form.email, password: form.password }
     );
-  }
 
-  toast.success("Login successful!");
+    if (res.data?.success) {
+      toast.success("Login successful!");
 
-  navigate("/user/dashboard/profile");
-  if (onClose) onClose();
-}
+      //UPDATE AUTH CONTEXT CORRECTLY
+      loginUser({
+        user: res.data.user,
+        token: res.data.token,
+      });
 
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Incorrect email or password");
-    } finally {
-      setLoading(false);
+      if (remember) {
+        localStorage.setItem(
+          "auth_user",
+          JSON.stringify({
+            user: res.data.user,
+            token: res.data.token
+          })
+        );
+      }
+
+      if (onClose) onClose();   // close popup if exists
+      navigate("/user/dashboard/profile", { replace: true });
+
+      return; // ⛔ STOP further execution
+    } else {
+      toast.error(res.data?.message || "Invalid credentials");
     }
-  };
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Incorrect email or password");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <section className="min-h-screen bg-white flex items-center justify-center px-6 pt-36 md:pt-44">
