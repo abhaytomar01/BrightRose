@@ -16,8 +16,11 @@ const Login = () => {
 
   // redirect if already logged in
   useEffect(() => {
-    if (authUser?.token) navigate("/user/dashboard/profile");
-  }, [authUser]);
+  if (authUser?.token) {
+    navigate("/user/dashboard/profile");
+  }
+}, [authUser]);
+
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,24 +37,25 @@ const Login = () => {
       );
 
       if (res.data?.success) {
-        toast.success("Logged in successfully!");
 
-        loginUser({
-          user: res.data.user,
-          token: res.data.token,
-        });
+  loginUser({
+    user: res.data.user,
+    token: res.data.token,
+  });
 
-        if (remember) {
-          localStorage.setItem(
-            "auth_user",
-            JSON.stringify({ user: res.data.user, token: res.data.token })
-          );
-        }
+  if (remember) {
+    localStorage.setItem(
+      "auth_user",
+      JSON.stringify({ user: res.data.user, token: res.data.token })
+    );
+  }
 
-        navigate("/user/dashboard/profile");
-      } else {
-        toast.error(res.data.message || "Login failed");
-      }
+  toast.success("Login successful!");
+
+  navigate("/user/dashboard/profile");
+  if (onClose) onClose();
+}
+
     } catch (err) {
       toast.error(err.response?.data?.message || "Incorrect email or password");
     } finally {

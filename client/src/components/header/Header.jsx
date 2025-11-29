@@ -28,7 +28,7 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { authUser, authAdmin } = useAuth();
+  const { authUser } = useAuth();
 
   const isUserLoggedIn = !!authUser?.token;
   const isAdminLoggedIn = !!authAdmin?.token;
@@ -36,6 +36,7 @@ const Header = () => {
   const adminIconLink = isAdminLoggedIn
     ? "/admin/dashboard/profile"
     : "/admin/login";
+
 
   // -------------------------------------------------------
   // SEARCH
@@ -197,14 +198,12 @@ const Header = () => {
 
         <Link to="/products" className="hover:text-[#AD000F]">Shop</Link>
 
-        {/* USER LOGIN */}
-        {!isUserLoggedIn ? (
-          <Link to="/login" className="hover:text-[#AD000F]">Login</Link>
-        ) : (
-          <Link to="/user/dashboard/profile" className="hover:text-[#AD000F]">
-            My Account
-          </Link>
-        )}
+        {isUserLoggedIn ? (
+  <Link to="/user/dashboard/profile">My Account</Link>
+) : (
+  <Link to="/login">Login</Link>
+)}
+
 
         <Link to="/contact" className="hover:text-[#AD000F]">Contact</Link>
       </nav>
