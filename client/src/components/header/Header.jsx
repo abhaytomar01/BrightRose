@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   ChevronDown,
 } from "lucide-react";
+
 import { useAuth } from "../../context/auth";
 import api from "../../utils/apiClient";
 
@@ -21,22 +22,23 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
-  const [isSubmenuVisible, setIsSubmenuVisible] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Correct auth states
   const { authUser, authAdmin } = useAuth();
-
   const isUserLoggedIn = !!authUser?.token;
   const isAdminLoggedIn = !!authAdmin?.token;
 
-  const adminIconLink = isAdminLoggedIn
+  // FIXED: Show correct destination for admin/user
+  const profileLink = isAdminLoggedIn
     ? "/admin/dashboard/profile"
-    : "/admin/login";
-
+    : isUserLoggedIn
+    ? "/user/dashboard/profile"
+    : "/login";
 
   // -------------------------------------------------------
   // SEARCH

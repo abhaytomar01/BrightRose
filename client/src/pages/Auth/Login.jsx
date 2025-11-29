@@ -14,107 +14,94 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
 
-  // redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
-  if (authUser?.token) {
-    navigate("/user/dashboard/profile");
-  }
-}, [authUser]);
-
+    if (authUser?.token) {
+      navigate("/user/dashboard/profile");
+    }
+  }, [authUser, navigate]);
 
   const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (loading) return; // ⛔ PREVENT DOUBLE SUBMIT
-  setLoading(true);
+    try {
+      setLoading(true);
 
-  try {
-    const res = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
-      { email: form.email, password: form.password }
-    );
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
+        { email: form.email, password: form.password }
+      );
 
-    if (res.data?.success) {
-      toast.success("Login successful!");
+      if (res.data?.success) {
+        toast.success("Login successful!");
 
-      //UPDATE AUTH CONTEXT CORRECTLY
-      loginUser({
-        user: res.data.user,
-        token: res.data.token,
-      });
+        loginUser({
+          user: res.data.user,
+          token: res.data.token,
+        });
 
-      if (remember) {
-        localStorage.setItem(
-          "auth_user",
-          JSON.stringify({
-            user: res.data.user,
-            token: res.data.token
-          })
-        );
+        if (remember) {
+          localStorage.setItem(
+            "auth_user",
+            JSON.stringify({ user: res.data.user, token: res.data.token })
+          );
+        }
+
+        navigate("/user/dashboard/profile");
+      } else {
+        toast.error(res.data?.message || "Invalid credentials");
       }
-
-      if (onClose) onClose();   // close popup if exists
-      navigate("/user/dashboard/profile", { replace: true });
-
-      return; // ⛔ STOP further execution
-    } else {
-      toast.error(res.data?.message || "Invalid credentials");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Incorrect email or password");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Incorrect email or password");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
-    <section className="min-h-screen bg-white flex items-center justify-center px-6 pt-36 md:pt-44">
+    <section className="min-h-screen flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+      <div className="w-full max-w-md">
 
-      <div className="w-full max-w-md text-center">
-
-        {/* TITLE */}
-        <h1 className="text-4xl font-light tracking-[4px] uppercase mb-10 text-neutralDark">
+        <h1 className="text-4xl text-center mb-10 tracking-[4px] font-light uppercase">
           Login
         </h1>
 
-        <div className="bg-white border border-gray-300 rounded-2xl p-10 shadow-sm">
+        <div className="bg-white border rounded-2xl p-10 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-6">
 
-          <form onSubmit={handleSubmit} className="space-y-6 text-left">
-
+            {/* Email */}
             <div>
-              <label className="text-sm text-neutralDark">Email Address</label>
+              <label className="block text-sm mb-1">Email Address</label>
               <input
                 type="email"
                 name="email"
-                autoComplete="email"
                 required
                 value={form.email}
                 onChange={handleChange}
                 placeholder="yourname@example.com"
-                className="w-full px-4 py-3 bg-gray-100 border rounded-md"
+                className="w-full px-4 py-3 bg-neutralLight border rounded-md"
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="text-sm text-neutralDark">Password</label>
+              <label className="block text-sm mb-1">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  autoComplete="current-password"
                   required
                   value={form.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-12 bg-gray-100 border rounded-md"
+                  className="w-full px-4 py-3 pr-12 bg-neutralLight border rounded-md"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-3 text-gray-600"
+                  className="absolute right-3 top-3 text-neutralDark/60"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -122,8 +109,9 @@ const Login = () => {
               </div>
             </div>
 
+            {/* Remember */}
             <div className="flex justify-between text-sm">
-              <label className="flex gap-2">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={remember}
@@ -137,21 +125,20 @@ const Login = () => {
               </Link>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 border border-accentGold tracking-[3px] uppercase rounded-md hover:bg-accentGold/10"
+              className="w-full py-3 border border-accentGold rounded-md tracking-[3px] uppercase hover:bg-accentGold/10"
             >
-              {loading ? "Signing in…" : "Sign In"}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
+          <p className="text-center mt-6 text-sm">
             New to Bright Rose?{" "}
-            <Link to="/register" className="underline">
-              Create account
-            </Link>
-          </div>
+            <Link to="/register" className="underline">Create account</Link>
+          </p>
         </div>
       </div>
     </section>
