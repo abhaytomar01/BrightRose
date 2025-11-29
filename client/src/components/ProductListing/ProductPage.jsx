@@ -8,7 +8,8 @@ import fallbackImage from "../../assets/images/fallback.jpg";
 import { useAuth } from "../../context/auth";
 import Handloom from "../../assets/images/garment/handloom.png";
 import Silkmark from "../../assets/images/garment/silkmark.png";
-import { toggleWishlistAPI } from "../../api/wishlist";
+import { toggleWishlistAPI, getWishlistAPI } from "../../api/wishlist";
+
 
 export default function ProductDetails() {
   const { productId } = useParams();
@@ -84,45 +85,46 @@ const fetchWishlistFromServer = async () => {
   }, [authUser?.token]);
 
   // ---------- Wishlist helpers ----------
-  const isWishlisted = (id) => wishlist.includes(id);
+  const isWishlisted = (id) => {
+  return Array.isArray(wishlist) && wishlist.includes(id);
+};
+
 
 
   const handleWishlist = async (productIdToToggle) => {
+  // -------------- Guest User (localStorage only) --------------
   if (!authUser?.token) {
-    // Guest wishlist (localStorage)
     let updated;
 
-    if (currentWishlist.includes(productIdToToggle)) {
-      updated = currentWishlist.filter(id => id !== productIdToToggle);
+    if (wishlist.includes(productIdToToggle)) {
+      updated = wishlist.filter((id) => id !== productIdToToggle);
       toast.info("Removed from wishlist");
     } else {
-      updated = [...currentWishlist, productIdToToggle];
+      updated = [...wishlist, productIdToToggle];
       toast.success("Added to wishlist");
     }
 
-    localStorage.setItem("wishlist_ids", JSON.stringify(updated));
     setWishlist(updated);
+    localStorage.setItem("wishlist_ids", JSON.stringify(updated));
     return;
   }
 
+  // -------------- Logged-in User (Server + Sync local) --------------
   try {
     const res = await toggleWishlistAPI(productIdToToggle, authUser.token);
+    const updated = res.data.wishlist || [];
 
-    const updatedList = res.data.wishlist || [];
+    setWishlist(updated);
+    localStorage.setItem("wishlist_ids", JSON.stringify(updated));
 
-    setWishlist(updatedList);
-    localStorage.setItem("wishlist_ids", JSON.stringify(updatedList));
-
-    if (res.data.action === "added") {
-      toast.success("Added to wishlist");
-    } else {
-      toast.info("Removed from wishlist");
-    }
+    if (res.data.action === "added") toast.success("Added to wishlist");
+    else toast.info("Removed from wishlist");
   } catch (err) {
-    console.error("Wishlist toggle ERROR:", err);
-    toast.error("Unable to update wishlist");
+    console.error("Wishlist toggle failed:", err);
+    toast.error("Error updating wishlist");
   }
 };
+
 
 
 
@@ -385,19 +387,45 @@ const fetchWishlistFromServer = async () => {
             <h1 className="text-md md:text-2xl font-light tracking-wide leading-snug">{product.name}</h1>
 
             {/* WISHLIST BUTTON */}
-            <button onClick={() => handleWishlist(product._id)} className="p-1 text-neutral-600 hover:text-black transition">
-              {isWishlisted(product._id) ? (
-                // Filled red heart
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="red" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              ) : (
-                // Outline heart
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="black" strokeWidth="1.3" viewBox="0 0 24 24">
-                  <path d="M12.1 21.35l-1.1-1.05C5.14 15.3 2 12.36 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.86-3.14 6.8-9 11.8z" />
-                </svg>
-              )}
-            </button>
+           {/* WISHLIST BUTTON */}
+<button
+  onClick={() => handleWishlist(product._id)}
+  className="p-1 text-neutral-600 hover:text-black transition"
+>
+  {isWishlisted(product._id) ? (
+    // Filled Heart (Red)
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="red"
+    >
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+               2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+               C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42
+               22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+  ) : (
+    // Outline Heart
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="black"
+      strokeWidth="1.5"
+    >
+      <path d="M12.1 21.35l-1.1-1.05C5.14 15.3 2 12.36
+               2 8.5 2 5.42 4.42 3 7.5 3c1.74 0
+               3.41.81 4.5 2.09C13.09 3.81 14.76 3
+               16.5 3 19.58 3 22 5.42 22 8.5c0 3.86
+               -3.14 6.8-9 11.8z" />
+    </svg>
+  )}
+</button>
+
           </div>
 
           {/* PRICE */}

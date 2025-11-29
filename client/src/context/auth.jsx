@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const loadWishlist = async () => {
       try {
         const res = await getWishlistAPI(authUser.token);
-        setWishlist(res.data.wishlist || []);
+        setWishlist((res.data.wishlist || []).map((p) => p._id || p));
       } catch (err) {
         console.error("Wishlist load failed:", err);
       }
