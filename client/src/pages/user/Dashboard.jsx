@@ -4,7 +4,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 
 import UserMenu from "./UserMenu";
 import UserProfile from "../UserProfile";
-import AddressComponent from "../AddressComponent";
+import AddressComponent from "./AddressComponents";
 import Deactivate from "../Auth/Deactivate";
 import PaymentCards from "./PaymentCards";
 import SeoData from "../../SEO/SeoData";
