@@ -1,13 +1,11 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import aboutbrand from "../../assets/images/Banners/abouthebrand.jpg";
 
 /* -----------------------------------
-   Luxury THEMING — Brand Palette
+   TIMELINE DATA
 ----------------------------------- */
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&w=1800&q=80";
-
 const TIMELINE = [
   {
     year: "2003",
@@ -40,7 +38,7 @@ const TIMELINE = [
 ];
 
 /* -----------------------------------
-   Animation Variant
+   ANIMATIONS
 ----------------------------------- */
 const itemVariant = (direction = "left") => ({
   hidden: { opacity: 0, x: direction === "left" ? -100 : 100 },
@@ -52,7 +50,7 @@ const itemVariant = (direction = "left") => ({
 });
 
 /* -----------------------------------
-   HERO SECTION — Luxury Parallax
+   HERO PARALLAX — Luxury Typography
 ----------------------------------- */
 const HeroParallax = ({ title, subtitle }) => {
   const { scrollY } = useScroll();
@@ -60,27 +58,39 @@ const HeroParallax = ({ title, subtitle }) => {
   const scale = useTransform(scrollY, [0, 800], [1.0, 1.05]);
 
   return (
-    <section className="relative w-full h-[70vh] overflow-hidden bg-pureWhite">
-      {/* Parallax Image */}
+    <section className="relative w-full h-[65vh] sm:h-[75vh] overflow-hidden bg-pureWhite">
+
+      {/* IMAGE */}
       <motion.div
         style={{ y, scale }}
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${HERO_IMAGE})`,
+          backgroundImage: `url(${aboutbrand})`,
         }}
       ></motion.div>
 
-      {/* Luxury Neutral Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralLight/30 to-neutralDark/50"></div>
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/50"></div>
 
-      {/* Text */}
-      <div className="absolute inset-0 flex items-center justify-start px-6 md:px-20 lg:px-28">
+      {/* TEXT */}
+      <div className="absolute inset-0 flex items-center px-5 sm:px-10 lg:px-20">
         <div className="max-w-xl">
-          <h1 className="text-neutralDark/80 text-4xl sm:text-5xl lg:text-6xl font-light tracking-tight leading-tight drop-shadow-lg">
+          <h1 className="
+            text-white 
+            text-2xl sm:text-4xl lg:text-5xl 
+            font-light tracking-tight leading-tight 
+            bg-black/30 px-3 py-2 rounded-md
+          ">
             {title}
           </h1>
+
           {subtitle && (
-            <p className="text-neutralLight text-base sm:text-lg lg:text-xl mt-4 font-light leading-relaxed max-w-lg drop-shadow-md">
+            <p className="
+              text-neutral-200 
+              text-sm sm:text-base lg:text-lg 
+              mt-4 leading-relaxed font-light 
+              bg-black/30 px-3 py-2 rounded-md
+            ">
               {subtitle}
             </p>
           )}
@@ -91,7 +101,7 @@ const HeroParallax = ({ title, subtitle }) => {
 };
 
 /* -----------------------------------
-   TIMELINE ITEM — Luxury Brand Style
+   TIMELINE ITEM — Luxury Scaling
 ----------------------------------- */
 function TimelineItem({ item, index }) {
   const isEven = index % 2 === 0;
@@ -105,26 +115,28 @@ function TimelineItem({ item, index }) {
       animate={inView ? "visible" : "hidden"}
       className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
     >
-      {/* Image */}
+      {/* IMAGE */}
       <div className={`${isEven ? "md:order-2" : "md:order-1"}`}>
-        <div className="overflow-hidden rounded-xl border border-accentGold/30">
+        <div className="overflow-hidden rounded-xl border border-neutral-300/40 shadow-sm">
           <img
             src={item.image}
             alt={item.title}
-            className="w-full h-64 md:h-80 object-cover rounded-xl"
+            className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-xl"
           />
         </div>
       </div>
 
-      {/* Text */}
-      <div className={`${isEven ? "md:order-1" : "md:order-2"} font-light`}>
-        <p className="text-accentGold text-sm tracking-wider mb-1">
+      {/* TEXT */}
+      <div className={`${isEven ? "md:order-1" : "md:order-2"}`}>
+        <p className="text-accentGold text-xs sm:text-sm tracking-widest mb-2 uppercase">
           {item.year}
         </p>
-        <h3 className="text-2xl md:text-3xl text-neutralDark/80 font-light mb-2">
+
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-light text-neutralDark mb-3 tracking-tight">
           {item.title}
         </h3>
-        <p className="text-neutralDark leading-relaxed text-base md:text-lg font-extralight">
+
+        <p className="text-neutralDark text-sm sm:text-base md:text-lg font-extralight leading-relaxed">
           {item.text}
         </p>
       </div>
@@ -136,13 +148,13 @@ function TimelineItem({ item, index }) {
    TIMELINE SECTION
 ----------------------------------- */
 const Timeline = ({ items }) => (
-  <section className="bg-pureWhite py-20 px-4 md:px-20">
+  <section className="bg-pureWhite py-16 sm:py-20 lg:py-24 px-4 sm:px-10 lg:px-20">
     <div className="max-w-5xl mx-auto">
-      <h2 className="text-center text-3xl md:text-4xl font-light text-neutralDark/80 tracking-tight mb-14">
-        Our Story
+      <h2 className="text-center text-2xl uppercase sm:text-3xl md:text-4xl font-light p-2 rounded-lg text-neutralDark mb-12 sm:mb-16 tracking-tight">
+        Our Story 
       </h2>
 
-      <div className="space-y-20">
+      <div className="space-y-16 sm:space-y-20 lg:space-y-24">
         {items.map((it, idx) => (
           <TimelineItem key={idx} item={it} index={idx} />
         ))}
@@ -152,32 +164,33 @@ const Timeline = ({ items }) => (
 );
 
 /* -----------------------------------
-   FINAL CTA — Gucci Style Banner
+   FINAL CTA — Ultra Luxury Banner
 ----------------------------------- */
 const FinalCTA = () => (
-  <section className="relative w-full mt-16">
-    <div className="w-full h-[60vh] relative overflow-hidden">
+  <section className="relative w-full mt-2 sm:mt-2">
+    <div className="w-full h-[50vh] sm:h-[60vh] relative overflow-hidden">
       <img
-        src="https://images.unsplash.com/photo-1606813902779-63e39ec0b8c5?auto=format&fit=crop&w=1600&q=80"
+        src={aboutbrand}
         className="w-full h-full object-cover"
       />
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutralDark/40 to-neutralDark/60"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/70"></div>
 
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center px-4">
-          <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-light tracking-tight mb-6 drop-shadow-lg">
+        <div className="text-center px-6">
+          <h3 className="text-white font-light tracking-tight drop-shadow-lg
+            text-2xl sm:text-4xl md:text-5xl mb-6
+          ">
             Worn by the Brave
           </h3>
 
           <a
             href="/collections"
             className="
-              inline-block px-10 py-3 
-              border border-neutralDark/70 
-              text-white text-sm tracking-wide 
-              transition-all duration-300
+              inline-block px-8 sm:px-10 py-2.5 
+              border border-neutral-200/60 
+              text-white text-xs sm:text-sm tracking-wide 
+              hover:bg-white hover:text-black transition-all duration-300
             "
           >
             Explore Collection
@@ -189,7 +202,7 @@ const FinalCTA = () => (
 );
 
 /* -----------------------------------
-   MAIN EXPORT
+   MAIN PAGE
 ----------------------------------- */
 export default function AboutAdvanced() {
   return (

@@ -26,11 +26,6 @@ const SideFilter = ({
   /* FILTER OPTIONS */
   const categories = [
     "All",
-    "Dresses",
-    "Saree",
-    "Coats & Blazers",
-    "Skirts & Pants",
-    "Corsets & Tops",
   ];
 
   const colors = [
@@ -46,6 +41,7 @@ const SideFilter = ({
 
   const weavesSubcategories = [
     "All",
+    "Kanchipuram",
     "Kanjeevaram",
     "Kantha",
     "Shibori",

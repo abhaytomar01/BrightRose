@@ -97,11 +97,11 @@ const WeaveCollection = () => {
           transition={{ duration: 1 }}
           className="relative z-10 text-center px-6"
         >
-          <h1 className="text-primaryRed text-4xl sm:text-5xl md:text-6xl font-light tracking-tight drop-shadow-lg">
+          <h1 className="text-neutralLight text-2xl sm:text-4xl md:text-6xl font-light tracking-tight drop-shadow-lg">
             The Weave Collection
           </h1>
 
-          <p className="text-neutralLight text-base sm:text-lg md:text-xl max-w-xl mx-auto mt-3 font-light leading-relaxed drop-shadow">
+          <p className="text-neutralLight text-sm sm:text-md md:text-xl max-w-xl mx-auto mt-3 font-light leading-relaxed drop-shadow">
             A curated celebration of handcrafted Indian textiles reimagined for the modern world.
           </p>
         </motion.div>
@@ -135,11 +135,11 @@ const WeaveCollection = () => {
 
                 {/* Text */}
                 <div className="mt-5 space-y-1">
-                  <h3 className="text-xl font-light tracking-wide text-primaryRed">
+                  <h3 className="text-lg md:text-xl font-light tracking-wide text-neutralDark/80">
                     {sub.name}
                   </h3>
 
-                  <p className="text-sm text-neutralDark/80 leading-relaxed font-extralight max-w-xs">
+                  <p className="text-xs md:text-sm text-neutralDark/80 leading-relaxed font-extralight max-w-xs">
                     {sub.desc}
                   </p>
                 </div>

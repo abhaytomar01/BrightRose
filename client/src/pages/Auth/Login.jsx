@@ -3,12 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Eye, EyeOff, X } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
-const Login = ({ onClose }) => {
+const Login = () => {
   const navigate = useNavigate();
-
-  // correct context
   const { authUser, loginUser } = useAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -16,14 +14,13 @@ const Login = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
 
+  // redirect if already logged in
   useEffect(() => {
-    if (authUser?.token) {
-      navigate("/user/dashboard/profile");
-    }
+    if (authUser?.token) navigate("/user/dashboard/profile");
   }, [authUser]);
 
   const handleChange = (e) =>
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,19 +30,17 @@ const Login = ({ onClose }) => {
 
       const res = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/login`,
-        { email: form.email, password: form.password }
+        form
       );
 
       if (res.data?.success) {
-        toast.success("Login successful!");
+        toast.success("Logged in successfully!");
 
-        // correct login function
         loginUser({
           user: res.data.user,
           token: res.data.token,
         });
 
-        // remember me using correct key
         if (remember) {
           localStorage.setItem(
             "auth_user",
@@ -53,121 +48,99 @@ const Login = ({ onClose }) => {
           );
         }
 
-        if (onClose) onClose(); // close popup if open
         navigate("/user/dashboard/profile");
       } else {
-        toast.error(res.data.message || "Invalid credentials");
+        toast.error(res.data.message || "Login failed");
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid email or password");
+      toast.error(err.response?.data?.message || "Incorrect email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[9999] px-4">
-      
-      <div className="bg-white w-full max-w-md rounded-2xl p-8 shadow-xl relative">
+    <section className="min-h-screen bg-white flex items-center justify-center px-6 pt-36 md:pt-44">
 
-        {/* CLOSE BUTTON */}
-        {onClose && (
-          <button 
-            className="absolute right-4 top-4 text-gray-600 hover:text-black"
-            onClick={onClose}
-          >
-            <X size={26} />
-          </button>
-        )}
+      <div className="w-full max-w-md text-center">
 
-        <h1 className="text-3xl text-center font-light tracking-[4px] uppercase text-neutralDark mb-8">
+        {/* TITLE */}
+        <h1 className="text-4xl font-light tracking-[4px] uppercase mb-10 text-neutralDark">
           Login
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white border border-gray-300 rounded-2xl p-10 shadow-sm">
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-neutralDark mb-1">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              required
-              value={form.email}
-              onChange={handleChange}
-              placeholder="yourname@example.com"
-              className="w-full px-4 py-3 bg-neutralLight border border-mutedGray rounded-md"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-6 text-left">
 
-          {/* Password */}
-          <div>
-            <label className="block text-sm text-neutralDark mb-1">
-              Password
-            </label>
-
-            <div className="relative">
+            <div>
+              <label className="text-sm text-neutralDark">Email Address</label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
+                type="email"
+                name="email"
+                autoComplete="email"
                 required
-                value={form.password}
+                value={form.email}
                 onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 pr-12 bg-neutralLight border border-mutedGray rounded-md"
+                placeholder="yourname@example.com"
+                className="w-full px-4 py-3 bg-gray-100 border rounded-md"
               />
-
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-neutralDark/60"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
             </div>
-          </div>
 
-          {/* Remember */}
-          <div className="flex justify-between text-sm">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-              Remember me
-            </label>
+            <div>
+              <label className="text-sm text-neutralDark">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
+                  required
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 pr-12 bg-gray-100 border rounded-md"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
 
-            <Link to="/forgot-password" className="underline">
-              Forgot password?
+            <div className="flex justify-between text-sm">
+              <label className="flex gap-2">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                Remember me
+              </label>
+
+              <Link to="/forgot-password" className="underline">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 border border-accentGold tracking-[3px] uppercase rounded-md hover:bg-accentGold/10"
+            >
+              {loading ? "Signing in…" : "Sign In"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            New to Bright Rose?{" "}
+            <Link to="/register" className="underline">
+              Create account
             </Link>
           </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 border border-accentGold text-neutralDark tracking-[3px] uppercase rounded-md hover:bg-accentGold/10"
-          >
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
-
-        {/* Register link */}
-        <p className="mt-6 text-center text-sm">
-          New to Bright Rose?{" "}
-          <span
-            className="underline cursor-pointer"
-            onClick={() => {
-              if (onClose) onClose();
-              navigate("/register");
-            }}
-          >
-            Create account
-          </span>
-        </p>
+        </div>
       </div>
     </section>
   );

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 /* ------------------------------
-   Subcategories (same content)
+   Subcategories (Luxury Styles)
 ------------------------------ */
 const subcategories = [
   {
@@ -11,64 +11,59 @@ const subcategories = [
     desc: "Tailored elegance crafted with handwoven textiles.",
     image:
       "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
-    link: "/",
   },
   {
     name: "Skirt & Pants",
     desc: "Contemporary silhouettes with traditional craftsmanship.",
     image: "https://images.pexels.com/photos/33323127/pexels-photo-33323127.jpeg",
-    link: "/",
   },
   {
     name: "Saree",
     desc: "Classic drapes blending heritage with modern minimalism.",
     image: "https://images.pexels.com/photos/2723623/pexels-photo-2723623.jpeg",
-    link: "/",
   },
   {
     name: "Dresses",
     desc: "Fluid silhouettes designed for effortless grace.",
     image: "https://images.pexels.com/photos/18977034/pexels-photo-18977034.jpeg",
-    link: "/",
   },
   {
     name: "Corsets & Tops",
     desc: "Structured yet comfortable pieces with artisanal detailing.",
     image: "https://images.pexels.com/photos/30773362/pexels-photo-30773362.jpeg",
-    link: "/",
   },
 ];
 
 /* ------------------------------
-   Luxury UI Page
+   Luxury Style Collection Page
 ------------------------------ */
 const StyleCollection = () => {
   return (
     <div className="bg-pureWhite text-neutralDark min-h-screen">
 
       {/* --------------------------------------
-          HERO (Luxury Editorial Banner)
+          HERO — Luxury Editorial Banner
       -------------------------------------- */}
       <section className="relative h-[60vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
 
-        {/* Background Image */}
+        {/* Background */}
         <img
           src="https://images.unsplash.com/photo-1602810318383-e7b3d15b3b1f?auto=format&fit=crop&w=1600&q=80"
           alt="Style Collection Hero"
           className="absolute inset-0 w-full h-full object-cover brightness-95"
         />
 
-        {/* Soft Neutral-Gold Overlay */}
+        {/* Luxury Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60"></div>
 
-        {/* Text */}
+        {/* Text Content */}
         <motion.div
           initial={{ opacity: 0, y: 35 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           className="relative z-10 text-center px-6"
         >
-          <h1 className="text-primaryRed text-4xl sm:text-5xl md:text-6xl font-light tracking-tight drop-shadow-lg">
+          <h1 className="text-neutralLight text-4xl sm:text-5xl md:text-6xl font-light tracking-tight drop-shadow-lg">
             The Style Collection
           </h1>
 
@@ -79,10 +74,10 @@ const StyleCollection = () => {
       </section>
 
       {/* --------------------------------------
-          GRID (Luxury Card Layout)
+          STYLE GRID — Premium Cards
       -------------------------------------- */}
       <section className="max-w-[1500px] mx-auto px-6 md:px-12 lg:px-20 py-16">
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
 
           {subcategories.map((sub, index) => (
@@ -93,7 +88,11 @@ const StyleCollection = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.06, duration: 0.6 }}
             >
-              <Link to={sub.link} className="block group">
+              {/* Link directly to FILTER by style */}
+              <Link 
+                to={`/products?style=${encodeURIComponent(sub.name)}`}
+                className="block group"
+              >
 
                 {/* Image Block */}
                 <div className="overflow-hidden rounded-2xl bg-neutralLight border border-mutedGray/80 hover:border-accentGold/60 transition-all duration-300">
@@ -106,7 +105,7 @@ const StyleCollection = () => {
 
                 {/* Text */}
                 <div className="mt-5 space-y-1">
-                  <h3 className="text-xl font-light tracking-wide text-primaryRed">
+                  <h3 className="text-xl font-light tracking-wide text-neutralDark/80">
                     {sub.name}
                   </h3>
 

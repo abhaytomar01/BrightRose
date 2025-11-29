@@ -1,25 +1,44 @@
-import axios from "axios";
+// src/api/wishlist.js
+// Updated to match backend routes and use apiClient (auto token header)
 
-const API = import.meta.env.VITE_SERVER_URL + "/api/v1/wishlist";
+import api from "../utils/apiClient";
 
-export const addToWishlistAPI = async (productId, token) => {
-  return axios.post(
-    `${API}/add`,
-    { productId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+const BASE = "/api/v1/wishlist";
+
+/**
+ * Toggle wishlist entry on backend.
+ * Backend route: POST /api/v1/wishlist/toggle
+ *
+ * Returns the axios promise.
+ */
+export const toggleWishlistAPI = (productId, token) => {
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  return api.post(`${BASE}/toggle`, { productId }, config);
 };
 
-export const removeFromWishlistAPI = async (productId, token) => {
-  return axios.post(
-    `${API}/remove`,
-    { productId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+/**
+ * Legacy-friendly: add to wishlist.
+ * ↳ Uses toggle endpoint (backend maintains presence). Consumers expecting
+ * an "add" action can keep calling this.
+ */
+export const addToWishlistAPI = (productId, token) => {
+  return toggleWishlistAPI(productId, token);
 };
 
-export const getWishlistAPI = async (token) => {
-  return axios.get(`${API}/list`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+/**
+ * Legacy-friendly: remove from wishlist.
+ * ↳ Uses toggle endpoint (backend maintains presence). Consumers expecting
+ * a "remove" action can keep calling this.
+ */
+export const removeFromWishlistAPI = (productId, token) => {
+  return toggleWishlistAPI(productId, token);
+};
+
+/**
+ * Fetch wishlist.
+ * Backend route: GET /api/v1/wishlist
+ */
+export const getWishlistAPI = (token) => {
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  return api.get(BASE, config);
 };
