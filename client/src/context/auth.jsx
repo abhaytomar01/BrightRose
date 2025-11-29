@@ -1,6 +1,6 @@
 // src/context/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getWishlistAPI } from "../api/wwishlist";
+import { getWishlistAPI } from "../api/wishlist";
 
 const AuthContext = createContext();
 
