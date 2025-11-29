@@ -8,6 +8,7 @@ import fallbackImage from "../../assets/images/fallback.jpg";
 import { useAuth } from "../../context/auth";
 import Handloom from "../../assets/images/garment/handloom.png";
 import Silkmark from "../../assets/images/garment/silkmark.png";
+import { toggleWishlistAPI } from "../../api/wishlist";
 
 export default function ProductDetails() {
   const { productId } = useParams();
@@ -86,39 +87,43 @@ const fetchWishlistFromServer = async () => {
   const isWishlisted = (id) => wishlist.includes(id);
 
 
-  const handleWishlist = async (id) => {
-
-  // Guest Wishlist
+  const handleWishlist = async (productIdToToggle) => {
   if (!authUser?.token) {
-    const exists = localWishlist.includes(id);
-    let updated = exists
-      ? localWishlist.filter(x => x !== id)
-      : [...localWishlist, id];
+    // Guest wishlist (localStorage)
+    let updated;
 
-    setLocalWishlist(updated);
+    if (currentWishlist.includes(productIdToToggle)) {
+      updated = currentWishlist.filter(id => id !== productIdToToggle);
+      toast.info("Removed from wishlist");
+    } else {
+      updated = [...currentWishlist, productIdToToggle];
+      toast.success("Added to wishlist");
+    }
+
     localStorage.setItem("wishlist_ids", JSON.stringify(updated));
-
-    toast.success(exists ? "Removed from wishlist" : "Added to wishlist");
+    setWishlist(updated);
     return;
   }
 
-  // Logged In Wishlist
   try {
-    const res = await toggleWishlistAPI(id, authUser.token);
+    const res = await toggleWishlistAPI(productIdToToggle, authUser.token);
+
+    const updatedList = res.data.wishlist || [];
+
+    setWishlist(updatedList);
+    localStorage.setItem("wishlist_ids", JSON.stringify(updatedList));
 
     if (res.data.action === "added") {
-      setWishlist(prev => [...prev, id]);
       toast.success("Added to wishlist");
     } else {
-      setWishlist(prev => prev.filter(item => item !== id));
       toast.info("Removed from wishlist");
     }
-
   } catch (err) {
-    console.log("Wishlist toggle ERROR:", err);
-    toast.error("Could not update wishlist");
+    console.error("Wishlist toggle ERROR:", err);
+    toast.error("Unable to update wishlist");
   }
 };
+
 
 
 
