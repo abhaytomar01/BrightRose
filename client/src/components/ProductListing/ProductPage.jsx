@@ -106,10 +106,11 @@ const fetchWishlistFromServer = async () => {
   // Logged-in user → backend
   try {
     const res = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/user/update-wishlist`,
-      { productId: productIdToToggle, type: "toggle" },
-      { headers: { Authorization: authUser.token } }
-    );
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/wishlist/toggle`,
+  { productId: productIdToToggle },
+  { headers: { Authorization: `Bearer ${authUser.token}` } }
+)
+
 
     const updatedIds = res.data?.wishlist?.map((p) => p._id) || [];
 
@@ -561,8 +562,9 @@ const fetchWishlistFromServer = async () => {
 
             <a href="https://wa.me/919910929099" target="_blank" rel="noreferrer" className="flex-1 border border-neutral-400 py-3 rounded-md text-sm flex items-center justify-center gap-2 hover:bg-neutral-100 transition">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.04 2C6.51 2 2 6.51..."></path>
-              </svg>
+  <path d="M12 2C6.48 2 2 6.48 2 12c0 1.93.55 3.74 1.52 5.29L2 22l4.85-1.49A10.01 10.01 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.11 14.29c-.23.64-1.14 1.18-1.57 1.26-.41.08-.93.11-1.5-.09-.35-.11-.8-.26-1.38-.51-2.43-1.06-4-3.52-4.12-3.69-.12-.17-.99-1.32-.99-2.52 0-1.2.62-1.79.84-2.03.22-.24.48-.3.64-.3.16 0 .32 0 .46.01.15 0 .34-.05.53.42.2.48.68 1.66.74 1.78.06.12.1.26.02.42-.08.16-.13.27-.25.41-.12.14-.26.32-.36.42-.12.12-.24.26-.1.5.14.24.62 1.02 1.34 1.66.92.84 1.7 1.1 1.94 1.22.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.23.12.39.18.45.28.06.1.06.57-.17 1.21z"/>
+</svg>
+
               Happy to Help
             </a>
           </div>
