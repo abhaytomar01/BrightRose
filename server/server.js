@@ -77,6 +77,7 @@ import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import wishlistRoutes from  "./routes/wishlistRoute.js"
+import addressRoutes from "./routes/addressRoute.js";
 
 // ==============================
 // Connect Database
@@ -100,6 +101,8 @@ app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
+app.use("/api/v1/user/addresses", addressRoutes);
+
 
 // ==============================
 // Start Server
