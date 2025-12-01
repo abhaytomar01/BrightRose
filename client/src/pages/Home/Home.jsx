@@ -73,7 +73,7 @@ const Home = () => {
             A Journey Woven in Tradition
           </h2>
 
-          <div className="space-y-6 text-neutral-700 text-justify text-[12px] md:text-[15px] leading-relaxed">
+          <div className="space-y-6 text-neutral-700 text-justify text-[13px] md:text-[15px] leading-relaxed">
             <p>
               Bright Rose is an endeavor to bring back Indian Handloom so that we can 
               clothe the world once again in a natural way through the beauty of 
@@ -91,7 +91,7 @@ const Home = () => {
               Bright Rose • Artisan Made in India
             </p>
 
-            <blockquote className="text-neutral-600 italic text-justify border-l-4 border-neutral-300 pl-5 py-3 text-[11px] md:text-[15px] leading-relaxed">
+            <blockquote className="text-neutral-600 italic text-justify border-l-4 border-neutral-300 pl-5 py-3 text-[12px] md:text-[15px] leading-relaxed">
               "Our knowledge of weaving is deeply valued within families and preserved 
               through generations. Some artisans weave with such mastery that their hands 
               move as if guided by instinct alone."
