@@ -1,5 +1,5 @@
 import express from "express";
-import { requireSignIn } from "../middlewares/authMiddleware.js";
+import { requireSignIn } from "../middleware/authMiddleware.js";
 import { getWishlist } from "../controllers/user/getWishlist.js";
 import { toggleWishlist } from "../controllers/user/toggleWishlist.js";
 
