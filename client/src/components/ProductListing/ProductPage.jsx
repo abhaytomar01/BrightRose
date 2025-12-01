@@ -4,7 +4,6 @@ import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCart } from "../../context/cart";
-import fallbackImage from "../../assets/images/fallback.jpg";
 import { useAuth } from "../../context/auth";
 import Handloom from "../../assets/images/garment/handloom.png";
 import Silkmark from "../../assets/images/garment/silkmark.png";
@@ -168,7 +167,7 @@ const fetchWishlistFromServer = async () => {
           const p = res.data.product;
           setProduct(p);
 
-          setSelectedImage(p.images?.[0]?.url || fallbackImage);
+          setSelectedImage(p.images?.[0]?.url);
           fetchRelated(p);
         }
       } catch (error) {
@@ -228,7 +227,7 @@ const fetchWishlistFromServer = async () => {
   // -----------------------------------------------------
   let gallery = product.images?.map((img) => img.url || img) || [];
   if (gallery.length < 4)
-    gallery = [...gallery, fallbackImage, fallbackImage, fallbackImage].slice(
+    gallery = [...gallery].slice(
       0,
       5
     );
@@ -495,7 +494,7 @@ const fetchWishlistFromServer = async () => {
 
           
          {/* ACCORDIONS */}
-<div className="mt-0">
+<div className="mt-0 text-neutralDark/70">
   {[
     { id: "col", title: " Color", content: product.color },
     { id: "fab", title: " Fabric", content: product.fabric },
@@ -503,7 +502,7 @@ const fetchWishlistFromServer = async () => {
   id: "desc",
   title: "Description",
   content: (
-    <ul className="list-disc pl-4 space-y-2 text-sm leading-relaxed text-neutral-700">
+    <ul className="list-disc pl-4 space-y-2 text-sm leading-relaxed text-neutralDark/70">
       {String(product.description || "")
         .split("#")
         .map((item, idx) => {
@@ -518,7 +517,7 @@ const fetchWishlistFromServer = async () => {
   id: "spec",
   title: "Specification",
   content: (
-    <ul className="space-y-2 text-sm leading-relaxed text-neutral-700 list-disc pl-4">
+    <ul className="space-y-2 text-sm leading-relaxed text-neutralDark/70 list-disc pl-4 text-justify">
       <li>
         Please note that only the said garment is available for purchase; all other
         items are solely for representation.
@@ -541,7 +540,7 @@ const fetchWishlistFromServer = async () => {
   id: "care",
   title: "Care",
   content: (
-    <div className="space-y-2 text-sm leading-relaxed text-neutral-700">
+    <div className="space-y-2 text-sm leading-relaxed text-neutralDark/70 text-justify">
       <ul className="list-disc pl-4 space-y-2">
         <li>Dry clean only.</li>
         <li>
@@ -551,7 +550,7 @@ const fetchWishlistFromServer = async () => {
         <li>Air the textile every few months.</li>
       </ul>
 
-      <p className="text-neutral-600 text-[13px] mt-2">
+      <p className="text-neutralDark/80 text-[13px] mt-2">
         <strong>Note:</strong> We are not liable for textiles that have been
         hand-washed/cleaned other than through dry cleaning.
       </p>
@@ -583,18 +582,18 @@ const fetchWishlistFromServer = async () => {
       id: "delivery",
       title: "Delivery & Returns",
       content: (
-        <div className="space-y-3 leading-relaxed text-sm text-neutral-700">
+        <div className="space-y-3 leading-relaxed text-sm text-neutralDark/70 text-justify">
           <p>
-            In order to minimise any discrepancies, almost all our products for direct
-            sale on our website are free of conventional sizing. This mitigates the need
-            for most return issues concerning inaccurate fit. However, if you are unsure 
-            of any aspect of the purchase, please contact our client services before ordering.
+          In order to minimise any discrepancies, almost all our products for direct sale on website address are free of conventional sizing. This mitigates the need for most return issues concerning inaccurate fit. However, if you are unsure of any aspect of the purchase, we implore you to contact a member of our client services team before placing any orders. Your purchase is eligible for return or exchange only if it meets the following conditions:<br/>
+1. An incorrect product has been delivered to you<br/>
+2. If the product you receive has a genuine manufacturing defect<br/>
+Please note that each return or exchange request is considered as an individual case. We are unable to offer refunds if we have been given an incorrect or incomplete shipping address, or if there have been three (3) failed delivery attempts by our shipping partners and/or if the package has been refused by the recipient.
           </p>
 
           <div className="pt-4">
             <Link
               to="/exchange-return"
-              className="text-neutral underline font-medium hover:text-black transition"
+              className="text-neutralDark/80 underline font-medium hover:text-black transition"
             >
               Read full Return & Exchange policy →
             </Link>
@@ -658,7 +657,7 @@ const fetchWishlistFromServer = async () => {
           {related.map((item) => (
             <Link to={`/product/${item._id}`} key={item._id} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group">
               <div className="relative w-full aspect-[4/5] bg-neutral-100 overflow-hidden">
-                <img src={item.images?.[0]?.url || fallbackImage} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={item.images?.[0]?.url} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
 
               <div className="p-4 text-center">
