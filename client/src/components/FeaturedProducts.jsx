@@ -1,33 +1,38 @@
 import React from "react";
 import Slider from "react-slick";
-import { ShoppingCart, Eye, ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-// Custom Arrows (Luxury Red + Gold Accent)
+// Luxury Minimal Arrows
 const PreviousBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !left-4 z-20 bg-neutralLight/60 hover:bg-neutralLight/80 backdrop-blur-md transition rounded-full p-2 flex items-center justify-center border border-accentGold/60`}
+    className={`${className} !left-4 z-20 
+      bg-white/70 hover:bg-white/90 backdrop-blur-md 
+      shadow-sm hover:shadow-md 
+      transition-all rounded-full p-2 flex items-center justify-center 
+      border border-neutral-300`}
     onClick={onClick}
   >
-    <ArrowLeft size={18} className="text-primaryRed" />
+    <ArrowLeft size={18} className="text-neutral-700" />
   </div>
 );
 
 const NextBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !right-4 z-20 bg-neutralLight/60 hover:bg-neutralLight/80 backdrop-blur-md transition rounded-full p-2 flex items-center justify-center border border-accentGold/60`}
+    className={`${className} !right-4 z-20 
+      bg-white/70 hover:bg-white/90 backdrop-blur-md 
+      shadow-sm hover:shadow-md 
+      transition-all rounded-full p-2 flex items-center justify-center 
+      border border-neutral-300`}
     onClick={onClick}
   >
-    <ArrowRight size={18} className="text-neutralDark/80" />
+    <ArrowRight size={18} className="text-neutral-700" />
   </div>
 );
 
 const FeaturedProducts = ({
   title = "Featured Products",
-  subtitle = "Curated selections from our finest creations",
+  subtitle = "Explore exclusive artisanal creations crafted with heritage and soul.",
   products = [],
-  onAddToCart = () => {},
-  onQuickView = () => {},
-  isLoading = false,
 }) => {
   const settings = {
     dots: false,
@@ -36,78 +41,82 @@ const FeaturedProducts = ({
     slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3500,
+    autoplaySpeed: 3800,
     prevArrow: <PreviousBtn />,
     nextArrow: <NextBtn />,
     responsive: [
       { breakpoint: 1536, settings: { slidesToShow: 3 } },
       { breakpoint: 1024, settings: { slidesToShow: 2 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 640, settings: { slidesToShow: 1.2, centerMode: true } },
+      { breakpoint: 768, settings: { slidesToShow: 1.5 } },
+      { breakpoint: 480, settings: { slidesToShow: 1.1 } },
     ],
   };
 
   return (
-    <section className="w-full py-20 bg-pureWhite overflow-hidden">
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
+    <section className="w-full py-16 bg-white relative">
 
-        {/* Header Section */}
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutralDark/80">
+      {/* Fade Left */}
+      <div className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
+
+      {/* Fade Right */}
+      <div className="absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 relative">
+
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutral-900">
             {title}
           </h2>
-
-          {subtitle && (
-            <p className="text-neutralDark mt-3 text-base sm:text-lg font-light max-w-2xl mx-auto">
-              {subtitle}
-            </p>
-          )}
-
-          {/* Gold divider */}
-          <div className="w-20 h-[2px] bg-accentGold mx-auto mt-6"></div>
+          <p className="text-neutral-600 mt-3 text-base sm:text-lg font-light max-w-2xl mx-auto">
+            {subtitle}
+          </p>
+          <div className="w-16 h-[2px] bg-[#c7a97d] mx-auto mt-5"></div>
         </div>
 
         {/* Product Slider */}
         <Slider {...settings}>
           {products.map((product, index) => (
-            <div key={index} className="px-3 py-5">
+            <div key={index} className="px-4 py-6">
+
               <div
                 className="
-                  group relative bg-white border border-mutedGray/60
-                  rounded-3xl overflow-hidden 
-                  transition-all duration-500
-                  hover:border-accentGold/60
-                  hover:shadow-xl
-                  flex flex-col h-[480px] md:h-[500px] lg:h-[480px]
+                  group bg-white rounded-3xl overflow-hidden shadow-sm
+                  hover:shadow-xl transition-all duration-700
+                  border border-neutral-200/60 
+                  flex flex-col
                 "
               >
+
                 {/* Product Image */}
-                <div className="relative w-full aspect-[3/4] bg-neutralLight overflow-hidden">
+                <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
                   <img
                     src={product.image}
                     alt={product.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[900ms] ease-out"
+                    className="
+                      w-full h-full object-cover 
+                      transition-transform duration-[1200ms]
+                      group-hover:scale-110
+                    "
                   />
                 </div>
 
-                {/* Product Info */}
-                <div className="p-5 text-center flex flex-col justify-between flex-grow">
+                {/* Product Text */}
+                <div className="p-6 text-center flex flex-col flex-grow">
 
-                  <div>
-                    <h3 className="text-lg font-light text-neutralDark mb-1 line-clamp-2">
-                      {product.name}
-                    </h3>
+                  <h3 className="text-lg font-light text-neutral-900 tracking-wide line-clamp-2">
+                    {product.name}
+                  </h3>
 
-                    <p className="text-sm text-neutralDark/70 line-clamp-2 mb-2 font-light">
-                      {product.description}
+                  <p className="text-neutral-500 text-sm mt-2 font-light line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-4">
+                    <p className="text-xl font-light text-neutral-800 tracking-wide">
+                      ₹{product.price?.toLocaleString()}
                     </p>
                   </div>
-
-                  {/* Price */}
-                  <p className="text-xl font-normal text-neutralDark/80 tracking-wide">
-                    ₹{product.price?.toLocaleString()}
-                  </p>
 
                 </div>
               </div>
