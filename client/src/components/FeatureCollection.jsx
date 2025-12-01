@@ -28,7 +28,7 @@ export default function LuxuryShowcasePremium() {
 
         {/* HEADER */}
         <div className="text-center mb-10">
-          <h2 className="text-xl md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
+          <h2 className="text-lg md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
             Featured Collections
           </h2>
 
@@ -71,8 +71,8 @@ export default function LuxuryShowcasePremium() {
       {/* TITLE BELOW IMAGE (Mobile Look Like Reference) */}
       <p className="
         text-center 
-        mt-3 
-        text-sm sm:text-base 
+        mt-2 
+        text-xs md:text-base 
         font-light tracking-wide text-neutral-900
       ">
         {item.name.toUpperCase()}

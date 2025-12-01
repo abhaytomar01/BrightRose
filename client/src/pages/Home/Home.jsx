@@ -68,7 +68,7 @@ const Home = () => {
           </div>
 
           {/* Main Text */}
-          <h2 className="text-2xl md:text-4xl font-light tracking-wide text-neutral-900 leading-tight mb-6">
+          <h2 className="text-xl md:text-4xl font-light tracking-wide text-neutral-900 leading-tight mb-6">
             Bright Rose • <br className="hidden md:block" />
             A Journey Woven in Tradition
           </h2>
