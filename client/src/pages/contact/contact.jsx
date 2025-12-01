@@ -175,7 +175,7 @@ const Contact = () => {
         <div className="space-y-8 sm:space-y-10">
           <div>
             <h3 className="text-lg sm:text-xl font-light mb-2 sm:mb-3">Visit Our Studio</h3>
-            <p className="text-gray-700 text-sm sm:text-xs leading-relaxed">
+            <p className="text-gray-700 text-xs sm:text-base leading-relaxed">
               Bright Rose Studio<br />Gurugram, Haryana, India
             </p>
           </div>
@@ -201,7 +201,7 @@ const Contact = () => {
       {/* -------------------------------------------------------
           MAP SECTION — LUXURY CLEAN
       -------------------------------------------------------- */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+      {/* <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
         <h3 className="text-lg sm:text-xl font-light mb-4">Find us on the map</h3>
 
         <div className="rounded-xl overflow-hidden border border-neutral-300">
@@ -212,7 +212,7 @@ const Contact = () => {
             loading="lazy"
           ></iframe>
         </div>
-      </div>
+      </div> */}
 
       
       {/* -------------------------------------------------------
@@ -278,7 +278,6 @@ const Contact = () => {
     </div>
   </div>
 </div>
-
 
     </section>
   );
