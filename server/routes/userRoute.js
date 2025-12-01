@@ -1,8 +1,7 @@
 import express from "express";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 import getWishlistItems from "../controllers/user/getWishlist.js";
-import updateWishlist from "../controllers/user/updateWishlist.js";
-import getWishlistProducts from "../controllers/user/getWishlistProducts.js";
+import updateWishlist from "../controllers/user/toggleWishlist.js";
 import createSession from "../controllers/user/createSession.js";
 import handleSuccess from "../controllers/user/handleSuccess.js";
 import getOrders from "../controllers/user/getOrders.js";
