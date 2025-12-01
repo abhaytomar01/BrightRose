@@ -30,7 +30,7 @@ const AdminDashboard = () => {
       <SeoData title="Admin Dashboard" />
 
       <AdminLayout>
-        <div className="flex relative w-full">
+        <div className="flex relative w-full mt-6">
 
           {/* SIDEBAR */}
           <div
