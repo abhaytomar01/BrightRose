@@ -33,3 +33,5 @@ export const toggleWishlist = async (req, res) => {
     });
   }
 };
+
+export default toggleWishlist;
