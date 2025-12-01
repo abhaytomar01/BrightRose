@@ -1,12 +1,12 @@
 import express from "express";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
-import getWishlistItems from "../controllers/user/getWishlist.js";
+import getWishlist from "../controllers/user/getWishlist.js";
 import updateWishlist from "../controllers/user/toggleWishlist.js";
 import createSession from "../controllers/user/createSession.js";
 import handleSuccess from "../controllers/user/handleSuccess.js";
 import getOrders from "../controllers/user/getOrders.js";
 import getOrderDetail from "../controllers/user/getOrderDetail.js";
-import getAdminOrders from "../controllers/user/getAdminOrders.js";
+import getAdminOrders from "../controllers/user/getAdminOrders.js"; 
 import updateOrder from "../controllers/user/updateOrder.js";
 import getAllUserOrder from "../controllers/user/getAllUserOrder.js";
 import { 
@@ -22,7 +22,7 @@ const router = express.Router();
 
 //routing
 //get Wishlist Items id
-router.get("/wishlist", requireSignIn, getWishlistItems);
+router.get("/wishlist", requireSignIn, getWishlist);
 
 //update wishlist Items
 router.post("/update-wishlist", requireSignIn, updateWishlist);
