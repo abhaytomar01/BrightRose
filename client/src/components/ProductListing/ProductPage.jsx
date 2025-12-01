@@ -425,7 +425,6 @@ const fetchWishlistFromServer = async () => {
     </svg>
   )}
 </button>
-
           </div>
 
           {/* PRICE */}
@@ -501,8 +500,50 @@ const fetchWishlistFromServer = async () => {
     { id: "col", title: " Color", content: product.color },
     { id: "fab", title: " Fabric", content: product.fabric },
     { id: "desc", title: " Description", content: product.description },
-    { id: "spec", title: "Specification", content: product.specification },
-    { id: "care", title: "Care", content: product.care },
+   {
+  id: "spec",
+  title: "Specification",
+  content: (
+    <ul className="space-y-2 text-sm leading-relaxed text-neutral-700 list-disc pl-4">
+      <li>
+        Please note that only the said garment is available for purchase; all other
+        items are solely for representation.
+      </li>
+      <li>
+        The product colour may vary slightly due to your device or monitor screen
+        settings or photography lighting conditions.
+      </li>
+      <li>
+        As the product is handmade, slight imperfections or variations in the
+        color, design and texture of the textile are inherent to the
+        characteristics of handlooms and add to its unique character and
+        authenticity.
+      </li>
+    </ul>
+  )
+},
+
+{
+  id: "care",
+  title: "Care",
+  content: (
+    <div className="space-y-2 text-sm leading-relaxed text-neutral-700">
+      <ul className="list-disc pl-4 space-y-2">
+        <li>Dry clean only.</li>
+        <li>
+          Store garments in a cloth bag away from direct sunlight in a dry
+          environment.
+        </li>
+        <li>Air the textile every few months.</li>
+      </ul>
+
+      <p className="text-neutral-600 text-[13px] mt-2">
+        <strong>Note:</strong> We are not liable for textiles that have been
+        hand-washed/cleaned other than through dry cleaning.
+      </p>
+    </div>
+  )
+},
 
     // ✅ NEW BADGES ACCORDION
     {

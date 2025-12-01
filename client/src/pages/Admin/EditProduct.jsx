@@ -25,8 +25,6 @@ const EditProduct = () => {
     color: "",
     weavingArt: "",
     description: "",
-    specification: "",
-    care: "",
     sku: "",
     price: "",
     stock: "",
