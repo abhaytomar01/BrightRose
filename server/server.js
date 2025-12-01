@@ -37,6 +37,7 @@ app.use(
   cors({
     origin: [
       "https://www.thebrightrose.com",
+      "https://thebrightrose.com",
       "http://localhost:5173",
     ],
     credentials: true,
