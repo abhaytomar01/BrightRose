@@ -17,7 +17,7 @@ const Product = ({
     >
       {/* IMAGE */}
       <Link to={`/product/${_id}`}>
-        <div className="relative w-full aspect-[3/4] overflow-hidden rounded-md">
+        <div className="relative w-full aspect-[3/4] overflow-hidden">
           <img
             src={images?.[0]?.url || fallbackImage}
             className="w-full h-full object-cover transition-all duration-500"
