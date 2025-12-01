@@ -28,7 +28,7 @@ router.get("/wishlist", requireSignIn, getWishlist);
 router.post("/update-wishlist", requireSignIn, updateWishlist);
 
 // get wishlist products
-router.get("/wishlist-products", requireSignIn, getWishlistProducts);
+router.get("/wishlist-products", requireSignIn, getWishlist);
 
 
 router.get("/addresses", requireSignIn, getAddresses);
