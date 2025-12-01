@@ -75,7 +75,7 @@ export default function LuxuryShowcasePremium() {
         text-xs md:text-base 
         font-light tracking-wide text-neutral-900
       ">
-        {item.name.toUpperCase()}
+        {item.name}
       </p>
     </Link>
   ))}
