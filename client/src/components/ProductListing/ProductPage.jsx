@@ -499,7 +499,21 @@ const fetchWishlistFromServer = async () => {
   {[
     { id: "col", title: " Color", content: product.color },
     { id: "fab", title: " Fabric", content: product.fabric },
-    { id: "desc", title: " Description", content: product.description },
+   {
+  id: "desc",
+  title: "Description",
+  content: (
+    <ul className="list-disc pl-4 space-y-2 text-sm leading-relaxed text-neutral-700">
+      {String(product.description || "")
+        .split("#")
+        .map((item, idx) => {
+          const trimmed = item.trim();
+          return trimmed ? <li key={idx}>{trimmed}</li> : null;
+        })}
+    </ul>
+  )
+},
+
    {
   id: "spec",
   title: "Specification",
