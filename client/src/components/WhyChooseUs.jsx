@@ -10,11 +10,11 @@ const WhyChooseUs = ({
   ],
 }) => {
   return (
-    <section className="w-full bg-pureWhite py-20">
+    <section className="w-full bg-pureWhite py-6 md:py-14">
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 text-center">
 
         {/* Section Title */}
-        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutralDark/80">
+        <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-neutralDark/80">
           Why Choose Us
         </h2>
 
@@ -23,7 +23,7 @@ const WhyChooseUs = ({
         </p>
 
         {/* Gold Divider */}
-        <div className="w-20 h-[2px] bg-accentGold mx-auto mt-6 mb-16"></div>
+        <div className="w-20 h-[2px] bg-accentGold mx-auto mt-4 mb-10 md:mb-12"></div>
 
         {/* Highlights Grid */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">

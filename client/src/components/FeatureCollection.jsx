@@ -23,12 +23,12 @@ export default function LuxuryShowcasePremium() {
   if (!products.length) return null;
 
   return (
-    <section className="w-full py-20 bg-white">
+    <section className="w-full py-8 bg-white">
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
 
         {/* HEADER */}
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-light tracking-widest text-neutral-900 uppercase">
+        <div className="text-center mb-10">
+          <h2 className="text-xl md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
             Featured Collections
           </h2>
 
@@ -38,55 +38,59 @@ export default function LuxuryShowcasePremium() {
         </div>
 
         {/* GRID - LUXURY LOOK */}
-        <div className="
-          grid 
-          grid-cols-1 
-          sm:grid-cols-2 
-          lg:grid-cols-4 
-          gap-6
-        ">
-          {products.slice(0, 4).map((item) => (
-            <Link
-              key={item._id}
-              to={`/product/${item._id}`}
-              className="group relative block overflow-hidden rounded-none"
-            >
-              {/* IMAGE */}
-              <div className="relative w-full h-[420px] md:h-[520px] bg-neutral-100 overflow-hidden">
-                <img
-                  src={item.images?.[0]?.url || fallback}
-                  alt={item.name}
-                  className="
-                    w-full h-full object-cover
-                    transition-transform duration-[1200ms]
-                    group-hover:scale-105
-                  "
-                />
-              </div>
+       {/* GRID - LUXURY LOOK */}
+<div
+  className="
+    grid 
+    grid-cols-2        /* 🟢 MOBILE: 2 columns */
+    sm:grid-cols-2     /* 🟢 TABLET: 2 columns */
+    lg:grid-cols-4     /* 🟢 DESKTOP: 4 columns */
+    gap-5
+    md:gap-8
+  "
+>
+  {products.slice(0, 4).map((item) => (
+    <Link
+      key={item._id}
+      to={`/product/${item._id}`}
+      className="group block"
+    >
+      {/* IMAGE */}
+      <div className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] bg-neutral-100 overflow-hidden rounded-md">
+        <img
+          src={item.images?.[0]?.url || fallback}
+          alt={item.name}
+          className="
+            w-full h-full object-cover
+            transition-transform duration-[1200ms]
+            group-hover:scale-105
+          "
+        />
+      </div>
 
-              {/* TEXT OVERLAY */}
-              <div className="
-                absolute bottom-4 left-1/2 -translate-x-1/2 
-                text-white text-lg md:text-xl font-light tracking-wide
-                drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]
-                text-center 
-                w-full
-              ">
-                {item.name.toUpperCase()}
-              </div>
-            </Link>
-          ))}
-        </div>
+      {/* TITLE BELOW IMAGE (Mobile Look Like Reference) */}
+      <p className="
+        text-center 
+        mt-3 
+        text-sm sm:text-base 
+        font-light tracking-wide text-neutral-900
+      ">
+        {item.name.toUpperCase()}
+      </p>
+    </Link>
+  ))}
+</div>
+
 
         {/* CTA BUTTON */}
         <div className="text-center mt-10">
           <Link
             to="/products"
             className="
-              inline-block bg-neutral-900 text-white 
-              px-10 py-3 rounded-full 
-              text-sm tracking-wide border border-[#c7a97d]
-              hover:bg-black transition-all
+              inline-block bg-white text-neutralDark/80 
+              px-10 py-3 
+              text-sm tracking-wide border border-neutralDark/70
+              hover:border-neutralDark/90 transition-all
             "
           >
             View All Products

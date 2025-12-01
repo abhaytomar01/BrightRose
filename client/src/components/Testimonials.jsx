@@ -45,11 +45,11 @@ const Testimonials = ({
   };
 
   return (
-    <section className="w-full bg-pureWhite py-20 overflow-hidden">
+    <section className="w-full bg-pureWhite py-10 overflow-hidden">
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 text-center">
 
         {/* HEADER */}
-        <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutralDark/80">
+        <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-neutralDark/80">
           What Our Customers Say
         </h2>
 
@@ -58,7 +58,7 @@ const Testimonials = ({
         </p>
 
         {/* Gold Divider */}
-        <div className="w-24 h-[2px] bg-accentGold mx-auto mt-8 mb-16"></div>
+        <div className="w-24 h-[2px] bg-accentGold mx-auto mt-8 mb-10 md:mb-12"></div>
 
         {/* GRID — DESKTOP */}
         <div className="hidden lg:grid grid-cols-4 gap-10">

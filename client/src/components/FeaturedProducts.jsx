@@ -2,11 +2,11 @@ import React from "react";
 import Slider from "react-slick";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-// Luxury Minimal Arrows
+/* CLEAN MINIMAL ARROWS (NO BLUR, NO TRANSPARENCY) */
 const PreviousBtn = ({ className, onClick }) => (
   <div
     className={`${className} !left-4 z-20 
-      bg-white/70 hover:bg-white/90 backdrop-blur-md 
+      bg-white hover:bg-neutral-100 
       shadow-sm hover:shadow-md 
       transition-all rounded-full p-2 flex items-center justify-center 
       border border-neutral-300`}
@@ -19,7 +19,7 @@ const PreviousBtn = ({ className, onClick }) => (
 const NextBtn = ({ className, onClick }) => (
   <div
     className={`${className} !right-4 z-20 
-      bg-white/70 hover:bg-white/90 backdrop-blur-md 
+      bg-white hover:bg-neutral-100
       shadow-sm hover:shadow-md 
       transition-all rounded-full p-2 flex items-center justify-center 
       border border-neutral-300`}
@@ -53,19 +53,13 @@ const FeaturedProducts = ({
   };
 
   return (
-    <section className="w-full py-16 bg-white relative">
-
-      {/* Fade Left */}
-      <div className="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
-
-      {/* Fade Right */}
-      <div className="absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+    <section className="w-full py-10 bg-white relative">
 
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 relative">
 
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-light tracking-tight text-neutral-900">
+          <h2 className="text-xl md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
             {title}
           </h2>
           <p className="text-neutral-600 mt-3 text-base sm:text-lg font-light max-w-2xl mx-auto">
