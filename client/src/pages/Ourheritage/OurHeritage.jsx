@@ -108,6 +108,21 @@ function TimelineItem({ item, index }) {
   const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
 
   return (
+    <>
+    <SeoData
+  title="Our Heritage – The Story of Bright Rose"
+  description="Bright Rose celebrates the soul of Indian weaving traditions. Discover our philosophy, artisanal lineage, and dedication to handcrafted luxury."
+  keywords={[
+    "Bright Rose heritage",
+    "Indian handloom tradition",
+    "artisan craft story",
+    "luxury weaving culture",
+    "heritage couture india"
+  ]}
+  image="/og-heritage.jpg"
+  url="/ourheritage"
+/>
+
     <motion.article
       ref={ref}
       variants={itemVariant(isEven ? "left" : "right")}
@@ -141,6 +156,7 @@ function TimelineItem({ item, index }) {
         </p>
       </div>
     </motion.article>
+    </>
   );
 }
 

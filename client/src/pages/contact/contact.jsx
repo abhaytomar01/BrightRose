@@ -59,6 +59,20 @@ const Contact = () => {
   };
 
   return (
+    <>
+    <SeoData
+  title="Contact Us – Bright Rose"
+  description="Reach out to Bright Rose for queries, bespoke orders, styling services, or support. We're happy to assist you."
+  keywords={[
+    "contact bright rose",
+    "customer service",
+    "luxury fashion support",
+    "bespoke couture enquiry"
+  ]}
+  image="/og-contact.jpg"
+  url="/contact"
+/>
+
     <section className="w-full bg-white text-neutral-800 pt-0">
 
       {/* ... your banner, info sections ... */}
@@ -135,6 +149,7 @@ const Contact = () => {
       {/* rest sections unchanged */}
 
     </section>
+    </>
   );
 };
 

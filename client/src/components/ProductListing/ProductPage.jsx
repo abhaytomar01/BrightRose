@@ -275,6 +275,42 @@ const fetchWishlistFromServer = async () => {
   // RENDER
   // -----------------------------------------------------
   return (
+   <>
+   <SeoData
+  title={`${product.name} – Bright Rose`}
+  description={product.description?.slice(0, 150)}
+  keywords={[
+    product.weavingArt,
+    product.fabric,
+    product.color,
+    "Bright Rose",
+    "handwoven",
+    "luxury silk",
+    "designer"
+  ]}
+  image={product.images?.[0]?.url}
+  url={`/product/${product._id}`}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.images.map((i) => `https://www.thebrightrose.com${i.url}`),
+    description: product.description,
+    sku: product.sku || product._id,
+    brand: {
+      "@type": "Brand",
+      name: "Bright Rose"
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://www.thebrightrose.com/product/${product._id}`,
+      priceCurrency: "INR",
+      price: product.price,
+      availability: "https://schema.org/InStock"
+    }
+  }}
+/>
+
     <div className="max-w-8xl mx-2 px-0 pt-24 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
       {/* PRODUCT MAIN */}
       <div className="grid md:grid-cols-2 gap-6 mt-4">
@@ -706,6 +742,7 @@ Please note that each return or exchange request is considered as an individual 
         </div>
       )}
     </div>
+    </>
   );
 }
 

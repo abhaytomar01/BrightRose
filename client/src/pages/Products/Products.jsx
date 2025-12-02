@@ -136,7 +136,20 @@ const Products = () => {
 
   return (
     <>
-      <SeoData title="All Products | Bright Rose" />
+      <SeoData
+  title="Shop All Products – Bright Rose Luxury Handloom Couture"
+  description="Explore the full collection of handcrafted luxury from Bright Rose. Kanchipuram silk jackets, capes, dress sets, and artisanal couture."
+  keywords={[
+    "shop handloom fashion",
+    "kanchipuram jackets",
+    "luxury couture india",
+    "handwoven designer wear",
+  ]}
+  image="/og-products.jpg"
+  url="/products"
+/>
+
+
 
       {/* FULL SCREEN MOBILE FILTER OVERLAY */}
       {showFilterPopup && (

@@ -19,6 +19,8 @@ const ProductListing = ({
   const currentProducts = products.slice(startIndex, endIndex);
 
   return (
+    <>
+    
     <div className="w-full bg-[#FCF7F1] flex flex-col items-center pb-16 pt-32 md:pt-44 px-2 sm:px-0 min-h-screen">
 
       {/* LOADING */}
@@ -111,7 +113,7 @@ const ProductListing = ({
 </div>
 
     </div>
-    
+    </>
   );
 };
 

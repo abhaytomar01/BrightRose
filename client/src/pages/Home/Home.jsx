@@ -29,7 +29,22 @@ import Testimonials from "../../components/Testimonials";
 const Home = () => {
     return (
         <>
-            <SeoData title="The Bright Rose" />
+            <SeoData
+  title="Bright Rose – Luxury Handloom Couture | Kanchipuram Silk | Artisanal Wear"
+  description="Bright Rose revives Indian handloom craftsmanship with luxurious Kanchipuram silk jackets, capes, and artisanal couture crafted by master weavers."
+  keywords={[
+    "handloom couture",
+    "Kanchipuram silk",
+    "luxury womenswear",
+    "artisanal clothing",
+    "designer jacket dresses",
+    "handwoven fashion",
+    "pure silk certified"
+  ]}
+  image="/og-image-home.jpg"
+  url="/"
+/>
+
             <ScrollToTopOnRouteChange />
             {/* <Categories /> */}
            <main className="flex flex-col items-center gap-6 pb-10 bg-pureWhite text-neutralDark">

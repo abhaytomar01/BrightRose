@@ -79,6 +79,7 @@ import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import wishlistRoutes from  "./routes/wishlistRoute.js"
 import addressRoutes from "./routes/addressRoute.js";
+import sitemapRoute from "./sitemap.js";
 
 // ==============================
 // Connect Database
@@ -95,6 +96,7 @@ app.get("/", (req, res) => {
 // ==============================
 // API Routes
 // ==============================
+app.use("/", sitemapRoute);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/products", productRoute);
 app.use("/api/v1/user", userRoute);

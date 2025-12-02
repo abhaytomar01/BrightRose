@@ -39,6 +39,21 @@ const subcategories = [
 ------------------------------ */
 const StyleCollection = () => {
   return (
+    <>
+    <SeoData
+  title="Style Collection – Designer Silhouettes & Couture | Bright Rose"
+  description="Explore statement jacket dresses, capes, structured silhouettes, and luxurious handloom fashion crafted by master artisans."
+  keywords={[
+    "style collection",
+    "designer capes",
+    "jacket dresses",
+    "luxury handloom fashion",
+    "contemporary weaves"
+  ]}
+  image="/og-style.jpg"
+  url="/stylecollection"
+/>
+
     <div className="bg-pureWhite text-neutralDark min-h-screen">
 
       {/* --------------------------------------
@@ -123,6 +138,7 @@ const StyleCollection = () => {
       </section>
 
     </div>
+    </>
   );
 };
 

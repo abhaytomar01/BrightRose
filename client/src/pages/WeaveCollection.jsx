@@ -73,6 +73,21 @@ const subcategories = [
 ------------------------------ */
 const WeaveCollection = () => {
   return (
+    <>
+    <SeoData
+  title="Weave Collection – Handwoven Heritage | Bright Rose"
+  description="Discover handwoven masterpieces including Kanchipuram, Banarasi, and artisanal textiles curated for the modern woman."
+  keywords={[
+    "weave collection",
+    "kanchipuram weave",
+    "banarasi couture",
+    "indian weaving heritage",
+    "handloom revival"
+  ]}
+  image="/og-weaves.jpg"
+  url="/weavecollection"
+/>
+
     <div className="bg-pureWhite text-neutralDark min-h-screen">
 
       {/* ----------------------------------
@@ -152,6 +167,7 @@ const WeaveCollection = () => {
       </section>
 
     </div>
+    </>
   );
 };
 

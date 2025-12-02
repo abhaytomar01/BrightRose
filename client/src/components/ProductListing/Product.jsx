@@ -10,6 +10,8 @@ const Product = ({
   price,
 }) => {
   return (
+    <>
+    
     <motion.div
       className="w-full bg-white overflow-hidden cursor-pointer"
       initial={{ opacity: 0, y: 10 }}
@@ -37,6 +39,7 @@ const Product = ({
         </p>
       </div>
     </motion.div>
+    </>
   );
 };
 
