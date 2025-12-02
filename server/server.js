@@ -106,7 +106,16 @@ app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/user/addresses", addressRoutes);
 
+// FINAL CATCH — SERVE REACT
+const frontendPath = path.join(__dirname, "client/dist");
 
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+}
 // ==============================
 // Start Server
 // ==============================
