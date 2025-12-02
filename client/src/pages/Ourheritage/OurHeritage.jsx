@@ -2,6 +2,7 @@ import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import aboutbrand from "../../assets/images/Banners/abouthebrand.jpg";
+import SeoData from "../../SEO/SeoData.jsx";
 
 /* -----------------------------------
    TIMELINE DATA
@@ -109,19 +110,7 @@ function TimelineItem({ item, index }) {
 
   return (
     <>
-    <SeoData
-  title="Our Heritage – The Story of Bright Rose"
-  description="Bright Rose celebrates the soul of Indian weaving traditions. Discover our philosophy, artisanal lineage, and dedication to handcrafted luxury."
-  keywords={[
-    "Bright Rose heritage",
-    "Indian handloom tradition",
-    "artisan craft story",
-    "luxury weaving culture",
-    "heritage couture india"
-  ]}
-  image="/og-heritage.jpg"
-  url="/ourheritage"
-/>
+   
 
     <motion.article
       ref={ref}
@@ -222,6 +211,20 @@ const FinalCTA = () => (
 ----------------------------------- */
 export default function AboutAdvanced() {
   return (
+    <>
+     <SeoData
+  title="Our Heritage – The Story of Bright Rose"
+  description="Bright Rose celebrates the soul of Indian weaving traditions. Discover our philosophy, artisanal lineage, and dedication to handcrafted luxury."
+  keywords={[
+    "Bright Rose heritage",
+    "Indian handloom tradition",
+    "artisan craft story",
+    "luxury weaving culture",
+    "heritage couture india"
+  ]}
+  image="/og-heritage.jpg"
+  url="/ourheritage"
+/>
     <main className="bg-pureWhite text-neutralDark overflow-x-hidden">
       <HeroParallax
         title="ABOUT THE BRIGHT ROSE"
@@ -232,5 +235,6 @@ export default function AboutAdvanced() {
 
       <FinalCTA />
     </main>
+    </>
   );
 }

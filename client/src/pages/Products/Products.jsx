@@ -5,10 +5,10 @@ import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import axios from "axios";
-import SeoData from "../../SEO/SeoData";
 import SideFilter from "../../components/ProductListing/SideFilter";
 import { useAuth } from "../../context/auth";
 import { SlidersHorizontal } from "lucide-react";
+import SeoData from "../../SEO/SeoData.jsx";
 
 const Products = () => {
   const location = useLocation();

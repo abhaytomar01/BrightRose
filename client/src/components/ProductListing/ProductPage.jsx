@@ -8,6 +8,7 @@ import { useAuth } from "../../context/auth";
 import Handloom from "../../assets/images/garment/handloom.png";
 import Silkmark from "../../assets/images/garment/silkmark.png";
 import { toggleWishlistAPI, getWishlistAPI } from "../../api/wishlist";
+import SeoData from "../../SEO/SeoData.jsx";
 
 
 export default function ProductDetails() {

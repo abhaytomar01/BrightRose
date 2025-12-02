@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import SeoData from "../../SEO/SeoData.jsx";
+
 
 const Contact = () => {
   const [form, setForm] = useState({
