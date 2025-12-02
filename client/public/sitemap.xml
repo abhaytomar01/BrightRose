@@ -53,17 +53,15 @@
   <!-- EXAMPLE PRODUCT ENTRY (Corrected) -->
   <!-- ============================= -->
   <url>
-    <loc>https://www.thebrightrose.com/product/691c6ddefe3c0844ea472689</loc>
-    <lastmod>2025-01-01T12:00:00+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+  <loc>https://www.thebrightrose.com/product/PRODUCT_ID</loc>
+  <lastmod>2025-02-05T18:00:00+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 
-    <!-- Image SEO (main product image) -->
-    <image:image>
-      <image:loc>https://www.thebrightrose.com/uploads/products/1764239579999-381231444.JPG</image:loc>
-      <image:title><![CDATA[Kanchipuram Jacket Dress with Cape Sleeves – Bright Rose]]></image:title>
-    </image:image>
+  <image:image>
+    <image:loc>FULL_IMAGE_URL</image:loc>
+    <image:title><![CDATA[ PRODUCT NAME ]]></image:title>
+  </image:image>
+</url>
 
-  </url>
 
 </urlset>

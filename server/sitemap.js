@@ -7,7 +7,6 @@ router.get("/sitemap.xml", async (req, res) => {
   try {
     const products = await Product.find().select("name images updatedAt _id");
 
-    // Static Bright Rose pages (your structure)
     const staticPages = [
       { url: "/", freq: "daily", priority: "1.0" },
       { url: "/products", freq: "daily", priority: "0.9" },
@@ -24,34 +23,36 @@ router.get("/sitemap.xml", async (req, res) => {
 >
 `;
 
-    // STATIC PAGES
+    // STATIC
     staticPages.forEach((p) => {
       xml += `
   <url>
-    <loc>https://thebrightrose.com${p.url}</loc>
+    <loc>https://www.thebrightrose.com${p.url}</loc>
     <changefreq>${p.freq}</changefreq>
     <priority>${p.priority}</priority>
   </url>
 `;
     });
 
-    // DYNAMIC PRODUCT PAGES
+    // DYNAMIC PRODUCTS
     products.forEach((product) => {
       xml += `
   <url>
-    <loc>https://thebrightrose.com/product/${product._id}</loc>
+    <loc>https://www.thebrightrose.com/product/${product._id}</loc>
     <lastmod>${product.updatedAt.toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
 `;
 
-      // ADD ALL PRODUCT IMAGES
+      // Product images
       if (product.images && product.images.length > 0) {
         product.images.forEach((img) => {
-          const fullImageURL = `https://www.thebrightrose.com${img.url}`;
+          const path =
+            img.url.startsWith("/") ? img.url : "/" + img.url;
+
           xml += `
     <image:image>
-      <image:loc>${fullImageURL}</image:loc>
+      <image:loc>https://www.thebrightrose.com${path}</image:loc>
       <image:title><![CDATA[${product.name} – Bright Rose]]></image:title>
     </image:image>
 `;
