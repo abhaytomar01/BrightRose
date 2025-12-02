@@ -34,7 +34,7 @@ router.get("/sitemap.xml", async (req, res) => {
 `;
     });
 
-    // DYNAMIC PRODUCTS
+    // PRODUCTS
     products.forEach((product) => {
       xml += `
   <url>
@@ -44,15 +44,13 @@ router.get("/sitemap.xml", async (req, res) => {
     <priority>0.8</priority>
 `;
 
-      // Product images
-      if (product.images && product.images.length > 0) {
+      if (product.images?.length > 0) {
         product.images.forEach((img) => {
-          const path =
-            img.url.startsWith("/") ? img.url : "/" + img.url;
+          const imagePath = img.url.startsWith("/") ? img.url : "/" + img.url;
 
           xml += `
     <image:image>
-      <image:loc>https://www.thebrightrose.com${path}</image:loc>
+      <image:loc>https://www.thebrightrose.com${imagePath}</image:loc>
       <image:title><![CDATA[${product.name} – Bright Rose]]></image:title>
     </image:image>
 `;
@@ -69,7 +67,7 @@ router.get("/sitemap.xml", async (req, res) => {
 
   } catch (err) {
     console.error("Sitemap generation error:", err);
-    return res.status(500).send("Error generating sitemap");
+    res.status(500).send("Error generating sitemap");
   }
 });
 
