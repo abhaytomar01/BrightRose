@@ -99,7 +99,7 @@ const Header = () => {
       </Link>
 
     {/* Header Main */}
-<div className="grid grid-cols-3 items-center px-4 py-4 md:px-6 border-b">
+<div className="grid grid-cols-3 items-center px-4 py-4 md:px-6">
 
   {/* LEFT SIDE (Mobile: menu + search) */}
   <div className="flex items-center gap-3">
@@ -208,7 +208,7 @@ const Header = () => {
 
 
 
-        <Link to="/contact" className="hover:text-[#AD000F]">Contact</Link>
+        <Link to="/contact" className="hover:text-[#AD000F]">Support</Link>
       </nav>
 
       {/* ----------------------------------------------------
@@ -281,7 +281,7 @@ const Header = () => {
 )}
 
 <hr className="h-1 text-neutralDark/80"/>
-              <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+              <Link to="/contact" onClick={() => setOpen(false)}>Support</Link>
               <hr className="h-1 text-neutralDark/80"/>
             </nav>
           </div>

@@ -3,7 +3,7 @@ import { Facebook, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-pureWhite text-neutralDark pt-20 pb-16 border-t border-neutral-200/60">
+    <footer className="w-full bg-pureWhite text-neutralDark pt-4 pb-10 sm:pt-20 sm:pb-16 border-t border-neutral-200/60">
       <div className="max-w-[1700px] mx-auto px-6 sm:px-10 lg:px-20 grid grid-cols-1 md:grid-cols-4 gap-14">
 
         {/* INFORMATION */}
@@ -42,7 +42,7 @@ const Footer = () => {
                 href="/contact"
                 className="text-sm text-neutralDark/80 hover:text-neutralDark/70 transition"
               >
-                Contact
+                Support
               </a>
             </li>
           </ul>
