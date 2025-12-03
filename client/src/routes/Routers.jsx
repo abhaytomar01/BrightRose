@@ -25,6 +25,7 @@ import AdminDashboard from "../pages/Admin/AdminDashboard";
 import AdminOrders from "../pages/Admin/AdminOrders";
 import UpdateOrders from "../pages/Admin/UpdateOrders";
 import DeleteAllOrder from "../pages/DeleteAllOrder.jsx";
+import AdminOrderDetails from "../pages/Admin/AdminOrderDetails.jsx"; 
 
 // 🔹 Products
 import Products from "../pages/Products/Products";
@@ -94,6 +95,9 @@ const Routers = () => {
   <Route path="dashboard/*" element={<AdminDashboard />} />
   <Route path="orders" element={<AdminOrders />} />
   <Route path="orders/order_details/:id" element={<UpdateOrders />} />
+  <Route path="/admin/orders/:id" element={<AdminOrderDetails />}
+/>
+
 </Route>
 
 

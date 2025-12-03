@@ -1,26 +1,57 @@
-import mongoose from 'mongoose';
-const itemSchema = new mongoose.Schema({
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  name: String,
-  price: Number,
-  discountPrice: Number,
-  qty: Number,
-  image: String,
-  selectedColor: String,
-  selectedSize: String,
-});
-const orderSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  items: [itemSchema],
-  shippingAddress: {
-    name: String, phone: String, address: String, city: String, state: String, pincode: String
+import mongoose from "mongoose";
+
+const orderItemSchema = new mongoose.Schema({
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Product",
+    required: true
   },
-  paymentMethod: { type: String, enum: ['razorpay','cod','stripe'], default: 'razorpay' },
-  paymentStatus: { type: String, enum: ['pending','paid','failed','refunded'], default: 'pending' },
-  amount: Number, tax: Number, shipping: Number, discount: Number, grandTotal: Number,
-  status: { type: String, enum: ['created','processing','shipped','delivered','cancelled'], default: 'created' },
-  razorpayOrderId: String,
-  razorpayPaymentId: String,
-  createdAt: { type: Date, default: Date.now }
+  name: String,
+  image: String,
+  price: Number,
+  quantity: Number,
+  size: String,
 });
-export default mongoose.model('Order', orderSchema);
+
+const orderSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    items: [orderItemSchema],
+
+    address: {
+      name: String,
+      email: String,
+      phone: String,
+      address: String,
+      city: String,
+      state: String,
+      pincode: String,
+    },
+
+    paymentInfo: {
+      razorpay_order_id: String,
+      razorpay_payment_id: String,
+      status: {
+        type: String,
+        enum: ["paid", "cod", "failed"],
+        default: "paid",
+      },
+    },
+
+    totalAmount: Number,
+
+    orderStatus: {
+      type: String,
+      enum: ["Processing", "Packed", "Shipped", "Delivered", "Cancelled"],
+      default: "Processing",
+    },
+  },
+  { timestamps: true }
+);
+
+export default mongoose.model("Order", orderSchema);

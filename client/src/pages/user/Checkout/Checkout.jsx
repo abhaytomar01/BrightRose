@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Checkout = () => {
+const Checkout = async () => {
   const {
     cartItems,
     subtotal,
@@ -59,74 +59,96 @@ const Checkout = () => {
     });
 
   const handleRazorpayPayment = async () => {
-    try {
-      const loaded = await loadRazorpayScript(
-        "https://checkout.razorpay.com/v1/checkout.js"
-      );
-      if (!loaded) return toast.error("Failed to load Razorpay");
+  try {
+    // Load Razorpay script
+    const loaded = await loadRazorpayScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+    if (!loaded) {
+      toast.error("Failed to load Razorpay");
+      return;
+    }
 
-      const orderRes = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-checkout-session`,
-        { amount: grandTotal },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` } }
-      );
+    // Create Razorpay order
+    const orderRes = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+      { amount: grandTotal }
+    );
 
-      const { order } = orderRes.data;
+    const { orderId, amount, currency } = orderRes.data;
 
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: "Bright Rose",
-        description: "Order Payment",
-        order_id: order.id,
+    if (!orderId) {
+      toast.error("Unable to create payment order");
+      return;
+    }
 
-        handler: async function (response) {
-          await axios.post(
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: amount,
+      currency: currency,
+      name: "Bright Rose",
+      description: "Order Payment",
+      order_id: orderId,
+
+      handler: async function (response) {
+        try {
+          // Verify Payment API
+          const verify = await axios.post(
             `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
             {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
+
+              // send order data
               cartItems,
               address,
-            },
-            {
-              headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+              total: grandTotal,
             }
           );
 
-          toast.success("Payment Successful!");
-          clearCart();
-          navigate("/user/orders");
-        },
+          if (verify.data.success) {
+            toast.success("Payment Successful!");
+            clearCart();
+            navigate("/user/orders");
+          } else {
+            toast.error("Payment verification failed!");
+          }
+        } catch (error) {
+          console.log(error);
+          toast.error("Verification error");
+        }
+      },
 
-        prefill: {
-          name: address.name,
-          email: address.email,
-          contact: address.phone,
-        },
+      prefill: {
+        name: address.name,
+        email: address.email,
+        contact: address.phone,
+      },
 
-        theme: { color: "#AD000F" }, // Bright Rose Primary
-      };
+      theme: { color: "#AD000F" },
+    };
 
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-    } catch (error) {
-      toast.error("Payment failed.");
-      console.log(error);
-    }
-  };
+    const razorPayInstance = new window.Razorpay(options);
+    razorPayInstance.open();
 
-  const placeOrder = () => {
-    if (paymentMethod === "cod") {
-      toast.success("Order placed successfully!");
-      clearCart();
-      navigate("/user/orders");
-    } else {
-      handleRazorpayPayment();
-    }
-  };
+  } catch (error) {
+    console.log(error);
+    toast.error("Payment failed");
+  }
+};
+
+
+  if (paymentMethod === "cod") {
+  await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/order/create-cod`,
+    { cartItems, address, totalAmount: grandTotal },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  toast.success("Order placed!");
+  clearCart();
+  navigate("/user/orders");
+}
 
   return (
     <div className="min-h-screen bg-[#F8F6F3] py-12 px-4 md:px-10 font-[Manrope] mt-28 md:mt-40 flex justify-center">

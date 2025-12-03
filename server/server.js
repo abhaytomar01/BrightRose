@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 
 // Path helpers
-import path from "path";
+import path from "path";  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -65,7 +65,8 @@ app.use(morgan("dev"));
 
 // app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/uploads",express.static(path.join(__dirname, "uploads")));
-
+// serve invoices statically (ensure invoices folder exists)
+app.use("/invoices", express.static(path.join(__dirname, "invoices")));
 
 // ==============================
 // Local Imports
@@ -80,7 +81,7 @@ import paymentRoute from "./routes/paymentRoute.js";
 import wishlistRoutes from  "./routes/wishlistRoute.js"
 import addressRoutes from "./routes/addressRoute.js";
 import sitemapRoute from "./sitemap.js";
-
+import orderRoute from "./routes/orderRoute.js";
 // ==============================
 // Connect Database
 // ==============================
@@ -105,6 +106,7 @@ app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/user/addresses", addressRoutes);
+app.use("/api/v1/order", orderRoute);
 
 // FINAL CATCH — SERVE REACT
 const frontendPath = path.join(__dirname, "client/dist");
@@ -116,6 +118,9 @@ if (fs.existsSync(frontendPath)) {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+
+// webhook route that needs raw body
+app.post("/api/v1/payment/webhook", express.raw({ type: "application/json" }), paymentWebhook);
 // ==============================
 // Start Server
 // ==============================

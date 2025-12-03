@@ -21,7 +21,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/orders`,
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/my-orders`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,6 +39,13 @@ const Orders = () => {
 
     fetchOrders();
   }, [token]);
+
+  // Search filter
+  const filteredOrders = orders.filter((o) =>
+    o.items.some((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    )
+  );
 
   return (
     <>
@@ -59,14 +66,17 @@ const Orders = () => {
                   placeholder="Search your orders..."
                   className="flex-1 p-3 text-sm outline-none"
                 />
-                <button className="px-5 bg-black text-white flex items-center gap-2">
+                <button
+                  type="button"
+                  className="px-5 bg-black text-white flex items-center gap-2"
+                >
                   <Search size={18} />
                   Search
                 </button>
               </form>
 
               {/* Empty */}
-              {orders.length === 0 && (
+              {filteredOrders.length === 0 && (
                 <div className="flex flex-col items-center bg-white p-10 rounded shadow">
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/1376/1376786.png"
@@ -84,14 +94,10 @@ const Orders = () => {
               )}
 
               {/* Orders List */}
-              {orders
+              {filteredOrders
                 .map((order) =>
-                  order.products.map((item, i) => (
-                    <OrderItem
-                      key={i}
-                      order={order}
-                      item={item}
-                    />
+                  order.items.map((item, index) => (
+                    <OrderItem key={index} order={order} item={item} />
                   ))
                 )
                 .reverse()}
