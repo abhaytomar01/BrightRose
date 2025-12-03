@@ -1,4 +1,4 @@
-import Order from "../models/orderModel.js";
+import Order from "../../models/orderModel.js";
 import { generateInvoice } from "../../utils/invoiceGenerator.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 
