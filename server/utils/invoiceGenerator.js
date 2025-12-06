@@ -1,84 +1,73 @@
+// server/utils/invoiceGenerator.js
 import PDFDocument from "pdfkit";
 import fs from "fs";
 import path from "path";
 
-export const generateInvoice = async (order) => {
+export const generateInvoicePDF = async (order) => {
   return new Promise((resolve, reject) => {
     try {
-      const invoiceId = "BR-INV-" + Date.now();
-      const invoicePath = path.join("invoices", `${invoiceId}.pdf`);
+      const outDir = path.join(process.cwd(), "uploads", "invoices");
+      if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-      if (!fs.existsSync("invoices")) {
-        fs.mkdirSync("invoices");
-      }
+      const filename = `invoice_${order._id}.pdf`;
+      const filepath = path.join(outDir, filename);
 
-      const doc = new PDFDocument({ margin: 50 });
-      const stream = fs.createWriteStream(invoicePath);
+      const doc = new PDFDocument({ size: "A4", margin: 48 });
+      const stream = fs.createWriteStream(filepath);
       doc.pipe(stream);
 
-      // HEADER
-      doc
-        .fontSize(22)
-        .fillColor("#AD000F")
-        .text("BRIGHT ROSE", { align: "center" });
+      // Header
+      doc.fontSize(20).text("Bright Rose", { align: "left" });
+      doc.moveDown(0.2);
+      doc.fontSize(10).text("Artisan Made in India", { align: "left" });
+      doc.moveDown(1);
 
-      doc
-        .moveDown()
-        .fontSize(12)
-        .fillColor("#333")
-        .text(`Invoice ID: ${invoiceId}`)
-        .text(`Order ID: ${order._id}`)
-        .text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`);
-
+      // Invoice metadata
+      doc.fontSize(12).text(`Invoice: ${order._id}`);
+      doc.text(`Date: ${new Date(order.createdAt).toLocaleString()}`);
       doc.moveDown();
 
-      // CUSTOMER DETAILS
-      doc.fontSize(14).fillColor("#000").text("Billing Details:");
-      doc.fontSize(12).fillColor("#444");
-      doc.text(order.address.name)
-        .text(order.address.address)
-        .text(`${order.address.city}, ${order.address.state}`)
-        .text(`Pincode: ${order.address.pincode}`)
-        .moveDown();
-
-      // ORDER ITEMS TABLE
-      doc.moveDown().fontSize(14).fillColor("#000").text("Order Summary:");
+      // Buyer
+      doc.fontSize(11).text("Bill To:");
+      doc.fontSize(10).text(order.buyer?.name || "");
+      doc.text(order.buyer?.email || "");
       doc.moveDown();
 
-      order.items.forEach((item, i) => {
-        doc
-          .fontSize(12)
-          .fillColor("#444")
-          .text(
-            `${i + 1}. ${item.name} (Size: ${item.size})`,
-            { continued: true }
-          )
-          .text(` — ₹${item.price} x ${item.quantity}`, { align: "right" });
+      // Shipping address
+      doc.fontSize(11).text("Shipping Address:");
+      doc.fontSize(10).text(order.shippingInfo?.address || "");
+      doc.text(`${order.shippingInfo?.city || ""}, ${order.shippingInfo?.state || ""} - ${order.shippingInfo?.pincode || ""}`);
+      doc.text(order.shippingInfo?.country || "");
+      doc.moveDown();
 
-        doc.moveDown(0.3);
+      // Table header
+      doc.fontSize(11).text("Items:", { underline: true });
+      doc.moveDown(0.4);
+
+      // Table content (simple)
+      order.products.forEach((p, i) => {
+        const line = `${i + 1}. ${p.name} (${p.size || "—"}) — ${p.quantity} × ₹${p.price}`;
+        doc.fontSize(10).text(line);
       });
 
-      doc.moveDown();
-      doc.fontSize(14).fillColor("#000");
-      doc.text(`Total Amount: ₹${order.totalAmount}`, { align: "right" });
+      doc.moveDown(1);
 
-      // FOOTER
+      // Price summary
+      doc.fontSize(11).text(`Subtotal: ₹${(order.subtotal || 0).toLocaleString()}`);
+      doc.text(`Shipping: ₹${(order.shippingCharge || 0).toLocaleString()}`);
+      doc.text(`Tax (GST included): ₹${(order.tax || 0).toLocaleString()}`);
+      doc.moveDown(0.4);
+      doc.fontSize(13).text(`Total: ₹${(order.totalAmount || 0).toLocaleString()}`, { bold: true });
+
       doc.moveDown(2);
-      doc
-        .fontSize(10)
-        .fillColor("#999")
-        .text(
-          "Thank you for shopping with Bright Rose. Each piece is handcrafted with love.",
-          { align: "center" }
-        );
+      doc.fontSize(9).text("Notes: This is your commercial invoice. Please keep it for customs (for international shipments).", { align: "left" });
 
       doc.end();
 
-      stream.on("finish", () => resolve({ invoiceId, invoicePath }));
-      stream.on("error", reject);
-
-    } catch (error) {
-      reject(error);
+      stream.on("finish", () => resolve({ filepath, filename }));
+      stream.on("error", (err) => reject(err));
+    } catch (err) {
+      reject(err);
     }
   });
 };

@@ -1,57 +1,46 @@
+// server/models/orderModel.js
 import mongoose from "mongoose";
 
-const orderItemSchema = new mongoose.Schema({
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true
-  },
-  name: String,
-  image: String,
-  price: Number,
-  quantity: Number,
-  size: String,
+const OrderItemSchema = new mongoose.Schema({
+  productId: { type: String },
+  name: { type: String },
+  image: { type: String },
+  price: { type: Number },
+  quantity: { type: Number },
+  size: { type: String },
 });
 
-const orderSchema = new mongoose.Schema(
+const OrderSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    items: [orderItemSchema],
-
-    address: {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    buyer: {
       name: String,
       email: String,
       phone: String,
+    },
+    products: [OrderItemSchema],
+    shippingInfo: {
       address: String,
       city: String,
       state: String,
       pincode: String,
+      country: { type: String, default: "India" },
     },
-
+    subtotal: { type: Number, default: 0 },       // product total (GST inclusive as per your setup)
+    shippingCharge: { type: Number, default: 0 },
+    tax: { type: Number, default: 0 },             // extracted GST part if needed
+    totalAmount: { type: Number, default: 0 },     // subtotal + shipping
     paymentInfo: {
-      razorpay_order_id: String,
-      razorpay_payment_id: String,
-      status: {
-        type: String,
-        enum: ["paid", "cod", "failed"],
-        default: "paid",
-      },
+      provider: { type: String },
+      paymentId: { type: String },
+      orderId: { type: String },
+      signature: { type: String },
+      status: { type: String },
     },
-
-    totalAmount: Number,
-
-    orderStatus: {
-      type: String,
-      enum: ["Processing", "Packed", "Shipped", "Delivered", "Cancelled"],
-      default: "Processing",
-    },
+    invoicePath: { type: String },
+    orderStatus: { type: String, default: "Processing" },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Order", orderSchema);
+export default mongoose.model("Order", OrderSchema);

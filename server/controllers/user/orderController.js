@@ -1,5 +1,5 @@
 import Order from "../../models/orderModel.js";
-import { generateInvoice } from "../../utils/invoiceGenerator.js";
+import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 
 /* ======================================================
@@ -27,7 +27,7 @@ export const createCodOrder = async (req, res) => {
     });
 
     // Generate PDF Invoice
-    const { invoiceId, invoicePath } = await generateInvoice(newOrder);
+    const { invoiceId, invoicePath } = await generateInvoicePDF(newOrder);
 
     newOrder.invoiceId = invoiceId;
     newOrder.invoiceUrl = invoicePath;

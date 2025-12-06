@@ -6,8 +6,6 @@ import CartItem from "./CartItem";
 import SaveForLater from "./SaveForLater";
 import ScrollToTopOnRouteChange from "../../../utils/ScrollToTopOnRouteChange";
 import SeoData from "../../../SEO/SeoData";
-import { loadStripe } from "@stripe/stripe-js";
-import axios from "axios";
 
 const Cart = () => {
   const {
@@ -28,26 +26,34 @@ const Cart = () => {
       <ScrollToTopOnRouteChange />
       <SeoData title="Shopping Cart | Bright Rose" />
 
-      <main className="w-full bg-[#F8F6F3] min-h-screen pt-28 md:pt-40 pb-20 px-4">
+      <main className="w-full bg-[#FAF9F7] min-h-screen pt-28 md:pt-40 pb-20 px-4 font-[Manrope]">
 
-        <div className="flex flex-col sm:flex-row gap-8 w-full max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-10">
 
-          {/* LEFT: Items */}
-          <div className="flex-1 space-y-8">
+          {/* LEFT SECTION */}
+          <div className="flex-1 space-y-10">
 
-            {/* My Cart */}
-            <div className="bg-white border border-[#e8e2d9] rounded-2xl shadow-sm">
-              <div className="px-6 py-5 border-b border-[#e8e2d9] flex items-center justify-between">
-                <h2 className="text-2xl text-[#4a3b32]">My Cart</h2>
-                <span className="text-sm text-gray-500">{totalItems} items</span>
+            {/* CART BOX */}
+            <div className="
+              bg-white/90 backdrop-blur-sm border border-[#E7E2DC] 
+              rounded-3xl shadow-[0_3px_15px_rgba(0,0,0,0.06)]
+              transition hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]
+            ">
+              <div className="px-8 py-6 border-b border-[#E7E2DC] flex items-center justify-between">
+                <h2 className="text-[26px] font-light tracking-wide text-[#1A1A1A]">
+                  My Cart
+                </h2>
+                <span className="text-sm text-neutral-500 tracking-wide">
+                  {totalItems} items
+                </span>
               </div>
 
-              {cartItems?.length === 0 ? (
-                <div className="p-10 text-center text-gray-500 text-lg">
+              {cartItems.length === 0 ? (
+                <div className="p-12 text-center text-neutral-500 text-lg">
                   Your cart is empty.
                 </div>
               ) : (
-                <div className="p-4 space-y-4">
+                <div className="p-6 space-y-6">
                   {cartItems.map((item) => (
                     <CartItem key={item.key} item={item} />
                   ))}
@@ -55,29 +61,42 @@ const Cart = () => {
               )}
             </div>
 
-            {/* Saved for Later */}
-            <div className="bg-white border border-[#e8e2d9] rounded-2xl shadow-sm">
-              <div className="px-6 py-5 border-b border-[#e8e2d9]">
-                <h2 className="text-xl text-[#4a3b32]">
+            {/* SAVE FOR LATER BOX */}
+            <div className="
+              bg-white/90 backdrop-blur-sm border border-[#E7E2DC] 
+              rounded-3xl shadow-[0_3px_15px_rgba(0,0,0,0.06)]
+              transition hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]
+            ">
+              <div className="px-8 py-6 border-b border-[#E7E2DC]">
+                <h2 className="text-[20px] tracking-wide text-[#1A1A1A] font-light">
                   Saved for Later ({saveLaterItems.length})
                 </h2>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="p-8 space-y-6">
                 {saveLaterItems.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No items saved.</p>
+                  <p className="text-neutral-500 text-sm">No items saved.</p>
                 ) : (
                   saveLaterItems.map((it) => (
-                    <div key={it.key} className="flex justify-between items-center p-3 border rounded-lg bg-[#FCFAF7] border-[#e8e2d9]">
+                    <div
+                      key={it.key}
+                      className="
+                      flex justify-between items-center p-4 
+                      border border-[#E7E2DC] rounded-2xl bg-[#FBFAF9]
+                      hover:shadow-[0_3px_10px_rgba(0,0,0,0.05)] transition-all
+                    "
+                    >
                       <div className="flex items-center gap-4">
                         <img
                           src={it.image || "/placeholder.png"}
                           alt={it.name}
-                          className="w-20 h-20 rounded-xl border border-[#e6dccf] object-cover"
+                          className="w-20 h-20 rounded-xl border border-[#E6DFD4] object-cover"
                         />
                         <div>
-                          <div className="text-lg font-medium text-[#4a3b32]">{it.name}</div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-lg tracking-wide text-[#1A1A1A] font-light">
+                            {it.name}
+                          </div>
+                          <div className="text-sm text-neutral-600">
                             ₹{(it.discountPrice ?? it.price).toLocaleString()}
                           </div>
                         </div>
@@ -86,11 +105,10 @@ const Cart = () => {
                       <button
                         onClick={() => moveToCartFromSaveLater(it.key)}
                         className="
-                          px-4 py-2 rounded-lg 
-                          text-white bg-neutralDark/80 
-                          hover:bg-neutralDark/90
-                          text-sm transition
-                        "
+                        px-5 py-2 rounded-lg text-white
+                        bg-black/90 hover:bg-black 
+                        text-sm tracking-wide transition
+                      "
                       >
                         Move to Cart
                       </button>
@@ -101,24 +119,30 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* RIGHT: Price Details */}
+          {/* RIGHT PRICE DETAILS */}
           <div className="w-full sm:w-1/3">
-            <div className="bg-white border border-[#e8e2d9] p-8 rounded-2xl shadow-sm sticky top-32">
+            <div className="
+              sticky top-36 bg-white/90 backdrop-blur-sm p-10 
+              border border-[#E7E2DC] rounded-3xl
+              shadow-[0_3px_15px_rgba(0,0,0,0.06)]
+              hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition
+            ">
+              <h3 className="text-[24px] font-light text-[#1A1A1A] tracking-wide mb-8">
+                Price Details
+              </h3>
 
-              <h3 className="text-2xl text-[#4a3b32] mb-6">Price Details</h3>
-
-              <div className="space-y-4 text-gray-700">
+              <div className="space-y-4 text-neutral-700">
 
                 <div className="flex justify-between text-sm">
-                  <span>Price ({totalItems} items)</span>
+                  <span className="tracking-wide">Price ({totalItems} items)</span>
                   <span className="font-medium">₹{subtotal.toLocaleString()}</span>
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span>Delivery Charges</span>
+                  <span className="tracking-wide">Delivery Charges</span>
                   <span className="font-medium">
                     {shipping === 0 ? (
-                      <span className="text-green-600">Free</span>
+                      <span className="text-green-600">FREE</span>
                     ) : (
                       `₹${shipping}`
                     )}
@@ -126,26 +150,27 @@ const Cart = () => {
                 </div>
 
                 <div className="flex justify-between text-sm">
-                  <span>Tax</span>
+                  <span className="tracking-wide">Tax</span>
                   <span className="font-medium">₹{tax.toLocaleString()}</span>
                 </div>
 
-                <hr className="my-3 border-[#e8e2d9]" />
+                <div className="my-4 border-t border-[#E7E2DC]"></div>
 
-                <div className="flex justify-between text-lg font-semibold text-[#4a3b32]">
+                <div className="flex justify-between text-lg font-semibold text-[#1A1A1A] tracking-wide">
                   <span>Total Amount</span>
                   <span>₹{grandTotal.toLocaleString()}</span>
                 </div>
               </div>
 
+              {/* PLACE ORDER */}
               {cartItems.length > 0 && (
                 <button
                   onClick={() => navigate("/checkout")}
                   className="
-                    mt-6 w-full py-3 rounded-lg 
-                    text-white font-medium text-lg
-                    bg-neutralDark/80 hover:bg-neutralDark/90
-                    transition-all shadow-sm
+                    mt-8 w-full py-4 rounded-xl 
+                    text-white text-lg font-medium tracking-wide
+                    bg-black/90 hover:bg-black 
+                    shadow-sm transition-all
                   "
                 >
                   PLACE ORDER
@@ -153,6 +178,7 @@ const Cart = () => {
               )}
             </div>
           </div>
+
         </div>
       </main>
     </>

@@ -10,11 +10,12 @@ const makeKey = (productId, size = "", color = "") =>
   `${productId || ""}::${size || ""}::${color || ""}`;
 
 export const CartProvider = ({ children }) => {
-  // --- Load from localStorage safely
+  // -----------------------------
+  // Load Cart & Save-Later Items
+  // -----------------------------
   const [cartItems, setCartItems] = useState(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_KEY);
-      return saved ? JSON.parse(saved) : [];
+      return JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
     } catch {
       return [];
     }
@@ -22,16 +23,19 @@ export const CartProvider = ({ children }) => {
 
   const [saveLaterItems, setSaveLaterItems] = useState(() => {
     try {
-      const saved = localStorage.getItem(LOCAL_SAVE_LATER);
-      return saved ? JSON.parse(saved) : [];
+      return JSON.parse(localStorage.getItem(LOCAL_SAVE_LATER)) || [];
     } catch {
       return [];
     }
   });
 
+  // Coupon storage
   const [coupon, setCoupon] = useState(null);
 
-  // --- Persist with debounced effect to avoid over-writes
+  // USER COUNTRY (needed for shipping)
+  const [country, setCountry] = useState("India");
+
+  // Save into localStorage
   useEffect(() => {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(cartItems));
   }, [cartItems]);
@@ -40,31 +44,34 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem(LOCAL_SAVE_LATER, JSON.stringify(saveLaterItems));
   }, [saveLaterItems]);
 
-  // --- Normalize item
+  // -----------------------------
+  // Normalize product structure
+  // -----------------------------
   const normalize = (product, qty = 1, opts = {}) => {
     const { size = "", color = "" } = opts;
+
     const id = product._id || product.productId || product.id;
     const key = makeKey(id, size, color);
 
     return {
       key,
       _id: id,
-      name: product.name || product.title || "Unnamed Product",
+      name: product.name || product.title || "",
       price: Number(product.price) || 0,
       discountPrice: Number(product.discountPrice ?? product.price) || 0,
       quantity: Math.max(1, qty),
       selectedSize: size,
       selectedColor: color,
-      stock: Number(product.stock ?? product.available ?? 9999),
-      image: product.images?.[0]?.url || product.image || product.img || "",
+      stock: Number(product.stock ?? 9999),
+      image: product.images?.[0]?.url || product.image || "",
       rawProduct: product,
     };
   };
 
-  // --- Add to cart (handles merging and stock limits)
+  // ADD TO CART
   const addToCart = (product, qty = 1, opts = {}) => {
-    if (!product || !(product._id || product.productId || product.id)) {
-      toast.error("Invalid product data");
+    if (!product || !(product._id || product.productId)) {
+      toast.error("Invalid product");
       return;
     }
 
@@ -74,118 +81,103 @@ export const CartProvider = ({ children }) => {
       const idx = prev.findIndex((p) => p.key === item.key);
       const updated = [...prev];
 
-      if (idx !== -1) { 
+      if (idx !== -1) {
         const existing = updated[idx];
         const newQty = Math.min(existing.quantity + qty, existing.stock);
-        if (newQty === existing.quantity) {
-          toast.info("Max stock reached");
-          return updated;
-        }
         updated[idx] = { ...existing, quantity: newQty };
-        toast.success("Cart updated");
       } else {
-        const toAdd = { ...item, quantity: Math.min(qty, item.stock) };
-        updated.unshift(toAdd);
-        toast.success("Product added to cart");
+        updated.unshift({ ...item, quantity: Math.min(qty, item.stock) });
       }
+
+      toast.success("Cart updated");
       return updated;
     });
   };
 
-  // --- Update quantity directly (safe boundaries)
+  // UPDATE ITEM QTY
   const updateQuantity = (key, qty) => {
-    setCartItems((prev) => {
-      const updated = prev.map((it) => {
-        if (it.key !== key) return it;
-        const bounded = Math.max(1, Math.min(qty, it.stock));
-        return { ...it, quantity: bounded };
-      });
-      return updated;
-    });
+    setCartItems((prev) =>
+      prev.map((it) =>
+        it.key === key
+          ? { ...it, quantity: Math.max(1, Math.min(qty, it.stock)) }
+          : it
+      )
+    );
   };
 
-  // --- Remove from cart
+  // REMOVE FROM CART
   const removeFromCart = (key) => {
-    setCartItems((prev) => {
-      const updated = prev.filter((it) => it.key !== key);
-      if (updated.length !== prev.length) toast.info("Removed from cart");
-      return updated;
-    });
+    setCartItems((prev) => prev.filter((it) => it.key !== key));
   };
 
-  // --- Move to save later
+  // SAVE FOR LATER
   const moveToSaveLater = (key) => {
     setCartItems((prevCart) => {
       const idx = prevCart.findIndex((it) => it.key === key);
       if (idx === -1) return prevCart;
 
       const [item] = prevCart.splice(idx, 1);
-      setSaveLaterItems((prev) => {
-        const exists = prev.some((p) => p.key === item.key);
-        if (!exists) return [item, ...prev];
-        return prev;
-      });
-      toast.success("Moved to Save for Later");
+      setSaveLaterItems((prev) => [item, ...prev]);
+
       return [...prevCart];
     });
   };
 
-  // --- Move from save later to cart
+  // MOVE BACK TO CART
   const moveToCartFromSaveLater = (key, qty = 1) => {
     setSaveLaterItems((prev) => {
       const idx = prev.findIndex((it) => it.key === key);
       if (idx === -1) return prev;
-      const [item] = prev.splice(idx, 1);
 
+      const [item] = prev.splice(idx, 1);
       addToCart(item.rawProduct || item, qty, {
         size: item.selectedSize,
         color: item.selectedColor,
       });
-      toast.success("Moved to Cart");
+
       return [...prev];
     });
   };
 
-  // --- Remove from save later
   const removeFromSaveLater = (key) => {
-    setSaveLaterItems((prev) => {
-      const updated = prev.filter((it) => it.key !== key);
-      if (updated.length !== prev.length) toast.info("Removed from Save for Later");
-      return updated;
-    });
+    setSaveLaterItems((prev) => prev.filter((it) => it.key !== key));
   };
 
-  // --- Clear cart safely
-  const clearCart = () => {
-    if (cartItems.length === 0) {
-      toast.info("Cart is already empty");
-      return;
-    }
-    setCartItems([]);
-    toast.info("Cart cleared");
-  };
+  const clearCart = () => setCartItems([]);
 
-  // --- Computed totals
+  // -----------------------------
+  // TOTAL CALCULATIONS
+  // -----------------------------
   const { subtotal, totalItems } = useMemo(() => {
     return cartItems.reduce(
       (acc, it) => {
-        const price = Number(it.discountPrice ?? it.price ?? 0);
-        const qty = Number(it.quantity || 0);
-        acc.subtotal += price * qty;
-        acc.totalItems += qty;
+        const price = Number(it.discountPrice ?? it.price);
+        acc.subtotal += price * it.quantity;
+        acc.totalItems += it.quantity;
         return acc;
       },
       { subtotal: 0, totalItems: 0 }
     );
   }, [cartItems]);
 
-  const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 49;
-  const taxRate = 0.12;
-  const tax = +(subtotal * taxRate).toFixed(2);
-  const discount = Number(coupon?.amount || 0);
-  const grandTotal = +(subtotal + shipping + tax - discount).toFixed(2);
+  // -----------------------------------
+  // SHIPPING WILL BE CALCULATED IN CHECKOUT (Delhivery API)
+  // So remove shipping from here!
+  // -----------------------------------
+  const shipping = 0; // Always 0 (Now handled by checkout)
 
-  // --- Final context value
+  // GST Included — Extract effective GST (12%)
+  const gstRate = 12;
+  const tax = Number(((subtotal * gstRate) / (100 + gstRate)).toFixed(2));
+
+  const discount = Number(coupon?.amount || 0);
+
+  // GrandTotal WITHOUT SHIPPING (Checkout will add)
+  const grandTotal = Number((subtotal - discount).toFixed(2));
+
+  // -----------------------------
+  // CONTEXT VALUE
+  // -----------------------------
   const value = {
     cartItems,
     saveLaterItems,
@@ -196,14 +188,19 @@ export const CartProvider = ({ children }) => {
     moveToCartFromSaveLater,
     removeFromSaveLater,
     clearCart,
-    setCoupon,
-    coupon,
+
     subtotal,
-    shipping,
+    shipping, // ALWAYS 0 here
     tax,
     discount,
     grandTotal,
     totalItems,
+
+    coupon,
+    setCoupon,
+
+    country,
+    setCountry,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

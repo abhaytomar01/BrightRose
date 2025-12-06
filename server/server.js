@@ -1,75 +1,108 @@
+// server.js
 // ==============================
 // Load Environment Variables FIRST
 // ==============================
 import dotenv from "dotenv";
-
 import { fileURLToPath } from "url";
-
-// Path helpers
-import path from "path";  
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load .env manually (same folder as server.js)
-dotenv.config({ path: path.join(__dirname, ".env") });
-
-console.log("ENV Loaded:", {
-  PORT: process.env.PORT,
-  MODE: process.env.NODE_ENV,
-});
-
-// ==============================
-// Packages
-// ==============================
+import path from "path";
+import fs from "fs";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-// Serve static files
-import fs from "fs";
-const app = express();
+// Path helpers (ESM)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env (explicit path)
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+console.log("ENV Loaded:", {
+  PORT: process.env.PORT,
+  MODE: process.env.NODE_ENV,
+  VITE_SERVER_URL: process.env.VITE_SERVER_URL ? "[present]" : "[missing]"
+});
 
 // ==============================
-// CORS FIX
+// App & Basic Middleware
 // ==============================
+const app = express();
+
+// If behind a proxy/load balancer (Heroku, Nginx...), enable trust proxy
+app.set("trust proxy", 1);
+
+// ------------------------------
+// CORS — limit to known origins
+// ------------------------------
+const allowedOrigins = [
+  "https://www.thebrightrose.com",
+  "https://thebrightrose.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://www.thebrightrose.com",
-      "https://thebrightrose.com",
-      "http://localhost:5173",
-    ],
+    origin: (origin, cb) => {
+      // allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
+      return cb(new Error("CORS policy: Origin not allowed"), false);
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   })
 );
 
-// ==============================
-// Body Parser
-// ==============================
+// ------------------------------
+// Request logging
+// ------------------------------
+app.use(morgan("dev"));
+
+// ------------------------------
+// Body parsers
+// Keep JSON limits high for image base64 uploads if necessary
+// ------------------------------
 app.use(express.json({ limit: "300mb" }));
 app.use(bodyParser.json({ limit: "300mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "300mb" }));
 
 // ==============================
-// Logger
+// Ensure upload directories exist
 // ==============================
-app.use(morgan("dev"));
+const ensureDir = (dirPath) => {
+  try {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      console.log("Created directory:", dirPath);
+    }
+  } catch (err) {
+    console.error("Failed to create directory", dirPath, err);
+  }
+};
+
+const uploadsRoot = path.join(__dirname, "uploads");
+const productsUploadDir = path.join(uploadsRoot, "products");
+const invoicesUploadDir = path.join(uploadsRoot, "invoices");
+
+// create if missing
+ensureDir(productsUploadDir);
+ensureDir(invoicesUploadDir);
+
+// ------------------------------
+// Make uploads publicly available
+// ------------------------------
+// Serve individual subpaths to avoid exposing whole server filesystem.
+app.use("/uploads/products", express.static(productsUploadDir));
+app.use("/uploads/invoices", express.static(invoicesUploadDir));
+
+// Optionally expose all uploads (if you want other subfolders accessible):
+// app.use("/uploads", express.static(uploadsRoot));
 
 // ==============================
-// Make /uploads folder public
-// (IMPORTANT FOR LOCAL IMAGE STORAGE)
-// ==============================
-
-// app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-app.use("/uploads",express.static(path.join(__dirname, "uploads")));
-// serve invoices statically (ensure invoices folder exists)
-app.use("/invoices", express.static(path.join(__dirname, "invoices")));
-
-// ==============================
-// Local Imports
+// Local Imports (routes / controllers / db)
 // ==============================
 import connectDB from "./config/database.js";
 import authRoute from "./routes/authRoute.js";
@@ -78,18 +111,22 @@ import userRoute from "./routes/userRoute.js";
 import cartRoute from "./routes/cartRoute.js";
 import contactRoute from "./routes/contactRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
-import wishlistRoutes from  "./routes/wishlistRoute.js"
+import wishlistRoutes from "./routes/wishlistRoute.js";
 import addressRoutes from "./routes/addressRoute.js";
 import sitemapRoute from "./sitemap.js";
 import orderRoute from "./routes/orderRoute.js";
-import { paymentWebhook } from "./controllers/payment/paymentController.js";
+import { paymentWebhook } from "./controllers/payment/paymentWebhook.js";
+import shippingRoute from "./routes/shippingRoute.js";
+import geoipRoute from "./routes/geoipRoute.js";
+import shippingRateRoute from "./routes/shippingRateRoute.js";
+
 // ==============================
 // Connect Database
 // ==============================
 connectDB();
 
 // ==============================
-// Base Route
+// Base route & health
 // ==============================
 app.get("/", (req, res) => {
   res.send("✅ Server running successfully!");
@@ -97,6 +134,7 @@ app.get("/", (req, res) => {
 
 // ==============================
 // API Routes
+// Keep route mounting consistent with your frontend expectations
 // ==============================
 app.use("/", sitemapRoute);
 app.use("/api/v1/auth", authRoute);
@@ -108,10 +146,25 @@ app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/user/addresses", addressRoutes);
 app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/shipping", shippingRoute);
+app.use("/api/v1/geoip", geoipRoute);
+app.use("/api/v1/admin/shipping-rates", shippingRateRoute);
 
-// FINAL CATCH — SERVE REACT
-const frontendPath = path.join(__dirname, "client/dist");
+// ------------------------------
+// Webhook route that needs raw body
+// Important: express.raw used specifically for this route
+// ------------------------------
+app.post(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }),
+  paymentWebhook
+);
 
+
+// ==============================
+// Serve frontend (if built) — final catch-all
+// ==============================
+const frontendPath = path.join(__dirname, "client", "dist");
 if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
 
@@ -120,14 +173,22 @@ if (fs.existsSync(frontendPath)) {
   });
 }
 
-// webhook route that needs raw body
-app.post("/api/v1/payment/webhook", express.raw({ type: "application/json" }), paymentWebhook);
+// ==============================
+// Generic error handler (simple)
+// ==============================
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  if (res.headersSent) return next(err);
+  res.status(err.status || 500).send({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
+
 // ==============================
 // Start Server
 // ==============================
 const PORT = process.env.PORT || 8080;
-
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT} (mode: ${process.env.NODE_ENV || "dev"})`);
 });
-

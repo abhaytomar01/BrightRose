@@ -264,7 +264,7 @@ const fetchWishlistFromServer = async () => {
     }
 
     addToCart({ ...product, selectedSize, productId: product._id }, quantity);
-    toast.success("Added to cart");
+    // toast.success("Added to cart");
   };
 
   const openLightbox = (i) => {
