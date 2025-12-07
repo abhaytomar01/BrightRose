@@ -1,19 +1,17 @@
+// server/config/razorpay.js
 import Razorpay from "razorpay";
 
-const key_id = process.env.RAZORPAY_KEY_ID;
-const key_secret = process.env.RAZORPAY_KEY_SECRET;
+const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
 
-console.log("RAZORPAY KEYS:", key_id ? "OK" : "MISSING");
-
-let razorpay = null;
-
-if (!key_id || !key_secret) {
-  console.warn("⚠️ Razorpay not configured. Payment disabled.");
-} else {
-  razorpay = new Razorpay({
-    key_id,
-    key_secret,
-  });
+// No keys? Disable Razorpay safely
+if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+  console.log("⚠️ Razorpay NOT configured (missing keys). Payments disabled.");
+  export default null;
 }
+
+const razorpay = new Razorpay({
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET,
+});
 
 export default razorpay;

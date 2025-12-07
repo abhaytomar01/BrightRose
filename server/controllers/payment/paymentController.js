@@ -1,6 +1,6 @@
 // server/controllers/payment/paymentController.js
 import crypto from "crypto";
-import razorpay from "../../config/razorpay.js";
+import razorpay from "../../config/razorpay.js";   // <-- correct import
 import Order from "../../models/orderModel.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
