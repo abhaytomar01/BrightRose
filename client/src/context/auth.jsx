@@ -1,5 +1,6 @@
 // src/context/auth.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { getWishlistAPI } from "../api/wishlist";
 
 const AuthContext = createContext();
@@ -10,19 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // -----------------------------------------------------
-  // WISHLIST → ALWAYS PRODUCT IDs ONLY
+  // WISHLIST
   // -----------------------------------------------------
   const [wishlist, setWishlist] = useState(
     JSON.parse(localStorage.getItem("wishlist_ids") || "[]")
   );
 
-  // Sync wishlist to LocalStorage
   useEffect(() => {
     localStorage.setItem("wishlist_ids", JSON.stringify(wishlist));
   }, [wishlist]);
 
   // -----------------------------------------------------
-  // Restore auth data on first page load
+  // Restore user & admin from localStorage
   // -----------------------------------------------------
   useEffect(() => {
     try {
@@ -39,10 +39,26 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // -----------------------------------------------------
-  // Fetch wishlist AFTER user logs in (only once)
+  // Auto-attach Authorization token to axios
   // -----------------------------------------------------
   useEffect(() => {
-    if (!authUser?.token) return; // No login = no fetch
+    let token = null;
+
+    if (authAdmin?.token) token = authAdmin.token;
+    else if (authUser?.token) token = authUser.token;
+
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [authAdmin, authUser]);
+
+  // -----------------------------------------------------
+  // Load wishlist only when user logs in
+  // -----------------------------------------------------
+  useEffect(() => {
+    if (!authUser?.token) return;
 
     const loadWishlist = async () => {
       try {
@@ -54,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     loadWishlist();
-  }, [authUser?.token]); // only refetch when token actually changes
+  }, [authUser?.token]);
 
   // -----------------------------------------------------
   // LOGIN USER
@@ -63,7 +79,9 @@ export const AuthProvider = ({ children }) => {
     setAuthUser(data);
     localStorage.setItem("auth_user", JSON.stringify(data));
 
-    // Fetch wishlist after login
+    // instantly apply axios header
+    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
     if (data?.token) {
       try {
         const res = await getWishlistAPI(data.token);
@@ -80,6 +98,9 @@ export const AuthProvider = ({ children }) => {
   const loginAdmin = (data) => {
     setAuthAdmin(data);
     localStorage.setItem("auth_admin", JSON.stringify(data));
+
+    // instantly apply axios header
+    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
   };
 
   // -----------------------------------------------------
@@ -88,7 +109,7 @@ export const AuthProvider = ({ children }) => {
   const logoutUser = () => {
     localStorage.removeItem("auth_user");
     setAuthUser({ user: null, token: "" });
-    setWishlist([]); // reset wishlist cleanly
+    setWishlist([]);
   };
 
   // -----------------------------------------------------
@@ -99,9 +120,6 @@ export const AuthProvider = ({ children }) => {
     setAuthAdmin({ user: null, token: "" });
   };
 
-  // -----------------------------------------------------
-  // PROVIDER
-  // -----------------------------------------------------
   return (
     <AuthContext.Provider
       value={{
@@ -113,7 +131,7 @@ export const AuthProvider = ({ children }) => {
         logoutAdmin,
         loading,
         wishlist,
-        setWishlist, // important for product details page toggle
+        setWishlist,
       }}
     >
       {children}
