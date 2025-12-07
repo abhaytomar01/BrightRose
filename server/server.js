@@ -16,7 +16,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load .env (explicit path)
-dotenv.config();   // <-- Loads .env from same folder as server.js
+
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+console.log("Loaded JWT Secret:", process.env.JWT_SECRET);
 
 console.log("ENV Loaded:", {
   PORT: process.env.PORT,
