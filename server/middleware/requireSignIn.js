@@ -9,7 +9,7 @@ import UserModel from "../models/userModel.js";
 export const requireSignIn = asyncHandler(async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-console.log("SERVER JWT SECRET:", process.env.JWT_SECRET);
+    console.log("SERVER JWT SECRET:", process.env.JWT_SECRET);
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Authorization token missing" });
@@ -18,6 +18,7 @@ console.log("SERVER JWT SECRET:", process.env.JWT_SECRET);
     const token = authHeader.split(" ")[1];
     let decoded;
     try {
+      console.log("🔥 Received Token:", token);
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
       return res.status(401).json({ message: "Invalid or expired token" });
