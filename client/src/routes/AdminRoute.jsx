@@ -10,47 +10,46 @@ const AdminRoute = () => {
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
-    // ⭐ 1 — LocalStorage restore must complete first
+    // 1️⃣ While loading auth from localStorage → DO NOTHING
     if (loading) return;
 
-    // ⭐ 2 — If context does NOT have token, try restoring it
+    // 2️⃣ Try restoring from localStorage if context empty
     if (!authAdmin?.token) {
       const stored = localStorage.getItem("auth_admin");
       if (stored) {
-        loginAdmin(JSON.parse(stored));  // restore to context
-        return; // wait for next state update
+        loginAdmin(JSON.parse(stored)); // restore into context
+        return; // ⛔ WAIT FOR NEXT RENDER BEFORE CHECKING
       }
 
-      // no token anywhere → not logged in
+      // no admin token anywhere
       setVerified(true);
       setOk(false);
       return;
     }
 
-    // ⭐ 3 — If token exists, verify with backend only ONCE
-    verifyToken();
-  }, [loading, authAdmin?.token]);
+    // 3️⃣ Token exists → now verify with backend
+    verifyAdmin();
+  }, [authAdmin?.token, loading]);
 
-  const verifyToken = async () => {
+  const verifyAdmin = async () => {
     try {
       const res = await api.get("/api/v1/auth/admin-auth");
       setOk(res.data?.ok === true);
-    } catch (err) {
+    } catch {
       setOk(false);
     } finally {
       setVerified(true);
     }
   };
 
-  // ⏳ Still loading auth data? show spinner
+  // ⏳ STILL restoring? show spinner
   if (!verified) return <Spinner />;
 
-  // ❌ Not admin → redirect
+  // ❌ Failed authentication
   if (!ok) return <Navigate to="/admin/login" replace />;
 
-  // ✅ Allow admin
+  // ✅ Admin allowed
   return <Outlet />;
 };
 
 export default AdminRoute;
-        
