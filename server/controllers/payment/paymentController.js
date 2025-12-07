@@ -1,15 +1,23 @@
 // server/controllers/payment/paymentController.js
 import crypto from "crypto";
-import { razorpay } from "../../config/razorpay.js";
+import razorpay from "../../config/razorpay.js";
 import Order from "../../models/orderModel.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
 
-// ===============================
+// ==============================================================
 // 1) CREATE Razorpay ORDER
-// ===============================
+// ==============================================================
 export const createOrder = async (req, res) => {
   try {
+    // ❗ If Razorpay is not configured (no keys)
+    if (!razorpay) {
+      return res.status(503).json({
+        success: false,
+        message: "Razorpay not configured",
+      });
+    }
+
     const { amount } = req.body;
 
     if (!amount || Number(amount) <= 0) {
@@ -32,16 +40,26 @@ export const createOrder = async (req, res) => {
     });
   } catch (err) {
     console.error("❌ createOrder error:", err);
-    return res.status(500).json({ success: false, message: "Failed to create order" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create order",
+    });
   }
 };
 
-
-// ===============================
+// ==============================================================
 // 2) VERIFY PAYMENT & CREATE ORDER
-// ===============================
+// ==============================================================
 export const verifyPayment = async (req, res) => {
   try {
+    // ❗ If Razorpay is not configured
+    if (!razorpay) {
+      return res.status(503).json({
+        success: false,
+        message: "Razorpay not configured",
+      });
+    }
+
     const {
       razorpay_order_id,
       razorpay_payment_id,
@@ -53,24 +71,31 @@ export const verifyPayment = async (req, res) => {
     } = req.body;
 
     if (!razorpay_signature || !razorpay_order_id || !razorpay_payment_id) {
-      return res.status(400).json({ success: false, message: "Missing payment fields" });
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment fields",
+      });
     }
 
     // -----------------------------
-    // Verify signature
+    // VERIFY PAYMENT SIGNATURE
     // -----------------------------
     const body = razorpay_order_id + "|" + razorpay_payment_id;
+
     const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || "")
       .update(body)
       .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid signature" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid signature",
+      });
     }
 
     // -----------------------------
-    // PREVENT DUPLICATE ORDERS
+    // PREVENT DUPLICATE PAYMENTS
     // -----------------------------
     const duplicate = await Order.findOne({
       "paymentInfo.paymentId": razorpay_payment_id,
@@ -85,7 +110,7 @@ export const verifyPayment = async (req, res) => {
     }
 
     // -----------------------------
-    // USER / BUYER
+    // USER INFO
     // -----------------------------
     const userId = req.user?._id || null;
 
@@ -96,7 +121,7 @@ export const verifyPayment = async (req, res) => {
     };
 
     // -----------------------------
-    // PRODUCT DETAILS
+    // PRODUCT LIST
     // -----------------------------
     const products = cartItems.map((it) => ({
       productId: it._id || it.productId,
@@ -111,7 +136,7 @@ export const verifyPayment = async (req, res) => {
     const totalAmount = Number(total || subtotal + Number(shippingCharge));
 
     // -----------------------------
-    // CREATE ORDER
+    // CREATE ORDER DOCUMENT
     // -----------------------------
     const orderDoc = await Order.create({
       user: userId,
@@ -150,7 +175,7 @@ export const verifyPayment = async (req, res) => {
     }
 
     // -----------------------------
-    // SEND MAIL
+    // SEND EMAIL
     // -----------------------------
     try {
       if (buyer.email) {
@@ -176,6 +201,9 @@ export const verifyPayment = async (req, res) => {
     });
   } catch (err) {
     console.error("❌ verifyPayment error:", err);
-    return res.status(500).json({ success: false, message: "Payment verification failed" });
+    return res.status(500).json({
+      success: false,
+      message: "Payment verification failed",
+    });
   }
 };
