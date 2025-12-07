@@ -3,11 +3,13 @@ import Razorpay from "razorpay";
 
 const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
 
-// No keys? Disable Razorpay safely
+// If keys missing → disable payments
 if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
-  console.log("⚠️ Razorpay NOT configured (missing keys). Payments disabled.");
+  console.log("⚠️ Razorpay NOT configured — payments disabled.");
   export default null;
 }
+
+console.log("RAZORPAY KEYS: OK");
 
 const razorpay = new Razorpay({
   key_id: RAZORPAY_KEY_ID,
