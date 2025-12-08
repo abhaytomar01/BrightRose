@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
-  role: { type: String, enum: ['user','admin'], default: 'user' },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   isBlocked: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   phone: String,
@@ -19,16 +20,20 @@ const userSchema = new mongoose.Schema({
       state: String,
       pincode: String,
       default: { type: Boolean, default: false },
-    }
+    },
   ],
 
-  // ⭐ Added Wishlist
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Product"
-    }
+      ref: "Product",
+    },
   ],
 });
 
-export default mongoose.model('User', userSchema);
+// ⭐ Add password comparison method
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.passwordHash);
+};
+
+export default mongoose.model("User", userSchema);
