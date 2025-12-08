@@ -1,6 +1,3 @@
-import User from "../../models/userModel.js";
-import jwt from "jsonwebtoken";
-
 export const adminLoginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -11,7 +8,7 @@ export const adminLoginController = async (req, res) => {
       return res.status(400).json({ success: false, message: "User not found" });
     }
 
-    // ❗ Only allow admin
+    // Only admin allowed
     if (user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -19,19 +16,20 @@ export const adminLoginController = async (req, res) => {
       });
     }
 
+    // IMPORTANT: password field name
     const isMatch = await user.comparePassword(password);
+
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Invalid password" });
     }
 
-    // Create token
     const token = jwt.sign(
       { _id: user._id },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    res.json({
+    return res.json({
       success: true,
       message: "Admin login successful",
       token,
@@ -39,6 +37,7 @@ export const adminLoginController = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({ success: false, message: "Login failed" });
+    console.error("ADMIN LOGIN ERROR:", err);   // ⬅ ADDED
+    return res.status(500).json({ success: false, message: "Login failed" });
   }
 };
