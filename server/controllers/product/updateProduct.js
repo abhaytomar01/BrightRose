@@ -8,79 +8,128 @@ const updateProduct = async (req, res) => {
     const product = await productModel.findById(id);
 
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
-    // PARSE images info
-    const oldImages = JSON.parse(req.body.oldImages || "[]");
+    // =========================================
+    // 1️⃣ PARSE OLD IMAGES (from frontend)
+    // =========================================
+    let oldImages = [];
+    try {
+      oldImages = JSON.parse(req.body.oldImages || "[]").map((img) => ({
+        filename: img.filename,
+        url: img.url.startsWith("/")
+          ? img.url
+          : `/uploads/products/${img.filename}`, // FIXED always correct
+      }));
+    } catch (err) {
+      console.log("❗ Failed parsing oldImages. Using empty array.");
+      oldImages = [];
+    }
+
+    // =========================================
+    // 2️⃣ REMOVE DELETED IMAGES
+    // =========================================
     const removed = JSON.parse(req.body.removedImages || "[]");
 
-    // REMOVE old deleted images from server
     removed.forEach((filename) => {
-      const filePath = path.join(process.cwd(), "server", "uploads", "products", filename);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      const filePath = path.join(
+        process.cwd(),
+        "server",
+        "uploads",
+        "products",
+        filename
+      );
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     });
 
-    // ADD new uploaded images
+    // =========================================
+    // 3️⃣ NEW UPLOADED IMAGES
+    // =========================================
     const newUploads =
       req.files?.map((file) => ({
-        url: `/uploads/products/${file.filename}`,
         filename: file.filename,
+        url: `/uploads/products/${file.filename}`, // ⭐ ALWAYS CORRECT FORMAT
       })) || [];
 
-    // SET new images array
+    // =========================================
+    // 4️⃣ FINAL IMAGES ARRAY
+    // =========================================
     product.images = [...oldImages, ...newUploads];
 
-    // PARSE sizes
+    // =========================================
+    // 5️⃣ PARSE ARRAYS (sizes, tags)
+    // =========================================
     try {
-      product.sizes = req.body.sizes ? JSON.parse(req.body.sizes) : product.sizes;
+      if (req.body.sizes) {
+        product.sizes = JSON.parse(req.body.sizes);
+      }
     } catch (err) {
-      console.log("Sizes parse failed — keeping old sizes");
+      console.log("❗ Sizes parse failed — keeping old.");
     }
 
-    // PARSE tags
     try {
-      product.tags = req.body.tags ? JSON.parse(req.body.tags) : product.tags;
+      if (req.body.tags) {
+        product.tags = JSON.parse(req.body.tags);
+      }
     } catch (err) {
-      console.log("Tags parse failed — keeping old tags");
+      console.log("❗ Tags parse failed — keeping old.");
     }
 
-    // PARSE maxQuantity
+    // =========================================
+    // 6️⃣ maxQuantity
+    // =========================================
     if (req.body.maxQuantity) {
       product.maxQuantity = Number(req.body.maxQuantity);
     }
 
-    // UPDATE all other simple fields
-    // Assign only fields that are NOT arrays or special fields
-const allowedFields = [
-  "name",
-  "fabric",
-  "color",
-  "weavingArt",
-  "uniqueness",
-  "sizeInfo",
-  "description",
-  "specification",
-  "care",
-  "sku",
-  "price",
-  "stock",
-  "brand"
-];
+    // =========================================
+    // 7️⃣ Update simple fields
+    // =========================================
+    const allowedFields = [
+      "name",
+      "fabric",
+      "color",
+      "weavingArt",
+      "uniqueness",
+      "sizeInfo",
+      "description",
+      "specification",
+      "care",
+      "sku",
+      "price",
+      "stock",
+      "brand",
+    ];
 
-allowedFields.forEach((field) => {
-  if (req.body[field] !== undefined) {
-    product[field] = req.body[field];
-  }
-});
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        product[field] = req.body[field];
+      }
+    });
 
-
+    // =========================================
+    // 8️⃣ SAVE PRODUCT
+    // =========================================
     const updated = await product.save();
 
-    res.json({ success: true, product: updated });
+    return res.json({
+      success: true,
+      message: "Product updated successfully",
+      product: updated,
+    });
   } catch (err) {
     console.error("UPDATE PRODUCT ERROR:", err);
-    res.status(500).json({ success: false, message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
