@@ -7,6 +7,7 @@ import { forgotPasswordController } from "../controllers/auth/forgotPassword.js"
 import { updateDetailsController } from "../controllers/auth/updateDetails.js";
 import { deactivateController } from "../controllers/auth/deactivateAccount.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
+import { adminLoginController } from "../controllers/auth/adminLoginController.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.post("/register", registerController);
 router.post("/login", loginController);
 
 // ADMIN LOGIN (NEW)
-router.post("/admin-login", loginController);
+router.post("/admin-login", adminLoginController);
 
 // USER EXIST
 router.post("/user-exist", userCheckController);

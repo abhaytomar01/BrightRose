@@ -7,9 +7,9 @@ let razorpay = null;
 // If keys missing → disable payments safely
 if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
   console.log("⚠️ Razorpay NOT configured — payments disabled.");
-} else {
+} else {  
   console.log("RAZORPAY KEYS: OK");
-
+  
   razorpay = new Razorpay({
     key_id: RAZORPAY_KEY_ID,
     key_secret: RAZORPAY_KEY_SECRET,
