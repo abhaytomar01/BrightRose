@@ -9,7 +9,7 @@ import FeaturedCollections from "../../components/FeatureCollection";
 import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
-import brightrosehome from "../../assets/Kanchipuram/brightrosehome.jpg";
+import brightrosehome from "../../assets/Kanchipuram/Brightrosehome.jpg";
 const Home = () => {
     return (
         <>
