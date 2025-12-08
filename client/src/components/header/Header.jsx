@@ -33,12 +33,13 @@ const Header = () => {
   const isUserLoggedIn = !!authUser?.token;
   const isAdminLoggedIn = !!authAdmin?.token;
 
-  // FIXED: Show correct destination for admin/user
-  const adminIconLink = isAdminLoggedIn
-    ? "/admin/dashboard/profile"
-    : isUserLoggedIn
-    ? "/user/dashboard/profile"
-    : "/login";
+  // ADMIN-ONLY ICON LINK
+const adminIconLink = isAdminLoggedIn
+  ? "/admin/dashboard/profile"
+  : "/admin/login";
+
+
+
 
   // -------------------------------------------------------
   // SEARCH
@@ -152,7 +153,7 @@ const Header = () => {
   {/* RIGHT SIDE ICONS */}
   <div className="flex items-center justify-end gap-4">
 
-    {/* Admin/User Icon */}
+    {/* Admin Icon */}
     <Link to={adminIconLink} className="text-gray-700 hover:text-black">
       <User className="w-5 h-5" />
     </Link>
