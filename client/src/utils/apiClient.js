@@ -7,6 +7,26 @@ const api = axios.create({
     "https://www.thebrightrose.com",
 });
 
-// NO TOKEN HANDLING HERE — auth.jsx controls axios defaults
+// Attach token for BOTH admin and user
+api.interceptors.request.use((config) => {
+  try {
+    const adminRaw = localStorage.getItem("auth_admin");
+    const userRaw = localStorage.getItem("auth_user");
+
+    let token = null;
+
+    if (adminRaw) token = JSON.parse(adminRaw)?.token;
+    if (!token && userRaw) token = JSON.parse(userRaw)?.token;
+
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  } catch (e) {
+    console.error("Token attach error:", e);
+  }
+
+  return config;
+});
 
 export default api;
