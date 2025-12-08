@@ -7,21 +7,28 @@ const api = axios.create({
     "https://www.thebrightrose.com",
 });
 
-// Attach token for BOTH admin and user
+// Correct Token Logic
 api.interceptors.request.use((config) => {
   try {
     const adminRaw = localStorage.getItem("auth_admin");
     const userRaw = localStorage.getItem("auth_user");
 
-    let token = null;
+    const adminToken = adminRaw ? JSON.parse(adminRaw)?.token : null;
+    const userToken = userRaw ? JSON.parse(userRaw)?.token : null;
 
-    if (adminRaw) token = JSON.parse(adminRaw)?.token;
-    if (!token && userRaw) token = JSON.parse(userRaw)?.token;
-
-    if (token) {
-      config.headers = config.headers || {};
-      config.headers.Authorization = `Bearer ${token}`;
+    // 👉 If calling admin APIs → use admin token ONLY
+    if (config.url.includes("/admin")) {
+      if (adminToken) {
+        config.headers.Authorization = `Bearer ${adminToken}`;
+      }
+      return config;
     }
+
+    // 👉 For all normal APIs → use user token
+    if (userToken) {
+      config.headers.Authorization = `Bearer ${userToken}`;
+    }
+
   } catch (e) {
     console.error("Token attach error:", e);
   }
