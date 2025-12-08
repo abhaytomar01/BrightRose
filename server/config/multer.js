@@ -2,21 +2,25 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Absolute path for uploads
-const uploadDir = path.join(process.cwd(), "server", "uploads", "products");
+// Correct upload folder path
+const uploadPath = path.join(process.cwd(), "server", "uploads", "products");
 
 // Ensure folder exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
 }
 
+// Multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    cb(null, uploadPath); // 🔥 Save to server/uploads/products
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    const uniqueName =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9) +
+      path.extname(file.originalname);
     cb(null, uniqueName);
   },
 });
