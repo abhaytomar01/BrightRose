@@ -1,6 +1,14 @@
+// server/controllers/product/updateProduct.js
 import productModel from "../../models/productModel.js";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// /var/www/brightrose/server/uploads/products
+const productsDir = path.join(__dirname, "..", "..", "uploads", "products");
 
 const updateProduct = async (req, res) => {
   try {
@@ -8,90 +16,94 @@ const updateProduct = async (req, res) => {
     const product = await productModel.findById(id);
 
     if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     }
 
-    // =========================================
-    // 1️⃣ PARSE OLD IMAGES (from frontend)
-    // =========================================
+    // -----------------------------
+    // Parse images info from body
+    // -----------------------------
     let oldImages = [];
+    let removed = [];
+
     try {
-      oldImages = JSON.parse(req.body.oldImages || "[]").map((img) => ({
-        filename: img.filename,
-        url: img.url.startsWith("/")
-          ? img.url
-          : `/uploads/products/${img.filename}`, // FIXED always correct
-      }));
-    } catch (err) {
-      console.log("❗ Failed parsing oldImages. Using empty array.");
-      oldImages = [];
+      oldImages = JSON.parse(req.body.oldImages || "[]");
+    } catch (e) {
+      console.log("❌ Failed to parse oldImages:", e.message);
+      oldImages = product.images || [];
     }
 
-    // =========================================
-    // 2️⃣ REMOVE DELETED IMAGES
-    // =========================================
-    const removed = JSON.parse(req.body.removedImages || "[]");
+    try {
+      removed = JSON.parse(req.body.removedImages || "[]");
+    } catch (e) {
+      console.log("❌ Failed to parse removedImages:", e.message);
+      removed = [];
+    }
 
+    // -----------------------------
+    // Delete removed images from disk
+    // -----------------------------
     removed.forEach((filename) => {
-      const filePath = path.join(
-        process.cwd(),
-        "server",
-        "uploads",
-        "products",
-        filename
-      );
-
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      try {
+        const filePath = path.join(productsDir, filename);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+          console.log("🗑 Deleted image:", filePath);
+        }
+      } catch (e) {
+        console.log("⚠️ Failed to delete image:", filename, e.message);
       }
     });
 
-    // =========================================
-    // 3️⃣ NEW UPLOADED IMAGES
-    // =========================================
+    // -----------------------------
+    // New uploads via multer
+    // -----------------------------
     const newUploads =
       req.files?.map((file) => ({
+        url: `/uploads/products/${file.filename}`,
         filename: file.filename,
-        url: `/uploads/products/${file.filename}`, // ⭐ ALWAYS CORRECT FORMAT
       })) || [];
 
-    // =========================================
-    // 4️⃣ FINAL IMAGES ARRAY
-    // =========================================
+    // Final images array
     product.images = [...oldImages, ...newUploads];
 
-    // =========================================
-    // 5️⃣ PARSE ARRAYS (sizes, tags)
-    // =========================================
+    // -----------------------------
+    // Sizes
+    // -----------------------------
     try {
       if (req.body.sizes) {
-        product.sizes = JSON.parse(req.body.sizes);
+        const parsed = JSON.parse(req.body.sizes);
+        if (Array.isArray(parsed)) {
+          product.sizes = parsed;
+        }
       }
-    } catch (err) {
-      console.log("❗ Sizes parse failed — keeping old.");
+    } catch (e) {
+      console.log("Sizes parse failed — keeping old sizes");
     }
 
+    // -----------------------------
+    // Tags
+    // -----------------------------
     try {
       if (req.body.tags) {
-        product.tags = JSON.parse(req.body.tags);
+        const parsed = JSON.parse(req.body.tags);
+        if (Array.isArray(parsed)) {
+          product.tags = parsed;
+        }
       }
-    } catch (err) {
-      console.log("❗ Tags parse failed — keeping old.");
+    } catch (e) {
+      console.log("Tags parse failed — keeping old tags");
     }
 
-    // =========================================
-    // 6️⃣ maxQuantity
-    // =========================================
-    if (req.body.maxQuantity) {
-      product.maxQuantity = Number(req.body.maxQuantity);
+    // maxQuantity
+    if (req.body.maxQuantity !== undefined) {
+      product.maxQuantity = Number(req.body.maxQuantity) || product.maxQuantity;
     }
 
-    // =========================================
-    // 7️⃣ Update simple fields
-    // =========================================
+    // -----------------------------
+    // Other simple fields
+    // -----------------------------
     const allowedFields = [
       "name",
       "fabric",
@@ -114,22 +126,14 @@ const updateProduct = async (req, res) => {
       }
     });
 
-    // =========================================
-    // 8️⃣ SAVE PRODUCT
-    // =========================================
     const updated = await product.save();
 
-    return res.json({
-      success: true,
-      message: "Product updated successfully",
-      product: updated,
-    });
+    return res.json({ success: true, product: updated });
   } catch (err) {
     console.error("UPDATE PRODUCT ERROR:", err);
-    return res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    return res
+      .status(500)
+      .json({ success: false, message: "Product update failed" });
   }
 };
 
