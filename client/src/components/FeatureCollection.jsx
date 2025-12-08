@@ -12,15 +12,30 @@ export default function LuxuryShowcasePremium() {
         const res = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
         );
+
         if (res.data?.success) setProducts(res.data.products);
       } catch (error) {
-        console.log(error);
+        console.log("PRODUCT LOAD ERROR:", error);
       }
     };
+
     loadProducts();
   }, []);
 
   if (!products.length) return null;
+
+  // Function to generate correct image path
+  const getImageUrl = (img) => {
+    if (!img) return fallback;
+
+    // if image already full URL
+    if (img.url?.startsWith("http")) return img.url;
+
+    // else prefix server URL
+    return `${import.meta.env.VITE_SERVER_URL}${
+      img.url?.startsWith("/") ? img.url : "/" + img.url
+    }`;
+  };
 
   return (
     <section className="w-full py-8 bg-white">
@@ -37,50 +52,49 @@ export default function LuxuryShowcasePremium() {
           </p>
         </div>
 
-        {/* GRID - LUXURY LOOK */}
-       {/* GRID - LUXURY LOOK */}
-<div
-  className="
-    grid 
-    grid-cols-2        /* 🟢 MOBILE: 2 columns */
-    sm:grid-cols-2     /* 🟢 TABLET: 2 columns */
-    lg:grid-cols-4     /* 🟢 DESKTOP: 4 columns */
-    gap-5
-    md:gap-8
-  "
->
-  {products.slice(0, 4).map((item) => (
-    <Link
-      key={item._id}
-      to={`/product/${item._id}`}
-      className="group block"
-    >
-      {/* IMAGE */}
-      <div className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] bg-neutral-100 overflow-hidden rounded-md">
-        <img
-          src={item.images?.[0]?.url || fallback}
-          alt={item.name}
+        {/* GRID */}
+        <div
           className="
-            w-full h-full object-cover
-            transition-transform duration-[1200ms]
-            group-hover:scale-105
+            grid 
+            grid-cols-2
+            sm:grid-cols-2
+            lg:grid-cols-4
+            gap-5
+            md:gap-8
           "
-        />
-      </div>
+        >
+          {products.slice(0, 4).map((item) => (
+            <Link
+              key={item._id}
+              to={`/product/${item._id}`}
+              className="group block"
+            >
+              {/* IMAGE */}
+              <div className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] bg-neutral-100 overflow-hidden rounded-md">
+                <img
+                  src={getImageUrl(item.images?.[0])}
+                  alt={item.name}
+                  className="
+                    w-full h-full object-cover
+                    transition-transform duration-[1200ms]
+                    group-hover:scale-105
+                  "
+                />
+              </div>
 
-      {/* TITLE BELOW IMAGE (Mobile Look Like Reference) */}
-      <p className="
-        text-center 
-        mt-2 
-        text-xs md:text-base 
-        font-light tracking-wide text-neutral-900
-      ">
-        {item.name}
-      </p>
-    </Link>
-  ))}
-</div>
-
+              {/* TITLE */}
+              <p
+                className="
+                  text-center mt-2 
+                  text-xs md:text-base 
+                  font-light tracking-wide text-neutral-900
+                "
+              >
+                {item.name}
+              </p>
+            </Link>
+          ))}
+        </div>
 
         {/* CTA BUTTON */}
         <div className="text-center mt-10">

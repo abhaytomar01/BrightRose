@@ -1,15 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
+import axios from "axios";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import fallback from "../assets/images/fallback.jpg";
 
-/* CLEAN MINIMAL ARROWS (NO BLUR, NO TRANSPARENCY) */
+/* SELECT ONLY THESE PRODUCT IDs */
+const FEATURED_IDS = [
+  "692d357ec95fc6c18d3609df",
+  "692d34e4c95fc6c18d3609d5",
+  "692d3436c95fc6c18d3609c1",
+  "692d35e5c95fc6c18d3609e9",
+];
+
+const getImageUrl = (img) => {
+  if (!img) return fallback;
+  if (img.url?.startsWith("http")) return img.url;
+
+  return `${import.meta.env.VITE_SERVER_URL}${
+    img.url.startsWith("/") ? img.url : "/" + img.url
+  }`;
+};
+
+/* CLEAN ARROWS */
 const PreviousBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !left-4 z-20 
-      bg-white hover:bg-neutral-100 
-      shadow-sm hover:shadow-md 
-      transition-all rounded-full p-2 flex items-center justify-center 
-      border border-neutral-300`}
+    className={`${className} !left-4 z-20 bg-white hover:bg-neutral-100 
+    shadow-sm hover:shadow-md transition-all rounded-full p-2 flex items-center justify-center 
+    border border-neutral-300`}
     onClick={onClick}
   >
     <ArrowLeft size={18} className="text-neutral-700" />
@@ -18,11 +36,9 @@ const PreviousBtn = ({ className, onClick }) => (
 
 const NextBtn = ({ className, onClick }) => (
   <div
-    className={`${className} !right-4 z-20 
-      bg-white hover:bg-neutral-100
-      shadow-sm hover:shadow-md 
-      transition-all rounded-full p-2 flex items-center justify-center 
-      border border-neutral-300`}
+    className={`${className} !right-4 z-20 bg-white hover:bg-neutral-100 
+    shadow-sm hover:shadow-md transition-all rounded-full p-2 flex items-center justify-center 
+    border border-neutral-300`}
     onClick={onClick}
   >
     <ArrowRight size={18} className="text-neutral-700" />
@@ -32,8 +48,41 @@ const NextBtn = ({ className, onClick }) => (
 const FeaturedProducts = ({
   title = "Featured Products",
   subtitle = "Explore exclusive artisanal creations crafted with heritage and soul.",
-  products = [],
 }) => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
+        );
+
+        if (res.data?.success) {
+          const selected = res.data.products.filter((p) =>
+            FEATURED_IDS.includes(p._id)
+          );
+
+          const formatted = selected.map((p) => ({
+            id: p._id,
+            name: p.name,
+            description: p.description || "",
+            price: p.price,
+            image: getImageUrl(p.images?.[0]),
+          }));
+
+          setProducts(formatted);
+        }
+      } catch (error) {
+        console.log("FEATURED PRODUCTS ERROR:", error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  if (!products.length) return null;
+
   const settings = {
     dots: false,
     infinite: true,
@@ -54,9 +103,8 @@ const FeaturedProducts = ({
 
   return (
     <section className="w-full py-10 bg-white relative">
-
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 relative">
-
+        
         {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-xl md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
@@ -70,53 +118,48 @@ const FeaturedProducts = ({
 
         {/* Product Slider */}
         <Slider {...settings}>
-          {products.map((product, index) => (
-            <div key={index} className="px-4 py-6">
+          {products.map((product) => (
+            <div key={product.id} className="px-4 py-6">
 
-              <div
-                className="
-                  group bg-white rounded-3xl overflow-hidden shadow-sm
+              {/* ENTIRE BLOCK CLICKABLE */}
+              <Link to={`/product/${product.id}`}>
+                <div
+                  className="group bg-white rounded-3xl overflow-hidden shadow-sm
                   hover:shadow-xl transition-all duration-700
-                  border border-neutral-200/60 
-                  flex flex-col
-                "
-              >
-
-                {/* Product Image */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="
-                      w-full h-full object-cover 
-                      transition-transform duration-[1200ms]
-                      group-hover:scale-110
-                    "
-                  />
-                </div>
-
-                {/* Product Text */}
-                <div className="p-6 text-center flex flex-col flex-grow">
-
-                  <h3 className="text-lg font-light text-neutral-900 tracking-wide line-clamp-2">
-                    {product.name}
-                  </h3>
-
-                  <p className="text-neutral-500 text-sm mt-2 font-light line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <div className="mt-4">
-                    <p className="text-xl font-light text-neutral-800 tracking-wide">
-                      ₹{product.price?.toLocaleString()}
-                    </p>
+                  border border-neutral-200/60 flex flex-col cursor-pointer"
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
+                    />
                   </div>
 
+                  {/* Text */}
+                  <div className="p-6 text-center flex flex-col flex-grow">
+                    <h3 className="text-lg font-light text-neutral-900 tracking-wide line-clamp-2">
+                      {product.name}
+                    </h3>
+
+                    <p className="text-neutral-500 text-sm mt-2 font-light line-clamp-2">
+                      {product.description}
+                    </p>
+
+                    <div className="mt-4">
+                      <p className="text-xl font-light text-neutral-800 tracking-wide">
+                        ₹{product.price?.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Link>
+
             </div>
           ))}
         </Slider>
+
       </div>
     </section>
   );
