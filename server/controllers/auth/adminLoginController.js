@@ -1,24 +1,25 @@
+import userModel from "../../models/userModel.js";
+import jwt from "jsonwebtoken";
+
 export const adminLoginController = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await userModel.findOne({ email });
 
     if (!user) {
       return res.status(400).json({ success: false, message: "User not found" });
     }
 
-    // Only admin allowed
+    // Admin only
     if (user.role !== "admin") {
       return res.status(403).json({
         success: false,
-        message: "Access denied. Admin only."
+        message: "Access denied. Admin only.",
       });
     }
 
-    // IMPORTANT: password field name
     const isMatch = await user.comparePassword(password);
-
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "Invalid password" });
     }
@@ -29,7 +30,7 @@ export const adminLoginController = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    return res.json({
+    res.json({
       success: true,
       message: "Admin login successful",
       token,
@@ -37,7 +38,7 @@ export const adminLoginController = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("ADMIN LOGIN ERROR:", err);   // ⬅ ADDED
-    return res.status(500).json({ success: false, message: "Login failed" });
+    console.log("ADMIN LOGIN ERROR:", err);
+    res.status(500).json({ success: false, message: "Login failed" });
   }
 };
