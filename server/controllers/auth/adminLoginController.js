@@ -42,3 +42,4 @@ export const adminLoginController = async (req, res) => {
     res.status(500).json({ success: false, message: "Login failed" });
   }
 };
+

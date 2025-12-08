@@ -254,9 +254,16 @@ const EditProduct = () => {
           {oldImages.map((img) => (
             <div key={img.filename} className="relative">
               <img
-                src={`${import.meta.env.VITE_SERVER_URL}${img.url}`}
-                className="w-20 h-20 object-cover border"
-              />
+  src={
+    img.url.startsWith("http")
+      ? img.url
+      : `${import.meta.env.VITE_SERVER_URL}${
+          img.url.startsWith("/") ? img.url : "/" + img.url
+        }`
+  }
+  className="w-20 h-20 object-cover border"
+/>
+
               <button
                 type="button"
                 onClick={() => removeOldImage(img.filename)}
