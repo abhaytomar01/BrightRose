@@ -4,57 +4,62 @@ import { Leaf, MapPin, Star, Truck } from "lucide-react";
 const WhyChooseUs = ({
   highlights = [
     { icon: <Leaf size={28} />, title: "Sustainable Materials", description: "Eco-friendly fabrics crafted with care." },
-    { icon: <MapPin size={28} />, title: "Handcrafted in India", description: "Support local artisans and craftsmanship." },
-    { icon: <Star size={28} />, title: "Premium Quality", description: "Luxury-grade materials and craftsmanship." },
-    { icon: <Truck size={28} />, title: "Fast Delivery", description: "Reliable, quick delivery right to your home." },
+    { icon: <MapPin size={28} />, title: "Handcrafted in India", description: "Supporting heritage artisans & craftsmanship." },
+    { icon: <Star size={28} />, title: "Premium Quality", description: "Luxury-grade materials, finishing & detailing." },
+    { icon: <Truck size={28} />, title: "Fast Delivery", description: "Secure and quick delivery worldwide." },
   ],
 }) => {
   return (
-    <section className="w-full bg-pureWhite py-6 md:py-14">
-      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12 text-center">
+    <section className="w-full py-10 md:py-20 bg-gradient-to-b from-[#faf8f6] to-[#f7f4f0] select-none">
+      
+      <div className="max-w-[1500px] mx-auto px-5 sm:px-10 lg:px-20 text-center">
 
-        {/* Section Title */}
-        <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-neutralDark/80">
+        {/* SECTION TITLE */}
+        <h2 className="text-[28px] sm:text-[34px] md:text-[40px] font-light text-neutral-900 tracking-wide">
           Why Choose Us
         </h2>
 
-        <p className="text-neutralDark text-sm sm:text-base md:text-lg mt-3 font-light max-w-xl mx-auto">
-          Simple values that reflect our commitment to quality and authenticity.
+        <p className="text-neutralDark/80 text-[14px] sm:text-[16px] md:text-[18px] font-light max-w-xl mx-auto mt-3 leading-relaxed">
+          A reflection of our core values — craftsmanship, luxury, and authenticity.
         </p>
 
-        {/* Gold Divider */}
-        <div className="w-20 h-[2px] bg-accentGold mx-auto mt-4 mb-10 md:mb-12"></div>
+        {/* Minimal Gold Divider */}
+        <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-[#bca47c] to-transparent mx-auto my-8"></div>
 
-        {/* Highlights Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* GRID */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mt-6">
 
           {highlights.map((item, index) => (
             <div
               key={index}
               className="
-                flex flex-col items-center px-2 sm:px-4 py-6
-                transition-all duration-300
+                bg-white/70 backdrop-blur-lg rounded-xl shadow-md hover:shadow-xl
+                border border-neutral-200 hover:border-[#bca47c]/60
+                px-4 py-8 flex flex-col items-center
+                transition-all duration-500 animate-fadeUp
               "
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
-              {/* Icon Circle */}
+              {/* LUXURY ICON CIRCLE */}
               <div
                 className="
-                  w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center
-                  border border-accentGold/50 hover:border-accentGold
-                  rounded-full mb-5
-                  transition-all duration-300 bg-neutralLight
+                  w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center
+                  bg-gradient-to-br from-neutral-100 to-neutral-200
+                  border border-[#d8c7a0]/60 shadow-inner 
+                  hover:shadow-[0_0_20px_4px_rgba(188,164,124,0.3)]
+                  transition-all duration-500
                 "
               >
-                <div className="text-neutralDark/80">{item.icon}</div>
+                <div className="text-neutral-800">{item.icon}</div>
               </div>
 
-              {/* Title */}
-              <h3 className="text-base sm:text-lg md:text-xl font-light text-neutralDark mb-2">
+              {/* TITLE */}
+              <h3 className="mt-4 text-[15px] sm:text-[18px] md:text-[20px] font-light text-neutral-900 tracking-wide">
                 {item.title}
               </h3>
 
-              {/* Description */}
-              <p className="text-neutralDark/80 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-[230px]">
+              {/* DESCRIPTION */}
+              <p className="mt-2 text-neutralDark/70 text-[12px] sm:text-[14px] md:text-[15px] leading-relaxed max-w-[240px] font-extralight">
                 {item.description}
               </p>
             </div>
@@ -62,6 +67,17 @@ const WhyChooseUs = ({
 
         </div>
       </div>
+
+      {/* Fade-Up Animation */}
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeUp {
+          animation: fadeUp 0.9s ease forwards;
+        }
+      `}</style>
     </section>
   );
 };
