@@ -8,7 +8,36 @@ import api from "../../utils/apiClient";
 export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  // const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  const getResponsiveConfig = (width) => {
+    if (width >= 1400) {
+    return { BIG: 138, SMALL: 24, START_Y: 190, TOP: -104 };
+  }
+  if (width >= 1200) {
+    return { BIG: 122, SMALL: 24, START_Y: 160, TOP: -91 };
+  }
+  if (width >= 900) {
+    return { BIG: 90, SMALL: 22, START_Y: 160, TOP: -66 };
+  }
+  if (width >= 700) {
+    return { BIG: 72, SMALL: 22, START_Y: 160, TOP: -52 };
+  }
+  if (width >= 500) {
+    return { BIG: 52, SMALL: 22, START_Y: 135, TOP: -38 };
+  }
+  return { BIG: 40, SMALL: 18, START_Y: 130, TOP: -29 };
+};
+
+const [viewport, setViewport] = useState(
+  typeof window !== "undefined" ? window.innerWidth : 1200
+);
+
+useEffect(() => {
+  const onResize = () => setViewport(window.innerWidth);
+  window.addEventListener("resize", onResize);
+  return () => window.removeEventListener("resize", onResize);
+}, []);
 
   //  const [hideAnnouncement, setHideAnnouncement] = useState(false);
 
@@ -36,13 +65,15 @@ export default function Header() {
   const targetProgress = useRef(0);
   const rafRef = useRef(null);
 
-  /** RESPONSIVE CONFIG */
-  const BIG_SIZE = isMobile ? 42 : 135;
-  const SMALL_SIZE = isMobile ? 18 : 24;
-  const BIG_START_Y = isMobile ? 130 : 180;
-  const HEADER_HEIGHT = 72;
-  const SCALE_END = SMALL_SIZE / BIG_SIZE;
-  const CUSTOM_TOP = isMobile ? -30 : -100;
+const { BIG, SMALL, START_Y, TOP } = getResponsiveConfig(viewport);
+
+const BIG_SIZE = BIG;
+const SMALL_SIZE = SMALL;
+const BIG_START_Y = START_Y;
+const CUSTOM_TOP = TOP;
+const HEADER_HEIGHT = 72;
+const SCALE_END = SMALL_SIZE / BIG_SIZE;
+
 
   /** SEARCH HANDLER */
   useEffect(() => {

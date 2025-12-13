@@ -60,7 +60,7 @@ const Banner = () => {
     <section className="relative w-full h-screen overflow-hidden bg-black p-0 m-0">
       <Slider {...settings} className="h-full">
         {banners.map((el, i) => (
-          <div key={i} className="relative w-full h-screen overflow-hidden">
+          <div key={i} className="relative w-full h-screen overflow-x-auto">
             {/* MEDIA */}
             {el.type === "video" ? (
               <video
