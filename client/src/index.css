@@ -94,3 +94,23 @@
   background: #e5efff !important;
   color: #0070f3 !important;
 }
+
+/* add to global stylesheet (index.css / global.css) */
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0%); }
+}
+
+/* Tailwind doesn't let us animate custom names without config — helper class */
+.animate-slideIn {
+  animation: slideIn 0.34s cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+/* small helper so header translate is smooth */
+header {
+  will-change: transform, background-color;
+}
+
+/* if using Tailwind JIT you can convert these classes; otherwise keep this file */
+

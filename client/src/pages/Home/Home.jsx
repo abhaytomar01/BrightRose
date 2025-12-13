@@ -108,7 +108,7 @@ const Home = () => {
           move as if guided by instinct alone.”
           <br />
           <span className="not-italic font-medium text-neutral-900 block mt-3">
-            — Master Weaver, Chand from Varanasi
+            — Rajeev Yadav
           </span>
         </blockquote>
       </div>
