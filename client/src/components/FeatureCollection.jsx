@@ -3,21 +3,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import Silkpocketdress from "../assets/images/silkpocketdress.jpg";
+import silkpocketdress from "../assets/images/silkpocketdress.jpg";
 import ikkatcollection from "../assets/images/ikkatsilkcorset.jpg";
 import trenchcoat from "../assets/images/silktrenchcoat.jpg";
-import Blazertrouser from "../assets/images/blazertrouser.jpg";
+import blazertrouser from "../assets/images/blazertrouser.jpg";
 
 const collections = [
   {
     name: "Silk Blazer & Trouser",
     slug: "plain-weave",
-    image: Blazertrouser,
+    image: blazertrouser,
   },
   {
     name: "Silk Pocket Dress",
     slug: "ikkat-silk-set",
-    image: Silkpocketdress,
+    image: silkpocketdress,
   },
   {
     name: "Silk Trench Coat",
