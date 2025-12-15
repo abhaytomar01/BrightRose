@@ -3,32 +3,37 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import Silkpocketdress from "../assets/images/Silkpocketdress.jpg";
+import ikkatcollection from "../assets/images/Ikkatsilkcorset.jpg";
+import trenchcoat from "../assets/images/silktrenchcoat.jpg";
+import Blazertrouser from "../assets/images/Blazertrouser.jpg";
+
 const collections = [
   {
-    name: "Kanchipuram Dress",
-    slug: "kanchipuram-dress",
-    image: "/images/collections/collection-1.jpg",
+    name: "Silk Blazer & Trouser",
+    slug: "plain-weave",
+    image: Blazertrouser,
   },
   {
-    name: "Ikkat Silk Set",
+    name: "Silk Pocket Dress",
     slug: "ikkat-silk-set",
-    image: "/images/collections/collection-2.jpg",
+    image: Silkpocketdress,
   },
   {
-    name: "Pashmina Saree",
+    name: "Silk Trench Coat",
     slug: "pashmina-saree",
-    image: "/images/collections/collection-3.jpg",
+    image: trenchcoat,
   },
   {
-    name: "Silk Corset",
+    name: "Banarasi Silk Corset",
     slug: "silk-corset",
-    image: "/images/collections/collection-4.jpg",
+    image: ikkatcollection,
   },
 ];
 
 export default function LuxurySeasonalShowcase() {
   return (
-    <section className="w-full bg-white py-14">
+    <section className="w-full bg-white py-10">
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
 
         {/* HEADER */}
@@ -38,7 +43,7 @@ export default function LuxurySeasonalShowcase() {
           </h2>
           <p className="mt-4 text-neutral-500 text-sm md:text-base tracking-wide font-light">
             A selection of the finest handcrafted luxury pieces, personally curated for you.
-            </p>
+          </p>
         </div>
 
         {/* GRID */}
@@ -54,6 +59,8 @@ export default function LuxurySeasonalShowcase() {
                 <img
                   src={item.image}
                   alt={item.name}
+                  loading="lazy"
+                  decoding="async"
                   className="
                     w-full h-full object-cover
                     transition-transform duration-[1200ms]
