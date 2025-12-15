@@ -3,10 +3,10 @@ import { Leaf, MapPin, Star, Truck } from "lucide-react";
 
 const WhyChooseUs = ({
   highlights = [
-    { icon: <Leaf size={28} />, title: "Sustainable Materials", description: "Eco-friendly fabrics crafted with care." },
-    { icon: <MapPin size={28} />, title: "Handcrafted in India", description: "Supporting heritage artisans & craftsmanship." },
-    { icon: <Star size={28} />, title: "Premium Quality", description: "Luxury-grade materials, finishing & detailing." },
-    { icon: <Truck size={28} />, title: "Fast Delivery", description: "Secure and quick delivery worldwide." },
+    { icon: <Leaf size={28} />, title: "Craftsmanship", description: "Every piece is meticulously handcrafted, honoring techniques that take years to master and moments to perfect." },
+    { icon: <MapPin size={28} />, title: "Intentionality", description: "From fabric selection to final finishing, every decision is made with purpose, not pressure." },
+    { icon: <Star size={28} />, title: "Exclusivity", description: "Limited creations designed to feel personal — because true luxury is never mass-produced." },
+    { icon: <Truck size={28} />, title: "Trust", description: "A promise of transparency, reliability, and consistency — from creation to delivery." },
   ],
 }) => {
   return (
