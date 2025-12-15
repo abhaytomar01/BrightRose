@@ -153,7 +153,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       {isHome && (
         <div
           ref={logoRef}
-          className="fixed left-1/2 pointer-events-none z-[9999]"
+          className="fixed left-1/2 pointer-events-none z-[9990]"
           style={{
             top: CUSTOM_TOP,
             transform: `translate(-50%, ${BIG_START_Y}px) scale(1)`,
@@ -228,7 +228,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
   <>
     {/* BACKDROP */}
     <div
-      className="fixed inset-0 z-[998] bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[999] bg-black/50 backdrop-blur-sm"
       onClick={() => setOpen(false)}
     />
 
@@ -243,7 +243,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       "
     >
       {/* HEADER */}
-      <div className="flex items-center justify-between px-5 py-5 border-b">
+      <div className="flex items-center justify-between px-5 py-5 border-b z-[9999]">
         <button onClick={() => setOpen(false)}>
           <X size={26} />
         </button>
@@ -251,7 +251,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       </div>
 
       {/* NAV */}
-      <nav className="px-6 py-6 flex flex-col gap-4 uppercase text-[15px]">
+      <nav className="px-6 py-6 flex flex-col gap-4 uppercase text-[15px] ">
         <Link to="/" onClick={() => setOpen(false)}>Home</Link>
         <Link to="/ourheritage" onClick={() => setOpen(false)}>Our Heritage</Link>
 
@@ -261,7 +261,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
             onClick={() => setMobileSubmenuOpen(v => !v)}
             className="flex w-full items-center justify-between py-2"
           >
-            <span>Collections</span>
+            <span className="uppercase">Collections</span>
             <ChevronDown
               className={`transition ${mobileSubmenuOpen ? "rotate-180" : ""}`}
             />
@@ -272,7 +272,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
               <Link to="/weavecollection" onClick={() => setOpen(false)}>
                 Weaves
               </Link>
-              <Link to="/stylecollection" onClick={() => setOpen(false)}>
+              <Link  to="/stylecollection" onClick={() => setOpen(false)}>
                 Style
               </Link>
             </div>
@@ -301,7 +301,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       {isSearchOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9998]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md "
             onClick={() => setIsSearchOpen(false)}
           />
 

@@ -5,10 +5,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-
-// import your images or videos
-// import hermesbanner from "../../../assets/images/Banners/hermes-banner.webp";
 import demovideo from "../../../assets/Kanchipuram/demovideo.mp4";
+import { Link } from "react-router-dom";
 
 export const PreviousBtn = ({ className, onClick }) => (
   <div
@@ -51,53 +49,51 @@ const Banner = () => {
     ),
   };
 
-  const banners = [
-    { type: "video", src: demovideo },
-    // { type: "video", src: bannerVideo },
-  ];
-
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black p-0 m-0">
-      <Slider {...settings} className="h-full">
-        {banners.map((el, i) => (
-          <div key={i} className="relative w-full h-screen overflow-x-auto">
-            {/* MEDIA */}
-            {el.type === "video" ? (
-              <video
-                src={el.src}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            ) : (
-              <img
-                draggable="false"
-                src={el.src}
-                alt={`banner-${i}`}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            )}
+    <section
+  className="
+    relative w-full overflow-hidden
+    h-[calc(100vh+72px)]
+    min-h-[calc(100svh+72px)]
+    -mt-[72px]
+  "
+>
+      <Slider
+        {...settings}
+        className="h-full [&_.slick-list]:h-full [&_.slick-track]:h-full"
+      >
+        <div className="relative w-full h-[calc(100vh+72px)] min-h-[calc(100svh+72px)]">
+          {/* VIDEO */}
+          <video
+            src={demovideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          />
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
+          {/* GRADIENT */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
 
-            {/* Optional Text Overlay */}
-            {/* <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-3 drop-shadow-lg">
-                Discover Timeless Luxury
-              </h1>
-              <button className="bg-[#AD000F] border border-[#D4AF37] px-6 sm:px-8 py-2 sm:py-3 rounded-full hover:bg-[#8C000C] transition-all duration-300 font-medium">
-                Shop Now
+          {/* CTA */}
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-[12vh] sm:pb-[14vh] text-center text-white z-10">
+            <p className="text-[14px] sm:text-[16px] tracking-[0.18em] uppercase mb-5 font-light">
+              Bright Rose Gift
+            </p>
+
+            <div className="flex gap-4">
+              <button className="px-6 sm:px-8 py-2.5 border border-white text-[12px] sm:text-[13px] tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300">
+               <Link to="/weavecollection"> Shop the Weave</Link>
               </button>
-            </div> */}
-          </div>
-        ))}
-      </Slider>
 
-      {/* Subtle top/bottom border */}
-      <div className="absolute inset-0 border-t border-b border-white/10 pointer-events-none"></div>
+              <button className="px-6 sm:px-8 py-2.5 border border-white text-[12px] sm:text-[13px] tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300">
+                <Link to="/stylecollection"> Shop the Style</Link>
+              </button>
+            </div>
+          </div>
+        </div>
+      </Slider>
     </section>
   );
 };

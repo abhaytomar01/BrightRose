@@ -1,78 +1,58 @@
-import React, { useEffect, useState } from "react";
+// src/components/LuxurySeasonalShowcase.jsx
+
+import React from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import fallback from "../assets/images/fallback.jpg";
 
-export default function LuxuryShowcasePremium() {
-  const [products, setProducts] = useState([]);
+const collections = [
+  {
+    name: "Kanchipuram Dress",
+    slug: "kanchipuram-dress",
+    image: "/images/collections/collection-1.jpg",
+  },
+  {
+    name: "Ikkat Silk Set",
+    slug: "ikkat-silk-set",
+    image: "/images/collections/collection-2.jpg",
+  },
+  {
+    name: "Pashmina Saree",
+    slug: "pashmina-saree",
+    image: "/images/collections/collection-3.jpg",
+  },
+  {
+    name: "Silk Corset",
+    slug: "silk-corset",
+    image: "/images/collections/collection-4.jpg",
+  },
+];
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
-        );
-
-        if (res.data?.success) setProducts(res.data.products);
-      } catch (error) {
-        console.log("PRODUCT LOAD ERROR:", error);
-      }
-    };
-
-    loadProducts();
-  }, []);
-
-  if (!products.length) return null;
-
-  // Function to generate correct image path
-  const getImageUrl = (img) => {
-    if (!img) return fallback;
-
-    // if image already full URL
-    if (img.url?.startsWith("http")) return img.url;
-
-    // else prefix server URL
-    return `${import.meta.env.VITE_SERVER_URL}${
-      img.url?.startsWith("/") ? img.url : "/" + img.url
-    }`;
-  };
-
+export default function LuxurySeasonalShowcase() {
   return (
-    <section className="w-full py-8 bg-white">
+    <section className="w-full bg-white py-14">
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
 
         {/* HEADER */}
-        <div className="text-center mb-10">
-          <h2 className="text-lg md:text-3xl font-light tracking-widest text-neutral-900 uppercase">
-            Featured Collections
+        <div className="text-center mb-14">
+          <h2 className="text-xl md:text-3xl tracking-[0.2em] font-light uppercase text-neutral-900">
+            FEATURED COLLECTION
           </h2>
-
-          <p className="text-neutral-600 mt-3 text-base md:text-lg font-light tracking-wide">
-            Handcrafted luxury pieces curated for you
-          </p>
+          <p className="mt-4 text-neutral-500 text-sm md:text-base tracking-wide font-light">
+            A selection of the finest handcrafted luxury pieces, personally curated for you.
+            </p>
         </div>
 
         {/* GRID */}
-        <div
-          className="
-            grid 
-            grid-cols-2
-            sm:grid-cols-2
-            lg:grid-cols-4
-            gap-5
-            md:gap-8
-          "
-        >
-          {products.slice(0, 4).map((item) => (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+          {collections.map((item, index) => (
             <Link
-              key={item._id}
-              to={`/product/${item._id}`}
-              className="group block"
+              key={index}
+              to={`/products?category=${item.slug}`}
+              className="group relative block overflow-hidden"
             >
               {/* IMAGE */}
-              <div className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] bg-neutral-100 overflow-hidden rounded-md">
+              <div className="relative h-[280px] sm:h-[380px] md:h-[480px]">
                 <img
-                  src={getImageUrl(item.images?.[0])}
+                  src={item.image}
                   alt={item.name}
                   className="
                     w-full h-full object-cover
@@ -80,36 +60,35 @@ export default function LuxuryShowcasePremium() {
                     group-hover:scale-105
                   "
                 />
-              </div>
 
-              {/* TITLE */}
-              <p
-                className="
-                  text-center mt-2 
-                  text-xs md:text-base 
-                  font-light tracking-wide text-neutral-900
-                "
-              >
-                {item.name}
-              </p>
+                {/* OVERLAY */}
+                <div
+                  className="
+                    absolute inset-0 
+                    bg-gradient-to-t 
+                    from-black/60 via-black/10 to-transparent
+                  "
+                />
+
+                {/* TEXT INSIDE IMAGE */}
+                <div className="absolute bottom-6 left-0 right-0 text-center">
+                  <p
+                    className="
+                      text-white 
+                      text-xs md:text-sm 
+                      tracking-[0.25em] 
+                      uppercase 
+                      font-light
+                    "
+                  >
+                    {item.name}
+                  </p>
+                </div>
+              </div>
             </Link>
           ))}
         </div>
 
-        {/* CTA BUTTON */}
-        <div className="text-center mt-10">
-          <Link
-            to="/products"
-            className="
-              inline-block bg-white text-neutralDark/80 
-              px-10 py-3 
-              text-sm tracking-wide border border-neutralDark/70
-              hover:border-neutralDark/90 transition-all
-            "
-          >
-            View All Products
-          </Link>
-        </div>
       </div>
     </section>
   );
