@@ -3,10 +3,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import Silkpocketdress from "../assets/images/Silkpocketdress.jpg";
-import ikkatcollection from "../assets/images/Ikkatsilkcorset.jpg";
+import Silkpocketdress from "../assets/images/silkpocketdress.jpg";
+import ikkatcollection from "../assets/images/ikkatsilkcorset.jpg";
 import trenchcoat from "../assets/images/silktrenchcoat.jpg";
-import Blazertrouser from "../assets/images/Blazertrouser.jpg";
+import Blazertrouser from "../assets/images/blazertrouser.jpg";
 
 const collections = [
   {
