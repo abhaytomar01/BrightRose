@@ -1,205 +1,168 @@
-import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import aboutbrand from "../../assets/images/Banners/abouthebrand.jpg";
+// src/pages/About/AboutAdvanced.jsx
+
+import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
+import creative1 from "../../assets/images/creative1.jpg";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /* -----------------------------------
    TIMELINE DATA
 ----------------------------------- */
-const TIMELINE = [
+const TIMELINE_PHASES = [
   {
-    year: "2003",
-    title: "Brand Founded",
-    text: "We began with a passion to revive traditional handloom into modern silhouettes.",
-    image:
-      "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=1000&q=80",
+    phase: "PHASE ONE",
+    title: "The Beginning",
+    content: [
+      "It began with a deep admiration for craft — not just how clothing looks, but how it is made.",
+      "Growing up surrounded by stories of Indian textiles, handwork, and detail, we learned that fashion is memory stitched into fabric.",
+      "Every silhouette carries a feeling, every thread carries intention.",
+      "Before trends, before timelines — there was only passion.",
+    ],
   },
   {
-    year: "2007",
-    title: "International Showcase",
-    text: "Our artistry reached global exhibitions, celebrated for authenticity and craft.",
-    image:
-      "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=1000&q=80",
+    phase: "PHASE TWO",
+    title: "The Evolution",
+    content: [
+      "As the vision grew, so did our responsibility.",
+      "We chose to slow down in a fast world — valuing precision over production, quality over quantity.",
+      "Our designs evolved into a balance of modern expression and traditional techniques.",
+      "A commitment to authenticity, without compromise.",
+    ],
   },
   {
-    year: "2015",
-    title: "Sustainable Line",
-    text: "We introduced a conscious collection using responsibly sourced fabrics.",
-    image:
-      "https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    year: "2023",
-    title: "Global Expansion",
-    text: "Our collections now appear in curated boutiques across continents.",
-    image:
-      "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&w=1000&q=80",
+    phase: "PHASE THREE",
+    title: "The Brand Today",
+    content: [
+      "Today, we stand as a brand that celebrates quiet luxury and powerful individuality.",
+      "Every creation is thoughtfully designed, ethically crafted, and consciously delivered.",
+      "We don’t chase moments — we create pieces that stay relevant beyond seasons.",
+      "Rooted in India, created for the world.",
+    ],
   },
 ];
 
 /* -----------------------------------
-   ANIMATIONS
+   BRAND TIMELINE (GSAP)
 ----------------------------------- */
-const itemVariant = (direction = "left") => ({
-  hidden: { opacity: 0, x: direction === "left" ? -100 : 100 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.8, ease: [0.25, 1, 0.35, 1] },
-  },
-});
+function BrandTimeline() {
+  const containerRef = useRef(null);
+  const progressRef = useRef(null);
+  const itemsRef = useRef([]);
 
-/* -----------------------------------
-   HERO PARALLAX — Luxury Typography
------------------------------------ */
-const HeroParallax = ({ title, subtitle }) => {
-  const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 800], [0, -60]);
-  const scale = useTransform(scrollY, [0, 800], [1.0, 1.05]);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.set(itemsRef.current, { opacity: 0.25, y: 20 });
+      gsap.set(progressRef.current, { height: "0%" });
+
+      gsap.to(progressRef.current, {
+        height: "100%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top center",
+          end: "bottom center",
+          scrub: true,
+        },
+      });
+
+      itemsRef.current.forEach((el) => {
+        ScrollTrigger.create({
+          trigger: el,
+          start: "top center+=80",
+          end: "bottom center",
+          onEnter: () =>
+            gsap.to(el, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }),
+          onEnterBack: () =>
+            gsap.to(el, { opacity: 1, y: 0, duration: 0.6 }),
+          onLeave: () =>
+            gsap.to(el, { opacity: 0.25, y: 20, duration: 0.6 }),
+          onLeaveBack: () =>
+            gsap.to(el, { opacity: 0.25, y: 20, duration: 0.6 }),
+        });
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative w-full h-[65vh] sm:h-[75vh] overflow-hidden bg-pureWhite">
-
-      {/* IMAGE */}
-      <motion.div
-        style={{ y, scale }}
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: `url(${aboutbrand})`,
-        }}
-      ></motion.div>
-
-      {/* OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/50"></div>
-
-      {/* TEXT */}
-      <div className="absolute inset-0 flex items-center px-5 sm:px-10 lg:px-20">
-        <div className="max-w-xl">
-          <h1 className="
-            text-white 
-            text-2xl sm:text-4xl lg:text-5xl 
-            font-light tracking-tight leading-tight 
-            bg-black/30 px-3 py-2 rounded-md
-          ">
-            {title}
-          </h1>
-
-          {subtitle && (
-            <p className="
-              text-neutral-200 
-              text-sm sm:text-base lg:text-lg 
-              mt-4 leading-relaxed font-light 
-              bg-black/30 px-3 py-2 rounded-md
-            ">
-              {subtitle}
-            </p>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-/* -----------------------------------
-   TIMELINE ITEM — Luxury Scaling
------------------------------------ */
-function TimelineItem({ item, index }) {
-  const isEven = index % 2 === 0;
-  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
-
-  return (
-    <>
-   
-
-    <motion.article
-      ref={ref}
-      variants={itemVariant(isEven ? "left" : "right")}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
+    <section
+      ref={containerRef}
+      className="relative bg-white py-36 px-6 sm:px-12 lg:px-24"
     >
-      {/* IMAGE */}
-      <div className={`${isEven ? "md:order-2" : "md:order-1"}`}>
-        <div className="overflow-hidden rounded-xl border border-neutral-300/40 shadow-sm">
-          <img
-            src={item.image}
-            alt={item.title}
-            className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-xl"
+      <div className="max-w-6xl mx-auto relative">
+
+        {/* Vertical Axis */}
+        <div className="absolute top-0 bottom-0 left-4 md:left-1/2 md:-translate-x-1/2 w-px bg-neutral-200">
+          <div
+            ref={progressRef}
+            className="absolute top-0 left-0 w-full bg-[#bca47c]"
           />
         </div>
+
+        <div className="space-y-44">
+          {TIMELINE_PHASES.map((item, index) => (
+            <div
+              key={index}
+              ref={(el) => (itemsRef.current[index] = el)}
+              className="relative grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20"
+            >
+              {/* LEFT */}
+              <div className="pl-12 md:pl-0 md:pr-24 md:text-right">
+                <p className="text-[10px] tracking-[0.4em] uppercase text-neutral-400 mb-3">
+                  {item.phase}
+                </p>
+
+                <h3 className="text-[28px] sm:text-[34px] md:text-[42px] font-light text-neutral-900">
+                  {item.title}
+                </h3>
+              </div>
+
+              {/* NODE */}
+              <div className="absolute top-2 left-4 md:left-1/2 md:-translate-x-1/2 z-10">
+                <span className="relative block w-3.5 h-3.5 rounded-full bg-[#bca47c]">
+                  <span className="absolute inset-0 rounded-full bg-[#bca47c]/40 blur-md" />
+                </span>
+              </div>
+
+              {/* RIGHT */}
+              <div className="pl-12 md:pl-24 max-w-md space-y-4 text-neutral-700 text-[14px] leading-relaxed font-light">
+                {item.content.map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
-
-      {/* TEXT */}
-      <div className={`${isEven ? "md:order-1" : "md:order-2"}`}>
-        <p className="text-accentGold text-xs sm:text-sm tracking-widest mb-2 uppercase">
-          {item.year}
-        </p>
-
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-light text-neutralDark mb-3 tracking-tight">
-          {item.title}
-        </h3>
-
-        <p className="text-neutralDark text-sm sm:text-base md:text-lg font-extralight leading-relaxed">
-          {item.text}
-        </p>
-      </div>
-    </motion.article>
-    </>
+    </section>
   );
 }
 
 /* -----------------------------------
-   TIMELINE SECTION
------------------------------------ */
-const Timeline = ({ items }) => (
-  <section className="bg-pureWhite py-16 sm:py-20 lg:py-24 px-4 sm:px-10 lg:px-20">
-    <div className="max-w-5xl mx-auto">
-      <h2 className="text-center text-2xl uppercase sm:text-3xl md:text-4xl font-light p-2 rounded-lg text-neutralDark mb-12 sm:mb-16 tracking-tight">
-        Our Story 
-      </h2>
-
-      <div className="space-y-16 sm:space-y-20 lg:space-y-24">
-        {items.map((it, idx) => (
-          <TimelineItem key={idx} item={it} index={idx} />
-        ))}
-      </div>
-    </div>
-  </section>
-);
-
-/* -----------------------------------
-   FINAL CTA — Ultra Luxury Banner
+   FINAL CTA
 ----------------------------------- */
 const FinalCTA = () => (
-  <section className="relative w-full mt-2 sm:mt-2">
-    <div className="w-full h-[50vh] sm:h-[60vh] relative overflow-hidden">
-      <img
-        src={aboutbrand}
-        className="w-full h-full object-cover"
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/70"></div>
-
+  <section className="relative w-full">
+    <div className="w-full h-[55vh] relative overflow-hidden">
+      <img src={creative1} className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/70" />
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center px-6">
-          <h3 className="text-white font-light tracking-tight drop-shadow-lg
-            text-2xl sm:text-4xl md:text-5xl mb-6
-          ">
-            Worn by the Brave
+          <h3 className="text-white font-extralight tracking-[0.3em] uppercase text-xl sm:text-3xl md:text-4xl mb-10">
+            Crafted With Intention
           </h3>
-
-          <a
-            href="/collections"
-            className="
-              inline-block px-8 sm:px-10 py-2.5 
-              border border-neutral-200/60 
-              text-white text-xs sm:text-sm tracking-wide 
-              hover:bg-white hover:text-black transition-all duration-300
-            "
+          <Link
+            to="/weavecollection"
+            className="inline-block px-10 py-3 border border-white/60 text-white text-xs tracking-[0.25em] uppercase hover:bg-white hover:text-black transition-all duration-500"
           >
-            Explore Collection
-          </a>
+            View Collection
+          </Link>
         </div>
       </div>
     </div>
@@ -212,29 +175,73 @@ const FinalCTA = () => (
 export default function AboutAdvanced() {
   return (
     <>
-     <SeoData
-  title="Our Heritage – The Story of Bright Rose"
-  description="Bright Rose celebrates the soul of Indian weaving traditions. Discover our philosophy, artisanal lineage, and dedication to handcrafted luxury."
-  keywords={[
-    "Bright Rose heritage",
-    "Indian handloom tradition",
-    "artisan craft story",
-    "luxury weaving culture",
-    "heritage couture india"
-  ]}
-  image="/og-heritage.jpg"
-  url="/ourheritage"
-/>
-    <main className="bg-pureWhite text-neutralDark overflow-x-hidden">
-      <HeroParallax
-        title="ABOUT THE BRIGHT ROSE"
-        subtitle="A revival of handcrafted Indian textiles — shaped into modern global silhouettes."
+      <SeoData
+        title="Our Heritage – The Story of Bright Rose"
+        description="Bright Rose celebrates the soul of Indian weaving traditions."
+        image="/og-heritage.jpg"
+        url="/ourheritage"
       />
 
-      <Timeline items={TIMELINE} />
+      <main className="bg-white text-neutral-900 overflow-x-hidden">
 
-      <FinalCTA />
-    </main>
+         
+    <section className="bg-[#faf9f7] py-24 px-6 sm:px-12 lg:px-24">
+  <div className="max-w-4xl mx-auto text-center">
+
+    {/* Label */}
+    <p className="text-[11px] tracking-[0.4em] uppercase text-neutral-500 mb-6">
+      Our Story
+    </p>
+
+    {/* Heading */}
+    <h2 className="text-[18px] sm:text-[20px] md:text-[28px] font-light text-neutral-900 leading-tight mb-8">
+      Bright Rose
+    </h2>
+
+    {/* Subtitle */}
+    <p className="text-neutral-600 tracking-[0.18em] uppercase text-[13px] mb-12">
+      A Journey Woven in Tradition
+    </p>
+
+    {/* Body */}
+    <div className="space-y-6 text-neutral-700 text-[15px] leading-relaxed font-light">
+      <p>
+        Bright Rose is an endeavor to bring back Indian handloom — not as nostalgia,
+        but as living art. Every weave carries memory, emotion, and intention.
+      </p>
+
+      <p>
+        Inspired by generations of artisans, we craft garments that feel personal,
+        timeless, and quietly powerful — pieces made to be worn, remembered,
+        and passed forward.
+      </p>
+    </div>
+
+    {/* CTA */}
+    <div className="mt-14">
+      <Link
+        to="/weavecollection"
+        className="
+          inline-block
+          px-10 py-3
+          border border-neutral-900
+          text-[12px] tracking-[0.25em] uppercase
+          hover:bg-neutral-900 hover:text-white
+          transition-all duration-300
+        "
+      >
+        Discover Our World
+      </Link>
+    </div>
+
+  </div>
+</section>
+
+
+        <BrandTimeline />
+
+        <FinalCTA />
+      </main>
     </>
   );
 }

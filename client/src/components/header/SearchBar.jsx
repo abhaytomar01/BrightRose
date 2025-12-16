@@ -3,6 +3,8 @@ import debounce from "lodash.debounce";
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 
+const API_BASE = import.meta.env.VITE_SERVER_URL;
+
 const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -20,7 +22,7 @@ const SearchBar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // --- Debounced search call ---
+  // --- Search API call ---
   const handleSearch = async (searchTerm) => {
     if (!searchTerm.trim()) {
       setResults([]);
@@ -29,33 +31,42 @@ const SearchBar = () => {
     }
 
     try {
-      const res = await axios.get(`${VITE_SERVER_URL}/api/v1/products/search`, {
-   params: { q: keyword }
-})
+      const res = await axios.get(
+        `${API_BASE}/api/v1/products/search/${encodeURIComponent(searchTerm)}`
+      );
 
-
-      const data = Array.isArray(res.data) ? res.data : res.data.products || [];
+      const data = res.data?.products || [];
       setResults(data.slice(0, 8));
       setOpen(true);
     } catch (error) {
       console.error("Error searching products:", error);
+      setOpen(false);
     }
   };
 
-  const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
+  // --- Debounced search ---
+  const debouncedSearch = useCallback(
+    debounce(handleSearch, 350),
+    []
+  );
+
+  // --- Cleanup debounce on unmount ---
+  useEffect(() => {
+    return () => debouncedSearch.cancel();
+  }, [debouncedSearch]);
 
   // --- Input handler ---
   const handleInputChange = (e) => {
-    const newQuery = e.target.value;
-    setQuery(newQuery);
-    debouncedSearch(newQuery);
+    const value = e.target.value;
+    setQuery(value);
+    debouncedSearch(value);
   };
 
-  // --- Enter key (redirect) ---
+  // --- Enter key redirect ---
   const handleSubmit = (e) => {
     e.preventDefault();
     if (query.trim()) {
-      window.location.href = `/products?search=${query}`;
+      window.location.href = `/products?search=${encodeURIComponent(query)}`;
     }
   };
 
@@ -65,8 +76,8 @@ const SearchBar = () => {
       className="w-full sm:w-[70%] relative flex flex-col items-center z-[999]"
     >
       <form
-        className="bg-[#f0f5ff] relative w-full rounded-full overflow-hidden border border-gray-200 focus-within:ring-2 focus-within:ring-[#AD000F] transition-all"
         onSubmit={handleSubmit}
+        className="bg-[#f0f5ff] relative w-full rounded-full overflow-hidden border border-gray-200 focus-within:ring-2 focus-within:ring-[#AD000F] transition-all"
       >
         <div className="flex items-center h-[42px] px-3">
           <BsSearch className="text-gray-500 w-4 h-4" />
@@ -84,7 +95,7 @@ const SearchBar = () => {
       {/* --- Dropdown results --- */}
       {open && results.length > 0 && (
         <ul
-          className="absolute top-[46px] left-0 right-0 bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 animate-fadeIn z-[1000]"
+          className="absolute top-[46px] left-0 right-0 bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 z-[1000]"
           style={{ maxHeight: "360px", overflowY: "auto" }}
         >
           {results.map((product) => (
@@ -102,11 +113,16 @@ const SearchBar = () => {
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-800">
                     {product.name?.length > 50
-                      ? `${product.name.substring(0, 50)}...`
+                      ? `${product.name.substring(0, 50)}…`
                       : product.name}
                   </span>
                   <span className="text-xs text-gray-500">
-                    ₹{product.discountPrice?.toLocaleString() || product.price?.toLocaleString()}
+                    ₹
+                    {(
+                      product.discountPrice ||
+                      product.price ||
+                      0
+                    ).toLocaleString()}
                   </span>
                 </div>
               </a>

@@ -3,16 +3,30 @@ import Slider from "@mui/material/Slider";
 import { Collapse } from "@mui/material";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
+/* helpers */
+const slugify = (v) =>
+  v.toLowerCase().replace(/\s*&\s*|\s*\/\s*/g, "-").replace(/\s+/g, "-");
+
+const COLOR_MAP = {
+  Red: "#b91c1c",
+  Blue: "#1d4ed8",
+  Black: "#000000",
+  White: "#ffffff",
+  Green: "#15803d",
+  Beige: "#e5d3b3",
+  Assorted: "#9ca3af",
+};
+
 const SideFilter = ({
-  price = [0, 10000],
+  price,
   setPrice,
-  category = "",
+  category,
   setCategory,
-  color = "",
+  color,
   setColor,
-  weave = "",
+  weave,
   setWeave,
-  style = "",
+  style,
   setStyle,
 }) => {
   const [openCategory, setOpenCategory] = useState(true);
@@ -23,21 +37,9 @@ const SideFilter = ({
 
   const [tempPrice, setTempPrice] = useState(price);
 
-  /* FILTER OPTIONS */
-  const categories = [
-    "All",
-  ];
-
-  const colors = [
-    "All",
-    "Red",
-    "Blue",
-    "Black",
-    "White",
-    "Green",
-    "Beige",
-    "Assorted",
-  ];
+  /* OPTIONS */
+  const categories = ["All"];
+  const colors = ["All", ...Object.keys(COLOR_MAP)];
 
   const weavesSubcategories = [
     "All",
@@ -46,7 +48,7 @@ const SideFilter = ({
     "Kantha",
     "Shibori",
     "Tanchoi",
-    "Benarasi",
+    "Banarasi",
     "Kadwa",
     "Pochampally Ikat",
     "Gadwal",
@@ -63,15 +65,12 @@ const SideFilter = ({
     "Corsets & Tops",
   ];
 
-  /* PRICE HANDLER */
-  const handlePriceChange = (_, newValue) => setTempPrice(newValue);
-
+  /* PRICE */
   useEffect(() => {
-    const timer = setTimeout(() => setPrice(tempPrice), 300);
-    return () => clearTimeout(timer);
-  }, [tempPrice]);
+    const t = setTimeout(() => setPrice(tempPrice), 300);
+    return () => clearTimeout(t);
+  }, [tempPrice, setPrice]);
 
-  /* SECTION HEADER */
   const SectionHeader = ({ label, openState, setOpenState }) => (
     <div
       className="flex justify-between items-center py-3 cursor-pointer border-b border-[#eae6df]"
@@ -86,14 +85,13 @@ const SideFilter = ({
     </div>
   );
 
-  /* OPTION UI */
   const Option = ({ text, isActive, onClick }) => (
     <li
       onClick={onClick}
       className={`cursor-pointer px-3 py-2 rounded-md text-sm transition 
         ${
           isActive
-            ? "bg-neutralDark/70 text-white"
+            ? "bg-neutral-800 text-white"
             : "text-gray-700 hover:bg-gray-100"
         }`}
     >
@@ -103,7 +101,6 @@ const SideFilter = ({
 
   return (
     <aside className="w-full bg-white">
-
       {/* CATEGORY */}
       <SectionHeader label="Category" openState={openCategory} setOpenState={setOpenCategory} />
       <Collapse in={openCategory}>
@@ -112,8 +109,8 @@ const SideFilter = ({
             <Option
               key={cat}
               text={cat}
-              isActive={category === cat || (cat === "All" && category === "")}
-              onClick={() => setCategory(cat === "All" ? "" : cat)}
+              isActive={category === slugify(cat) || (cat === "All" && !category)}
+              onClick={() => setCategory(cat === "All" ? "" : slugify(cat))}
             />
           ))}
         </ul>
@@ -127,8 +124,8 @@ const SideFilter = ({
             <Option
               key={w}
               text={w}
-              isActive={weave === w || (w === "All" && weave === "")}
-              onClick={() => setWeave(w === "All" ? "" : w)}
+              isActive={weave === slugify(w) || (w === "All" && !weave)}
+              onClick={() => setWeave(w === "All" ? "" : slugify(w))}
             />
           ))}
         </ul>
@@ -138,12 +135,12 @@ const SideFilter = ({
       <SectionHeader label="Style" openState={openStyle} setOpenState={setOpenStyle} />
       <Collapse in={openStyle}>
         <ul className="py-2 space-y-1">
-          {styleSubcategories.map((sty) => (
+          {styleSubcategories.map((s) => (
             <Option
-              key={sty}
-              text={sty}
-              isActive={style === sty || (sty === "All" && style === "")}
-              onClick={() => setStyle(sty === "All" ? "" : sty)}
+              key={s}
+              text={s}
+              isActive={style === slugify(s) || (s === "All" && !style)}
+              onClick={() => setStyle(s === "All" ? "" : slugify(s))}
             />
           ))}
         </ul>
@@ -153,24 +150,24 @@ const SideFilter = ({
       <SectionHeader label="Color" openState={openColor} setOpenState={setOpenColor} />
       <Collapse in={openColor}>
         <ul className="py-2 grid grid-cols-2 gap-2">
-          {colors.map((col) => (
+          {colors.map((c) => (
             <li
-              key={col}
-              onClick={() => setColor(col === "All" ? "" : col)}
+              key={c}
+              onClick={() => setColor(c === "All" ? "" : c.toLowerCase())}
               className={`flex items-center px-3 py-2 rounded-md text-sm cursor-pointer transition 
-              ${
-                (!color && col === "All") || color === col
-                  ? "bg-neutralDark/80 text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+                ${
+                  (!color && c === "All") || color === c.toLowerCase()
+                    ? "bg-neutral-800 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
             >
-              {col !== "All" && (
+              {c !== "All" && (
                 <span
-                  className="w-4 h-4 mr-2 rounded-full border border-gray-300"
-                  style={{ backgroundColor: col.toLowerCase() }}
-                ></span>
+                  className="w-4 h-4 mr-2 rounded-full border"
+                  style={{ backgroundColor: COLOR_MAP[c] }}
+                />
               )}
-              {col}
+              {c}
             </li>
           ))}
         </ul>
@@ -193,16 +190,16 @@ const SideFilter = ({
 
           <Slider
             value={tempPrice}
-            onChange={handlePriceChange}
+            onChange={(_, v) => setTempPrice(v)}
             min={0}
             max={10000}
             step={500}
             sx={{
-              color: "#444444",
+              color: "#444",
               "& .MuiSlider-thumb": {
                 width: 16,
                 height: 16,
-                backgroundColor: "#444444",
+                backgroundColor: "#444",
               },
             }}
           />

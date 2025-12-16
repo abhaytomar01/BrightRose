@@ -10,7 +10,7 @@ const Product = ({
   price,
 }) => {
   return (
-    <>
+
     
     <motion.div
       className="w-full bg-white overflow-hidden cursor-pointer"
@@ -30,16 +30,16 @@ const Product = ({
 
       {/* TEXT */}
       <div className="text-center py-3">
-        <h3 className="text-[15px] font-medium tracking-wide line-clamp-2">
+        <h3 className="text-[12px] md:text-[14px] font-medium tracking-wide line-clamp-2">
           {name}
         </h3>
 
-        <p className="text-[16px] font-semibold mt-1">
+        <p className="text-[13px] md:text-[16px] font-semibold mt-1">
           ₹{price?.toLocaleString()}
         </p>
       </div>
     </motion.div>
-    </>
+
   );
 };
 

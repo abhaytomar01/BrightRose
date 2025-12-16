@@ -24,9 +24,9 @@ export default function Header() {
     return { BIG: 72, SMALL: 22, START_Y: 160, TOP: -52 };
   }
   if (width >= 500) {
-    return { BIG: 52, SMALL: 22, START_Y: 135, TOP: -38 };
+    return { BIG: 48, SMALL: 22, START_Y: 135, TOP: -38 };
   }
-  return { BIG: 40, SMALL: 18, START_Y: 130, TOP: -29 };
+  return { BIG: 38, SMALL: 18, START_Y: 130, TOP: -27 };
 };
 
 const [viewport, setViewport] = useState(
@@ -135,6 +135,11 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
         p < 0.75
           ? "#ffffff"
           : `rgba(0,0,0,${(p - 0.75) / 0.25})`;
+      
+      // after calculating `p`
+const zIndex = p > 0.92 ? 600 : 400;
+logo.style.zIndex = zIndex;
+
 
       logo.style.transform = `translate(-50%, ${translateY}px) scale(${scale})`;
       logo.style.letterSpacing = `${spacing}em`;
@@ -153,11 +158,11 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       {isHome && (
         <div
           ref={logoRef}
-          className="fixed left-1/2 pointer-events-none z-[9990]"
+          className="fixed left-1/2 pointer-events-none"
           style={{
             top: CUSTOM_TOP,
             transform: `translate(-50%, ${BIG_START_Y}px) scale(1)`,
-            fontFamily: "PlayfairDisplay, serif",
+            fontFamily: "PlayfairDisplay",
             fontSize: BIG_SIZE,
             letterSpacing: "0.32em",
             fontWeight: 100,
@@ -171,7 +176,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
 
       {/* HEADER */}
       <header
-        className={`fixed top-0 left-0 w-full z-[999]
+        className={`fixed top-0 left-0 w-full z-[500]
         transition-colors duration-300
         ${isScrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-transparent"}`}
         style={{ height: HEADER_HEIGHT }}
@@ -200,8 +205,8 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
           {!isHome && (
             <Link
               to="/"
-              className="absolute left-1/2 -translate-x-1/2 text-[16px]
-              tracking-[0.12em] font-[PlayfairDisplay] uppercase text-black"
+              className="absolute left-1/2 -translate-x-1/2 text-[24px]
+              tracking-[0.06em] font-[PlayfairDisplay] font-uppercase text-black"
             >
               BRIGHT ROSE
             </Link>
@@ -227,21 +232,23 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
 {open && (
   <>
     {/* BACKDROP */}
-    <div
-      className="fixed inset-0 z-[999] bg-black/50 backdrop-blur-sm"
-      onClick={() => setOpen(false)}
-    />
+    {/* BACKDROP */}
+<div
+  className="fixed inset-0 z-[800] bg-black/50 backdrop-blur-sm"
+  onClick={() => setOpen(false)}
+/>
 
-    {/* DRAWER */}
-    <aside
-      className="
-        fixed top-0 left-0 z-[999]
-        h-full w-[82%] max-w-[360px]
-        bg-white shadow-2xl
-        animate-[slideIn_0.35s_ease-out]
-        overflow-y-auto
-      "
-    >
+{/* DRAWER */}
+<aside
+  className="
+    fixed top-0 left-0 z-[900]
+    h-full w-[82%] max-w-[360px]
+    bg-white shadow-2xl
+    animate-[slideIn_0.35s_ease-out]
+    overflow-y-auto
+  "
+>
+
       {/* HEADER */}
       <div className="flex items-center justify-between px-5 py-5 border-b z-[9999]">
         <button onClick={() => setOpen(false)}>
@@ -280,7 +287,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
         </div>
 
         <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
-        <Link to="/contact" onClick={() => setOpen(false)}>Support</Link>
+        <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
 
         {/* FOOTER BUTTONS */}
         <div className="mt-6 pt-4 border-t flex gap-3">
@@ -301,11 +308,12 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       {isSearchOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-md "
-            onClick={() => setIsSearchOpen(false)}
-          />
+  className="fixed inset-0 bg-black/60 backdrop-blur-md z-[950]"
+  onClick={() => setIsSearchOpen(false)}
+/>
 
-          <div className="fixed right-0 top-0 h-full w-full sm:w-[520px] bg-white z-[9999] shadow-xl flex flex-col">
+<div className="fixed right-0 top-0 h-full w-full sm:w-[520px] bg-white z-[1000] shadow-xl flex flex-col">
+
             <div className="flex justify-between px-6 py-5 border-b">
               <button onClick={() => setIsSearchOpen(false)}>
                 <X size={22} />

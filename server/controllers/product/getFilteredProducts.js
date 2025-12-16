@@ -13,60 +13,88 @@ const getFilteredProducts = async (req, res) => {
       sort,
     } = req.query;
 
-    // Build MongoDB filter object
     const filter = {};
 
-    if (category) filter.category = category;
-    if (weave) filter.weavingArt = weave;
-    if (style) filter.style = style;
-    if (color) filter.color = color;
-    if (ratings) filter.ratings = { $gte: Number(ratings) };
+    // CATEGORY
+    if (category) {
+      filter.category = { $regex: category, $options: "i" };
+    }
 
-    // Price Filter
-    if (priceMin !== undefined || priceMax !== undefined) {
+    // WEAVE (FIXED FIELD NAME + CASE INSENSITIVE)
+    if (weave) {
+      filter.weave = { $regex: weave, $options: "i" };
+    }
+
+    // STYLE
+    if (style) {
+      filter.style = { $regex: style, $options: "i" };
+    }
+
+    // COLOR
+    if (color) {
+      filter.color = { $regex: color, $options: "i" };
+    }
+
+    // RATINGS
+    if (ratings && Number(ratings) > 0) {
+      filter.ratings = { $gte: Number(ratings) };
+    }
+
+    // PRICE
+    if (priceMin || priceMax) {
       filter.price = {
-        ...(priceMin ? { $gte: Number(priceMin) } : {}),
-        ...(priceMax ? { $lte: Number(priceMax) } : {}),
+        ...(priceMin && { $gte: Number(priceMin) }),
+        ...(priceMax && { $lte: Number(priceMax) }),
       };
     }
 
-    // Sorting logic
-    let sortQuery = {};
+    // SORTING
+    let sortQuery = { createdAt: -1 };
 
     switch (sort) {
       case "priceAsc":
         sortQuery = { price: 1 };
         break;
-
       case "priceDesc":
         sortQuery = { price: -1 };
         break;
-
-      case "newest":
-        sortQuery = { createdAt: -1 };
-        break;
-
       case "oldest":
         sortQuery = { createdAt: 1 };
         break;
-
       default:
-        sortQuery = { createdAt: -1 }; // default: newest
+        sortQuery = { createdAt: -1 };
     }
 
-    const products = await productModel
-      .find(filter)
-      .sort(sortQuery);
+    let products = await productModel.find(filter).sort(sortQuery);
+
+    // FIX IMAGE URLS (SAME AS getAllProducts)
+    const BASE = "https://www.thebrightrose.com";
+
+    products = products.map((p) => {
+      p.images = (p.images || []).map((img) => ({
+        filename: img.filename,
+        url: img.url.startsWith("http")
+          ? img.url
+          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
+      }));
+
+      if (!p.images.length) {
+        p.images = [{ url: `${BASE}/uploads/fallback.jpg` }];
+      }
+
+      return p;
+    });
 
     return res.json({
       success: true,
       products,
     });
+
   } catch (error) {
-    console.error("Filter API Error:", error);
+    console.error("FILTER API ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: "Error fetching products",
+      message: "Failed to fetch filtered products",
     });
   }
 };

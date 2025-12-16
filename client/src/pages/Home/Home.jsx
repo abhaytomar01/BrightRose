@@ -10,6 +10,7 @@ import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
 import brightrosehome from "../../assets/Kanchipuram/Brightrosehome.jpg";
+import ourstory from "../../assets/images/banners/ourstory.jpg";
 const Home = () => {
     return (
         <>
@@ -51,114 +52,101 @@ const Home = () => {
         learnMoreLink="/ourheritage"
     /> */}
 
-     
-    <section className="w-full bg-gradient-to-b from-[#faf8f6] via-white to-[#f8f6f4] py-10 md:py-20 px-5 md:px-10 lg:px-20 select-none">
+    <section className="relative w-full overflow-hidden">
 
-  <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+  {/* BACKGROUND IMAGE */}
+  <img
+    src={ourstory}
+    alt="Bright Rose Story"
+    className="
+      absolute inset-0
+      w-full h-full 
+      object-cover
+      object-[65%_center]
+      md:object-center
+    "
+  />
 
-    {/* LEFT SIDE — LUXURY TEXT BLOCK */}
-    <div
-      className="relative animate-fadeIn"
-      style={{ animationDuration: "1.2s" }}
+  {/* DARK OVERLAY (luxury tone) */}
+  <div
+    className="
+      absolute inset-0
+      bg-[rgba(0,0,0,0.55)]
+      md:bg-[rgba(0,0,0,0.45)]
+    "
+  />
+
+  {/* CONTENT */}
+  <div
+    className="
+      relative z-10
+      flex flex-col items-center justify-center text-center
+      min-h-[85vh] md:min-h-[90vh]
+      px-6 sm:px-10
+    "
+  >
+
+    {/* SMALL LABEL */}
+    <p
+      className="
+        text-[10px] sm:text-[11px]
+        tracking-[0.35em]
+        uppercase
+        text-white/75
+        mb-4
+      "
     >
+      Our Story
+    </p>
 
-      {/* Vertical Title */}
-      <div className="absolute left-4 -top-4 hidden md:block opacity-80">
-        <p className="text-[11px] tracking-[0.4em] text-neutral-600 rotate-180 writing-vertical-rl uppercase">
-          Our Story
-        </p>
-      </div>
+    {/* MAIN TITLE */}
+    <h1
+      className="
+        text-white/95
+        font-light
+        text-[30px] sm:text-[36px] md:text-[48px] lg:text-[56px]
+        tracking-wide
+        leading-tight
+      "
+    >
+      Bright Rose
+    </h1>
 
-      {/* Luxury Heading */}
-      <h2 className="text-[28px] sm:text-[34px] md:text-[42px] font-light text-neutral-900 leading-tight mb-6">
-        <span className="border-l-4 border-[#bca47c] pl-4">
-          Bright Rose •
-          <br className="hidden md:block" />
-          A Journey Woven in Tradition
-        </span>
-      </h2>
+    {/* SUBTITLE */}
+    <p
+      className="
+        mt-3
+        text-white/90
+        text-[13px] sm:text-[14px] md:text-[16px]
+        tracking-[0.18em]
+        uppercase
+        font-light
+      "
+    >
+      A Journey Woven in Tradition
+    </p>
 
-      {/* PARAGRAPHS */}
-      <div className="space-y-6 text-neutral-700 text-[14px] md:text-[16px] leading-relaxed font-light">
-
-        <p>
-          Bright Rose is an endeavor to bring back Indian Handloom so that we can
-          clothe the world once again in a natural way through the beauty of
-          <span className="font-medium text-neutral-900"> intricate weaves.</span>
-        </p>
-
-        <p>
-          Just as a rose — the Queen of Flowers — carries layers of petals, bold hues,
-          and striking forms, our garments mirror the same essence:
-          <span className="font-medium text-neutral-900">
-            {" "}
-            intricate craftsmanship, vibrant palettes,
-          </span>
-          and the authenticity of India's rich weaving heritage.
-        </p>
-
-        <p className="tracking-wide font-medium text-neutral-800 uppercase text-[13px]">
-          Bright Rose • Artisan Made in India
-        </p>
-
-        {/* Quote Block */}
-        <blockquote className="border-l-4 border-[#d8c7a0] pl-5 bg-white/60 py-4 rounded-md shadow-sm italic text-neutral-700">
-          “Our knowledge of weaving is deeply valued within families and preserved
-          through generations. Some artisans weave with such mastery that their hands
-          move as if guided by instinct alone.”
-          <br />
-          <span className="not-italic font-medium text-neutral-900 block mt-3">
-            — Rajeev Yadav
-          </span>
-        </blockquote>
-      </div>
-
-      {/* CTA BUTTON */}
-      <button href="/products" className="mt-10 px-8 py-3 border border-neutral-900 rounded-full text-sm tracking-wide hover:bg-neutral-900 hover:text-white transition-all duration-300">
-        Discover Our World
-      </button>
-    </div>
-
-    {/* RIGHT SIDE — LUXURY IMAGE STACK */}
-    <div className="relative animate-fadeInUp" style={{ animationDuration: "1.2s" }}>
-
-      {/* Main Image */}
-      <div className="w-full h-[360px] md:h-[450px] rounded-3xl overflow-hidden shadow-lg">
-        <img
-          src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e"
-          className="w-full h-full object-cover transition-transform duration-[1.4s] hover:scale-110"
-        />
-      </div>
-
-      {/* Small Second Image */}
-      <div className="w-[75%] h-[220px] md:h-[260px] rounded-3xl overflow-hidden shadow-lg ml-auto mt-8">
-        <img
-          src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c"
-          className="w-full h-full object-cover transition-transform duration-[1.4s] hover:scale-110"
-        />
-      </div>
-
-      {/* Light Gradient Overlay */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/20 to-transparent"></div>
-    </div>
+    {/* CTA */}
+    <a
+      href="/ourheritage"
+      className="
+        mt-10
+        inline-flex items-center justify-center
+        px-10 py-3
+        border border-white
+        text-white
+        text-[11px] sm:text-[12px]
+        tracking-[0.25em]
+        uppercase
+        hover:bg-white hover:text-black
+        transition-all duration-300
+        backdrop-blur-[1px]
+      "
+    >
+      Discover Our World
+    </a>
 
   </div>
-
-  {/* Keyframe Animations */}
-  <style>{`
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeIn { animation: fadeIn ease forwards; }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(35px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeInUp { animation: fadeInUp ease forwards; }
-  `}</style>
-
 </section>
 
 

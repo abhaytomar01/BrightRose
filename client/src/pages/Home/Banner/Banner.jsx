@@ -5,7 +5,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import demovideo from "../../../assets/Kanchipuram/demovideo.mp4";
+// import video1 from "../../../assets/banners/images/video1.mp4";
+import desktopVideo from "../../../assets/images/banners/video2.mp4";
+import mobileVideo from "../../../assets/images/banners/video1.mp4";
 import { Link } from "react-router-dom";
 
 export const PreviousBtn = ({ className, onClick }) => (
@@ -64,14 +66,28 @@ const Banner = () => {
       >
         <div className="relative w-full h-[calc(100vh+72px)] min-h-[calc(100svh+72px)]">
           {/* VIDEO */}
-          <video
-            src={demovideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          {/* DESKTOP VIDEO */}
+<video
+  src={desktopVideo}
+  autoPlay
+  loop
+  muted
+  playsInline
+  preload="auto"
+  className="hidden md:block absolute inset-0 w-full h-full object-cover"
+/>
+
+{/* MOBILE VIDEO */}
+<video
+  src={mobileVideo}
+  autoPlay
+  loop
+  muted
+  playsInline
+  preload="auto"
+  className="block md:hidden absolute inset-0 w-full h-full object-cover"
+/>
+
 
           {/* GRADIENT */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
@@ -79,7 +95,7 @@ const Banner = () => {
           {/* CTA */}
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-[12vh] sm:pb-[14vh] text-center text-white z-10">
             <p className="text-[14px] sm:text-[16px] tracking-[0.18em] uppercase mb-5 font-light">
-              Bright Rose Gift
+              Bright Rose Gift 
             </p>
 
             <div className="flex gap-4">

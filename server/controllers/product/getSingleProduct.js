@@ -11,10 +11,37 @@ const getSingleProduct = async (req, res) => {
       });
     }
 
-    res.json({ success: true, product });
-  } catch (err) {
-    console.error("GET SINGLE PRODUCT ERROR:", err);
-    res.status(500).json({ success: false, message: err.message });
+    const BASE = "https://www.thebrightrose.com";
+
+    // Normalize image URLs
+    product.images = (product.images || []).map((img) => ({
+      filename: img.filename,
+      url: img.url.startsWith("http")
+        ? img.url
+        : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
+    }));
+
+    // Fallback image
+    if (!product.images.length) {
+      product.images = [
+        {
+          url: `${BASE}/uploads/fallback.jpg`,
+          filename: "fallback.jpg",
+        },
+      ];
+    }
+
+    return res.json({
+      success: true,
+      product,
+    });
+
+  } catch (error) {
+    console.error("GET SINGLE PRODUCT ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch product",
+    });
   }
 };
 
