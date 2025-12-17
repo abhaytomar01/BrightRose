@@ -10,7 +10,7 @@ import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
 import brightrosehome from "../../assets/Kanchipuram/Brightrosehome.jpg";
-import ourstory from "../../assets/images/banners/ourstory.jpg";
+import abouthomeimage from "../../assets/images/abouthomeimage.jpg";
 const Home = () => {
     return (
         <>
@@ -56,7 +56,7 @@ const Home = () => {
 
   {/* BACKGROUND IMAGE */}
   <img
-    src={ourstory}
+    src={abouthomeimage}
     alt="Bright Rose Story"
     className="
       absolute inset-0
