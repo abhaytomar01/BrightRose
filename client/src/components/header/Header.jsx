@@ -206,7 +206,8 @@ logo.style.zIndex = zIndex;
             <Link
               to="/"
               className="absolute left-1/2 -translate-x-1/2 text-[16px] md:text-[24px]
-              tracking-[0.06em] font-[PlayfairDisplay] font-uppercase text-black"
+              tracking-[0.06em] font-uppercase text-black"
+              style = {{ fontFamily: "PlayfairDisplay"}}
             >
               BRIGHT ROSE
             </Link>
