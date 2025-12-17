@@ -158,7 +158,7 @@ logo.style.zIndex = zIndex;
       {isHome && (
         <div
           ref={logoRef}
-          className="fixed left-1/2 pointer-events-none"
+          className="fixed left-1/2 pointer-events-none "
           style={{
             top: CUSTOM_TOP,
             transform: `translate(-50%, ${BIG_START_Y}px) scale(1)`,
@@ -177,7 +177,7 @@ logo.style.zIndex = zIndex;
       {/* HEADER */}
       <header
         className={`fixed top-0 left-0 w-full z-[500]
-        transition-colors duration-300
+        transisScrolledition-colors duration-300
         ${isScrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-transparent"}`}
         style={{ height: HEADER_HEIGHT }}
       >
@@ -293,10 +293,10 @@ logo.style.zIndex = zIndex;
         {/* FOOTER BUTTONS */}
         <div className="mt-6 pt-4 border-t flex gap-3">
           <button className="flex-1 py-3 border rounded-md">
-            Weave
+            <Link to="/weavecollection">Weave</Link>
           </button>
           <button className="flex-1 py-3 bg-neutral-100 rounded-md">
-            Style
+            <Link to="/stylecollection">Style</Link>
           </button>
         </div>
       </nav>

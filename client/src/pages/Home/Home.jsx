@@ -6,6 +6,7 @@ import { electronicProducts } from "../../utils/electronics";
 import { fashionProducts } from "../../utils/fashion";
 import SeoData from "../../SEO/SeoData";
 import FeaturedCollections from "../../components/FeatureCollection";
+import FeaturedStyle from "../../components/FeatureStyle";
 import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
@@ -35,12 +36,18 @@ const Home = () => {
            <main className="flex flex-col items-center gap-6 pb-10 bg-pureWhite text-neutralDark">
 
     <Banner />
-
-    <FeaturedCollections
-        title="Explore Our Collections"
+     <FeaturedStyle
+        title="Shop By Style"
         subtitle="Discover timeless pieces crafted for modern living"
         
     />
+
+    <FeaturedCollections
+        title="Shop By Weave"
+        subtitle="Discover timeless pieces crafted for modern living"
+        
+    />
+   
 
     {/* <BrandStory
         title="Our Story"

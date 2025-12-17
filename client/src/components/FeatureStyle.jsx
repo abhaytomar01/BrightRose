@@ -39,7 +39,7 @@ export default function LuxurySeasonalShowcase() {
         {/* HEADER */}
         <div className="text-center mb-14">
           <h2 className="text-xl md:text-3xl tracking-[0.2em] font-light uppercase text-neutral-900">
-            SHOP BY WEAVE
+            SHOP BY STYLE
           </h2>
           <p className="mt-4 text-neutral-500 text-sm md:text-base tracking-wide font-light">
             A selection of the finest handcrafted luxury pieces, personally curated for you.
