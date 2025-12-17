@@ -24,9 +24,9 @@ export default function Header() {
     return { BIG: 72, SMALL: 22, START_Y: 160, TOP: -52 };
   }
   if (width >= 500) {
-    return { BIG: 48, SMALL: 22, START_Y: 135, TOP: -38 };
+    return { BIG: 48, SMALL: 20, START_Y: 135, TOP: -38 };
   }
-  return { BIG: 38, SMALL: 18, START_Y: 130, TOP: -27 };
+  return { BIG: 38, SMALL: 16, START_Y: 130, TOP: -27 };
 };
 
 const [viewport, setViewport] = useState(
@@ -205,7 +205,7 @@ logo.style.zIndex = zIndex;
           {!isHome && (
             <Link
               to="/"
-              className="absolute left-1/2 -translate-x-1/2 text-[24px]
+              className="absolute left-1/2 -translate-x-1/2 text-[16px] md:text-[24px]
               tracking-[0.06em] font-[PlayfairDisplay] font-uppercase text-black"
             >
               BRIGHT ROSE
