@@ -150,3 +150,5 @@ This agreement shall be construed and the legal relations between YOU and Bright
 };
 
 export default Terms;
+
+

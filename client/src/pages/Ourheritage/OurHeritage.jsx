@@ -1,6 +1,6 @@
 // src/pages/About/AboutAdvanced.jsx
 
-import React, { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,39 +14,33 @@ gsap.registerPlugin(ScrollTrigger);
 ----------------------------------- */
 const TIMELINE_PHASES = [
   {
-    phase: "PHASE ONE",
+    phase: "2013",
     title: "The Beginning",
     content: [
-      "It began with a deep admiration for craft — not just how clothing looks, but how it is made.",
-      "Growing up surrounded by stories of Indian textiles, handwork, and detail, we learned that fashion is memory stitched into fabric.",
-      "Every silhouette carries a feeling, every thread carries intention.",
-      "Before trends, before timelines — there was only passion.",
+      "It began with a deep admiration for craft.",
+      "A focus on sculptural silhouettes and intentional design.",
     ],
   },
   {
-    phase: "PHASE TWO",
-    title: "The Evolution",
+    phase: "2016",
+    title: "Recognition",
     content: [
-      "As the vision grew, so did our responsibility.",
-      "We chose to slow down in a fast world — valuing precision over production, quality over quantity.",
-      "Our designs evolved into a balance of modern expression and traditional techniques.",
-      "A commitment to authenticity, without compromise.",
+      "The brand gained international attention.",
+      "Pieces became symbolic, collectible, and iconic.",
     ],
   },
   {
-    phase: "PHASE THREE",
-    title: "The Brand Today",
+    phase: "2020",
+    title: "Today",
     content: [
-      "Today, we stand as a brand that celebrates quiet luxury and powerful individuality.",
-      "Every creation is thoughtfully designed, ethically crafted, and consciously delivered.",
-      "We don’t chase moments — we create pieces that stay relevant beyond seasons.",
-      "Rooted in India, created for the world.",
+      "A global lifestyle brand.",
+      "Rooted in craft, driven by quiet luxury.",
     ],
   },
 ];
 
 /* -----------------------------------
-   BRAND TIMELINE (GSAP)
+   BRAND TIMELINE
 ----------------------------------- */
 function BrandTimeline() {
   const containerRef = useRef(null);
@@ -55,12 +49,11 @@ function BrandTimeline() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.set(itemsRef.current, { opacity: 0.25, y: 20 });
+      gsap.set(itemsRef.current, { opacity: 0.25, y: 30 });
       gsap.set(progressRef.current, { height: "0%" });
 
       gsap.to(progressRef.current, {
         height: "100%",
-        ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top center",
@@ -73,15 +66,10 @@ function BrandTimeline() {
         ScrollTrigger.create({
           trigger: el,
           start: "top center+=80",
-          end: "bottom center",
           onEnter: () =>
-            gsap.to(el, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }),
-          onEnterBack: () =>
             gsap.to(el, { opacity: 1, y: 0, duration: 0.6 }),
-          onLeave: () =>
-            gsap.to(el, { opacity: 0.25, y: 20, duration: 0.6 }),
           onLeaveBack: () =>
-            gsap.to(el, { opacity: 0.25, y: 20, duration: 0.6 }),
+            gsap.to(el, { opacity: 0.25, y: 30, duration: 0.6 }),
         });
       });
     });
@@ -90,157 +78,182 @@ function BrandTimeline() {
   }, []);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative bg-white py-36 px-6 sm:px-12 lg:px-24"
-    >
+    <section ref={containerRef} className="bg-[#faf9f7] py-44 px-6">
       <div className="max-w-6xl mx-auto relative">
-
-        {/* Vertical Axis */}
-        <div className="absolute top-0 bottom-0 left-4 md:left-1/2 md:-translate-x-1/2 w-px bg-neutral-200">
-          <div
-            ref={progressRef}
-            className="absolute top-0 left-0 w-full bg-[#bca47c]"
-          />
+        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-300">
+          <div ref={progressRef} className="absolute top-0 w-full bg-neutral-800" />
         </div>
 
-        <div className="space-y-44">
-          {TIMELINE_PHASES.map((item, index) => (
+        <div className="space-y-56">
+          {TIMELINE_PHASES.map((item, i) => (
             <div
-              key={index}
-              ref={(el) => (itemsRef.current[index] = el)}
-              className="relative grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20"
+              key={i}
+              ref={(el) => (itemsRef.current[i] = el)}
+              className="grid grid-cols-1 md:grid-cols-2 gap-20 relative"
             >
-              {/* LEFT */}
-              <div className="pl-12 md:pl-0 md:pr-24 md:text-right">
-                <p className="text-[10px] tracking-[0.4em] uppercase text-neutral-400 mb-3">
+              <div className="md:text-right pr-12">
+                <h3 className="font-[PlayfairDisplay] text-4xl">
                   {item.phase}
-                </p>
-
-                <h3 className="text-[28px] sm:text-[34px] md:text-[42px] font-light text-neutral-900">
-                  {item.title}
                 </h3>
+                <p className="uppercase tracking-widest text-xs mt-4">
+                  {item.title}
+                </p>
               </div>
 
-              {/* NODE */}
-              <div className="absolute top-2 left-4 md:left-1/2 md:-translate-x-1/2 z-10">
-                <span className="relative block w-3.5 h-3.5 rounded-full bg-[#bca47c]">
-                  <span className="absolute inset-0 rounded-full bg-[#bca47c]/40 blur-md" />
-                </span>
-              </div>
-
-              {/* RIGHT */}
-              <div className="pl-12 md:pl-24 max-w-md space-y-4 text-neutral-700 text-[14px] leading-relaxed font-light">
-                {item.content.map((line, i) => (
-                  <p key={i}>{line}</p>
+              <div className="pl-12 space-y-4 max-w-sm text-sm text-neutral-600">
+                {item.content.map((c, idx) => (
+                  <p key={idx}>{c}</p>
                 ))}
               </div>
+
+              <span className="absolute left-1/2 top-2 w-3 h-3 bg-neutral-800 rounded-full -translate-x-1/2" />
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );
 }
 
 /* -----------------------------------
-   FINAL CTA
------------------------------------ */
-const FinalCTA = () => (
-  <section className="relative w-full">
-    <div className="w-full h-[55vh] relative overflow-hidden">
-      <img src={creative1} className="w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/70" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center px-6">
-          <h3 className="text-white font-extralight tracking-[0.3em] uppercase text-xl sm:text-3xl md:text-4xl mb-10">
-            Crafted With Intention
-          </h3>
-          <Link
-            to="/weavecollection"
-            className="inline-block px-10 py-3 border border-white/60 text-white text-xs tracking-[0.25em] uppercase hover:bg-white hover:text-black transition-all duration-500"
-          >
-            View Collection
-          </Link>
-        </div>
-      </div>
-    </div>
-  </section>
-);
-
-/* -----------------------------------
    MAIN PAGE
 ----------------------------------- */
 export default function AboutAdvanced() {
+  /* ✅ Hooks */
+  const [manifestoImage, setManifestoImage] = useState(null);
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+
+  const handleManifestoMove = (e) => {
+    setCursor({
+      x: e.clientX + 28,
+      y: e.clientY - 40,
+    });
+  };
+
   return (
     <>
       <SeoData
-        title="Our Heritage – The Story of Bright Rose"
-        description="Bright Rose celebrates the soul of Indian weaving traditions."
-        image="/og-heritage.jpg"
+        title="Our Heritage – Bright Rose"
+        description="A story shaped by craft, restraint, and timeless design."
         url="/ourheritage"
       />
 
-      <main className="bg-white text-neutral-900 overflow-x-hidden">
+      {/* HERO MANIFESTO */}
+      <section className="bg-[#faf9f7] py-[18vh] px-6">
+        <div className="max-w-[1100px] mx-auto text-center">
+          <p className="font-[PlayfairDisplay] font-thin text-[22px] sm:text-[26px] md:text-[36px] lg:text-[42px] xl:text-[44px] leading-[1.18] tracking-[0.04em] uppercase text-neutral-800">
+            Bright Rose designs beautiful heirloom pieces that will live in your
+            closet forever. The cornerstone of our DNA has been forged with the
+            idea of creating objects d’art that make you look twice.
+          </p>
 
-         
-    <section className="bg-[#faf9f7] py-24 px-6 sm:px-12 lg:px-24">
-  <div className="max-w-4xl mx-auto text-center">
+          <p className="mt-10 text-[13px] tracking-[0.15em] text-neutral-500">
+            — Founder, Bright Rose
+          </p>
+        </div>
+      </section>
 
-    {/* Label */}
-    <p className="text-[11px] tracking-[0.4em] uppercase text-neutral-500 mb-6">
-      Our Story
-    </p>
+      <main className="bg-[#faf9f7] overflow-x-hidden">
+        {/* FULL IMAGE */}
+        <section className="w-full h-[90vh]">
+          <img src={creative1} className="w-full h-full object-cover" />
+        </section>
 
-    {/* Heading */}
-    <h2 className="text-[18px] sm:text-[20px] md:text-[28px] font-light text-neutral-900 leading-tight mb-8">
-      Bright Rose
-    </h2>
+        {/* ===============================
+            OUR MANIFESTO (HOVER)
+        ================================ */}
+        <section className="relative bg-[#faf9f7] px-6 py-32 md:py-40 overflow-hidden">
+          {/* Floating image */}
+          {manifestoImage && (
+            <div
+              className="pointer-events-none fixed z-[80] hidden md:block transition-transform duration-150 ease-[cubic-bezier(.19,1,.22,1)]"
+              style={{
+                transform: `translate(${cursor.x}px, ${cursor.y}px)`,
+              }}
+            >
+              <img
+                src={manifestoImage}
+                className="w-[260px] h-[360px] object-cover shadow-2xl"
+                alt=""
+              />
+            </div>
+          )}
 
-    {/* Subtitle */}
-    <p className="text-neutral-600 tracking-[0.18em] uppercase text-[13px] mb-12">
-      A Journey Woven in Tradition
-    </p>
+          <div className="max-w-[1200px] mx-auto">
+            <h2 className="text-center font-[PlayfairDisplay] text-[42px] md:text-[52px] tracking-[0.08em] mb-20">
+              OUR MANIFESTO
+            </h2>
 
-    {/* Body */}
-    <div className="space-y-6 text-neutral-700 text-[15px] leading-relaxed font-light">
-      <p>
-        Bright Rose is an endeavor to bring back Indian handloom — not as nostalgia,
-        but as living art. Every weave carries memory, emotion, and intention.
-      </p>
+            <div className="divide-y divide-neutral-400/70">
+              {[
+                {
+                  num: "I.",
+                  text: "To curate a wardrobe full of magic, one that glows with each accessory.",
+                  img: "/manifesto/manifesto-1.jpg",
+                },
+                {
+                  num: "II.",
+                  text: "To create a lifestyle that’s a visual feast, effortlessly.",
+                  img: "/manifesto/manifesto-2.jpg",
+                },
+                {
+                  num: "III.",
+                  text: "To design for the moving eye, because everything is art.",
+                  img: "/manifesto/manifesto-3.jpg",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-[70px_1fr] md:grid-cols-[120px_1fr] items-center py-10 md:py-14"
+                >
+                  {/* Hover Target */}
+                  <span
+                    onMouseEnter={() => setManifestoImage(item.img)}
+                    onMouseLeave={() => setManifestoImage(null)}
+                    onMouseMove={handleManifestoMove}
+                    className="font-[PlayfairDisplay] text-[28px] md:text-[34px] cursor-pointer"
+                  >
+                    {item.num}
+                  </span>
 
-      <p>
-        Inspired by generations of artisans, we craft garments that feel personal,
-        timeless, and quietly powerful — pieces made to be worn, remembered,
-        and passed forward.
-      </p>
-    </div>
+                  <p className="uppercase tracking-[0.18em] text-[12px] md:text-[13px] leading-relaxed max-w-[420px]">
+                    {item.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-    {/* CTA */}
-    <div className="mt-14">
-      <Link
-        to="/weavecollection"
-        className="
-          inline-block
-          px-10 py-3
-          border border-neutral-900
-          text-[12px] tracking-[0.25em] uppercase
-          hover:bg-neutral-900 hover:text-white
-          transition-all duration-300
-        "
-      >
-        Discover Our World
-      </Link>
-    </div>
+        {/* EDITORIAL */}
+        <section className="py-44 px-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <img src={creative1} className="h-[80vh] w-full object-cover" />
 
-  </div>
-</section>
+            <div>
+              <h3 className="font-[PlayfairDisplay] text-5xl mb-8">
+                From Mother Nature
+              </h3>
+              <p className="text-neutral-600 max-w-md">
+                Inspired by nature and women, Bright Rose creates sculptural
+                forms that feel timeless, expressive, and deeply personal.
+              </p>
+            </div>
+          </div>
+        </section>
 
-
+        {/* TIMELINE */}
         <BrandTimeline />
 
-        <FinalCTA />
+        {/* CTA */}
+        <section className="py-40 text-center">
+          <Link
+            to="/weavecollection"
+            className="inline-block border px-12 py-4 tracking-widest uppercase text-xs hover:bg-black hover:text-white transition"
+          >
+            Discover Collection
+          </Link>
+        </section>
       </main>
     </>
   );
