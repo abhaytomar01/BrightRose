@@ -21,14 +21,14 @@ const ProductListing = ({
   return (
     <>
     
-    <div className="w-full bg-[#FCF7F1] flex flex-col items-center pb-16 pt-32 md:pt-44 px-2 sm:px-0 min-h-screen">
+    <div className="w-full bg-[#FCF7F1] flex flex-col items-center pb-16 pt-12 md:pt-16 px-2 sm:px-0 min-h-screen">
 
       {/* LOADING */}
       {loading ? (
         <Spinner />
       ) : products?.length === 0 ? (
         /* EMPTY STATE — LUXURY VERSION */
-        <div className="flex flex-col items-center justify-center gap-5 mt-20 p-10 bg-white rounded-xl shadow-md border border-[#eadccc] max-w-lg text-center">
+        <div className="flex flex-col items-center justify-center gap-5 mt-0 p-10 bg-white rounded-xl shadow-md border border-[#eadccc] max-w-lg text-center">
           <img
             draggable="false"
             className="w-52 opacity-80"

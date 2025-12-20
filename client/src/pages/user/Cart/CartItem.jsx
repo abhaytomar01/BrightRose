@@ -44,7 +44,7 @@ const CartItem = ({ item }) => {
       layout
       className="
         flex flex-col sm:flex-row justify-between items-center 
-        bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+        bg-white rounded-md shadow-[0_4px_12px_rgba(0,0,0,0.08)]
         p-5 mb-5 w-full border border-[#e8e2d9]
         hover:shadow-[0_6px_18px_rgba(0,0,0,0.12)]
         transition-all duration-300
@@ -63,7 +63,7 @@ const CartItem = ({ item }) => {
         />
 
         <div>
-          <h2 className="text-lg font-medium text-[#4a3b32] leading-snug">
+          <h2 className="text-md md:text-lg font-medium text-[#4a3b32] leading-snug">
             {item.name}
           </h2>
 

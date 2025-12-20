@@ -62,7 +62,7 @@ const Login = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+    <section className="min-h-screen flex items-center justify-center ">
       <div className="w-full max-w-md">
 
         <h1 className="text-4xl text-center mb-10 tracking-[4px] font-light uppercase">

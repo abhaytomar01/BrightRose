@@ -1,186 +1,184 @@
 /* src/pages/user/Cart/Cart.jsx */
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/cart";
-import CartItem from "./CartItem";
-import SaveForLater from "./SaveForLater";
-import ScrollToTopOnRouteChange from "../../../utils/ScrollToTopOnRouteChange";
+import { toast } from "react-toastify";
 import SeoData from "../../../SEO/SeoData";
 
 const Cart = () => {
   const {
     cartItems = [],
-    saveLaterItems = [],
     subtotal = 0,
-    shipping = 0,
     tax = 0,
     grandTotal = 0,
-    totalItems = 0,
-    moveToCartFromSaveLater,
+    updateQuantity,
+    removeFromCart,
   } = useCart();
 
   const navigate = useNavigate();
 
+  /* Disable Body Scroll When Cart Open */
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = "auto");
+  }, []);
+
+  /* Close on ESC key */
+  useEffect(() => {
+    const handleEsc = (e) => e.key === "Escape" && navigate(-1);
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [navigate]);
+
+  const handleIncrease = (item) => {
+    updateQuantity(item.key, item.quantity + 1);
+  };
+
+  const handleDecrease = (item) => {
+    if (item.quantity === 1) {
+      toast.info(`${item.name} removed`);
+      removeFromCart(item.key);
+    } else {
+      updateQuantity(item.key, item.quantity - 1);
+    }
+  };
+
   return (
     <>
-      <ScrollToTopOnRouteChange />
-      <SeoData title="Shopping Cart | Bright Rose" />
+      <SeoData title="Cart" />
 
-      <main className="w-full bg-[#FAF9F7] min-h-screen pt-28 md:pt-40 pb-20 px-4 font-[Manrope]">
+      {/* ---------- OVERLAY ---------- */}
+      <div
+        onClick={() => navigate(-1)}
+        className="
+          fixed inset-0 bg-black/55 backdrop-blur-[1px]
+          z-[9998]
+        "
+      />
 
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-10">
+      {/* ---------- SLIDE CART ---------- */}
+      <div
+        className="
+          fixed top-0 right-0 h-full w-[420px] max-w-[95vw]
+          bg-white shadow-2xl z-[9999]
+          animate-slideLeft flex flex-col font-[Manrope]
+        "
+      >
+        {/* ---------- HEADER ---------- */}
+        <div className="flex items-center justify-between px-6 py-5 border-b">
+          <h2 className="text-xl font-semibold tracking-wide">
+            Cart <span className="text-sm font-light">({cartItems.length})</span>
+          </h2>
 
-          {/* LEFT SECTION */}
-          <div className="flex-1 space-y-10">
-
-            {/* CART BOX */}
-            <div className="
-              bg-white/90 backdrop-blur-sm border border-[#E7E2DC] 
-              rounded-3xl shadow-[0_3px_15px_rgba(0,0,0,0.06)]
-              transition hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]
-            ">
-              <div className="px-8 py-6 border-b border-[#E7E2DC] flex items-center justify-between">
-                <h2 className="text-[26px] font-light tracking-wide text-[#1A1A1A]">
-                  My Cart
-                </h2>
-                <span className="text-sm text-neutral-500 tracking-wide">
-                  {totalItems} items
-                </span>
-              </div>
-
-              {cartItems.length === 0 ? (
-                <div className="p-12 text-center text-neutral-500 text-lg">
-                  Your cart is empty.
-                </div>
-              ) : (
-                <div className="p-6 space-y-6">
-                  {cartItems.map((item) => (
-                    <CartItem key={item.key} item={item} />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* SAVE FOR LATER BOX */}
-            <div className="
-              bg-white/90 backdrop-blur-sm border border-[#E7E2DC] 
-              rounded-3xl shadow-[0_3px_15px_rgba(0,0,0,0.06)]
-              transition hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]
-            ">
-              <div className="px-8 py-6 border-b border-[#E7E2DC]">
-                <h2 className="text-[20px] tracking-wide text-[#1A1A1A] font-light">
-                  Saved for Later ({saveLaterItems.length})
-                </h2>
-              </div>
-
-              <div className="p-8 space-y-6">
-                {saveLaterItems.length === 0 ? (
-                  <p className="text-neutral-500 text-sm">No items saved.</p>
-                ) : (
-                  saveLaterItems.map((it) => (
-                    <div
-                      key={it.key}
-                      className="
-                      flex justify-between items-center p-4 
-                      border border-[#E7E2DC] rounded-2xl bg-[#FBFAF9]
-                      hover:shadow-[0_3px_10px_rgba(0,0,0,0.05)] transition-all
-                    "
-                    >
-                      <div className="flex items-center gap-4">
-                        <img
-                          src={it.image || "/placeholder.png"}
-                          alt={it.name}
-                          className="w-20 h-20 rounded-xl border border-[#E6DFD4] object-cover"
-                        />
-                        <div>
-                          <div className="text-lg tracking-wide text-[#1A1A1A] font-light">
-                            {it.name}
-                          </div>
-                          <div className="text-sm text-neutral-600">
-                            ₹{(it.discountPrice ?? it.price).toLocaleString()}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => moveToCartFromSaveLater(it.key)}
-                        className="
-                        px-5 py-2 rounded-lg text-white
-                        bg-black/90 hover:bg-black 
-                        text-sm tracking-wide transition
-                      "
-                      >
-                        Move to Cart
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT PRICE DETAILS */}
-          <div className="w-full sm:w-1/3">
-            <div className="
-              sticky top-36 bg-white/90 backdrop-blur-sm p-10 
-              border border-[#E7E2DC] rounded-3xl
-              shadow-[0_3px_15px_rgba(0,0,0,0.06)]
-              hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition
-            ">
-              <h3 className="text-[24px] font-light text-[#1A1A1A] tracking-wide mb-8">
-                Price Details
-              </h3>
-
-              <div className="space-y-4 text-neutral-700">
-
-                <div className="flex justify-between text-sm">
-                  <span className="tracking-wide">Price ({totalItems} items)</span>
-                  <span className="font-medium">₹{subtotal.toLocaleString()}</span>
-                </div>
-
-                <div className="flex justify-between text-sm">
-                  <span className="tracking-wide">Delivery Charges</span>
-                  <span className="font-medium">
-                    {shipping === 0 ? (
-                      <span className="text-green-600">FREE</span>
-                    ) : (
-                      `₹${shipping}`
-                    )}
-                  </span>
-                </div>
-
-                <div className="flex justify-between text-sm">
-                  <span className="tracking-wide">Tax</span>
-                  <span className="font-medium">₹{tax.toLocaleString()}</span>
-                </div>
-
-                <div className="my-4 border-t border-[#E7E2DC]"></div>
-
-                <div className="flex justify-between text-lg font-semibold text-[#1A1A1A] tracking-wide">
-                  <span>Total Amount</span>
-                  <span>₹{grandTotal.toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* PLACE ORDER */}
-              {cartItems.length > 0 && (
-                <button
-                  onClick={() => navigate("/checkout")}
-                  className="
-                    mt-8 w-full py-4 rounded-xl 
-                    text-white text-lg font-medium tracking-wide
-                    bg-black/90 hover:bg-black 
-                    shadow-sm transition-all
-                  "
-                >
-                  PLACE ORDER
-                </button>
-              )}
-            </div>
-          </div>
-
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Close Cart"
+            className="text-gray-600 hover:text-black text-2xl leading-none"
+          >
+            ×
+          </button>
         </div>
-      </main>
+
+        {/* ---------- ITEMS ---------- */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-7">
+          {cartItems.length === 0 ? (
+            <p className="text-center text-gray-500 mt-10">
+              Your cart is empty.
+            </p>
+          ) : (
+            cartItems.map((item) => (
+              <div key={item.key} className="flex justify-between gap-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-20 h-24 object-cover rounded-md border"
+                />
+
+                <div className="flex-1">
+                  <p className="font-medium">{item.name}</p>
+                  {item.size && (
+                    <p className="text-sm text-gray-500">{item.size}</p>
+                  )}
+
+                  <p className="mt-1 font-semibold">
+                    ₹{(item.discountPrice || item.price).toLocaleString()}
+                  </p>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-3 mt-3">
+                    <button
+                      onClick={() => handleDecrease(item)}
+                      className="w-7 h-7 border flex items-center justify-center"
+                    >
+                      −
+                    </button>
+
+                    <span className="text-sm">{item.quantity}</span>
+
+                    <button
+                      onClick={() => handleIncrease(item)}
+                      className="w-7 h-7 border flex items-center justify-center"
+                    >
+                      +
+                    </button>
+
+                    <button
+                      onClick={() => removeFromCart(item.key)}
+                      className="text-gray-500 hover:text-red-600 ml-4"
+                    >
+                      🗑
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* ---------- FOOTER ---------- */}
+        {cartItems.length > 0 && (
+          <div className="px-6 py-5 border-t bg-white">
+            <div className="flex justify-between text-sm">
+              <span>Subtotal</span>
+              <span>₹{subtotal.toLocaleString()}</span>
+            </div>
+
+            <div className="flex justify-between text-sm mt-1">
+              <span>Tax (Included)</span>
+              <span>₹{tax.toLocaleString()}</span>
+            </div>
+
+            <div className="flex justify-between text-lg font-semibold border-t pt-3 mt-3">
+              <span>Total</span>
+              <span>₹{grandTotal.toLocaleString()}</span>
+            </div>
+
+            <button
+              onClick={() => navigate("/checkout")}
+              className="
+                w-full mt-5 py-4 rounded-md
+                bg-[#4a0b0b] hover:bg-black
+                text-white font-semibold tracking-wide
+              "
+            >
+              Check out
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ---------- ANIMATION ---------- */}
+      <style>
+        {`
+          @keyframes slideLeft {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+          }
+          .animate-slideLeft {
+            animation: slideLeft .32s ease-out forwards;
+          }
+        `}
+      </style>
     </>
   );
 };

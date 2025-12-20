@@ -155,13 +155,14 @@ export default function AboutAdvanced() {
 
       <main className="bg-[#faf9f7] overflow-x-hidden">
         {/* FULL IMAGE */}
-        <section className="w-full h-[90vh]">
+        <section className="w-full h-[70vh] md:h-[90vh]">
           <img src={creative1} className="w-full h-full object-cover" />
         </section>
 
         {/* ===============================
             OUR MANIFESTO (HOVER)
         ================================ */}
+
         <section className="relative bg-[#faf9f7] px-6 py-32 md:py-40 overflow-hidden">
           {/* Floating image */}
           {manifestoImage && (
@@ -226,24 +227,63 @@ export default function AboutAdvanced() {
         </section>
 
         {/* EDITORIAL */}
-        <section className="py-44 px-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-            <img src={creative1} className="h-[80vh] w-full object-cover" />
+<section className="w-full bg-white">
+  <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-stretch">
 
-            <div>
-              <h3 className="font-[PlayfairDisplay] text-5xl mb-8">
-                From Mother Nature
-              </h3>
-              <p className="text-neutral-600 max-w-md">
-                Inspired by nature and women, Bright Rose creates sculptural
-                forms that feel timeless, expressive, and deeply personal.
-              </p>
-            </div>
-          </div>
-        </section>
+    {/* LEFT IMAGE */}
+    <div className="w-full h-full">
+      <img
+        src={creative1}
+        className="
+          w-full 
+          h-[100vh] lg:h-[92vh] 
+          object-cover
+        "
+        loading="lazy"
+      />
+    </div>
+
+    {/* RIGHT CONTENT */}
+    <div className="flex flex-col justify-center px-6 lg:px-20 py-10 lg:py-0">
+
+      {/* HEADING */}
+      <h2
+        className="
+          font-[PlayfairDisplay] 
+          tracking-[2px]
+          text-4xl 
+          sm:text-5xl 
+          lg:text-[68px] 
+          leading-[1.05]
+          uppercase
+          text-[#1a1a1a]
+        "
+      >
+        FROM MOTHER <br /> NATURE
+      </h2>
+
+      {/* PARAGRAPH */}
+      <p className="mt-10 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
+        We create items that are first, Objet d’Art and secondly, that have utility.
+        Many of the bags we create stand on their own and have a very sculptural
+        quality about them. Our design ethos is to make things stand out and turn
+        heads. Pieces should be perfectly imperfect and need to be nuanced to be
+        beautiful, like nature, no two things are ever the same.
+      </p>
+
+      <p className="mt-6 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
+        Cult Gaia is inspired by nature and women. This is where the brand’s name
+        comes from. Great brands are cult–like, uniting like–minded people in their
+        aesthetic ideals. Gaia is the goddess of Mother Earth and the daughter of 
+        chaos, the most creative force there is.
+      </p>
+    </div>
+  </div>
+</section>
+
 
         {/* TIMELINE */}
-        <BrandTimeline />
+        {/* <BrandTimeline /> */}
 
         {/* CTA */}
         <section className="py-40 text-center">

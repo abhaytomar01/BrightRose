@@ -18,7 +18,7 @@ const AddressForm = ({ setAddress }) => {
   };
 
   return (
-    <div className="bg-white border border-[#e8e2d9] shadow-sm rounded-2xl p-8 font-[Manrope]">
+    <div className="bg-white border border-[#e8e2d9] shadow-sm rounded-2xl pt-4  font-[Manrope]">
 
       {/* Title */}
       <h2 className="text-2xl font-semibold text-[#1a1a1a] mb-6 tracking-wide">

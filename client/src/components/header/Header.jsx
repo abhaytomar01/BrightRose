@@ -267,7 +267,7 @@ logo.style.zIndex = zIndex;
         <div>
           <button
             onClick={() => setMobileSubmenuOpen(v => !v)}
-            className="flex w-full items-center justify-between py-2"
+            className="flex w-full items-center justify-between py-0"
           >
             <span className="uppercase">Collections</span>
             <ChevronDown
@@ -288,6 +288,7 @@ logo.style.zIndex = zIndex;
         </div>
 
         <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
+        <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
         <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
 
         {/* FOOTER BUTTONS */}
