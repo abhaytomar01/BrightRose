@@ -157,7 +157,7 @@ const Cart = () => {
               onClick={() => navigate("/checkout")}
               className="
                 w-full mt-5 py-4 rounded-md
-                bg-[#4a0b0b] hover:bg-black
+                bg-[#302f2f] hover:bg-black
                 text-white font-semibold tracking-wide
               "
             >

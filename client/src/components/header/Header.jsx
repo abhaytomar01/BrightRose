@@ -215,19 +215,19 @@ logo.style.zIndex = zIndex;
 
           <div className="flex items-center gap-4">
   <button onClick={() => setIsSearchOpen(true)}>
-    <Search size={18} />
+    <Search size={20} />
   </button>
 
   <button>
-    <Heart size={18} />
+    <Heart size={20} />
   </button>
-
+{/* 
   <Link to={adminIconLink}>
     <User size={18} />
-  </Link>
+  </Link> */}
 
   <Link to="/cart">
-    <ShoppingBag size={18} />
+    <ShoppingBag size={20} />
   </Link>
 </div>
 
@@ -262,7 +262,7 @@ logo.style.zIndex = zIndex;
         <button onClick={() => setOpen(false)}>
           <X size={26} />
         </button>
-        <span className="text-sm text-neutral-600">Close</span>
+        <span onClick={() => setOpen(false)} className="text-sm text-neutral-600">Close</span>
       </div>
 
       {/* NAV */}
@@ -312,6 +312,11 @@ logo.style.zIndex = zIndex;
             <Link to="/stylecollection">Style</Link>
           </button>
         </div>
+
+        <div className="bg-mutedGray/50 px-4 py-3 mt-6 text-center text-sm text-neutral-600">
+        <Link to={adminIconLink} onClick={() => setOpen(false)}>Admin</Link>
+
+        </div>
       </nav>
     </aside>
   </>
@@ -330,7 +335,7 @@ logo.style.zIndex = zIndex;
 
             <div className="flex justify-between px-6 py-5 border-b">
               <button onClick={() => setIsSearchOpen(false)}>
-                <X size={22} />
+                <X size={28} />
               </button>
               <Search size={20} />
             </div>

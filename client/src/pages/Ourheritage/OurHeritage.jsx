@@ -253,7 +253,7 @@ export default function AboutAdvanced() {
           tracking-[2px]
           text-4xl 
           sm:text-5xl 
-          lg:text-[68px] 
+          lg:text-[68px]
           leading-[1.05]
           uppercase
           text-[#1a1a1a]
