@@ -2,10 +2,10 @@ import React from "react";
 
 const CustomerService = () => {
   return (
-  <div className="w-full min-h-screen bg-white py-16 px-4 mt-24 md:mt-36">
-      <div className="max-w-5xl mx-auto">
+  <div className="w-full min-h-screen bg-white py-0 px-4 mt-28 md:mt-28">
+      <div className="max-w-7xl mx-auto">
         {/* Page Title */}
-        <h1 className="text-3xl md:text-3xl font-semibold text-center mb-10">
+        <h1 className="text-md md:text-2xl font-semibold text-center mb-10">
           CUSTOMER SERVICE
         </h1>
 
@@ -20,7 +20,7 @@ __________
 <p>You may connect with a representative of our client services team at any time via:<br/>
 
 e-mail: brightrose.India@gmail.com <br/>
-whatsapp: +91.XXXXXXXXXX<br/>
+whatsapp: +91-9910929099<br/>
 
 </p>
 

@@ -2,10 +2,10 @@ import React from "react";
 
 const ExchangeReturn = () => {
   return (
-    <div className="w-full min-h-screen bg-white py-16 px-4 mt-24 md:mt-36">
+    <div className="w-full min-h-screen bg-white py-0 px-4 mt-28 md:mt-28">
       <div className="max-w-5xl mx-auto">
         {/* Page Title */}
-        <h1 className="text-2xl md:text-3xl font-semibold text-center mb-10">
+        <h1 className="text-md md:text-2xl font-semibold text-center mb-10">
           SHIPPING RETURN AND EXCHANGE
         </h1>
 
@@ -48,7 +48,7 @@ Please note that each return or exchange request is considered as an individual 
 Please do not, send back the garments without any written confirmation from our client services team. No refunds would be made in such instances.<br/>
 You may connect with us via:<br/>
 e-mail: brightrose.india@gmail.com<br/> 
-whatsapp: +91.XXXXXXXXXX<br/>
+whatsapp: +91-9910929099<br/>
 Once a confirmation for return has been given along with a pick-up schedule, please ensure that the product you return is unused, unworn and that the original tags are intact.</p>
 
 <h4>Custom Orders</h4>

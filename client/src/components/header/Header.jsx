@@ -1,7 +1,7 @@
 // Header.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search, User, ShoppingBag, ChevronDown } from "lucide-react";
+import { Menu, X, Search, User, ShoppingBag, ChevronDown, Heart } from "lucide-react";
 import { useAuth } from "../../context/auth";
 import api from "../../utils/apiClient";
 
@@ -214,16 +214,23 @@ logo.style.zIndex = zIndex;
           )}
 
           <div className="flex items-center gap-4">
-            <button onClick={() => setIsSearchOpen(true)}>
-              <Search size={18} />
-            </button>
-            <Link to={adminIconLink}>
-              <User size={18} />
-            </Link>
-            <Link to="/cart">
-              <ShoppingBag size={18} />
-            </Link>
-          </div>
+  <button onClick={() => setIsSearchOpen(true)}>
+    <Search size={18} />
+  </button>
+
+  <button>
+    <Heart size={18} />
+  </button>
+
+  <Link to={adminIconLink}>
+    <User size={18} />
+  </Link>
+
+  <Link to="/cart">
+    <ShoppingBag size={18} />
+  </Link>
+</div>
+
         </div>
       </header>
 
@@ -287,9 +294,14 @@ logo.style.zIndex = zIndex;
           )}
         </div>
 
-        <Link to="/products" onClick={() => setOpen(false)}>Shop</Link>
+        <Link to="/products" onClick={() => setOpen(false)}>Shop All</Link>
         <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
         <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+        <Link to="/Terms" onClick={() => setOpen(false)}>Terms & Conditions</Link>
+        <Link to="/privacy" onClick={() => setOpen(false)}>Privacy Policy</Link>
+        <Link to="/exchange-return" onClick={() => setOpen(false)}>Shipping Policy</Link>
+        <Link to="/exchange-return" onClick={() => setOpen(false)}>Returns & Refunds</Link>
+        <Link to="/customer-service" onClick={() => setOpen(false)}>Customer Service</Link>
 
         {/* FOOTER BUTTONS */}
         <div className="mt-6 pt-4 border-t flex gap-3">
