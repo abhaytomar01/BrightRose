@@ -43,7 +43,7 @@ const FooterSection = ({ title, children }) => {
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-[#faf9f7] pt-8 pb-8">
+    <footer className="w-full bg-[#fff] pt-8 pb-8">
 
       {/* =========================
           MAIN FOOTER GRID

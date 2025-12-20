@@ -86,12 +86,12 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center p-4 pt-28 md:pt-36">
+    <div className="min-h-screen bg-[#fff] flex items-center justify-center px-2 pt-0 md:pt-24">
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 border border-gray-200">
-        <h1 className="text-center text-2xl font-serif tracking-widest mb-6">
+        <h1 className="text-center text-xl md:text-2xl font-serif tracking-widest mb-6">
           THE BRIGHT ROSE
         </h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">Admin Panel Access</p>
+        <p className="text-center text-gray-600 mb-6 text-sm">Admin Access</p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
