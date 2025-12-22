@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
+import ourstoryImage from "../../assets/images/ourstoryImage.jpg";
 import creative1 from "../../assets/images/creative1.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -141,7 +142,7 @@ export default function AboutAdvanced() {
       {/* HERO MANIFESTO */}
       <section className="bg-[#faf9f7] py-[18vh] px-6">
         <div className="max-w-[1100px] mx-auto text-center">
-          <p className="font-[PlayfairDisplay] font-thin text-[22px] sm:text-[26px] md:text-[36px] lg:text-[42px] xl:text-[44px] leading-[1.18] tracking-[0.04em] uppercase text-neutral-800">
+          <p className="font-[manrope] font-thin text-[22px] sm:text-[26px] md:text-[36px] lg:text-[42px] xl:text-[44px] leading-[1.18] tracking-[0.04em] uppercase text-neutral-800">
             Bright Rose designs beautiful heirloom pieces that will live in your
             closet forever. The cornerstone of our DNA has been forged with the
             idea of creating objects d’art that make you look twice.
@@ -163,7 +164,7 @@ export default function AboutAdvanced() {
             OUR MANIFESTO (HOVER)
         ================================ */}
 
-        <section className="relative bg-[#faf9f7] px-6 py-32 md:py-40 overflow-hidden">
+        <section className="relative bg-[#faf9f7] px-6 py-16 md:py-20 overflow-hidden">
           {/* Floating image */}
           {manifestoImage && (
             <div
@@ -181,7 +182,7 @@ export default function AboutAdvanced() {
           )}
 
           <div className="max-w-[1200px] mx-auto">
-            <h2 className="text-center font-[PlayfairDisplay] text-[42px] md:text-[52px] tracking-[0.08em] mb-20">
+            <h2 className="text-center font-[PlayfairDisplay] text-[22px] md:text-[52px] tracking-[0.08em] mb-10">
               OUR MANIFESTO
             </h2>
 
@@ -189,18 +190,17 @@ export default function AboutAdvanced() {
               {[
                 {
                   num: "I.",
-                  text: "To curate a wardrobe full of magic, one that glows with each accessory.",
-                  img: "/manifesto/manifesto-1.jpg",
+                  text: "It began with a deep admiration for craft — not just how clothing looks, but how it is made. Growing up surrounded by stories of Indian textiles, handwork, and detail, we learned that fashion is memory stitched into fabric. Every silhouette carries a feeling, every thread carries intention. This phase is about curiosity, learning, and respect for artisanship. Before trends, before timelines — there was only passion. A desire to create something timeless, honest, and deeply personal.",                 img: creative1,
                 },
                 {
                   num: "II.",
-                  text: "To create a lifestyle that’s a visual feast, effortlessly.",
-                  img: "/manifesto/manifesto-2.jpg",
+                  text: "As the vision grew, so did our responsibility. We chose to slow down in a fast world — valuing precision over production, quality over quantity. Our designs evolved into a balance of modern expression and traditional techniques. Each piece became a dialogue between heritage and contemporary living. This phase reflects discipline, refinement, and purpose. A commitment to authenticity, without compromise.",
+                  img: creative1,
                 },
                 {
                   num: "III.",
-                  text: "To design for the moving eye, because everything is art.",
-                  img: "/manifesto/manifesto-3.jpg",
+                  text: "Today, we stand as a brand that celebrates quiet luxury and powerful individuality. Every creation is thoughtfully designed, ethically crafted, and consciously delivered. We don’t chase moments — we create pieces that stay relevant beyond seasons. Our story lives in the hands that craft, and the people who wear us. This is not just fashion — it is identity, confidence, and timeless elegance. Rooted in India, created for the world.",
+                  img: creative1,
                 },
               ].map((item, i) => (
                 <div
@@ -233,10 +233,10 @@ export default function AboutAdvanced() {
     {/* LEFT IMAGE */}
     <div className="w-full h-full">
       <img
-        src={creative1}
+        src={ourstoryImage}
         className="
           w-full 
-          h-[100vh] lg:h-[92vh] 
+          h-[70vh] lg:h-[92vh] 
           object-cover
         "
         loading="lazy"
@@ -251,9 +251,9 @@ export default function AboutAdvanced() {
         className="
           font-[PlayfairDisplay] 
           tracking-[2px]
-          text-4xl 
-          sm:text-5xl 
-          lg:text-[68px]
+          text-2xl 
+          md:text-5xl 
+          lg:text-[58px] 
           leading-[1.05]
           uppercase
           text-[#1a1a1a]
@@ -264,18 +264,15 @@ export default function AboutAdvanced() {
 
       {/* PARAGRAPH */}
       <p className="mt-10 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
-        We create items that are first, Objet d’Art and secondly, that have utility.
-        Many of the bags we create stand on their own and have a very sculptural
-        quality about them. Our design ethos is to make things stand out and turn
-        heads. Pieces should be perfectly imperfect and need to be nuanced to be
-        beautiful, like nature, no two things are ever the same.
+       Bright Rose is born from the elegance of nature and the artistry of human hands. Each creation blossoms with the quiet strength of the earth, crafted meticulously to be both a statement of beauty and a symbol of refined craftsmanship. Our pieces are not merely accessories; they are living art — sculpted, hand-woven, and thoughtfully designed to leave a lasting impression.
       </p>
 
       <p className="mt-6 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
-        Cult Gaia is inspired by nature and women. This is where the brand’s name
-        comes from. Great brands are cult–like, uniting like–minded people in their
-        aesthetic ideals. Gaia is the goddess of Mother Earth and the daughter of 
-        chaos, the most creative force there is.
+        Guided by nature’s purity and inspired by the spirit of femininity, Bright Rose celebrates individuality. No two creations are ever identical, just as no two petals share the same story. Every curve, every weave, every natural imperfection adds to its charm, making each piece uniquely extraordinary.
+</p>
+
+      <p className="mt-6 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
+Bright Rose stands for timeless luxury, meaning, and emotional connection — crafted not to simply accompany you, but to define you. Like a rose emerging from nature’s heart, our creations speak of strength, elegance, and the beauty of authenticity.
       </p>
     </div>
   </div>

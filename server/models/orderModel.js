@@ -1,24 +1,15 @@
-// server/models/orderModel.js
-import mongoose from "mongoose";
-
-const OrderItemSchema = new mongoose.Schema({
-  productId: { type: String },
-  name: { type: String },
-  image: { type: String },
-  price: { type: Number },
-  quantity: { type: Number },
-  size: { type: String },
-});
-
 const OrderSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
     buyer: {
       name: String,
       email: String,
       phone: String,
     },
+
     products: [OrderItemSchema],
+
     shippingInfo: {
       address: String,
       city: String,
@@ -26,21 +17,53 @@ const OrderSchema = new mongoose.Schema(
       pincode: String,
       country: { type: String, default: "India" },
     },
-    subtotal: { type: Number, default: 0 },       // product total (GST inclusive as per your setup)
-    shippingCharge: { type: Number, default: 0 },
-    tax: { type: Number, default: 0 },             // extracted GST part if needed
-    totalAmount: { type: Number, default: 0 },     // subtotal + shipping
+
+    subtotal: Number,
+    shippingCharge: Number,
+    tax: Number,
+    totalAmount: Number,
+
     paymentInfo: {
-      provider: { type: String },
-      paymentId: { type: String },
-      orderId: { type: String },
-      signature: { type: String },
-      status: { type: String },
+      provider: String,
+      orderId: String,
+      paymentId: String,
+      signature: String,
+      status: {
+        type: String,
+        default: "pending",
+      },
     },
-    invoicePath: { type: String },
-    orderStatus: { type: String, default: "Processing" },
+
+    orderStatus: {
+      type: String,
+      enum: [
+        "PLACED",
+        "PAID",
+        "PACKED",
+        "SHIPPED",
+        "OUT_FOR_DELIVERY",
+        "DELIVERED",
+        "CANCELLED",
+      ],
+      default: "PLACED",
+    },
+
+    invoicePath: String,
+
+    statusHistory: [
+      {
+        status: String,
+        date: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Order", OrderSchema);
+// automatically push status history
+OrderSchema.pre("save", function (next) {
+  if (this.isModified("orderStatus")) {
+    this.statusHistory.push({ status: this.orderStatus });
+  }
+  next();
+});

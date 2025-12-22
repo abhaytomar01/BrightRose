@@ -120,3 +120,10 @@ header {
 
 /* if using Tailwind JIT you can convert these classes; otherwise keep this file */
 
+@keyframes fadeIn {
+  from {opacity:0; transform:scale(.95)}
+  to {opacity:1; transform:scale(1)}
+}
+.animate-fadeIn {
+  animation: fadeIn .3s ease-out;
+}

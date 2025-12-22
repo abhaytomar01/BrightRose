@@ -726,6 +726,59 @@ Please note that each return or exchange request is considered as an individual 
         </div>
       )}
 
+      {/* SIZE GUIDE POPUP */}
+{isSizeChartOpen && (
+  <div
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
+    onClick={() => setIsSizeChartOpen(false)}
+  >
+    <div
+      className="bg-white rounded-xl shadow-xl p-6 w-[90%] max-w-2xl relative animate-fadeIn"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* CLOSE BUTTON */}
+      <button
+        onClick={() => setIsSizeChartOpen(false)}
+        className="absolute top-3 right-3 text-black text-lg hover:text-red-500 transition"
+      >
+        ✕
+      </button>
+
+      <h2 className="text-lg font-semibold mb-4 tracking-wide text-center">
+        Size Guide
+      </h2>
+
+      <div className="overflow-auto max-h-[65vh]">
+        <table className="w-full border border-gray-300 text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border p-2 text-left">Measurement</th>
+              <th className="border p-2 text-center">XS</th>
+              <th className="border p-2 text-center">S</th>
+              <th className="border p-2 text-center">M</th>
+              <th className="border p-2 text-center">L</th>
+              <th className="border p-2 text-center">XL</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr><td className="border p-2">Chest</td><td className="border p-2 text-center">32</td><td className="border p-2 text-center">34</td><td className="border p-2 text-center">36</td><td className="border p-2 text-center">38</td><td className="border p-2 text-center">40</td></tr>
+            <tr><td className="border p-2">Waist</td><td className="border p-2 text-center">28</td><td className="border p-2 text-center">30</td><td className="border p-2 text-center">32</td><td className="border p-2 text-center">34</td><td className="border p-2 text-center">36</td></tr>
+            <tr><td className="border p-2">Lower Waist</td><td className="border p-2 text-center">29</td><td className="border p-2 text-center">31</td><td className="border p-2 text-center">33</td><td className="border p-2 text-center">35</td><td className="border p-2 text-center">37</td></tr>
+            <tr><td className="border p-2">Upper Hip</td><td className="border p-2 text-center">33.5</td><td className="border p-2 text-center">35.5</td><td className="border p-2 text-center">37.5</td><td className="border p-2 text-center">39.3</td><td className="border p-2 text-center">41.7</td></tr>
+            <tr><td className="border p-2">Lower Hip</td><td className="border p-2 text-center">36</td><td className="border p-2 text-center">38</td><td className="border p-2 text-center">40</td><td className="border p-2 text-center">42</td><td className="border p-2 text-center">44</td></tr>
+            <tr><td className="border p-2">Front Length</td><td className="border p-2 text-center">14</td><td className="border p-2 text-center">14.5</td><td className="border p-2 text-center">15</td><td className="border p-2 text-center">15.5</td><td className="border p-2 text-center">16</td></tr>
+            <tr><td className="border p-2">Arm Hole</td><td className="border p-2 text-center">16</td><td className="border p-2 text-center">17</td><td className="border p-2 text-center">18</td><td className="border p-2 text-center">19</td><td className="border p-2 text-center">20</td></tr>
+            <tr><td className="border p-2">Front Rise</td><td className="border p-2 text-center">10</td><td className="border p-2 text-center">10.2</td><td className="border p-2 text-center">10.5</td><td className="border p-2 text-center">10.7</td><td className="border p-2 text-center">11.4</td></tr>
+            <tr><td className="border p-2">Shoulder</td><td className="border p-2 text-center">15</td><td className="border p-2 text-center">16</td><td className="border p-2 text-center">17</td><td className="border p-2 text-center">18</td><td className="border p-2 text-center">19</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
+
       {/* MOBILE STICKY BAR */}
       {showStickyBar && !footerVisible && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">

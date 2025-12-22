@@ -1,6 +1,8 @@
 import Order from "../../models/orderModel.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendEmail } from "../../utils/sendEmail.js";
+import { orderEmails } from "../../services/orderEmailService.js";   // <-- add this at top
+
 
 /* ======================================================
     1️⃣ CREATE COD ORDER
@@ -11,8 +13,15 @@ export const createCodOrder = async (req, res) => {
     const { cartItems, address, totalAmount } = req.body;
 
     const newOrder = await Order.create({
-      user: req.user._id,
-      items: cartItems.map(item => ({
+      user: req.user?._id || null,
+
+      buyer: {
+        name: address?.name,
+        email: address?.email,
+        phone: address?.phone,
+      },
+
+      products: cartItems.map(item => ({
         productId: item.productId,
         name: item.name,
         image: item.image,
@@ -20,43 +29,26 @@ export const createCodOrder = async (req, res) => {
         quantity: item.quantity,
         size: item.selectedSize,
       })),
-      address,
+
+      shippingInfo: {
+        address: address?.address,
+        city: address?.city,
+        state: address?.state,
+        pincode: address?.pincode,
+        country: "India",
+      },
+
+      subtotal: totalAmount,
       totalAmount,
-      paymentInfo: { status: "cod" },
-      orderStatus: "Processing",
+      paymentInfo: { status: "cod", provider: "cod" },
+      orderStatus: "PLACED",
     });
 
-    // Generate PDF Invoice
-    const { invoiceId, invoicePath } = await generateInvoicePDF(newOrder);
-
-    newOrder.invoiceId = invoiceId;
-    newOrder.invoiceUrl = invoicePath;
-    await newOrder.save();
-
-    // Send Email to Customer
-    await sendEmail(
-      address.email,
-      "Your Bright Rose Order Confirmation",
-      "Your order is confirmed.",
-      `
-        <h2>Thank you for your purchase!</h2>
-        <p>Your order <strong>${newOrder._id}</strong> is confirmed.</p>
-        <p>Download your invoice below:</p>
-        <a href="${process.env.SERVER_URL}/${invoicePath}" target="_blank">
-          Download Invoice
-        </a>
-      `,
-      [
-        {
-          filename: `${invoiceId}.pdf`,
-          path: invoicePath,
-        },
-      ]
-    );
+    await orderEmails.placed(newOrder);
 
     res.json({
       success: true,
-      message: "COD Order Created + Invoice emailed",
+      message: "COD Order Created",
       order: newOrder,
     });
 
@@ -65,6 +57,7 @@ export const createCodOrder = async (req, res) => {
     res.status(500).json({ success: false, message: "Order failed" });
   }
 };
+
 
 
 
@@ -146,36 +139,40 @@ export const getAllOrders = async (req, res) => {
 /* ======================================================
     5️⃣ ADMIN – UPDATE ORDER STATUS
 ====================================================== */
+
+
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
-    const validStatuses = [
-      "Processing",
-      "Packed",
-      "Shipped",
-      "Delivered",
-      "Cancelled",
-    ];
-
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid status value",
-      });
-    }
-
     const order = await Order.findById(req.params.id);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+    if (!order)
+      return res.status(404).json({ success: false, message: "Order not found" });
 
     order.orderStatus = status;
     await order.save();
+
+    switch (status) {
+      case "PACKED":
+        await orderEmails.packed(order);
+        break;
+
+      case "SHIPPED":
+        await orderEmails.shipped(order);
+        break;
+
+      case "OUT_FOR_DELIVERY":
+        await orderEmails.outForDelivery(order);
+        break;
+
+      case "DELIVERED":
+        await orderEmails.delivered(order);
+        break;
+
+      case "CANCELLED":
+        await orderEmails.cancelled(order);
+        break;
+    }
 
     return res.json({
       success: true,
@@ -184,13 +181,14 @@ export const updateOrderStatus = async (req, res) => {
     });
 
   } catch (err) {
-    console.log("UpdateStatus Error:", err);
-    res.status(500).json({
+    console.error("UpdateStatus Error:", err);
+    return res.status(500).json({
       success: false,
       message: "Failed to update order",
     });
   }
 };
+
 
 export const getOrderByIdAdmin = async (req, res) => {
   try {
