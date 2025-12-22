@@ -160,7 +160,8 @@ const Checkout = () => {
     }
   };
 
-  const validateStep1Fields = () => {
+  function validateStep1Fields() {
+
   const { email, name, phone, address, city, state, pincode } = address;
 
   if (!email?.trim() ||
