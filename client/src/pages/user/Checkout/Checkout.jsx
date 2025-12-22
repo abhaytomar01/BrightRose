@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
 
-const Checkout = () => {
+export default function Checkout() {
+
   const { cartItems = [], subtotal = 0, clearCart, country, setCountry } = useCart();
   const { authUser } = useAuth();
   const token = authUser?.token;
@@ -27,10 +28,9 @@ const Checkout = () => {
   });
 
   const [shippingCharge, setShippingCharge] = useState(0);
+  const finalTotal = Number(subtotal) + Number(shippingCharge || 0);
 
-  const updateAddress = (e) => setAddress((s) => ({ ...s, [e.target.name]: e.target.value }));
-
-  /* ---------------- GEO COUNTRY ---------------- */
+  /* ================= COUNTRY DETECTION ================= */
   const detectCountry = useCallback(async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/v1/geoip/detect`);
@@ -42,72 +42,99 @@ const Checkout = () => {
     detectCountry();
   }, [detectCountry]);
 
-  /* ---------------- SHIPPING CALC VIA BACKEND ---------------- */
-  const fetchShippingCharge = async () => {
-    if (!address.pincode && country === "India") {
-      toast.info("Enter Pincode");
+  /* ================= VALIDATION ================= */
+  function validateStep1() {
+    const { email, name, phone, address: street, city, state, pincode } = address;
+
+    if (!email?.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
+      toast.error("Enter a valid email");
+      return false;
+    }
+
+    if (!name?.trim()) return toast.error("Full name required"), false;
+    if (!phone?.trim() || !/^[0-9]{10}$/.test(phone))
+      return toast.error("Enter 10-digit phone number"), false;
+
+    if (!street?.trim()) return toast.error("Address is required"), false;
+    if (!city?.trim()) return toast.error("City is required"), false;
+    if (!state?.trim()) return toast.error("State is required"), false;
+
+    if (country === "India") {
+      if (!pincode?.trim() || !/^[0-9]{6}$/.test(pincode))
+        return toast.error("Enter valid 6-digit PIN code"), false;
+    }
+
+    return true;
+  }
+
+  /* ================= SHIPPING ================= */
+  async function fetchShippingCharge() {
+    if (country === "India" && !address.pincode) {
+      toast.info("Enter Pincode to calculate shipping");
       return;
     }
 
     setCheckingShipping(true);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/calculate`, {
-        cartItems,
-        country,
-        pincode: address.pincode,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/calculate`,
+        {
+          cartItems,
+          country,
+          pincode: address.pincode,
+        }
+      );
 
-      if (res.data.success) {
+      if (res.data?.success) {
         setShippingCharge(res.data.amount);
-        toast.success("Shipping Updated");
-      } else toast.error("Shipping Error");
+      } else {
+        toast.error("Failed to calculate shipping");
+      }
+
     } catch {
-      toast.error("Shipping Failed");
+      toast.error("Shipping service unavailable");
     }
     setCheckingShipping(false);
-  };
+  }
 
-  const finalTotal = Number(subtotal) + Number(shippingCharge || 0);
-
-  /* ---------------- LOAD RAZORPAY SCRIPT ---------------- */
-  const loadRazorpay = () =>
-    new Promise((resolve) => {
+  /* ================= RAZORPAY ================= */
+  function loadRazorpay() {
+    return new Promise((resolve) => {
       if (window.Razorpay) return resolve(true);
+
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
     });
+  }
 
-  /* ---------------- HANDLE PAYMENT ---------------- */
-  const handlePayment = async () => {
+  async function handlePayment() {
     try {
-      if (!cartItems.length) return toast.error("Cart Empty");
+      if (!cartItems.length) return toast.error("Cart is empty");
 
       setPaymentProcessing(true);
+
       const loaded = await loadRazorpay();
       if (!loaded) {
-        toast.error("Razorpay Load Failed");
+        toast.error("Razorpay load failed");
         setPaymentProcessing(false);
         return;
       }
 
       const finalAddress = { ...address, country: country || "India" };
 
-      // 1️⃣ Create Razorpay Order
+      // Create Razorpay Order
       const orderRes = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-        {
-          amount: Math.round(finalTotal),
-        },
+        { amount: Math.round(finalTotal) },
         token && { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const { orderId, currency } = orderRes.data;
 
-      // 2️⃣ Open Razorpay Checkout
-      const options = {
+      const rzp = new window.Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: finalTotal * 100,
         currency: currency || "INR",
@@ -122,9 +149,8 @@ const Checkout = () => {
         },
 
         handler: async function (response) {
-          toast.info("Verifying Payment...");
+          toast.info("Verifying payment...");
 
-          // 3️⃣ Verify Payment + Create Order in DB
           const verifyRes = await axios.post(
             `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify`,
             {
@@ -139,87 +165,53 @@ const Checkout = () => {
             token && { headers: { Authorization: `Bearer ${token}` } }
           );
 
-          if (verifyRes.data.success) {
-            toast.success("Order Successful");
+          if (verifyRes.data?.success) {
+            toast.success("Order placed successfully");
             clearCart();
             navigate("/order-success");
-          } else toast.error("Payment Failed");
+          } else {
+            toast.error("Payment verification failed");
+          }
         },
 
-        theme: {
-          color: "#000000",
-        },
-      };
+        theme: { color: "#000000" }
+      });
 
-      const rzp = new window.Razorpay(options);
       rzp.open();
-    } catch (err) {
-      toast.error("Payment Error");
+    } catch {
+      toast.error("Payment failed, try again");
     } finally {
       setPaymentProcessing(false);
     }
-  };
-
-  function validateStep1Fields() {
-  const { email, name, phone, address, city, state, pincode } = address;
-
-  if (!email?.trim() ||
-      !/^\S+@\S+\.\S+$/.test(email) ||
-      !name?.trim() ||
-      !phone?.trim() ||
-      !/^[0-9]{10}$/.test(phone) ||
-      !address?.trim() ||
-      !city?.trim() ||
-      !state?.trim()
-  ) {
-    toast.error("Fill all required fields correctly");
-    return false;
   }
 
-  if (country === "India") {
-    if (!pincode?.trim() || !/^[0-9]{6}$/.test(pincode)) {
-      toast.error("Enter a valid 6-digit PIN Code");
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
-
-  /* ---------------- STEP HANDLING ---------------- */
+  /* ================= STEP MANAGEMENT ================= */
   async function nextStep() {
-  if (step === 1) {
-    const valid = validateStep1Fields();
-    if (!valid) return;
-
-    await fetchShippingCharge();
+    if (step === 1) {
+      if (!validateStep1()) return;
+      await fetchShippingCharge();
+    }
+    setStep((s) => s + 1);
   }
-  setStep(s => s + 1);
-}
-
-
 
   function prevStep() {
-  setStep(s => s - 1);
-}
+    setStep((s) => s - 1);
+  }
 
-
+  /* ================= UI ================= */
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] mt-10 md:mt-20">
       <div className="max-w-[1250px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
-        {/* LEFT SIDE */}
+
+        {/* LEFT */}
         <div className="px-6 md:px-12 py-10 border-r border-gray-200">
+
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-lg md:text-2xl font-semibold tracking-wide">
               Bright Rose
             </h1>
 
-            <button
-              onClick={() => navigate("/login")}
-              className="text-sm underline"
-            >
+            <button onClick={() => navigate("/login")} className="text-sm underline">
               Sign in
             </button>
           </div>
@@ -232,16 +224,13 @@ const Checkout = () => {
 
                 <input
                   className="w-full border rounded-md p-3 mb-3"
-                  placeholder="Email or phone number"
+                  placeholder="Email"
                   name="email"
                   value={address.email}
-                  onChange={updateAddress}
+                  onChange={(e) =>
+                    setAddress((s) => ({ ...s, email: e.target.value }))
+                  }
                 />
-
-                <label className="flex gap-2 text-sm">
-                  <input type="checkbox" defaultChecked />
-                  Email me with news and offers
-                </label>
               </section>
 
               <section>
@@ -269,7 +258,9 @@ const Checkout = () => {
                     placeholder="Full Name"
                     name="name"
                     value={address.name}
-                    onChange={updateAddress}
+                    onChange={(e) =>
+                      setAddress((s) => ({ ...s, name: e.target.value }))
+                    }
                   />
 
                   <input
@@ -277,7 +268,9 @@ const Checkout = () => {
                     placeholder="Phone"
                     name="phone"
                     value={address.phone}
-                    onChange={updateAddress}
+                    onChange={(e) =>
+                      setAddress((s) => ({ ...s, phone: e.target.value }))
+                    }
                   />
                 </div>
 
@@ -286,7 +279,9 @@ const Checkout = () => {
                   placeholder="Address"
                   name="address"
                   value={address.address}
-                  onChange={updateAddress}
+                  onChange={(e) =>
+                    setAddress((s) => ({ ...s, address: e.target.value }))
+                  }
                 />
 
                 <div className="grid grid-cols-3 gap-3 mt-3">
@@ -295,21 +290,29 @@ const Checkout = () => {
                     placeholder="City"
                     name="city"
                     value={address.city}
-                    onChange={updateAddress}
+                    onChange={(e) =>
+                      setAddress((s) => ({ ...s, city: e.target.value }))
+                    }
                   />
+
                   <input
                     className="border p-3 text-sm rounded-md"
                     placeholder="State"
                     name="state"
                     value={address.state}
-                    onChange={updateAddress}
+                    onChange={(e) =>
+                      setAddress((s) => ({ ...s, state: e.target.value }))
+                    }
                   />
+
                   <input
                     className="border p-3 text-sm rounded-md"
-                    placeholder="PIN code"
+                    placeholder="PIN Code"
                     name="pincode"
                     value={address.pincode}
-                    onChange={updateAddress}
+                    onChange={(e) =>
+                      setAddress((s) => ({ ...s, pincode: e.target.value }))
+                    }
                   />
                 </div>
 
@@ -335,7 +338,7 @@ const Checkout = () => {
               <div className="border rounded-md p-4 flex items-center gap-3">
                 <input type="radio" checked readOnly />
                 <span className="font-medium text-sm md:text-md">
-                  Online Payment (Will Open Razorpay Later)
+                  Online Payment
                 </span>
               </div>
 
@@ -357,65 +360,54 @@ const Checkout = () => {
           {/* STEP 3 */}
           {step === 3 && (
             <>
-              <h2 className="text-md md:text-lg font-semibold mb-4">Review Order</h2>
+              <h2 className="text-md md:text-lg font-semibold mb-4">
+                Review Order
+              </h2>
 
               <div className="bg-white border rounded-md">
                 {cartItems.map((i) => (
-                  <div
-                    key={i._id}
-                    className="flex justify-between p-4 border-b"
-                  >
+                  <div key={i._id} className="flex justify-between p-4 border-b">
                     <div className="flex gap-3">
-                      <img
-                        src={i.image}
-                        className="w-14 h-14 object-cover rounded-md border"
-                      />
+                      <img src={i.image} className="w-14 h-14 object-cover rounded-md border" />
                       <div>
                         <p className="font-medium">{i.name}</p>
-                        <p className="text-sm text-gray-500">
-                          Qty: {i.quantity}
-                        </p>
+                        <p className="text-sm text-gray-500">Qty: {i.quantity}</p>
                       </div>
                     </div>
 
                     <p className="font-semibold">
-                      ₹
-                      {((i.discountPrice || i.price) * i.quantity).toLocaleString()}
+                      ₹{((i.discountPrice || i.price) * i.quantity).toLocaleString()}
                     </p>
                   </div>
                 ))}
               </div>
 
               <button
-                onClick={handlePlaceOrderNow}
+                onClick={handlePayment}
                 disabled={paymentProcessing}
                 className="mt-8 w-full bg-[#1a1a1a] hover:bg-black text-white py-4 rounded-md tracking-wide"
               >
                 {paymentProcessing
-                  ? "Creating Order..."
+                  ? "Processing..."
                   : `Place Order ₹${finalTotal.toLocaleString()}`}
               </button>
             </>
           )}
         </div>
 
-        {/* RIGHT SIDE — SUMMARY */}
+        {/* RIGHT SUMMARY */}
         <div className="bg-[#fafafa] px-6 md:px-10 py-10 sticky top-0 h-fit">
           {cartItems.map((item) => (
             <div key={item._id} className="flex justify-between mb-6">
               <div className="flex gap-3">
-                <img
-                  src={item.image}
-                  className="w-16 h-16 object-cover rounded-md border"
-                />
+                <img src={item.image} className="w-16 h-16 object-cover rounded-md border" />
                 <div>
                   <p className="font-medium text-sm md:text-md">{item.name}</p>
                 </div>
               </div>
 
               <p className="font-semibold text-sm md:text-md">
-                ₹
-                {((item.discountPrice || item.price) * item.quantity).toLocaleString()}
+                ₹{((item.discountPrice || item.price) * item.quantity).toLocaleString()}
               </p>
             </div>
           ))}
@@ -429,9 +421,7 @@ const Checkout = () => {
             <div className="flex justify-between">
               <span>Shipping</span>
               <span>
-                {shippingCharge
-                  ? `₹${shippingCharge.toLocaleString()}`
-                  : "Calculated later"}
+                {shippingCharge ? `₹${shippingCharge.toLocaleString()}` : "Calculated later"}
               </span>
             </div>
 
@@ -444,6 +434,4 @@ const Checkout = () => {
       </div>
     </div>
   );
-};
-
-export default Checkout;
+}
