@@ -9,6 +9,50 @@ const PaymentMethod = ({ setPaymentMethod }) => {
     setPaymentMethod(method);
   };
 
+  const validateStep1 = () => {
+  const errors = [];
+
+  if (!address.email?.trim()) errors.push("Email is required");
+  else if (!/^\S+@\S+\.\S+$/.test(address.email))
+    errors.push("Enter a valid email");
+
+  if (!address.name?.trim()) errors.push("Full name is required");
+
+  if (!address.phone?.trim()) errors.push("Phone number is required");
+  else if (!/^[0-9]{10}$/.test(address.phone))
+    errors.push("Enter valid 10 digit phone number");
+
+  if (!address.address?.trim()) errors.push("Address is required");
+  if (!address.city?.trim()) errors.push("City is required");
+  if (!address.state?.trim()) errors.push("State is required");
+
+  if (country === "India") {
+    if (!address.pincode?.trim()) errors.push("Pincode is required");
+    else if (!/^[0-9]{6}$/.test(address.pincode))
+      errors.push("Enter valid 6 digit pincode");
+  }
+
+  if (errors.length) {
+    errors.forEach((e) => toast.error(e));
+    return false;
+  }
+
+  return true;
+};
+
+
+  const nextStep = async () => {
+  if (step === 1) {
+    const valid = validateStep1();
+    if (!valid) return;           // ❌ stop here if invalid
+
+    await fetchShippingCharge();
+  }
+
+  setStep((s) => s + 1);
+};
+
+
   return (
   <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] mt-10 md:mt-0">
     <div className="max-w-[1250px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
@@ -98,7 +142,7 @@ const PaymentMethod = ({ setPaymentMethod }) => {
 
               <button
                 onClick={nextStep}
-                className="mt-6 w-full bg-[#1a1a1a] hover:bg-black text-white py-4 rounded-md text-sm tracking-wide"
+                className="mt-nextStep6 w-full bg-[#1a1a1a] hover:bg-black text-white py-4 rounded-md text-sm tracking-wide"
               >
                 Continue to Payment
               </button>
