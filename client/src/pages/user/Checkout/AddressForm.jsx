@@ -18,22 +18,21 @@ const AddressForm = ({ setAddress }) => {
   };
 
   return (
-    <div className="bg-white border border-[#e8e2d9] shadow-sm rounded-2xl pt-4  font-[Manrope]">
-
-      {/* Title */}
+    <div className="bg-white border border-[#e8e2d9] shadow-sm rounded-2xl pt-4 font-[Manrope]">
       <h2 className="text-2xl font-semibold text-[#1a1a1a] mb-6 tracking-wide">
         Shipping Address
       </h2>
       <div className="w-20 h-[3px] bg-gradient-to-r from-[#D4AF37] to-transparent mb-6 rounded-full"></div>
 
-      {/* Form Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
         <input
           name="fullName"
-          placeholder="Full Name"
+          placeholder="Full Name *"
           value={form.fullName}
           onChange={handleChange}
+          required
+          minLength={3}
           className="
             w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40
@@ -43,9 +42,13 @@ const AddressForm = ({ setAddress }) => {
 
         <input
           name="phone"
-          placeholder="Phone Number"
+          placeholder="Phone Number *"
           value={form.phone}
           onChange={handleChange}
+          required
+          inputMode="numeric"
+          pattern="[0-9]{10}"
+          maxLength={10}
           className="
             w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40
@@ -55,9 +58,10 @@ const AddressForm = ({ setAddress }) => {
 
         <input
           name="street"
-          placeholder="Street Address"
+          placeholder="Street Address *"
           value={form.street}
           onChange={handleChange}
+          required
           className="
             sm:col-span-2 w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40
@@ -67,9 +71,10 @@ const AddressForm = ({ setAddress }) => {
 
         <input
           name="city"
-          placeholder="City"
+          placeholder="City *"
           value={form.city}
           onChange={handleChange}
+          required
           className="
             w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40
@@ -79,9 +84,10 @@ const AddressForm = ({ setAddress }) => {
 
         <input
           name="state"
-          placeholder="State"
+          placeholder="State *"
           value={form.state}
           onChange={handleChange}
+          required
           className="
             w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40
@@ -91,9 +97,13 @@ const AddressForm = ({ setAddress }) => {
 
         <input
           name="zip"
-          placeholder="ZIP Code"
+          placeholder="ZIP Code *"
           value={form.zip}
           onChange={handleChange}
+          required
+          inputMode="numeric"
+          pattern="[0-9]{6}"
+          maxLength={6}
           className="
             w-full px-4 py-3 rounded-lg border border-[#d8d2c8] bg-[#FDFDFC]
             focus:outline-none focus:ring-2 focus:ring-[#AD000F]/40

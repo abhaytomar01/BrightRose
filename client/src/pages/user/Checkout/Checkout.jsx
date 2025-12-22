@@ -111,7 +111,7 @@ const Checkout = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: finalTotal * 100,
         currency: currency || "INR",
-        name: "ABRAKH",
+        name: "Bright Rose",
         description: "Order Payment",
         order_id: orderId,
 
@@ -160,11 +160,45 @@ const Checkout = () => {
     }
   };
 
+  const validateStep1Fields = () => {
+  const { email, name, phone, address, city, state, pincode } = address;
+
+  if (!email?.trim() ||
+      !/^\S+@\S+\.\S+$/.test(email) ||
+      !name?.trim() ||
+      !phone?.trim() ||
+      !/^[0-9]{10}$/.test(phone) ||
+      !address?.trim() ||
+      !city?.trim() ||
+      !state?.trim()
+  ) {
+    toast.error("Fill all required fields correctly");
+    return false;
+  }
+
+  if (country === "India") {
+    if (!pincode?.trim() || !/^[0-9]{6}$/.test(pincode)) {
+      toast.error("Enter a valid 6-digit PIN Code");
+      return false;
+    }
+  }
+
+  return true;
+};
+
+
   /* ---------------- STEP HANDLING ---------------- */
   const nextStep = async () => {
-    if (step === 1) await fetchShippingCharge();
-    setStep((s) => s + 1);
-  };
+  if (step === 1) {
+    const valid = validateStep1Fields();
+    if (!valid) return;   // ❌ Stop here if invalid
+
+    await fetchShippingCharge();
+  }
+
+  setStep(s => s + 1);
+};
+
 
   const prevStep = () => setStep((s) => s - 1);
 
