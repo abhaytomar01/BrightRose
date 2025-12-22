@@ -161,7 +161,6 @@ const Checkout = () => {
   };
 
   function validateStep1Fields() {
-
   const { email, name, phone, address, city, state, pincode } = address;
 
   if (!email?.trim() ||
@@ -185,23 +184,27 @@ const Checkout = () => {
   }
 
   return true;
-};
+}
+
 
 
   /* ---------------- STEP HANDLING ---------------- */
-  const nextStep = async () => {
+  async function nextStep() {
   if (step === 1) {
     const valid = validateStep1Fields();
-    if (!valid) return;   // ❌ Stop here if invalid
+    if (!valid) return;
 
     await fetchShippingCharge();
   }
-
   setStep(s => s + 1);
-};
+}
 
 
-  const prevStep = () => setStep((s) => s - 1);
+
+  function prevStep() {
+  setStep(s => s - 1);
+}
+
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] mt-10 md:mt-20">
