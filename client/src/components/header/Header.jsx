@@ -158,14 +158,14 @@ logo.style.zIndex = zIndex;
       {isHome && (
         <div
           ref={logoRef}
-          className="fixed left-1/2 pointer-events-none "
+          className="fixed left-1/2 pointer-events-none"
           style={{
             top: CUSTOM_TOP,
             transform: `translate(-50%, ${BIG_START_Y}px) scale(1)`,
             fontFamily: "PlayfairDisplay",
             fontSize: BIG_SIZE,
             letterSpacing: "0.32em",
-            fontWeight: 100,
+            fontWeight: 400,
             color: "#fff",
             whiteSpace: "nowrap",
           }}
