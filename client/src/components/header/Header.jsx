@@ -168,6 +168,8 @@ logo.style.zIndex = zIndex;
     return () => cancelAnimationFrame(rafRef.current);
   }, [isHome]);
 
+}
+
   return (
     <>
       {/* BIG GUCCI LOGO (HOME – DESKTOP & MOBILE) */}
