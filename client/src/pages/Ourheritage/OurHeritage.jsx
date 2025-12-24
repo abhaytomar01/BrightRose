@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
 import ourstoryImage from "../../assets/images/ourstoryImage.jpg";
-import creative1 from "../../assets/images/creative1.jpg";
+import creative2 from "../../assets/images/creative2.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -140,9 +140,9 @@ export default function AboutAdvanced() {
       />
 
       {/* HERO MANIFESTO */}
-      <section className="bg-[#faf9f7] py-[18vh] px-6">
+      <section className="bg-[#faf9f7] mt-10 md:mt-20 py-[10vh] md:py-[10vh] px-2 md:px-6 ">
         <div className="max-w-[1100px] mx-auto text-center">
-          <p className="font-[manrope] font-thin text-[22px] sm:text-[26px] md:text-[36px] lg:text-[42px] xl:text-[44px] leading-[1.18] tracking-[0.04em] uppercase text-neutral-800">
+          <p className="font-[manrope] font-thin text-[20px] sm:text-[26px] md:text-[36px] lg:text-[42px] xl:text-[44px] leading-[1.18] tracking-[0.04em] uppercase text-neutral-800">
             Bright Rose designs beautiful heirloom pieces that will live in your
             closet forever. The cornerstone of our DNA has been forged with the
             idea of creating objects d’art that make you look twice.
@@ -156,141 +156,150 @@ export default function AboutAdvanced() {
 
       <main className="bg-[#faf9f7] overflow-x-hidden">
         {/* FULL IMAGE */}
-        <section className="w-full h-[70vh] md:h-[90vh]">
+        {/* <section className="w-full h-[70vh] md:h-[90vh]">
           <img src={creative1} className="w-full h-full object-cover" />
-        </section>
+        </section> */}
 
         {/* ===============================
             OUR MANIFESTO (HOVER)
         ================================ */}
 
         <section className="relative bg-[#faf9f7] px-6 py-16 md:py-20 overflow-hidden">
-          {/* Floating image */}
-          {manifestoImage && (
-            <div
-              className="pointer-events-none fixed z-[80] hidden md:block transition-transform duration-150 ease-[cubic-bezier(.19,1,.22,1)]"
-              style={{
-                transform: `translate(${cursor.x}px, ${cursor.y}px)`,
-              }}
-            >
-              <img
-                src={manifestoImage}
-                className="w-[260px] h-[360px] object-cover shadow-2xl"
-                alt=""
-              />
-            </div>
-          )}
+  {/* Floating image */}
+  {manifestoImage && (
+    <div
+      className="pointer-events-none fixed z-[80] hidden md:block transition-transform duration-150 ease-[cubic-bezier(.19,1,.22,1)]"
+      style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}
+    >
+      <img
+        src={manifestoImage}
+        className="w-[260px] h-[360px] object-cover shadow-2xl"
+        alt=""
+      />
+    </div>
+  )}
 
-          <div className="max-w-[1200px] mx-auto">
-            <h2 className="text-center font-[PlayfairDisplay] text-[22px] md:text-[52px] tracking-[0.08em] mb-10">
-              OUR MANIFESTO
-            </h2>
+  <div className="max-w-[1200px] mx-auto">
 
-            <div className="divide-y divide-neutral-400/70">
-              {[
-                {
-                  num: "I.",
-                  text: "It began with a deep admiration for craft — not just how clothing looks, but how it is made. Growing up surrounded by stories of Indian textiles, handwork, and detail, we learned that fashion is memory stitched into fabric. Every silhouette carries a feeling, every thread carries intention. This phase is about curiosity, learning, and respect for artisanship. Before trends, before timelines — there was only passion. A desire to create something timeless, honest, and deeply personal.",                 img: creative1,
-                },
-                {
-                  num: "II.",
-                  text: "As the vision grew, so did our responsibility. We chose to slow down in a fast world — valuing precision over production, quality over quantity. Our designs evolved into a balance of modern expression and traditional techniques. Each piece became a dialogue between heritage and contemporary living. This phase reflects discipline, refinement, and purpose. A commitment to authenticity, without compromise.",
-                  img: creative1,
-                },
-                {
-                  num: "III.",
-                  text: "Today, we stand as a brand that celebrates quiet luxury and powerful individuality. Every creation is thoughtfully designed, ethically crafted, and consciously delivered. We don’t chase moments — we create pieces that stay relevant beyond seasons. Our story lives in the hands that craft, and the people who wear us. This is not just fashion — it is identity, confidence, and timeless elegance. Rooted in India, created for the world.",
-                  img: creative1,
-                },
-              ].map((item, i) => (
-                <div
+    {/* CENTER HEADING (PERFECTLY ALIGNED) */}
+    <h2 className="text-center font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-8 md:mb-12">
+      OUR STORY
+    </h2>
+
+    <div className="divide-y divide-neutral-300/70">
+      {[
+        {
+          num: "I.",
+          text: "We begin with the belief that clothing is not just worn — it is felt. A quiet expression of who you are and where you come from.",
+        },
+        {
+          num: "II.",
+          text: "Rooted in India’s handloom legacy, Bright Rose exists to celebrate intricate weaves, time-honoured techniques, and the hands that bring them to life",
+        },
+        {
+          num: "III.",
+          text: "Each piece is thoughtfully handcrafted, allowing heritage textiles to find new meaning through modern, effortless silhouettes.",
+        },
+        {
+          num: "IV.",
+          text: "We design for the woman who moves through the world with intention — grounded in tradition, yet unapologetically contemporary.",
+        },
+        {
+          num: "V.",
+          text: "Our garments are not created for a moment, but for a lifetime — versatile enough to be worn across occasions and years.",
+        },
+        {
+          num: "VI.",
+          text: "We believe true luxury lies in restraint — in details that whisper rather than shout, where craftsmanship speaks louder than excess.",
+        }
+      ].map((item, i) => (
+       <div
                   key={i}
-                  className="grid grid-cols-[70px_1fr] md:grid-cols-[120px_1fr] items-center py-10 md:py-14"
+                  className="grid grid-cols-[70px_1fr] md:grid-cols-[720px_1fr] items-center py-10 md:py-14"
                 >
                   {/* Hover Target */}
                   <span
                     onMouseEnter={() => setManifestoImage(item.img)}
                     onMouseLeave={() => setManifestoImage(null)}
                     onMouseMove={handleManifestoMove}
-                    className="font-[PlayfairDisplay] text-[28px] md:text-[34px] cursor-pointer"
+                    className="font-[manrope] text-[28px] md:text-[34px] cursor-pointer"
                   >
                     {item.num}
                   </span>
 
-                  <p className="uppercase tracking-[0.18em] text-[12px] md:text-[13px] leading-relaxed max-w-[420px]">
+                  <p className="uppercase tracking-[0.18em] text-[10px] md:text-[13px] leading-relaxed max-w-[420px]">
                     {item.text}
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* EDITORIAL */}
-<section className="w-full bg-white">
-  <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-stretch">
-
-    {/* LEFT IMAGE */}
-    <div className="w-full h-full">
-      <img
-        src={ourstoryImage}
-        className="
-          w-full 
-          h-[70vh] lg:h-[92vh] 
-          object-cover
-        "
-        loading="lazy"
-      />
-    </div>
-
-    {/* RIGHT CONTENT */}
-    <div className="flex flex-col justify-center px-6 lg:px-20 py-10 lg:py-0">
-
-      {/* HEADING */}
-      <h2
-        className="
-          font-[PlayfairDisplay] 
-          tracking-[2px]
-          text-2xl 
-          md:text-5xl 
-          lg:text-[58px] 
-          leading-[1.05]
-          uppercase
-          text-[#1a1a1a]
-        "
-      >
-        FROM MOTHER <br /> NATURE
-      </h2>
-
-      {/* PARAGRAPH */}
-      <p className="mt-10 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
-       Bright Rose is born from the elegance of nature and the artistry of human hands. Each creation blossoms with the quiet strength of the earth, crafted meticulously to be both a statement of beauty and a symbol of refined craftsmanship. Our pieces are not merely accessories; they are living art — sculpted, hand-woven, and thoughtfully designed to leave a lasting impression.
-      </p>
-
-      <p className="mt-6 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
-        Guided by nature’s purity and inspired by the spirit of femininity, Bright Rose celebrates individuality. No two creations are ever identical, just as no two petals share the same story. Every curve, every weave, every natural imperfection adds to its charm, making each piece uniquely extraordinary.
-</p>
-
-      <p className="mt-6 text-[15px] leading-relaxed text-neutral-700 max-w-[520px]">
-Bright Rose stands for timeless luxury, meaning, and emotional connection — crafted not to simply accompany you, but to define you. Like a rose emerging from nature’s heart, our creations speak of strength, elegance, and the beauty of authenticity.
-      </p>
+      ))}
     </div>
   </div>
 </section>
 
 
-        {/* TIMELINE */}
-        {/* <BrandTimeline /> */}
 
-        {/* CTA */}
-        <section className="py-40 text-center">
-          <Link
-            to="/weavecollection"
-            className="inline-block border px-12 py-4 tracking-widest uppercase text-xs hover:bg-black hover:text-white transition"
-          >
-            Discover Collection
-          </Link>
-        </section>
+
+       {/* CTA SECTION */}
+<section
+  className="
+    relative 
+    w-full 
+    py-28 md:py-40 
+    bg-[#faf9f7]
+    overflow-hidden
+  "
+>
+  {/* Background Image (Optional) */}
+  {creative2 && (
+    <img
+      src={creative2}
+      alt="Bright Rose Collection"
+      className="
+        absolute inset-0 w-full h-full object-cover
+        transition-all duration-500
+      "
+    />
+  )}
+
+  {/* Soft dark overlay for readability */}
+  {creative2 && (
+    <div className="absolute inset-0 bg-black/30 md:bg-black/25"></div>
+  )}
+
+  {/* Content */}
+  <div className="relative max-w-[1200px] mx-auto text-center px-6">
+    <h3 className="
+      text-[18px] md:text-[24px] 
+      tracking-[0.18em]
+      uppercase
+      text-neutral-800
+      md:text-white
+      font-light
+      mb-6
+      drop-shadow
+    ">
+      Discover The World Of Bright Rose
+    </h3>
+
+    <Link
+      to="/weavecollection"
+      className="
+        inline-block 
+        border border-neutral-900 md:border-white
+        px-12 py-4
+        tracking-[0.22em] 
+        uppercase text-[11px]
+        bg-white/90 md:bg-transparent
+        text-neutral-900 md:text-white
+        hover:bg-white hover:text-black
+        transition duration-300
+      "
+    >
+      Discover Collection
+    </Link>
+  </div>
+</section>
+
       </main>
     </>
   );
