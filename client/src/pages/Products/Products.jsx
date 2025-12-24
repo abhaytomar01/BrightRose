@@ -149,8 +149,6 @@ const Products = () => {
   url="/products"
 />
 
-
-
       {/* FULL SCREEN MOBILE FILTER OVERLAY */}
       {showFilterPopup && (
         <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">

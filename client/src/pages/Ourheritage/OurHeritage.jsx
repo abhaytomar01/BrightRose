@@ -158,7 +158,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         </div>
       </section> */}
 
-     <section className="relative bg-[#faf9f7] py-20 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
+     <section className="relative bg-[#fff] py-20 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
 
   {/* Soft Background Accent */}
   <div className="absolute -right-10 top-20 w-[260px] h-[260px] md:w-[340px] md:h-[340px] rounded-full bg-[#CFAF9A]/10 blur-3xl"></div>

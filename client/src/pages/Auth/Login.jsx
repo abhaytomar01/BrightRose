@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { authUser, loginUser } = useAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -14,12 +15,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(false);
 
+  // ===== READ TARGET PATH =====
+  const redirectTo = location.state?.redirectTo || "/user/dashboard/profile";
+
   // Redirect if already logged in
   useEffect(() => {
     if (authUser?.token) {
-      navigate("/user/dashboard/profile");
+      navigate(redirectTo, { replace: true });
     }
-  }, [authUser, navigate]);
+  }, [authUser, navigate, redirectTo]);
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -50,7 +54,9 @@ const Login = () => {
           );
         }
 
-        navigate("/user/dashboard/profile");
+        // ===== REDIRECT TO INTENDED PAGE =====
+        navigate(redirectTo, { replace: true });
+
       } else {
         toast.error(res.data?.message || "Invalid credentials");
       }

@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Read redirect target if available
+  const redirectTo = location.state?.redirectTo || "/user/dashboard/profile";
 
   const [form, setForm] = useState({
     name: "",
@@ -46,12 +50,15 @@ const Register = () => {
 
       if (res.data.success) {
         localStorage.setItem(
-          "auth",
+          "auth_user",
           JSON.stringify({ user: res.data.user, token: res.data.token })
         );
 
-        toast.success("Registered & logged in");
-        navigate("/");
+        toast.success("Registered successfully!");
+
+        // Redirect to intended page 🔥
+        navigate(redirectTo, { replace: true });
+
       } else {
         toast.error(res.data?.message || "Registration failed");
       }
@@ -61,6 +68,7 @@ const Register = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <section className="min-h-screen bg-pureWhite flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">

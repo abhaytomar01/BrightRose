@@ -3,12 +3,28 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Search, User, ShoppingBag, ChevronDown, Heart } from "lucide-react";
 import { useAuth } from "../../context/auth";
+import { useCart } from "../../context/cart";   // update path if different
 import api from "../../utils/apiClient";
 
 export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
   // const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+
+  const { cartItems = [] } = useCart();
+  const count = cartItems.length;
+
+   const { authUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleWishlistClick = () => {
+    if (!authUser) {
+      navigate("/login", {
+        state: { redirectTo: "/wishlist" }
+      });
+      return;
+    }
 
   const getResponsiveConfig = (width) => {
     if (width >= 1400) {
@@ -218,17 +234,32 @@ logo.style.zIndex = zIndex;
     <Search size={20} />
   </button>
 
-  <button>
-    <Heart size={20} />
-  </button>
+  <button onClick={handleWishlistClick}>
+      <Heart size={20} />
+    </button>
 {/* 
   <Link to={adminIconLink}>
     <User size={18} />
   </Link> */}
 
-  <Link to="/cart">
-    <ShoppingBag size={20} />
-  </Link>
+  <Link to="/cart" className="relative inline-block">
+      <ShoppingBag size={20} />
+
+      {count > 0 && (
+        <span
+          className="
+            absolute -top-2 -right-2
+            bg-black text-white 
+            text-[10px] min-w-[18px] h-[18px]
+            flex items-center justify-center
+            rounded-full font-medium
+            animate-badge
+          "
+        >
+          {count}
+        </span>
+      )}
+    </Link>
 </div>
 
         </div>
