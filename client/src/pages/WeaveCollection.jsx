@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
+import weavecover from "../assets/images/weavecover.jpg";
 
 /* ------------------------------
    Subcategories
@@ -85,7 +86,7 @@ const WeaveCollection = () => {
     "indian weaving heritage",
     "handloom revival"
   ]}
-  image="/og-weaves.jpg"
+  image={weavecover}
   url="/weavecollection"
 />
 
@@ -98,9 +99,9 @@ const WeaveCollection = () => {
         
         {/* Background Image */}
         <img
-          src="https://images.unsplash.com/photo-1554568218-0f1715e72254?auto=format&fit=crop&w=1600&q=80"
+          src={weavecover}
           alt="Weave Collection Hero"
-          className="absolute inset-0 w-full h-full object-cover brightness-95"
+          className="absolute inset-0 w-full h-full object-cover top-0 brightness-95"
         />
 
         {/* Overlay */}

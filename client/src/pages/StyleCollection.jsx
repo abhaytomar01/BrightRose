@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
-
+import stylecover from "../assets/images/stylecover.jpg";
 
 /* ------------------------------
    Subcategories (Luxury Styles)
@@ -65,7 +65,7 @@ const StyleCollection = () => {
 
         {/* Background */}
         <img
-          src="https://images.unsplash.com/photo-1602810318383-e7b3d15b3b1f?auto=format&fit=crop&w=1600&q=80"
+          src={stylecover}
           alt="Style Collection Hero"
           className="absolute inset-0 w-full h-full object-cover brightness-95"
         />

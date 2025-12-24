@@ -10,7 +10,7 @@ import FeaturedStyle from "../../components/FeatureStyle";
 import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
-import brightrosehome from "../../assets/Kanchipuram/Brightrosehome.jpg";
+import brightrosehome from "../../assets/images/lastbannerdesktop.jpg";
 import abouthomeimage from "../../assets/images/abouthomeimage.jpg";
 const Home = () => {
     return (
@@ -167,10 +167,10 @@ const Home = () => {
     <WhyChooseUs />
 
     <LifestyleBanner
-        title="The Ruby Red Edit — Luxury with Simplicity"
-        subtitle="Experience the elegance of handloom fashion reimagined..."
+        title=""
+        subtitle=""
         buttonText="Explore the Look"
-        buttonLink="product/692d33e2c95fc6c18d3609b7"
+        buttonLink="/products"
         imageUrl={brightrosehome}
     />
 

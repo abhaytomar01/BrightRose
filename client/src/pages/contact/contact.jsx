@@ -74,61 +74,69 @@ const Contact = () => {
   image="/og-contact.jpg"
   url="/contact"
 />
-    <section className="w-full bg-white text-neutral-800 pt-0">
+    <section className="bg-[#FAF9F6] min-h-screen pt-28">
 
-      {/* -------------------------------------------------------
-          HERO — EDITORIAL PREMIUM
-      -------------------------------------------------------- */}
-      <div className="relative h-[50vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
-        <img
-          src="https://images.pexels.com/photos/10667753/pexels-photo-10667753.jpeg"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40"></div>
+  {/* ================= HERO ================= */}
+  <div className="max-w-4xl mx-auto px-6 text-center">
+    
+    <p className="uppercase tracking-[0.28em] text-[9px] md:text-[11px] text-neutral-500">
+      Bright Rose Atelier
+    </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative z-10 text-center px-4 sm:px-6"
-        >
-          <h1 className="text-white text-2xl sm:text-4xl md:text-5xl font-light tracking-tight">
-            Contact Us
-          </h1>
-          <p className="text-white mt-3 sm:mt-5 text-xs sm:text-md md:text-lg font-light max-w-xl mx-auto leading-relaxed">
-            We would love to hear from you — queries, orders, collaborations or appointments.
-          </p>
-        </motion.div>
+    <h1 className="text-[16px] md:text-[26px] leading-tight font-light mt-3">
+      Connect With The House of Bright Rose
+    </h1>
+
+    <div className="mt-4 flex justify-center">
+      <div className="h-[1px] w-40 bg-neutral-800/80" />
+    </div>
+
+    <p className="mt-4 text-neutral-600 text-[10px] md:text-[14px] max-w-2xl mx-auto leading-relaxed">
+      Whether you are exploring bespoke couture, seeking styling guidance, 
+      or simply wish to share a thought — we would love to hear from you.
+    </p>
+  </div>
+
+
+  {/* ================= INFO RIBBON ================= */}
+  <div className="max-w-6xl mx-auto mt-14 px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    {[
+      ["Customer Support", "brightrose.india@gmail.com"],
+      ["Call Us", "+91 9910929099"],
+      ["Business Hours", "Mon – Sat • 10 AM – 7 PM"]
+    ].map(([title, text], i) => (
+      <div
+        key={i}
+        className="
+          bg-white border border-neutral-200 rounded-2xl py-8
+          text-center shadow-sm hover:shadow-md transition
+        "
+      >
+        <p className="text-[14px] font-medium tracking-wide">{title}</p>
+        <p className="text-neutral-600 mt-1 text-[13px]">{text}</p>
       </div>
+    ))}
 
-      {/* -------------------------------------------------------
-          CONTACT INFO BAR — MOBILE OPTIMIZED
-      -------------------------------------------------------- */}
-      <div className="max-w-6xl mx-auto py-10 sm:py-14 px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-        <div>
-          <p className="font-semibold text-base sm:text-md mb-1 sm:mb-2">Customer Support</p>
-          <p className="text-gray-600 text-sm sm:text-base">brightrose.india@gmail.com</p>
-        </div>
-        <div>
-          <p className="font-semibold text-base sm:text-md mb-1 sm:mb-2">Call Us</p>
-          <p className="text-gray-600 text-sm sm:text-base">+91 9910929099</p>
-        </div>
-        <div>
-          <p className="font-semibold text-base sm:text-md mb-1 sm:mb-2">Business Hours</p>
-          <p className="text-gray-600 text-sm sm:text-base">Mon–Sat: 10 AM – 7 PM</p>
-        </div>
-      </div>
+  </div>
 
-      {/* -------------------------------------------------------
-          FORM + DETAILS GRID — MOBILE REFINED
-      -------------------------------------------------------- */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16 grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-14">
 
-        {/* FORM */}
-        <div className="bg-white p-6 sm:p-10 rounded-xl border border-neutral-200 shadow-sm">
-          <h2 className="text-lg sm:text-2xl font-light mb-6">Send us a message</h2>
+  {/* ================= GRID ================= */}
+  <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 px-6 py-20">
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+    {/* FORM CARD */}
+    <div className="
+      bg-white rounded-2xl border border-neutral-200 shadow-sm
+      p-8 md:p-10
+    ">
+      <h2 className="text-[18px] md:text-[22px] font-light tracking-wide mb-2">
+        Send Us A Message
+      </h2>
+
+      <p className="text-neutral-500 text-sm mb-6">
+        Our team will get back within 24–48 hours
+      </p>
+      <form onSubmit={handleSubmit} className="space-y-6">
             <input type="text" name="honey" className="hidden" value={form.honey} onChange={handleChange} />
 
             <div>
@@ -184,117 +192,79 @@ const Contact = () => {
 
             {sent && <p className="text-green-600 text-center mt-3 text-sm">Your message has been sent ✔</p>}
           </form>
-        </div>
+     
+    </div>
 
-        {/* INFO BLOCKS */}
-        <div className="space-y-8 sm:space-y-10">
-          <div>
-            <h3 className="text-lg sm:text-xl font-light mb-2 sm:mb-3">Visit Our Studio</h3>
-            <p className="text-gray-700 text-xs sm:text-base leading-relaxed">
-              Bright Rose Studio<br />Gurugram, Haryana, India
-            </p>
-          </div>
 
-          <div>
-            <h3 className="text-lg sm:text-xl font-light mb-2 sm:mb-3">Collaborations & Media</h3>
-            <p className="text-gray-700 text-xs sm:text-base">
-              For influencers, stylists & magazines:<br />
-              <span className="font-medium">brightrose.india@gmail.com</span>
-            </p>
-          </div>
+    {/* RIGHT SIDE LUXURY STACK */}
+    <div className="space-y-10 pt-2">
 
-          <div>
-            <h3 className="text-lg sm:text-xl font-light mb-2 sm:mb-3">Bespoke Orders</h3>
-            <p className="text-gray-700 text-xs sm:text-base">
-              For couture & custom tailoring:<br />
-              <span className="font-medium">brightrose.india@gmail.com</span>
-            </p>
-          </div>
-        </div>
+      <div>
+        <h3 className="text-lg md:text-xl font-light mb-2 tracking-wide">
+          Visit Our Studio
+        </h3>
+        <p className="text-neutral-700 text-[12px] md:text-[14px] leading-relaxed">
+          Bright Rose Studio<br />
+          Gurugram, Haryana — India
+        </p>
       </div>
 
-      {/* -------------------------------------------------------
-          MAP SECTION — LUXURY CLEAN
-      -------------------------------------------------------- */}
-      {/* <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
-        <h3 className="text-lg sm:text-xl font-light mb-4">Find us on the map</h3>
+      <div>
+        <h3 className="text-lg md:text-xl font-light mb-2 tracking-wide">
+          Collaborations & Media
+        </h3>
+        <p className="text-neutral-700 text-[12px] md:text-[14px] leading-relaxed">
+          For influencers, stylists & magazines<br />
+          <span className="font-medium">brightrose.india@gmail.com</span>
+        </p>
+      </div>
 
-        <div className="rounded-xl overflow-hidden border border-neutral-300">
-          <iframe
-            title="map"
-            src="https://www.google.com/maps/embed?pb=!1m18..."
-            className="w-full h-[280px] sm:h-[350px]"
-            loading="lazy"
-          ></iframe>
-        </div>
-      </div> */}
+      <div>
+        <h3 className="text-lg md:text-xl font-light mb-2 tracking-wide">
+          Bespoke Orders
+        </h3>
+        <p className="text-neutral-700 text-[12px] md:text-[14px] leading-relaxed">
+          Couture & handloom custom requests<br />
+          <span className="font-medium">brightrose.india@gmail.com</span>
+        </p>
+      </div>
 
-      
-      {/* -------------------------------------------------------
-      FAQ — LUXURY ACCORDION
--------------------------------------------------------- */}
-<div className="bg-neutral-50 py-14 sm:py-20 px-4 sm:px-6">
-  <div className="max-w-4xl mx-auto">
+    </div>
 
-    <h2 className="text-2xl sm:text-3xl font-light text-center mb-10 tracking-wide">
-      Frequently Asked Questions
-    </h2>
+  </div>
 
-    <div className="divide-y divide-neutral-300/60 border-y border-neutral-300/60">
 
-      {/* ITEM 1 */}
-      <details className="group">
-        <summary className="flex justify-between items-center py-5 cursor-pointer select-none">
-          <span className="text-sm sm:text-base font-medium text-neutral-800">
-            How long does shipping take?
-          </span>
-          <span className="transition-transform group-open:rotate-180 text-neutral-500">
-            ▼
-          </span>
-        </summary>
+  {/* ================= FAQ ================= */}
+  <div className="bg-white border-t border-neutral-200 py-20 px-6">
+    <div className="max-w-4xl mx-auto">
 
-        <div className="pb-5 text-xs sm:text-sm text-neutral-700 leading-relaxed">
-          Typically 4–7 business days within India.
-        </div>
-      </details>
+      <h2 className="text-center text-[18px] md:text-[32px] font-light tracking-wide mb-10">
+        Frequently Asked Questions
+      </h2>
 
-      {/* ITEM 2 */}
-      <details className="group">
-        <summary className="flex justify-between items-center py-5 cursor-pointer select-none">
-          <span className="text-sm sm:text-base font-medium text-neutral-800">
-            Do you take custom orders?
-          </span>
-          <span className="transition-transform group-open:rotate-180 text-neutral-500">
-            ▼
-          </span>
-        </summary>
-
-        <div className="pb-5 text-xs sm:text-sm text-neutral-700 leading-relaxed">
-          Yes — couture & bespoke orders are available.
-        </div>
-      </details>
-
-      {/* ITEM 3 */}
-      <details className="group">
-        <summary className="flex justify-between items-center py-5 cursor-pointer select-none">
-          <span className="text-sm sm:text-base font-medium text-neutral-800">
-            Do you ship internationally?
-          </span>
-          <span className="transition-transform group-open:rotate-180 text-neutral-500">
-            ▼
-          </span>
-        </summary>
-
-        <div className="pb-5 text-xs sm:text-sm text-neutral-700 leading-relaxed">
-          International shipping available on request.
-        </div>
-      </details>
+      <div className="divide-y border-y">
+        {[
+          ["How long does shipping take?", "Typically 4–7 business days within India."],
+          ["Do you take custom orders?", "Yes, bespoke couture & custom design available."],
+          ["Do you ship internationally?", "International orders available upon request."]
+        ].map(([q, a], i) => (
+          <details key={i} className="group">
+            <summary className="flex justify-between py-5 cursor-pointer text-xs md:text-sm font-medium">
+              {q}
+              <span className="transition group-open:rotate-180 text-neutral-500">
+                ▼
+              </span>
+            </summary>
+            <p className="pb-5 text-xs md:text-sm text-neutral-700 leading-relaxed">{a}</p>
+          </details>
+        ))}
+      </div>
 
     </div>
   </div>
-</div>
 
-    </section>
+</section>
+
     </>
   );
 };

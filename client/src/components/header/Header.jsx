@@ -22,12 +22,12 @@ export default function Header() {
   const handleWishlistClick = () => {
     if (!authUser) {
       navigate("/login", {
-        state: { redirectTo: "/wishlist" }
+        state: { redirectTo: "/user/wishlist" }
       });
       return;
     }
 
-    navigate("/wishlist");
+    navigate("/user/wishlist");
   };
 
   /** ======================
@@ -181,11 +181,18 @@ export default function Header() {
 
       {/* HEADER */}
       <header
-        className={`fixed top-0 left-0 w-full z-[500]
-        transisScrolledition-colors duration-300
-        ${isScrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : "bg-transparent"}`}
-        style={{ height: HEADER_HEIGHT }}
-      >
+  className={`fixed top-0 left-0 w-full z-[500] duration-300
+    ${
+      isHome
+        ? isScrolled
+          ? "bg-white/95 backdrop-blur-sm shadow-sm"
+          : "bg-transparent"
+        : "bg-white shadow-sm"
+    }
+  `}
+  style={{ height: HEADER_HEIGHT }}
+>
+
         {/* Announcement Bar */}
       {/* <Link
         to="/contact"
