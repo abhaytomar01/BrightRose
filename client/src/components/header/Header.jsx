@@ -3,21 +3,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Search, User, ShoppingBag, ChevronDown, Heart } from "lucide-react";
 import { useAuth } from "../../context/auth";
-import { useCart } from "../../context/cart";   // update path if different
+import { useCart } from "../../context/cart";
 import api from "../../utils/apiClient";
 
 export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
-  // const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
 
   const { cartItems = [] } = useCart();
   const count = cartItems.length;
 
-   const { authUser } = useAuth();
+  const { authUser, authAdmin } = useAuth();
   const navigate = useNavigate();
 
+  /** ======================
+   WISHLIST CLICK
+  ====================== **/
   const handleWishlistClick = () => {
     if (!authUser) {
       navigate("/login", {
@@ -26,72 +27,65 @@ export default function Header() {
       return;
     }
 
+    navigate("/wishlist");
+  };
+
+  /** ======================
+   RESPONSIVE CONFIG
+  ====================== **/
   const getResponsiveConfig = (width) => {
-    if (width >= 1400) {
-    return { BIG: 138, SMALL: 24, START_Y: 190, TOP: -104 };
-  }
-  if (width >= 1200) {
-    return { BIG: 122, SMALL: 24, START_Y: 160, TOP: -91 };
-  }
-  if (width >= 900) {
-    return { BIG: 90, SMALL: 22, START_Y: 160, TOP: -66 };
-  }
-  if (width >= 700) {
-    return { BIG: 72, SMALL: 22, START_Y: 160, TOP: -52 };
-  }
-  if (width >= 500) {
-    return { BIG: 48, SMALL: 20, START_Y: 135, TOP: -38 };
-  }
-  return { BIG: 38, SMALL: 16, START_Y: 130, TOP: -27 };
-};
+    if (width >= 1400) return { BIG: 138, SMALL: 24, START_Y: 190, TOP: -104 };
+    if (width >= 1200) return { BIG: 122, SMALL: 24, START_Y: 160, TOP: -91 };
+    if (width >= 900)  return { BIG: 90, SMALL: 22, START_Y: 160, TOP: -66 };
+    if (width >= 700)  return { BIG: 72, SMALL: 22, START_Y: 160, TOP: -52 };
+    if (width >= 500)  return { BIG: 48, SMALL: 20, START_Y: 135, TOP: -38 };
+    return { BIG: 38, SMALL: 16, START_Y: 130, TOP: -27 };
+  };
 
-const [viewport, setViewport] = useState(
-  typeof window !== "undefined" ? window.innerWidth : 1200
-);
+  const [viewport, setViewport] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200
+  );
 
-useEffect(() => {
-  const onResize = () => setViewport(window.innerWidth);
-  window.addEventListener("resize", onResize);
-  return () => window.removeEventListener("resize", onResize);
-}, []);
+  useEffect(() => {
+    const onResize = () => setViewport(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-  //  const [hideAnnouncement, setHideAnnouncement] = useState(false);
-
-  const { authAdmin } = useAuth();
   const adminIconLink = authAdmin?.token
     ? "/admin/dashboard/profile"
     : "/admin/login";
 
-  /** UI STATE */
+  /** ======================
+   UI STATE
+  ====================== **/
   const [open, setOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  /** SEARCH */
+  /** SEARCH **/
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  /** HEADER */
+  /** HEADER **/
   const [isScrolled, setIsScrolled] = useState(false);
 
-  /** LOGO ANIMATION */
+  /** LOGO **/
   const logoRef = useRef(null);
   const currentProgress = useRef(0);
   const targetProgress = useRef(0);
   const rafRef = useRef(null);
 
-const { BIG, SMALL, START_Y, TOP } = getResponsiveConfig(viewport);
+  const { BIG, SMALL, START_Y, TOP } = getResponsiveConfig(viewport);
+  const BIG_SIZE = BIG;
+  const SMALL_SIZE = SMALL;
+  const BIG_START_Y = START_Y;
+  const CUSTOM_TOP = TOP;
+  const HEADER_HEIGHT = 72;
+  const SCALE_END = SMALL_SIZE / BIG_SIZE;
 
-const BIG_SIZE = BIG;
-const SMALL_SIZE = SMALL;
-const BIG_START_Y = START_Y;
-const CUSTOM_TOP = TOP;
-const HEADER_HEIGHT = 72;
-const SCALE_END = SMALL_SIZE / BIG_SIZE;
-
-
-  /** SEARCH HANDLER */
+  /** SEARCH REQUEST **/
   useEffect(() => {
     if (!searchTerm.trim()) return;
     const t = setTimeout(async () => {
@@ -108,7 +102,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  /** SCROLL LISTENER */
+  /** SCROLL **/
   useEffect(() => {
     if (!isHome) return;
 
@@ -125,7 +119,7 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
-  /** GUCCI INERTIA ANIMATION */
+  /** LOGO INERTIA **/
   useEffect(() => {
     if (!isHome) return;
 
@@ -147,16 +141,11 @@ const SCALE_END = SMALL_SIZE / BIG_SIZE;
       const scale = 1 + (SCALE_END - 1) * p;
       const spacing = 0.32 + (0.05 - 0.32) * p;
 
-      const color =
-        p < 0.75
-          ? "#ffffff"
-          : `rgba(0,0,0,${(p - 0.75) / 0.25})`;
-      
-      // after calculating `p`
-const zIndex = p > 0.92 ? 600 : 400;
-logo.style.zIndex = zIndex;
+      const color = p < 0.75
+        ? "#ffffff"
+        : `rgba(0,0,0,${(p - 0.75) / 0.25})`;
 
-
+      logo.style.zIndex = p > 0.92 ? 600 : 400;
       logo.style.transform = `translate(-50%, ${translateY}px) scale(${scale})`;
       logo.style.letterSpacing = `${spacing}em`;
       logo.style.color = color;
@@ -167,8 +156,6 @@ logo.style.zIndex = zIndex;
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
   }, [isHome]);
-
-}
 
   return (
     <>
