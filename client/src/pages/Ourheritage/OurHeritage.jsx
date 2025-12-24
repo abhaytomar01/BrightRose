@@ -182,13 +182,13 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
       </h2>
 
       {/* Body Text */}
-      <p className="text-[14px] md:text-[16px] leading-relaxed text-neutral-700 mb-5">
+      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-5 text-justify">
         <span className="font-semibold">Bright Rose</span> is an endeavor to bring back Indian Handloom
         so that we can clothe the world once again in a natural way through the beauty
         of <span className="tracking-wide">INTRICATE WEAVES</span>.
       </p>
 
-      <p className="text-[14px] md:text-[16px] leading-relaxed text-neutral-700 mb-8">
+      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-8 text-justify">
         Known as the Queen of Flowers, the rose inspires us with its layered petals,
         depth, vibrance, and emotion. Just like every rose is unique, each of our garments
         carries its own soul, bold hues, and distinct character — just like you.
@@ -196,12 +196,12 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
 
       {/* Pull Quote Block */}
       <div className="mt-6 border-l-[2.5px] border-[#2c6656] pl-5">
-        <p className="italic text-[#2c6656] text-[13px] md:text-[15px] leading-relaxed">
+        <p className="italic text-[#2c6656] text-[12px] md:text-[15px] leading-relaxed text-justify">
           “Our knowledge of weaving is deeply valued within families and passed down
           as tradition. Many artisans master the craft so beautifully that they can
           weave with their eyes closed.”
         </p>
-        <p className="not-italic mt-3 text-neutral-700 text-sm font-medium">
+        <p className="not-italic mt-3 text-neutral-700 text-xs md:text-sm font-medium">
           — Master Weaver, Chand (Varanasi)
         </p>
       </div>
@@ -301,9 +301,9 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
                     onMouseEnter={() => setManifestoImage(item.img)}
                     onMouseLeave={() => setManifestoImage(null)}
                     onMouseMove={handleManifestoMove}
-                    className="font-[manrope] text-[28px] md:text-[34px] cursor-pointer"
+                    className="font-[manrope] text-[24px] md:text-[34px] cursor-pointer"
                   >
-                    {item.num}
+                    {item.num}  
                   </span>
 
                   <p className="uppercase tracking-[0.18em] text-[10px] md:text-[13px] leading-relaxed max-w-[420px]">
