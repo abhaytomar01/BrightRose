@@ -1,6 +1,6 @@
 // Header.jsx
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Menu, X, Search, User, ShoppingBag, ChevronDown, Heart } from "lucide-react";
 import { useAuth } from "../../context/auth";
 import { useCart } from "../../context/cart";   // update path if different
