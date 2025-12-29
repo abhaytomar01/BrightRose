@@ -14,7 +14,7 @@ const LifestyleBanner = ({
         <img
           src={imageUrl}
           alt="Lifestyle Banner"
-          className="w-full h-full object-cover brightness-95"
+          className="w-full h-full object-cover cover brightness-95"
         />
 
         {/* Gold + Neutral Overlay */}

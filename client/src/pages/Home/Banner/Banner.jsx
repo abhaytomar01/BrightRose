@@ -5,8 +5,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import desktopVideo from "../../../assets/images/Banners/video2.mp4";
-import mobileVideo from "../../../assets/images/Banners/video1.mp4";
+import mobileVideo from "../../../assets/images/Banners/video2.mp4";
+import desktopVideo from "../../../assets/images/Banners/video1.mp4";
 import { Link } from "react-router-dom";
 
 export const PreviousBtn = ({ className, onClick }) => (
@@ -93,7 +93,7 @@ const Banner = () => {
 
           {/* CTA */}
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-[12vh] sm:pb-[14vh] text-center text-white z-10">
-            <p className="text-[14px] sm:text-[16px] tracking-[0.18em] uppercase mb-5 font-light">
+            <p className="text-[14px] sm:text-[16px] tracking-[0.18em] uppercase mb-5 font-light text-white">
               Bright Rose Gift 
             </p>
 

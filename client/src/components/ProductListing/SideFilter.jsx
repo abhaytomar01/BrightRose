@@ -7,23 +7,12 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 const slugify = (v) =>
   v.toLowerCase().replace(/\s*&\s*|\s*\/\s*/g, "-").replace(/\s+/g, "-");
 
-const COLOR_MAP = {
-  Red: "#b91c1c",
-  Blue: "#1d4ed8",
-  Black: "#000000",
-  White: "#ffffff",
-  Green: "#15803d",
-  Beige: "#e5d3b3",
-  Assorted: "#9ca3af",
-};
 
 const SideFilter = ({
   price,
   setPrice,
   category,
   setCategory,
-  color,
-  setColor,
   weave,
   setWeave,
   style,
@@ -32,40 +21,36 @@ const SideFilter = ({
   const [openCategory, setOpenCategory] = useState(true);
   const [openWeaves, setOpenWeaves] = useState(false);
   const [openStyle, setOpenStyle] = useState(false);
-  const [openColor, setOpenColor] = useState(false);
   const [openPrice, setOpenPrice] = useState(true);
 
   const [tempPrice, setTempPrice] = useState(price);
 
   /* OPTIONS */
   const categories = ["All"];
-  const colors = ["All", ...Object.keys(COLOR_MAP)];
 
   const weavesSubcategories = [
     "All",
     "Kanchipuram",
-    "Kanjeevaram",
-    "Kantha",
-    "Shibori",
-    "Tanchoi",
     "Banarasi",
-    "Kadwa",
-    "Pochampally Ikat",
-    "Gadwal",
-    "Uppada",
-    "Jamdani",
+    "Pashmina",
+    "Plain",
+    "Katan",
+    "Pochampalley",
+    "Brocade",
   ];
 
   const styleSubcategories = [
     "All",
-    "Coats / Blazers",
-    "Skirt & Pants",
+    "Blazers",
+    "Skirt",
+    "Pants",
     "Saree",
     "Dresses",
-    "Corsets & Tops",
+    "Corsets",
+    "Tops",
   ];
 
-  /* PRICE */
+  /* PRICE — debounce update to parent */
   useEffect(() => {
     const t = setTimeout(() => setPrice(tempPrice), 300);
     return () => clearTimeout(t);
@@ -142,33 +127,6 @@ const SideFilter = ({
               isActive={style === slugify(s) || (s === "All" && !style)}
               onClick={() => setStyle(s === "All" ? "" : slugify(s))}
             />
-          ))}
-        </ul>
-      </Collapse>
-
-      {/* COLOR */}
-      <SectionHeader label="Color" openState={openColor} setOpenState={setOpenColor} />
-      <Collapse in={openColor}>
-        <ul className="py-2 grid grid-cols-2 gap-2">
-          {colors.map((c) => (
-            <li
-              key={c}
-              onClick={() => setColor(c === "All" ? "" : c.toLowerCase())}
-              className={`flex items-center px-3 py-2 rounded-md text-sm cursor-pointer transition 
-                ${
-                  (!color && c === "All") || color === c.toLowerCase()
-                    ? "bg-neutral-800 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-            >
-              {c !== "All" && (
-                <span
-                  className="w-4 h-4 mr-2 rounded-full border"
-                  style={{ backgroundColor: COLOR_MAP[c] }}
-                />
-              )}
-              {c}
-            </li>
           ))}
         </ul>
       </Collapse>
