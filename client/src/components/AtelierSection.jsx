@@ -1,10 +1,9 @@
 import React from "react";
-import atelierhero from "../assets/images/banners/atelierhero.jpg";
+import atelierhero from "../assets/images/BRDESKTOP.png";
 
 
 const steps = [
   {
-   
     title: "CHOOSE YOUR SILHOUETTE",
     text: "Choose from our original designs crafted for proportion and movement, with options to refine necklines, lengths, and sleeves.",
   },
