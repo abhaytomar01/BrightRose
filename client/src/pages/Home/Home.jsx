@@ -2,6 +2,8 @@ import { useAuth } from "../../context/auth";
 import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
 // import Categories from "../../components/header/Categories"; 
 import Banner from "./Banner/Banner";
+import CustomOrderWrapper from "./CustomOrderWrapper";
+import custom from "../../assets/images/custom.jpg"
 import { electronicProducts } from "../../utils/electronics";
 import { fashionProducts } from "../../utils/fashion";
 import SeoData from "../../SEO/SeoData";
@@ -12,6 +14,7 @@ import WhyChooseUs from "../../components/WhyChooseUs";
 import LifestyleBanner from "../../components/LifestyleBanner";
 import brightrosehome from "../../assets/images/lastbannerdesktop.jpg";
 import abouthomeimage from "../../assets/images/abouthomeimage.jpg";
+
 const Home = () => {
     return (
         <>
@@ -59,7 +62,10 @@ const Home = () => {
         learnMoreLink="/ourheritage"
     /> */}
 
-    <section className="relative w-full overflow-hidden">
+
+
+
+    <section className="relative w-full overflow-hidden  h-[75vh] md:h-95vh ">
 
   {/* BACKGROUND IMAGE */}
   <img
@@ -103,7 +109,7 @@ const Home = () => {
         mb-4
       "
     >
-      Our Story
+      Our Atelier
     </p>
 
     {/* MAIN TITLE */}
@@ -111,9 +117,10 @@ const Home = () => {
       className="
         text-white/95
         font-light
-        text-[30px] sm:text-[36px] md:text-[48px] lg:text-[56px]
+        text-[20px] sm:text-[26px] md:text-[38px] lg:text-[46px]
         tracking-wide
         leading-tight
+        uppercase
       "
     >
       Bright Rose
@@ -130,12 +137,14 @@ const Home = () => {
         font-light
       "
     >
-      A Journey Woven in Tradition
+      Let's turn your most treasured memories into the
+         most iconic dress 
+          in your wardrobe
     </p>
 
     {/* CTA */}
     <a
-      href="/ourheritage"
+      href="/atelier"
       className="
         mt-10
         inline-flex items-center justify-center
@@ -150,7 +159,7 @@ const Home = () => {
         backdrop-blur-[1px]
       "
     >
-      Discover Our World
+      Custom Order
     </a>
 
   </div>
@@ -163,6 +172,7 @@ const Home = () => {
         title="BESTSELLERS"
         subtitle="Our most-loved products, handpicked for you"
     />
+
 
     <WhyChooseUs />
 

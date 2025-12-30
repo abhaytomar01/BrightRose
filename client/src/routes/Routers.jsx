@@ -19,6 +19,7 @@ import OrderSuccess from "../pages/user/Cart/OrderSuccess";
 import OrderFailed from "../pages/user/Cart/OrderFailed";
 import OrderDetails from "../pages/user/Orders/OrderDetails";
 import Checkout from "../pages/user/Checkout/Checkout";
+import AtelierSection from "../components/AtelierSection.jsx";
 
 // 🔹 Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard";
@@ -56,6 +57,7 @@ const Routers = () => {
       <Route path="/" element={<Home />} />
       <Route path="/products" element={<Products />} />
       <Route path="/search" element={<Products />} />
+      <Route path="/atelier" element={<AtelierSection/>} />
 
       {/* 🔹 Product Details Page */}
       <Route path="/product/:productId" element={<ProductPage />} />
