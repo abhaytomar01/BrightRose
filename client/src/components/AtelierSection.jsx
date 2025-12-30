@@ -1,5 +1,6 @@
 import React from "react";
-import atelierhero from "../../src/assets/images/banners/atelierhero.jpg"
+import atelierhero from "../assets/images/banners/atelierhero.jpg";
+
 
 const steps = [
   {
