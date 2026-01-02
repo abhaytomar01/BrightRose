@@ -30,7 +30,6 @@ const PreviousBtn = ({ className, onClick }) => (
     border border-neutral-300`}
     onClick={onClick}
   >
-    <ArrowLeft size={18} className="text-neutral-700" />
   </div>
 );
 
@@ -41,7 +40,6 @@ const NextBtn = ({ className, onClick }) => (
     border border-neutral-300`}
     onClick={onClick}
   >
-    <ArrowRight size={18} className="text-neutral-700" />
   </div>
 );
 

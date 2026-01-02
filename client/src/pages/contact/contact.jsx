@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import SeoData from "../../SEO/SeoData";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -180,11 +181,13 @@ const Contact = () => {
             </div>
 
             {/* ⭐ ADD reCAPTCHA CHECKBOX HERE ⭐ */}
-            <div
-              className="g-recaptcha"
-              data-sitekey="6LcryB0sAAAAAKVIpPMxTxWlXSjn9iyGIhyj-GDK
-"
-            ></div>
+            <div className="flex justify-center my-3">
+  <ReCAPTCHA
+    sitekey="6Lfw0T0sAAAAAH_dmCKNt9KCj6WiwjyBlHXAhADF"
+    onChange={(token) => setCaptchaToken(token)}
+  />
+</div>
+
 
             <button
               type="submit"
