@@ -183,7 +183,7 @@ const Contact = () => {
             {/* ⭐ ADD reCAPTCHA CHECKBOX HERE ⭐ */}
             <div className="flex justify-center my-3">
   <ReCAPTCHA
-    sitekey="6Lfw0T0sAAAAAH_dmCKNt9KCj6WiwjyBlHXAhADF"
+    sitekey="6Ld68z0sAAAAAEuiFdrMMQQc87HF0VsJaW7wo4yR"
     onChange={(token) => setCaptchaToken(token)}
   />
 </div>
