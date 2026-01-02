@@ -14,19 +14,18 @@ const Contact = () => {
 
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // bot protection
     if (form.honey !== "") return;
 
-    // ✔ GET TOKEN FROM RECAPTCHA v2 CHECKBOX
-    const token = window.grecaptcha.getResponse();
-
-    if (!token) {
+    if (!captchaToken) {
       alert("Please verify that you are not a robot.");
       return;
     }
@@ -40,15 +39,20 @@ const Contact = () => {
           name: form.name,
           email: form.email,
           message: form.message,
-          token,
+          token: captchaToken,
         },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: false,
+        }
       );
 
       if (res.data.success) {
         setSent(true);
-        window.grecaptcha.reset(); // ✔ reset reCAPTCHA checkbox
         setForm({ name: "", email: "", message: "", honey: "" });
+        setCaptchaToken("");
         setTimeout(() => setSent(false), 5000);
       } else {
         alert(res.data.message || "Failed to send message.");
