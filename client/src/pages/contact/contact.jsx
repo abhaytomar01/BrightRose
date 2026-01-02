@@ -35,7 +35,7 @@ const Contact = () => {
 
     try {
       const res = await axios.post(
-        "https://thebrightrose.com/api/v1/contact",
+        "https://www.thebrightrose.com/api/v1/contact",
         {
           name: form.name,
           email: form.email,
