@@ -1,5 +1,5 @@
 import React from "react";
-import atelierhero from "../assets/images/BRDESKTOP.png";
+import BRDESKTOP from "../assets/images/BRDESKTOP.png";
 
 
 const steps = [
@@ -41,7 +41,7 @@ const AtelierSection = () => {
       {/* HERO */}
       <div className="relative w-full h-[60vh] md:h-[80vh] lg:h-[90vh] overflow-hidden">
         <img
-          src={atelierhero}
+          src={BRDESKTOP}
           alt="Atelier Hero"
           className="w-full h-full object-cover"
         />
