@@ -12,9 +12,15 @@ export const sendContactMessage = async (req, res) => {
 
     // =============== Verify reCAPTCHA ================
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const recaptchaVerify = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`
-    );
+    const params = new URLSearchParams();
+params.append("secret", process.env.RECAPTCHA_SECRET_KEY);
+params.append("response", token);
+
+const recaptchaVerify = await axios.post(
+  "https://www.google.com/recaptcha/api/siteverify",
+  params
+);
+
 
     if (!recaptchaVerify.data.success) {
       return res.status(400).json({ success: false, message: "reCAPTCHA failed" });
