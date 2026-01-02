@@ -35,20 +35,20 @@ const Contact = () => {
 
     try {
       const res = await axios.post(
-        "https://www.thebrightrose.com/api/v1/contact",
-        {
-          name: form.name,
-          email: form.email,
-          message: form.message,
-          token: captchaToken,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: false,
-        }
-      );
+  "https://www.thebrightrose.com/api/v1/contact",
+  {
+    name: form.name,
+    email: form.email,
+    message: form.message,
+    token: captchaToken,   // <-- THIS MUST MATCH BACKEND
+  },
+  {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }
+);
+
 
       if (res.data.success) {
         setSent(true);
