@@ -6,26 +6,25 @@ const UserMenu = ({ closeMenu }) => {
   const { authUser, logoutUser } = useAuth();
 
   const baseLink =
-    "w-full px-4 py-3 text-[14px] rounded-lg transition-all text-gray-700";
+    "w-full flex items-center px-4 py-3 text-[14px] rounded-lg transition-all text-gray-700";
   const activeLink = "bg-black text-white";
 
   return (
     <div className="w-full h-full flex flex-col">
 
       {/* HEADER */}
-      <div className="flex items-center gap-3 mb-8 relative">
+      <div className="flex items-center gap-3 mb-6 relative">
         <div className="w-11 h-11 rounded-full bg-gray-200 flex items-center justify-center text-lg">
           👤
         </div>
 
         <div className="leading-tight">
           <p className="text-[12px] text-gray-500">Welcome</p>
-          <p className="font-medium text-[16px] luxury-title truncate max-w-[140px]">
+          <p className="font-medium text-[16px] truncate max-w-[160px]">
             {authUser?.user?.name}
           </p>
         </div>
 
-        {/* Close */}
         {closeMenu && (
           <button
             onClick={closeMenu}
@@ -36,16 +35,16 @@ const UserMenu = ({ closeMenu }) => {
         )}
       </div>
 
-      {/* SCROLLABLE MENU */}
-      <div className="flex-1 overflow-y-auto space-y-8">
+      {/* MENU */}
+      <div className="flex-1 space-y-8">
 
         {/* ACCOUNT */}
         <div>
-          <h3 className="text-[13px] uppercase tracking-widest text-gray-500 mb-3">
+          <h3 className="text-[12px] uppercase tracking-widest text-gray-400 mb-3">
             Account
           </h3>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-2">
             <NavLink
               to="./profile"
               onClick={closeMenu}
@@ -70,11 +69,11 @@ const UserMenu = ({ closeMenu }) => {
 
         {/* DASHBOARD */}
         <div>
-          <h3 className="text-[13px] uppercase tracking-widest text-gray-500 mb-3">
+          <h3 className="text-[12px] uppercase tracking-widest text-gray-400 mb-3">
             Dashboard
           </h3>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-2">
             <NavLink
               to="/user/orders"
               onClick={closeMenu}
@@ -98,7 +97,7 @@ const UserMenu = ({ closeMenu }) => {
         </div>
       </div>
 
-      {/* LOGOUT (STICKY BOTTOM) */}
+      {/* LOGOUT */}
       <div className="pt-4 border-t">
         <button
           onClick={logoutUser}
