@@ -16,6 +16,14 @@ const UserProfile = () => {
 
   const [editField, setEditField] = useState(null);
 
+  useEffect(() => {
+  if (authUser?.user) {
+    setName(authUser.user.name || "");
+    setEmail(authUser.user.email || "");
+    setPhone(authUser.user.phone || "");
+  }
+}, [authUser]);
+
   // -------------------------
   // Save API
   // -------------------------
@@ -61,7 +69,7 @@ const UserProfile = () => {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[18px] luxury-title tracking-wide">{label}</h3>
 
-        {!editField && (
+        {editField !== fieldKey && (
           <button
             className="text-sm tracking-wide text-gray-600 hover:text-black"
             onClick={() => setEditField(fieldKey)}
@@ -76,11 +84,13 @@ const UserProfile = () => {
         <div className="flex items-center gap-4">
 
           <input
-            type="text"
-            value={value}
-            onChange={(e) => setter(e.target.value)}
-            className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-md focus:border-black"
-          />
+  type="text"
+  autoFocus
+  value={value}
+  onChange={(e) => setter(e.target.value)}
+  className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-md focus:border-black focus:outline-none"
+/>
+
 
           <button
             className="px-4 py-2 bg-black text-white rounded-md text-sm tracking-wide"

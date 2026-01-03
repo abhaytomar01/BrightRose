@@ -28,15 +28,28 @@ const Dashboard = () => {
         {/* Main Flex */}
         <div className="flex flex-col md:flex-row gap-6">
 
-          {/* Sidebar (Luxury) */}
-          <div
-            className={`${isMenuOpen
-                ? "fixed top-0 left-0 bg-white w-[80%] h-full z-50 shadow-xl p-6"
-                : "hidden md:block md:w-[28%]"
-              } transition-all duration-300`}
-          >
-            <UserMenu closeMenu={() => setIsMenuOpen(false)} />
-          </div>
+          {/* Mobile Overlay */}
+{isMenuOpen && (
+  <div
+    className="fixed inset-0 bg-black/40 z-40 md:hidden"
+    onClick={() => setIsMenuOpen(false)}
+  />
+)}
+
+{/* Sidebar */}
+<div
+  className={`
+    fixed md:static top-0 left-0 h-full md:h-auto
+    bg-white z-50 md:z-auto
+    w-[80%] md:w-[28%]
+    transform transition-transform duration-300
+    ${isMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+    p-6 shadow-xl md:shadow-none
+  `}
+>
+  <UserMenu closeMenu={() => setIsMenuOpen(false)} />
+</div>
+
 
           {/* Content */}
           <div className="flex-1 bg-white shadow-lg rounded-xl p-6 relative">

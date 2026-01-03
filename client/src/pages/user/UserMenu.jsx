@@ -42,14 +42,16 @@ const UserMenu = ({ closeMenu }) => {
           <h3 className="luxury-title text-[15px] mb-2 text-gray-700">Account</h3>
 
           <div className="space-y-2">
-            <NavLink
-              to="./profile"
-              className={({ isActive }) =>
-                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
-              }
-            >
-              Profile Information
-            </NavLink>
+           <NavLink
+  to="./profile"  
+  onClick={closeMenu}
+  className={({ isActive }) =>
+    `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+  }
+>
+  Profile Information
+</NavLink>
+
 
             <NavLink
               to="./address"
