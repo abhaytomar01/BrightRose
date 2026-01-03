@@ -18,8 +18,22 @@ params.append("response", token);
 
 const recaptchaVerify = await axios.post(
   "https://www.google.com/recaptcha/api/siteverify",
-  params
+  null,
+  {
+    params: {
+      secret: process.env.RECAPTCHA_SECRET_KEY,
+      response: token,
+    },
+  }
 );
+
+if (!recaptchaVerify.data.success) {
+  return res.status(400).json({
+    success: false,
+    message: "reCAPTCHA verification failed",
+  });
+}
+
 
 
     if (!recaptchaVerify.data.success) {

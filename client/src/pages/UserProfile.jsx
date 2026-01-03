@@ -14,7 +14,7 @@ const UserProfile = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [editField, setEditField] = useState(null);
-
+  
   useEffect(() => {
     if (authUser?.user) {
       setName(authUser.user.name || "");
