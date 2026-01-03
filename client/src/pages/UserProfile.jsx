@@ -2,7 +2,7 @@
 // USER PROFILE — LUXURY PREMIUM VERSION
 // --------------------------------------
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
