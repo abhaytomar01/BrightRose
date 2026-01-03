@@ -1,62 +1,66 @@
 import { useAuth } from "../../context/auth";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { GiCrossMark } from "react-icons/gi";
 
 const UserMenu = ({ closeMenu }) => {
   const { authUser, logoutUser } = useAuth();
 
   const baseLink =
-    "px-5 py-3 text-[15px] text-gray-700 rounded-md transition-all tracking-wide";
+    "w-full px-4 py-3 text-[14px] rounded-lg transition-all text-gray-700";
   const activeLink = "bg-black text-white";
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex flex-col">
 
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6 relative">
-        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-lg">
+      {/* HEADER */}
+      <div className="flex items-center gap-3 mb-8 relative">
+        <div className="w-11 h-11 rounded-full bg-gray-200 flex items-center justify-center text-lg">
           👤
         </div>
 
-        <div>
-          <p className="text-gray-500 text-sm">Welcome</p>
-          <p className="font-medium text-lg luxury-title">{authUser?.user?.name}</p>
+        <div className="leading-tight">
+          <p className="text-[12px] text-gray-500">Welcome</p>
+          <p className="font-medium text-[16px] luxury-title truncate max-w-[140px]">
+            {authUser?.user?.name}
+          </p>
         </div>
 
-        {/* Close Mobile */}
+        {/* Close */}
         {closeMenu && (
           <button
-            className="absolute right-0 top-0 text-xl text-gray-600 md:hidden"
             onClick={closeMenu}
+            className="absolute right-0 top-0 text-xl text-gray-600 md:hidden"
           >
             <GiCrossMark />
           </button>
         )}
       </div>
 
-      {/* Menu Sections */}
-      <div className="space-y-6">
+      {/* SCROLLABLE MENU */}
+      <div className="flex-1 overflow-y-auto space-y-8">
 
-        {/* Account Settings */}
+        {/* ACCOUNT */}
         <div>
-          <h3 className="luxury-title text-[15px] mb-2 text-gray-700">Account</h3>
+          <h3 className="text-[13px] uppercase tracking-widest text-gray-500 mb-3">
+            Account
+          </h3>
 
-          <div className="space-y-2">
-           <NavLink
-  to="./profile"  
-  onClick={closeMenu}
-  className={({ isActive }) =>
-    `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
-  }
->
-  Profile Information
-</NavLink>
-
+          <div className="space-y-1">
+            <NavLink
+              to="./profile"
+              onClick={closeMenu}
+              className={({ isActive }) =>
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-100"}`
+              }
+            >
+              Profile Information
+            </NavLink>
 
             <NavLink
               to="./address"
+              onClick={closeMenu}
               className={({ isActive }) =>
-                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-100"}`
               }
             >
               Manage Addresses
@@ -64,15 +68,18 @@ const UserMenu = ({ closeMenu }) => {
           </div>
         </div>
 
-        {/* Dashboard Links */}
+        {/* DASHBOARD */}
         <div>
-          <h3 className="luxury-title text-[15px] mb-2 text-gray-700">Dashboard</h3>
+          <h3 className="text-[13px] uppercase tracking-widest text-gray-500 mb-3">
+            Dashboard
+          </h3>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             <NavLink
               to="/user/orders"
+              onClick={closeMenu}
               className={({ isActive }) =>
-                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-100"}`
               }
             >
               My Orders
@@ -80,19 +87,22 @@ const UserMenu = ({ closeMenu }) => {
 
             <NavLink
               to="/user/wishlist"
+              onClick={closeMenu}
               className={({ isActive }) =>
-                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-200"}`
+                `${baseLink} ${isActive ? activeLink : "hover:bg-gray-100"}`
               }
             >
               Wishlist
             </NavLink>
           </div>
         </div>
+      </div>
 
-        {/* Logout */}
+      {/* LOGOUT (STICKY BOTTOM) */}
+      <div className="pt-4 border-t">
         <button
           onClick={logoutUser}
-          className="px-5 py-3 text-red-600 hover:bg-red-50 rounded-md text-[15px] tracking-wide"
+          className="w-full text-left px-4 py-3 text-[14px] text-red-600 rounded-lg hover:bg-red-50"
         >
           Logout
         </button>
