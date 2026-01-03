@@ -71,12 +71,12 @@ const Register = () => {
 
 
   return (
-    <section className="min-h-screen bg-pureWhite flex items-center justify-center px-6 pt-36 pb-20 md:pt-44">
+    <section className="min-h-screen bg-pureWhite flex items-center justify-center px-6 pt-24 pb-20 md:pt-32">
 
       <div className="w-full max-w-lg text-center">
 
         {/* TITLE */}
-        <h1 className="text-4xl sm:text-5xl font-light tracking-[4px] text-neutralDark/80 uppercase mb-10">
+        <h1 className="text-2xl md:text-4xl font-light tracking-[4px] text-neutralDark/80 uppercase mb-10">
           Register
         </h1>
 

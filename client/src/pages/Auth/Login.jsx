@@ -71,7 +71,7 @@ const Login = () => {
     <section className="min-h-screen flex items-center justify-center ">
       <div className="w-full max-w-md">
 
-        <h1 className="text-4xl text-center mb-10 tracking-[4px] font-light uppercase">
+        <h1 className="text-2xl md:text-4xl text-center mb-10 tracking-[4px] font-light uppercase">
           Login
         </h1>
 

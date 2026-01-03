@@ -23,7 +23,7 @@ const Dashboard = () => {
     <>
       <SeoData title="My Account – Bright Rose" />
 
-      <div className="mt-32 md:mt-44 px-4 md:px-10">
+      <div className="mt-20 md:mt-32 px-4 md:px-10">
 
         {/* Main Flex */}
         <div className="flex flex-col md:flex-row gap-6">
