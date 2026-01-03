@@ -1,5 +1,5 @@
 // --------------------------------------
-// USER PROFILE — LUXURY PREMIUM VERSION
+// USER PROFILE — LUXURY RESPONSIVE VERSION
 // --------------------------------------
 
 import { useState, useEffect } from "react";
@@ -10,150 +10,116 @@ import { toast } from "react-toastify";
 const UserProfile = () => {
   const { authUser, loginUser } = useAuth();
 
-  const [name, setName] = useState(authUser?.user?.name || "");
-  const [email, setEmail] = useState(authUser?.user?.email || "");
-  const [phone, setPhone] = useState(authUser?.user?.phone || "");
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [editField, setEditField] = useState(null);
 
   useEffect(() => {
-  if (authUser?.user) {
-    setName(authUser.user.name || "");
-    setEmail(authUser.user.email || "");
-    setPhone(authUser.user.phone || "");
-  }
-}, [authUser]);
+    if (authUser?.user) {
+      setName(authUser.user.name || "");
+      setEmail(authUser.user.email || "");
+      setPhone(authUser.user.phone || "");
+    }
+  }, [authUser]);
 
-  // -------------------------
-  // Save API
-  // -------------------------
   const updateField = async (field, value) => {
     try {
-      const body = {
-        email: authUser?.user?.email, // identifier
-      };
+      const body = { email: authUser?.user?.email };
 
       if (field === "name") body.newName = value;
       if (field === "email") body.newEmail = value;
       if (field === "phone") body.newPhone = value;
 
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/auth/update-details`,
         body
       );
 
-      // Save locally
       loginUser({
-        user: {
-          ...authUser.user,
-          [field]: value,
-        },
+        user: { ...authUser.user, [field]: value },
         token: authUser.token,
       });
 
       toast.success("Updated successfully");
       setEditField(null);
-    } catch (err) {
-      console.log(err);
+    } catch {
       toast.error("Update failed!");
     }
   };
 
-  // -------------------------
-  // Field UI Component
-  // -------------------------
   const Field = ({ label, value, fieldKey, setter }) => (
-    <div className="mb-10 border-b pb-6">
+    <div className="mb-8 sm:mb-10 border-b pb-5 sm:pb-6">
 
-      {/* Label + Edit Button */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[18px] luxury-title tracking-wide">{label}</h3>
+      {/* Label + Edit */}
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h3 className="luxury-title text-[14px] sm:text-[16px] md:text-[18px] tracking-wide">
+          {label}
+        </h3>
 
         {editField !== fieldKey && (
           <button
-            className="text-sm tracking-wide text-gray-600 hover:text-black"
             onClick={() => setEditField(fieldKey)}
+            className="text-[11px] sm:text-[12px] md:text-[13px] tracking-widest text-gray-500 hover:text-black"
           >
             EDIT
           </button>
         )}
       </div>
 
-      {/* Value / Edit Field */}
+      {/* Value / Edit */}
       {editField === fieldKey ? (
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
 
           <input
-  type="text"
-  autoFocus
-  value={value}
-  onChange={(e) => setter(e.target.value)}
-  className="w-full max-w-xs px-4 py-2 border border-gray-300 rounded-md focus:border-black focus:outline-none"
-/>
-
+            type="text"
+            autoFocus
+            value={value}
+            onChange={(e) => setter(e.target.value)}
+            className="w-full sm:max-w-xs px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:border-black focus:outline-none text-[13px] sm:text-[14px]"
+          />
 
           <button
-            className="px-4 py-2 bg-black text-white rounded-md text-sm tracking-wide"
             onClick={() => updateField(fieldKey, value)}
+            className="px-4 py-2 bg-black text-white rounded-md text-[12px] sm:text-[13px]"
           >
             Save
           </button>
 
           <button
-            className="px-4 py-2 border border-gray-400 rounded-md text-sm tracking-wide"
             onClick={() => setEditField(null)}
+            className="px-4 py-2 border border-gray-400 rounded-md text-[12px] sm:text-[13px]"
           >
             Cancel
           </button>
 
         </div>
       ) : (
-        <div className="text-gray-700 text-[15px]">
+        <p className="text-gray-700 text-[13px] sm:text-[14px] md:text-[15px]">
           {value || <span className="text-gray-400">Not added</span>}
-        </div>
+        </p>
       )}
     </div>
   );
 
-  // ----------------------------------
-  // MAIN COMPONENT RETURN
-  // ----------------------------------
   return (
     <div className="w-full">
 
-      <h1 className="luxury-title text-[26px] mb-10 tracking-wide">
+      {/* TITLE */}
+      <h1 className="luxury-title text-[18px] sm:text-[22px] md:text-[26px] mb-8 sm:mb-10 tracking-wide">
         My Profile
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      {/* CONTENT */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
 
-        {/* LEFT SIDE */}
         <div>
-
-          <Field
-            label="Full Name"
-            value={name}
-            fieldKey="name"
-            setter={setName}
-          />
-
-          <Field
-            label="Email Address"
-            value={email}
-            fieldKey="email"
-            setter={setEmail}
-          />
-
-          <Field
-            label="Mobile Number"
-            value={phone}
-            fieldKey="phone"
-            setter={setPhone}
-          />
-
+          <Field label="Full Name" value={name} fieldKey="name" setter={setName} />
+          <Field label="Email Address" value={email} fieldKey="email" setter={setEmail} />
+          <Field label="Mobile Number" value={phone} fieldKey="phone" setter={setPhone} />
         </div>
 
-        {/* RIGHT SIDE IMAGE */}
+        {/* IMAGE */}
         <div className="hidden md:flex justify-center items-start pt-4">
           <img
             src="https://www.dior.com/couture/var/dior/storage/images/horizon/customer-account/my-account/37553058-5-eng-GB/my-account_1440_1200.jpg"
@@ -161,27 +127,30 @@ const UserProfile = () => {
             className="w-[80%] rounded-xl shadow-md object-cover"
           />
         </div>
-
       </div>
 
       {/* FAQ */}
-      <div className="mt-16">
-        <h2 className="luxury-title text-[20px] mb-4 tracking-wide">
+      <div className="mt-12 sm:mt-16">
+        <h2 className="luxury-title text-[16px] sm:text-[18px] md:text-[20px] mb-4 tracking-wide">
           FAQs
         </h2>
 
-        <div className="space-y-6 text-gray-600">
+        <div className="space-y-5 sm:space-y-6 text-gray-600">
 
           <div>
-            <h4 className="font-medium">What happens when I update my details?</h4>
-            <p className="text-sm mt-2">
+            <h4 className="font-medium text-[13px] sm:text-[14px]">
+              What happens when I update my details?
+            </h4>
+            <p className="text-[12px] sm:text-[13px] md:text-[14px] mt-2">
               Your login information will be updated instantly.
             </p>
           </div>
 
           <div>
-            <h4 className="font-medium">Will I stay logged in?</h4>
-            <p className="text-sm mt-2">
+            <h4 className="font-medium text-[13px] sm:text-[14px]">
+              Will I stay logged in?
+            </h4>
+            <p className="text-[12px] sm:text-[13px] md:text-[14px] mt-2">
               Yes, your session stays active unless you log out manually.
             </p>
           </div>
