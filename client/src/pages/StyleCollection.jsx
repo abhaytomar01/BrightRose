@@ -3,6 +3,11 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
 import stylecover from "../assets/images/stylecover.jpg";
+import corsetndtops from "../assets/images/corsetndtops.jpg";
+import dresses from "../assets/images/dresses.jpg";
+import skirtnpants from "../assets/images/skirtndtrouser.jpg";     
+import sarees from "../assets/images/saree.jpg";       
+import jacketnblazers from "../assets/images/jacket&blazer.jpg";
 
 /* ------------------------------
    Subcategories (Luxury Styles)
@@ -11,28 +16,27 @@ const subcategories = [
   {
     name: "Coats / Blazers",
     desc: "Tailored elegance crafted with handwoven textiles.",
-    image:
-      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80",
+    image: jacketnblazers,
   },
   {
     name: "Skirt & Pants",
     desc: "Contemporary silhouettes with traditional craftsmanship.",
-    image: "https://images.pexels.com/photos/33323127/pexels-photo-33323127.jpeg",
+    image: skirtnpants,
   },
   {
     name: "Saree",
     desc: "Classic drapes blending heritage with modern minimalism.",
-    image: "https://images.pexels.com/photos/2723623/pexels-photo-2723623.jpeg",
+    image: sarees,
   },
   {
     name: "Dresses",
     desc: "Fluid silhouettes designed for effortless grace.",
-    image: "https://images.pexels.com/photos/18977034/pexels-photo-18977034.jpeg",
+    image: dresses,
   },
   {
     name: "Corsets & Tops",
     desc: "Structured yet comfortable pieces with artisanal detailing.",
-    image: "https://images.pexels.com/photos/30773362/pexels-photo-30773362.jpeg",
+    image: corsetndtops,
   },
 ];
 
