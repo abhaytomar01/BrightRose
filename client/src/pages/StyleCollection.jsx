@@ -65,7 +65,7 @@ const StyleCollection = () => {
       {/* --------------------------------------
           HERO — Luxury Editorial Banner
       -------------------------------------- */}
-      <section className="relative h-[60vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[65vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
 
         {/* Background */}
         <img
@@ -120,7 +120,7 @@ const StyleCollection = () => {
                   <img
                     src={sub.image}
                     alt={sub.name}
-                    className="w-full h-[350px] sm:h-[380px] md:h-[420px] object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-[520px] sm:h-[380px] md:h-[420px] object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
 
