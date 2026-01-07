@@ -148,10 +148,10 @@ app.use("/api/v1/contact", contactRoute);
 app.use("/api/v1/payment", paymentRoute);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/user/addresses", addressRoutes);
-app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/order", orderRoute); 
 app.use("/api/v1/shipping", shippingRoute);
 app.use("/api/v1/geoip", geoipRoute);
-app.use("/api/v1/admin/shipping-rates", shippingRateRoute);
+app.use("/api/v1/admin/shipping", shippingRateRoute);
 
 // ------------------------------
 // Webhook route that needs raw body
