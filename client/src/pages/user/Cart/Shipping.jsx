@@ -1,168 +1,154 @@
-/* Luxury Shipping Page — Bright Rose Edition */
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
+/* Luxury Shipping Page — Bright Rose (Industry Standard) */
+
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  TextField,
+  MenuItem,
+} from "@mui/material";
 import { useState } from "react";
-import states from "../../../utils/states";
 import { toast } from "react-toastify";
+import states from "../../../utils/states";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
-import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
 import SeoData from "../../../SEO/SeoData";
 import PriceCard from "./PriceCard";
 
 const Shipping = () => {
-  const Info = localStorage.getItem("shippingInfo");
-  const shippingInfo = JSON.parse(Info);
+  const navigate = useNavigate();
+  const { cartItems } = useCart();
+  const { authUser } = useAuth();
 
-  const [cartItems] = useCart();
-  const { auth } = useAuth();
+  const stored = localStorage.getItem("shippingInfo");
+  const saved = stored ? JSON.parse(stored) : {};
 
-  const [address, setAddress] = useState(shippingInfo?.address);
-  const [city, setCity] = useState(shippingInfo?.city);
-  const [country] = useState("IN");
-  const [state, setState] = useState(shippingInfo?.state);
-  const [landmark, setLandmark] = useState(shippingInfo?.landmark);
-  const [pincode, setPincode] = useState(shippingInfo?.pincode);
-  const [phoneNo, setPhoneNo] = useState(shippingInfo?.phoneNo);
+  const [form, setForm] = useState({
+    address: saved.address || "",
+    city: saved.city || "",
+    state: saved.state || "",
+    landmark: saved.landmark || "",
+    pincode: saved.pincode || "",
+    phoneNo: saved.phoneNo || "",
+    country: "IN",
+  });
 
-  const publishKey = import.meta.env.VITE_STRIPE_PUBLISH_KEY;
-  const frontendURL = window.location.origin;
+  /* ---------------- VALIDATION ---------------- */
+  const validate = () => {
+    if (!form.address.trim()) return toast.error("Address required"), false;
+    if (!form.city.trim()) return toast.error("City required"), false;
+    if (!form.state) return toast.error("State required"), false;
 
-  const shippingSubmit = (e) => {
-    e.preventDefault();
+    if (!/^[0-9]{6}$/.test(form.pincode))
+      return toast.error("Enter valid 6-digit pincode"), false;
 
-    if (phoneNo.length !== 10) {
-      toast.error("Invalid Mobile Number");
-      return;
-    }
+    if (!/^[0-9]{10}$/.test(form.phoneNo))
+      return toast.error("Enter valid 10-digit phone number"), false;
 
-    const data = {
-      address,
-      city,
-      country,
-      state,
-      landmark,
-      pincode,
-      phoneNo,
-    };
-
-    localStorage.setItem("shippingInfo", JSON.stringify(data));
+    return true;
   };
 
-  const handlePayment = async () => {
-    const stripe = await loadStripe(publishKey);
+  /* ---------------- SUBMIT ---------------- */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-    const response = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/user/create-checkout-session`,
-      {
-        products: cartItems,
-        frontendURL,
-        customerEmail: auth?.user?.email,
-      },
-      {
-        headers: { Authorization: auth?.token },
-      }
-    );
+    localStorage.setItem("shippingInfo", JSON.stringify(form));
 
-    const session = response.data.session;
-    localStorage.setItem("sessionId", session.id);
-
-    const result = stripe.redirectToCheckout({ sessionId: session.id });
-    if (result.error) console.log(result.error);
+    toast.success("Shipping details saved");
+    navigate("/checkout"); // 👉 move to checkout/payment page
   };
 
   return (
     <>
-      <SeoData title="Bright Rose | Shipping Details" />
+      <SeoData title="Shipping Details | Bright Rose" />
 
-      <main
-        className="w-full pt-32 md:pt-44 pb-10 bg-[#F8F6F3] font-[Manrope]"
-      >
+      <main className="w-full pt-32 md:pt-44 pb-10 bg-[#F8F6F3] font-[Manrope]">
         <div className="w-full sm:w-11/12 mx-auto flex flex-col sm:flex-row gap-6 px-4">
 
-          {/* LEFT — Shipping Form */}
+          {/* LEFT — SHIPPING FORM */}
           <div className="flex-1 bg-white rounded-2xl border border-[#e8e2d9] shadow-sm p-8">
-
-            <h1 className="text-2xl font-semibold tracking-wide text-[#1a1a1a] mb-6">
+            <h1 className="text-2xl font-semibold tracking-wide mb-6">
               Shipping Details
             </h1>
 
-            <form onSubmit={shippingSubmit} autoComplete="off" className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
               <TextField
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                fullWidth
                 label="Full Address"
-                variant="outlined"
+                value={form.address}
+                onChange={(e) =>
+                  setForm({ ...form, address: e.target.value })
+                }
+                fullWidth
                 required
               />
 
-              <div className="flex gap-4 w-full">
+              <div className="flex gap-4">
                 <TextField
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value)}
-                  type="number"
                   label="Pincode"
+                  value={form.pincode}
+                  onChange={(e) =>
+                    setForm({ ...form, pincode: e.target.value })
+                  }
                   fullWidth
                   required
                 />
+
                 <TextField
-                  value={phoneNo}
-                  onChange={(e) => setPhoneNo(e.target.value)}
-                  type="number"
                   label="Phone Number"
+                  value={form.phoneNo}
+                  onChange={(e) =>
+                    setForm({ ...form, phoneNo: e.target.value })
+                  }
                   fullWidth
                   required
                 />
               </div>
 
-              <div className="flex gap-4 w-full">
+              <div className="flex gap-4">
                 <TextField
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
                   label="City"
+                  value={form.city}
+                  onChange={(e) =>
+                    setForm({ ...form, city: e.target.value })
+                  }
                   fullWidth
                   required
                 />
 
                 <TextField
                   label="Landmark (Optional)"
-                  value={landmark}
-                  onChange={(e) => setLandmark(e.target.value)}
+                  value={form.landmark}
+                  onChange={(e) =>
+                    setForm({ ...form, landmark: e.target.value })
+                  }
                   fullWidth
                 />
               </div>
 
-              <div className="flex gap-4 w-full">
+              <div className="flex gap-4">
                 <FormControl fullWidth>
-                  <InputLabel id="country-select">Country</InputLabel>
-                  <Select
-                    labelId="country-select"
-                    defaultValue={"IN"}
-                    disabled
-                    label="Country"
-                  >
+                  <InputLabel>Country</InputLabel>
+                  <Select value="IN" disabled label="Country">
                     <MenuItem value="IN">India</MenuItem>
                   </Select>
                 </FormControl>
 
                 <FormControl fullWidth>
-                  <InputLabel id="state-select">State</InputLabel>
+                  <InputLabel>State</InputLabel>
                   <Select
-                    labelId="state-select"
-                    value={state}
+                    value={form.state}
                     label="State"
-                    onChange={(e) => setState(e.target.value)}
+                    onChange={(e) =>
+                      setForm({ ...form, state: e.target.value })
+                    }
                     required
                   >
-                    {states?.map((item) => (
-                      <MenuItem key={item.code} value={item.code}>
-                        {item.name}
+                    {states.map((s) => (
+                      <MenuItem key={s.code} value={s.code}>
+                        {s.name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -171,20 +157,18 @@ const Shipping = () => {
 
               <button
                 type="submit"
-                onClick={handlePayment}
                 className="
-                  w-full sm:w-[50%] py-3.5 rounded-lg text-white
-                  bg-[#AD000F] hover:bg-[#8c000c] 
-                  tracking-wide text-sm font-semibold
-                  transition-all shadow-md
+                  w-full sm:w-[50%] py-3.5 rounded-lg
+                  bg-[#AD000F] hover:bg-[#8c000c]
+                  text-white text-sm font-semibold tracking-wide
                 "
               >
-                Make Payment
+                Continue to Checkout
               </button>
             </form>
           </div>
 
-          {/* RIGHT — Price Card */}
+          {/* RIGHT — PRICE CARD */}
           <PriceCard cartItems={cartItems} />
         </div>
       </main>

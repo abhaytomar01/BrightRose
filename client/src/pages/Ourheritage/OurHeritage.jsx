@@ -366,7 +366,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         inline-block 
         border border-neutral-900 md:border-white
         px-12 py-4
-        tracking-[0.22em] 
+        tracking-[0.22em]
         uppercase text-[11px]
         bg-white/90 md:bg-transparent
         text-neutral-900 md:text-white

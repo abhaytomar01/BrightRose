@@ -1,13 +1,25 @@
+// server/routes/paymentRoute.js
 import express from "express";
-import { createOrder, verifyPayment } from "../controllers/payment/paymentController.js";
+import {
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+} from "../controllers/payment/paymentController.js";
 import { requireSignIn } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// If you allow guest checkout, remove requireSignIn here also
-router.post("/create-order", requireSignIn, createOrder);
+/**
+ * @route   POST /api/v1/payment/create-order
+ * @desc    Create Razorpay order
+ * @access  Private (user must be logged in)
+ */
+router.post("/create-order", requireSignIn, createRazorpayOrder);
 
-// NEVER protect verify-payment — Razorpay returns even if user logged out
-router.post("/verify-payment", verifyPayment);
+/**
+ * @route   POST /api/v1/payment/verify
+ * @desc    Verify Razorpay payment signature
+ * @access  Public (Razorpay callback / frontend)
+ */
+router.post("/verify", verifyRazorpayPayment);
 
 export default router;

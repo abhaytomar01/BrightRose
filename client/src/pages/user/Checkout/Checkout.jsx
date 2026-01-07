@@ -126,11 +126,21 @@ export default function Checkout() {
       const finalAddress = { ...address, country: country || "India" };
 
       // Create Razorpay Order
-      const orderRes = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-        { amount: Math.round(finalTotal) },
-        token && { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // const orderRes = await axios.post(
+      //   `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+      //  { amount: finalTotal },
+      //   token && { headers: { Authorization: `Bearer ${token}` } }
+      // );
+
+      const authConfig = token
+  ? { headers: { Authorization: `Bearer ${token}` } }
+  : {};
+
+const orderRes = await axios.post(
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+  { amount: finalTotal }, // send RUPEES only
+  authConfig
+);
 
       const { orderId, currency } = orderRes.data;
 
@@ -148,33 +158,55 @@ export default function Checkout() {
           contact: finalAddress.phone,
         },
 
-        handler: async function (response) {
-          toast.info("Verifying payment...");
+       handler: async (response) => {
+  try {
+    toast.info("Verifying payment...");
 
-          const verifyRes = await axios.post(
-            `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify`,
-            {
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-              cartItems,
-              address: finalAddress,
-              shippingCharge,
-              total: finalTotal,
-            },
-            token && { headers: { Authorization: `Bearer ${token}` } }
-          );
+    // const verifyRes = await axios.post(
+    //   `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+    //   {
+    //     razorpay_payment_id: response.razorpay_payment_id,
+    //     razorpay_order_id: response.razorpay_order_id,
+    //     razorpay_signature: response.razorpay_signature,
+    //     cartItems,
+    //     address: finalAddress,
+    //     shippingCharge,
+    //     total: finalTotal,
+    //   },
+    //   authConfig
+    // );
 
-          if (verifyRes.data?.success) {
-            toast.success("Order placed successfully");
-            clearCart();
-            navigate("/order-success");
-          } else {
-            toast.error("Payment verification failed");
-          }
-        },
+    const authConfig = token
+  ? { headers: { Authorization: `Bearer ${token}` } }
+  : {};
 
-        theme: { color: "#000000" }
+const verifyRes = await axios.post(
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+  {
+    razorpay_payment_id: response.razorpay_payment_id,
+    razorpay_order_id: response.razorpay_order_id,
+    razorpay_signature: response.razorpay_signature,
+    cartItems,
+    address: finalAddress,
+    shippingCharge,
+    total: finalTotal,
+  },
+  authConfig
+);
+
+
+    if (verifyRes.data?.success) {
+      toast.success("Order placed successfully");
+      clearCart();
+      navigate("/order-success");
+    } else {
+      toast.error("Payment verification failed");
+    }
+  } catch (err) {
+    toast.error("Payment verification error");
+  }
+}
+      // theme: { color: "#000000" }
       });
 
       rzp.open();
