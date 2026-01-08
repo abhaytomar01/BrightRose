@@ -7,7 +7,7 @@ import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
 
 export default function Checkout() {
-  // 🔹 Hooks – always at top, fixed order
+  // ---------- Hooks (fixed order) ----------
   const navigate = useNavigate();
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
@@ -20,7 +20,7 @@ export default function Checkout() {
   const [shippingInfo, setShippingInfo] = useState(null);
   const [dbOrderId, setDbOrderId] = useState(null);
 
-  // 🔹 Load shipping info from localStorage
+  // ---------- Load shipping from localStorage ----------
   useEffect(() => {
     try {
       const stored = localStorage.getItem("shippingInfo");
@@ -39,9 +39,7 @@ export default function Checkout() {
     }
   }, [navigate]);
 
-  const finalTotal = Number(subtotal) + Number(shippingCharge || 0);
-
-  // While loading shippingInfo, show skeleton (no new hooks below this)
+  // While shippingInfo is loading / redirecting
   if (!shippingInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -50,7 +48,12 @@ export default function Checkout() {
     );
   }
 
-  // 🔹 Calculate shipping (your Delhivery endpoint)
+  // ---------- Safe numeric totals ----------
+  const safeSubtotal = Number(subtotal || 0);
+  const safeShipping = Number(shippingCharge || 0);
+  const finalTotal = safeSubtotal + safeShipping;
+
+  // ---------- Shipping calculation ----------
   const fetchShippingCharge = async () => {
     if (!shippingInfo?.pincode) {
       toast.error("Shipping pincode missing");
@@ -64,7 +67,7 @@ export default function Checkout() {
         {
           pincode: shippingInfo.pincode,
           weightKg: cartItems.reduce(
-            (w, i) => w + i.quantity * 0.5,
+            (w, i) => w + Number(i.quantity || 0) * 0.5,
             0.5
           ),
           dims: { l: 30, b: 20, h: 10 },
@@ -72,7 +75,7 @@ export default function Checkout() {
       );
 
       if (res.data?.success) {
-        setShippingCharge(res.data.amount);
+        setShippingCharge(Number(res.data.amount || 0));
       } else {
         toast.error("Failed to calculate shipping");
       }
@@ -84,7 +87,7 @@ export default function Checkout() {
     }
   };
 
-  // 🔹 Load Razorpay script
+  // ---------- Razorpay loader ----------
   const loadRazorpay = () =>
     new Promise((resolve) => {
       if (window.Razorpay) return resolve(true);
@@ -95,7 +98,7 @@ export default function Checkout() {
       document.body.appendChild(script);
     });
 
-  // 🔹 Payment flow
+  // ---------- Payment flow ----------
   const handlePayment = async () => {
     if (!cartItems.length) {
       toast.error("Cart is empty");
@@ -115,7 +118,7 @@ export default function Checkout() {
         ? { headers: { Authorization: `Bearer ${token}` } }
         : {};
 
-      // 1️⃣ Create order on backend
+      // 1) Create order on backend
       const orderRes = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
         {
@@ -123,7 +126,7 @@ export default function Checkout() {
           cartItems,
           shippingAddress: {
             ...shippingInfo,
-            shippingCharge,
+            shippingCharge: safeShipping,
           },
         },
         authConfig
@@ -137,7 +140,7 @@ export default function Checkout() {
       const { orderId, currency, dbOrderId: dbId } = orderRes.data;
       setDbOrderId(dbId);
 
-      // 2️⃣ Open Razorpay Checkout
+      // 2) Open Razorpay Checkout
       const rzp = new window.Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: finalTotal * 100, // paise
@@ -152,7 +155,7 @@ export default function Checkout() {
         },
         handler: async (response) => {
           try {
-            // 3️⃣ Verify payment on backend
+            // 3) Verify payment on backend
             const verifyRes = await axios.post(
               `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
               {
@@ -192,7 +195,7 @@ export default function Checkout() {
     }
   };
 
-  // 🔹 Step navigation
+  // ---------- Step control ----------
   const nextStep = async () => {
     if (step === 1) {
       await fetchShippingCharge();
@@ -202,7 +205,7 @@ export default function Checkout() {
 
   const prevStep = () => setStep((s) => s - 1);
 
-  // 🔹 UI
+  // ---------- UI ----------
   return (
     <div className="min-h-screen bg-[#fafafa] mt-10 md:mt-20">
       <div className="max-w-[1250px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
@@ -267,22 +270,23 @@ export default function Checkout() {
                 Review Order
               </h2>
 
-              {cartItems.map((i) => (
-                <div
-                  key={i.key || i._id}
-                  className="flex justify-between py-3 border-b"
-                >
-                  <span>
-                    {i.name} × {i.quantity}
-                  </span>
-                  <span>
-                    ₹
-                    {(
-                      (i.discountPrice || i.price) * i.quantity
-                    ).toLocaleString()}
-                  </span>
-                </div>
-              ))}
+              {cartItems.map((i) => {
+                const unit = Number(i.discountPrice ?? i.price ?? 0);
+                const qty = Number(i.quantity || 0);
+                const lineTotal = unit * qty;
+
+                return (
+                  <div
+                    key={i.key || i._id}
+                    className="flex justify-between py-3 border-b"
+                  >
+                    <span>
+                      {i.name} × {qty}
+                    </span>
+                    <span>₹{lineTotal.toLocaleString()}</span>
+                  </div>
+                );
+              })}
 
               <button
                 onClick={handlePayment}
@@ -306,11 +310,11 @@ export default function Checkout() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>₹{subtotal.toLocaleString()}</span>
+              <span>₹{safeSubtotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
-              <span>₹{shippingCharge.toLocaleString()}</span>
+              <span>₹{safeShipping.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-lg font-semibold">
               <span>Total</span>
