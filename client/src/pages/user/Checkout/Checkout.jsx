@@ -1,3 +1,4 @@
+// client/src/pages/user/Checkout/Checkout.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -6,6 +7,7 @@ import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
 
 export default function Checkout() {
+  // 🔹 Hooks – always at top, fixed order
   const navigate = useNavigate();
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
@@ -15,40 +17,10 @@ export default function Checkout() {
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
-  // existing state
-const [shippingInfo, setShippingInfo] = useState(null);
-
-useEffect(() => {
-  try {
-    const stored = localStorage.getItem("shippingInfo");
-    if (!stored) {
-      navigate("/shipping");
-      return;
-    }
-    const parsed = JSON.parse(stored);
-    if (!parsed?.address || !parsed?.pincode) {
-      navigate("/shipping");
-      return;
-    }
-    setShippingInfo(parsed);
-  } catch {
-    navigate("/shipping");
-  }
-}, [navigate]);
-
-// ⬇️ add this early in the component body, before JSX return
-if (!shippingInfo) {
-  // optional: simple loading skeleton
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p>Loading shipping details...</p>
-    </div>
-  );
-}
-
-
+  const [shippingInfo, setShippingInfo] = useState(null);
   const [dbOrderId, setDbOrderId] = useState(null);
 
+  // 🔹 Load shipping info from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem("shippingInfo");
@@ -69,6 +41,50 @@ if (!shippingInfo) {
 
   const finalTotal = Number(subtotal) + Number(shippingCharge || 0);
 
+  // While loading shippingInfo, show skeleton (no new hooks below this)
+  if (!shippingInfo) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading shipping details...</p>
+      </div>
+    );
+  }
+
+  // 🔹 Calculate shipping (your Delhivery endpoint)
+  const fetchShippingCharge = async () => {
+    if (!shippingInfo?.pincode) {
+      toast.error("Shipping pincode missing");
+      return;
+    }
+
+    setLoadingShipping(true);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
+        {
+          pincode: shippingInfo.pincode,
+          weightKg: cartItems.reduce(
+            (w, i) => w + i.quantity * 0.5,
+            0.5
+          ),
+          dims: { l: 30, b: 20, h: 10 },
+        }
+      );
+
+      if (res.data?.success) {
+        setShippingCharge(res.data.amount);
+      } else {
+        toast.error("Failed to calculate shipping");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Shipping service unavailable");
+    } finally {
+      setLoadingShipping(false);
+    }
+  };
+
+  // 🔹 Load Razorpay script
   const loadRazorpay = () =>
     new Promise((resolve) => {
       if (window.Razorpay) return resolve(true);
@@ -79,8 +95,12 @@ if (!shippingInfo) {
       document.body.appendChild(script);
     });
 
+  // 🔹 Payment flow
   const handlePayment = async () => {
-    if (!cartItems.length) return toast.error("Cart is empty");
+    if (!cartItems.length) {
+      toast.error("Cart is empty");
+      return;
+    }
 
     setPaymentProcessing(true);
 
@@ -101,7 +121,10 @@ if (!shippingInfo) {
         {
           amount: Math.round(finalTotal), // rupees
           cartItems,
-          shippingAddress: shippingInfo,
+          shippingAddress: {
+            ...shippingInfo,
+            shippingCharge,
+          },
         },
         authConfig
       );
@@ -117,7 +140,7 @@ if (!shippingInfo) {
       // 2️⃣ Open Razorpay Checkout
       const rzp = new window.Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: finalTotal * 100,
+        amount: finalTotal * 100, // paise
         currency: currency || "INR",
         name: "Bright Rose",
         description: "Order Payment",
@@ -169,26 +192,22 @@ if (!shippingInfo) {
     }
   };
 
-  /* ----------------------------------
-     STEP CONTROL
-  ---------------------------------- */
+  // 🔹 Step navigation
   const nextStep = async () => {
-    if (step === 1) await fetchShippingCharge();
+    if (step === 1) {
+      await fetchShippingCharge();
+    }
     setStep((s) => s + 1);
   };
 
   const prevStep = () => setStep((s) => s - 1);
 
-  /* ----------------------------------
-     UI
-  ---------------------------------- */
+  // 🔹 UI
   return (
     <div className="min-h-screen bg-[#fafafa] mt-10 md:mt-20">
       <div className="max-w-[1250px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px]">
-
         {/* LEFT */}
         <div className="px-6 md:px-12 py-10 border-r">
-
           {/* STEP 1 */}
           {step === 1 && (
             <>
@@ -196,7 +215,9 @@ if (!shippingInfo) {
 
               <div className="bg-white border rounded-md p-4 text-sm">
                 <p>{shippingInfo.address}</p>
-                <p>{shippingInfo.city}, {shippingInfo.state}</p>
+                <p>
+                  {shippingInfo.city}, {shippingInfo.state}
+                </p>
                 <p>{shippingInfo.pincode}</p>
                 <p>{shippingInfo.phoneNo}</p>
               </div>
@@ -206,7 +227,9 @@ if (!shippingInfo) {
                 disabled={loadingShipping}
                 className="mt-6 w-full bg-black text-white py-4 rounded-md"
               >
-                {loadingShipping ? "Calculating Shipping..." : "Continue"}
+                {loadingShipping
+                  ? "Calculating Shipping..."
+                  : "Continue"}
               </button>
             </>
           )}
@@ -221,7 +244,10 @@ if (!shippingInfo) {
               </div>
 
               <div className="flex justify-between">
-                <button onClick={prevStep} className="underline text-sm">
+                <button
+                  onClick={prevStep}
+                  className="underline text-sm"
+                >
                   Back
                 </button>
                 <button
@@ -237,13 +263,23 @@ if (!shippingInfo) {
           {/* STEP 3 */}
           {step === 3 && (
             <>
-              <h2 className="text-lg font-semibold mb-4">Review Order</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                Review Order
+              </h2>
 
               {cartItems.map((i) => (
-                <div key={i.key} className="flex justify-between py-3 border-b">
-                  <span>{i.name} × {i.quantity}</span>
+                <div
+                  key={i.key || i._id}
+                  className="flex justify-between py-3 border-b"
+                >
                   <span>
-                    ₹{((i.discountPrice || i.price) * i.quantity).toLocaleString()}
+                    {i.name} × {i.quantity}
+                  </span>
+                  <span>
+                    ₹
+                    {(
+                      (i.discountPrice || i.price) * i.quantity
+                    ).toLocaleString()}
                   </span>
                 </div>
               ))}
@@ -251,9 +287,11 @@ if (!shippingInfo) {
               <button
                 onClick={handlePayment}
                 disabled={paymentProcessing}
-                className={`mt-8 w-full py-4 rounded-md text-white
-                  ${paymentProcessing ? "bg-gray-400" : "bg-black hover:bg-gray-900"}
-                `}
+                className={`mt-8 w-full py-4 rounded-md text-white ${
+                  paymentProcessing
+                    ? "bg-gray-400"
+                    : "bg-black hover:bg-gray-900"
+                }`}
               >
                 {paymentProcessing
                   ? "Processing..."
