@@ -1,3 +1,4 @@
+// server/models/orderModel.js
 import mongoose from "mongoose";
 
 // ===============================
@@ -20,7 +21,7 @@ const OrderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      default: null,       // allow guest checkout too
+      default: null, // allow guest checkout too
     },
 
     buyer: {
@@ -29,6 +30,7 @@ const OrderSchema = new mongoose.Schema(
       phone: String,
     },
 
+    // will map from cartItems
     products: [OrderItemSchema],
 
     shippingInfo: {
@@ -44,13 +46,15 @@ const OrderSchema = new mongoose.Schema(
     tax: { type: Number, default: 0 },
     totalAmount: { type: Number, default: 0 },
 
+    // aligned with Razorpay fields
     paymentInfo: {
-      provider: String,
-      orderId: String,
-      paymentId: String,
-      signature: String,
+      provider: { type: String, default: "razorpay" },
+      orderId: String,      // razorpay_order_id
+      paymentId: String,    // razorpay_payment_id
+      signature: String,    // razorpay_signature
       status: {
         type: String,
+        enum: ["pending", "paid", "failed"],
         default: "pending",
       },
     },
@@ -85,7 +89,6 @@ const OrderSchema = new mongoose.Schema(
 // Add Status to History Automatically
 // ===============================
 OrderSchema.pre("save", function (next) {
-  // Push only when status actually changed
   if (this.isModified("orderStatus")) {
     this.statusHistory.push({
       status: this.orderStatus,
@@ -93,7 +96,6 @@ OrderSchema.pre("save", function (next) {
     });
   }
 
-  // Ensure first entry exists
   if (!this.statusHistory.length) {
     this.statusHistory.push({
       status: this.orderStatus,

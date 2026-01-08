@@ -1,3 +1,4 @@
+// server/controllers/payment/webhookController.js
 import crypto from "crypto";
 import Order from "../../models/orderModel.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
@@ -10,7 +11,7 @@ export const paymentWebhook = async (req, res) => {
 
     const expectedSignature = crypto
       .createHmac("sha256", webhookSecret)
-      .update(req.rawBody)           // IMPORTANT
+      .update(req.body) // raw buffer
       .digest("hex");
 
     if (signature !== expectedSignature) {
@@ -18,46 +19,36 @@ export const paymentWebhook = async (req, res) => {
       return res.status(400).send("Invalid signature");
     }
 
-    const event = JSON.parse(req.rawBody);
+    const event = JSON.parse(req.body);
 
     if (event.event !== "payment.captured") {
       return res.status(200).send("Ignored");
     }
 
     const payment = event.payload.payment.entity;
-
     const razorpay_payment_id = payment.id;
     const razorpay_order_id = payment.order_id;
 
-    // =========================
-    // Find Pending Order
-    // =========================
+    // match by paymentInfo.orderId
     const order = await Order.findOne({
       "paymentInfo.orderId": razorpay_order_id,
     });
 
     if (!order) {
-      console.log("❌ No pending order found");
+      console.log("❌ No order found for webhook");
       return res.status(404).send("Order not found");
     }
 
-    // Prevent duplicate update
     if (order.paymentInfo?.status === "paid") {
       return res.status(200).send("Already processed");
     }
 
-    // =========================
-    // Update Order
-    // =========================
     order.paymentInfo.paymentId = razorpay_payment_id;
     order.paymentInfo.status = "paid";
-    order.orderStatus = "Processing";
+    order.orderStatus = "PAID";
 
     await order.save();
 
-    // =========================
-    // Generate Invoice
-    // =========================
     try {
       const invoice = await generateInvoicePDF(order);
       order.invoicePath = `/uploads/invoices/${invoice.filename}`;
@@ -66,10 +57,7 @@ export const paymentWebhook = async (req, res) => {
       console.log("Invoice failed", err);
     }
 
-    // =========================
-    // Email Customer
-    // =========================
-    if (order?.buyer?.email) {
+    if (order.buyer?.email) {
       await sendMail({
         to: order.buyer.email,
         subject: "Your Bright Rose Order is Confirmed",

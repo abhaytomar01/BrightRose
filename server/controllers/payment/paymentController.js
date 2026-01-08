@@ -5,9 +5,7 @@ import razorpay from "../../config/razorpay.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
 
-// ==============================================================
 // 1️⃣ CREATE RAZORPAY ORDER
-// ==============================================================
 export const createRazorpayOrder = async (req, res) => {
   try {
     const { amount, cartItems, shippingAddress } = req.body;
@@ -19,22 +17,47 @@ export const createRazorpayOrder = async (req, res) => {
       });
     }
 
-    // Create Razorpay order
     const razorpayOrder = await razorpay.orders.create({
-      amount: amount * 100, // INR → paise
+      amount: Math.round(amount * 100), // rupees → paise
       currency: "INR",
       receipt: `rcpt_${Date.now()}`,
     });
 
-    // Save order in DB (PENDING)
+    // map cartItems → products
+    const products = (cartItems || []).map((i) => ({
+      productId: i._id || i.productId,
+      name: i.name,
+      image: i.image,
+      price: i.discountPrice || i.price,
+      quantity: i.quantity,
+      size: i.size,
+    }));
+
     const order = await Order.create({
-      user: req.user._id,
-      cartItems,
-      shippingAddress,
-      amount,
-      paymentMethod: "RAZORPAY",
-      paymentStatus: "PENDING",
-      razorpayOrderId: razorpayOrder.id,
+      user: req.user?._id || null,
+      buyer: {
+        name: req.user?.name,
+        email: req.user?.email,
+        phone: shippingAddress?.phoneNo,
+      },
+      products,
+      shippingInfo: {
+        address: shippingAddress.address,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        pincode: shippingAddress.pincode,
+        country: "India",
+      },
+      subtotal: Number(amount) - Number(shippingAddress.shippingCharge || 0),
+      shippingCharge: Number(shippingAddress.shippingCharge || 0),
+      tax: 0,
+      totalAmount: amount,
+      paymentInfo: {
+        provider: "razorpay",
+        orderId: razorpayOrder.id,
+        status: "pending",
+      },
+      orderStatus: "PLACED",
     });
 
     return res.status(200).json({
@@ -53,9 +76,8 @@ export const createRazorpayOrder = async (req, res) => {
   }
 };
 
-// ==============================================================
-// 2️⃣ VERIFY PAYMENT
-// ==============================================================
+
+// 2️⃣ VERIFY PAYMENT (frontend callback)
 export const verifyRazorpayPayment = async (req, res) => {
   try {
     const {
@@ -65,7 +87,13 @@ export const verifyRazorpayPayment = async (req, res) => {
       dbOrderId,
     } = req.body;
 
-    // Validate signature
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing payment details",
+      });
+    }
+
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -79,26 +107,35 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // Update order
-    const order = await Order.findByIdAndUpdate(
-      dbOrderId,
-      {
-        paymentStatus: "PAID",
-        razorpayPaymentId: razorpay_payment_id,
-      },
-      { new: true }
-    ).populate("user");
+    const order = await Order.findById(dbOrderId).populate("user");
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
 
-    // Generate invoice
+    order.paymentInfo = {
+      provider: "razorpay",
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id,
+      signature: razorpay_signature,
+      status: "paid",
+    };
+    order.orderStatus = "PAID";
+
+    await order.save();
+
     const invoicePath = await generateInvoicePDF(order);
 
-    // Email confirmation
-    await sendMail({
-      to: order.user.email,
-      subject: "Order Confirmed – Bright Rose",
-      html: `<p>Your order has been confirmed.</p>`,
-      attachments: [{ path: invoicePath }],
-    });
+    if (order.buyer?.email) {
+      await sendMail({
+        to: order.buyer.email,
+        subject: "Order Confirmed – Bright Rose",
+        html: `<p>Your order has been confirmed.</p>`,
+        attachments: [{ path: invoicePath }],
+      });
+    }
 
     return res.status(200).json({
       success: true,

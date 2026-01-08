@@ -68,6 +68,11 @@ app.use(morgan("dev"));
 // Body parsers
 // Keep JSON limits high for image base64 uploads if necessary
 // ------------------------------
+
+app.use(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" })
+);
 app.use(express.json({ limit: "300mb" }));
 app.use(bodyParser.json({ limit: "300mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "300mb" }));
@@ -157,11 +162,11 @@ app.use("/api/v1/admin/shipping", shippingRateRoute);
 // Webhook route that needs raw body
 // Important: express.raw used specifically for this route
 // ------------------------------
-app.post(
-  "/api/v1/payment/webhook",
-  express.raw({ type: "application/json" }),
-  paymentWebhook
-);
+// app.post(
+//   "/api/v1/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   paymentWebhook
+// );
 
 
 // ==============================

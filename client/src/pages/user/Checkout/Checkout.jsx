@@ -1,4 +1,3 @@
-// client/src/pages/user/Checkout/Checkout.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -16,62 +15,30 @@ export default function Checkout() {
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [shippingInfo, setShippingInfo] = useState(null);
 
-  /* ----------------------------------
-     SHIPPING INFO (FROM Shipping.jsx)
-  ---------------------------------- */
-  const shippingInfo = JSON.parse(localStorage.getItem("shippingInfo"));
+  const [dbOrderId, setDbOrderId] = useState(null);
 
   useEffect(() => {
-    if (!shippingInfo) {
-      toast.error("Please enter shipping details first");
+    try {
+      const stored = localStorage.getItem("shippingInfo");
+      if (!stored) {
+        navigate("/shipping");
+        return;
+      }
+      const parsed = JSON.parse(stored);
+      if (!parsed?.address || !parsed?.pincode) {
+        navigate("/shipping");
+        return;
+      }
+      setShippingInfo(parsed);
+    } catch {
       navigate("/shipping");
     }
-  }, [navigate, shippingInfo]);
+  }, [navigate]);
 
-  /* ----------------------------------
-     TOTAL
-  ---------------------------------- */
   const finalTotal = Number(subtotal) + Number(shippingCharge || 0);
 
-  /* ----------------------------------
-     SHIPPING CALCULATION (DELHIVERY)
-  ---------------------------------- */
-  const fetchShippingCharge = async () => {
-    if (!shippingInfo?.pincode) {
-      toast.error("Shipping pincode missing");
-      return;
-    }
-
-    setLoadingShipping(true);
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
-        {
-          pincode: shippingInfo.pincode,
-          weightKg: cartItems.reduce(
-            (w, i) => w + i.quantity * 0.5,
-            0.5
-          ),
-          dims: { l: 30, b: 20, h: 10 },
-        }
-      );
-
-      if (res.data?.success) {
-        setShippingCharge(res.data.amount);
-      } else {
-        toast.error("Failed to calculate shipping");
-      }
-    } catch {
-      toast.error("Shipping service unavailable");
-    } finally {
-      setLoadingShipping(false);
-    }
-  };
-
-  /* ----------------------------------
-     RAZORPAY LOADER
-  ---------------------------------- */
   const loadRazorpay = () =>
     new Promise((resolve) => {
       if (window.Razorpay) return resolve(true);
@@ -82,9 +49,6 @@ export default function Checkout() {
       document.body.appendChild(script);
     });
 
-  /* ----------------------------------
-     PAYMENT HANDLER
-  ---------------------------------- */
   const handlePayment = async () => {
     if (!cartItems.length) return toast.error("Cart is empty");
 
@@ -101,15 +65,26 @@ export default function Checkout() {
         ? { headers: { Authorization: `Bearer ${token}` } }
         : {};
 
-      /* CREATE ORDER */
+      // 1️⃣ Create order on backend
       const orderRes = await axios.post(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-        { amount: Math.round(finalTotal) }, // rupees
+        {
+          amount: Math.round(finalTotal), // rupees
+          cartItems,
+          shippingAddress: shippingInfo,
+        },
         authConfig
       );
 
-      const { orderId, currency } = orderRes.data;
+      if (!orderRes.data?.success) {
+        toast.error("Failed to create order");
+        return;
+      }
 
+      const { orderId, currency, dbOrderId: dbId } = orderRes.data;
+      setDbOrderId(dbId);
+
+      // 2️⃣ Open Razorpay Checkout
       const rzp = new window.Razorpay({
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: finalTotal * 100,
@@ -117,27 +92,22 @@ export default function Checkout() {
         name: "Bright Rose",
         description: "Order Payment",
         order_id: orderId,
-
         prefill: {
           name: authUser?.user?.name || "",
           email: authUser?.user?.email || "",
           contact: shippingInfo.phoneNo,
         },
-
         handler: async (response) => {
           try {
+            // 3️⃣ Verify payment on backend
             const verifyRes = await axios.post(
               `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
               {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_signature: response.razorpay_signature,
-                cartItems,
-                address: shippingInfo,
-                shippingCharge,
-                total: finalTotal,
-              },
-              authConfig
+                dbOrderId: dbId,
+              }
             );
 
             if (verifyRes.data?.success) {
@@ -148,16 +118,21 @@ export default function Checkout() {
             } else {
               toast.error("Payment verification failed");
             }
-          } catch {
+          } catch (err) {
+            console.error(err);
             toast.error("Payment verification error");
           }
         },
-
         theme: { color: "#000000" },
       });
 
+      rzp.on("payment.failed", function () {
+        toast.error("Payment failed");
+      });
+
       rzp.open();
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Payment failed");
     } finally {
       setPaymentProcessing(false);

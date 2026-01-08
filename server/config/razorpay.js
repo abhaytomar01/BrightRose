@@ -1,4 +1,4 @@
-// server/config/razorpay.js
+// ESM style
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
