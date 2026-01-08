@@ -4,7 +4,7 @@ import {
   getRate,
   upsertRate,
   deleteRate,
-} from "../controllers/shipping/shippingRateController.js";
+} from "../controllers/payment/shippingRateController.js";
 
 import { requireSignIn, isAdmin } from "../middleware/authMiddleware.js";
 
