@@ -4,33 +4,32 @@ import BRDESKTOP from "../assets/images/BRDESKTOP.png";
 
 const steps = [
   {
-    title: "CHOOSE YOUR SILHOUETTE",
-    text: "Choose from our original designs crafted for proportion and movement, with options to refine necklines, lengths, and sleeves.",
+    title: "SELECT YOUR SILHOUETTE",
+    text: "Begin with our signature designs, thoughtfully created for balance, comfort, and flow. Personalise details like necklines, sleeve styles, and lengths to suit your vision.",
   },
   {
- 
-    title: "CHOOSE YOUR FABRIC",
-    text: "Pick from ethically sourced pre loved textiles or bring your own; we’ll assess drape, weight, and propose linings and trims.",
-  },
-  {
-
-    title: "SHARE MEASUREMENTS",
-    text: "Book a quick fit or use our remote measuring guide; we account for ease and posture, not just numbers.",
+    title: "SELECT YOUR FABRIC",
+    text: "Choose from our ethically sourced pre-loved textiles or bring your own. We carefully evaluate drape, weight, and texture, and recommend the right linings and finishes.",
   },
   {
 
-    title: "PAY A TOKEN FEE",
-    text: "Reserve your slot with a small deposit that covers sourcing and pattern prep, credited to your final invoice.",
+    title: "SHARE YOUR MEASUREMENTS",
+    text: "Schedule a quick fitting or use our guided remote measurement process. We consider ease, posture, and movement not just measurements.",
   },
   {
 
-    title: "CONSULTATION",
-    text: "Stay in touch through clear notes, swatches, and fit feedback so every decision is documented and personal.",
+    title: "CONFIRM WITH A TOKEN AMOUNT",
+    text: "Secure your appointment with a small deposit that covers fabric sourcing and pattern preparation. This amount is adjusted in your final bill.",
   },
   {
 
-    title: "TIMELINE",
-    text: "Bespoke garments are crafted to order and delivered in 2 to 3 weeks with utmost detail and care.",
+    title: "PERSONAL CONSULTATION",
+    text: "From swatches to fittings, every detail is shared and discussed with you. Clear communication ensures each decision feels informed and intentional.",
+  },
+  {
+
+    title: "DELIVERY TIMELINE",
+    text: "Each bespoke piece is made to order and delivered within 2–3 weeks, crafted with precision, patience, and care.",
   },
 ];
 
@@ -80,7 +79,7 @@ const AtelierSection = () => {
     rel="noopener noreferrer"
     className="inline-block bg-black text-white px-10 py-3 rounded-full text-lg font-medium hover:bg-gray-900 transition"
   >
-    Start Your Custom Order
+    Begin Your Bespoke Journey
   </a>
 </div>
 
