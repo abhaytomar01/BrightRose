@@ -15,7 +15,37 @@ export default function Checkout() {
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
-  const [shippingInfo, setShippingInfo] = useState(null);
+  // existing state
+const [shippingInfo, setShippingInfo] = useState(null);
+
+useEffect(() => {
+  try {
+    const stored = localStorage.getItem("shippingInfo");
+    if (!stored) {
+      navigate("/shipping");
+      return;
+    }
+    const parsed = JSON.parse(stored);
+    if (!parsed?.address || !parsed?.pincode) {
+      navigate("/shipping");
+      return;
+    }
+    setShippingInfo(parsed);
+  } catch {
+    navigate("/shipping");
+  }
+}, [navigate]);
+
+// ⬇️ add this early in the component body, before JSX return
+if (!shippingInfo) {
+  // optional: simple loading skeleton
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p>Loading shipping details...</p>
+    </div>
+  );
+}
+
 
   const [dbOrderId, setDbOrderId] = useState(null);
 
