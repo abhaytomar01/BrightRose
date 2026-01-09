@@ -156,24 +156,30 @@ export default function Checkout() {
         handler: async (response) => {
           try {
             // 3) Verify payment on backend
-            const verifyRes = await axios.post(
-              `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
-              {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                dbOrderId: dbId,
-              }
-            );
+            // inside handler: async (response) => { ... }
+const verifyRes = await axios.post(
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+  {
+    razorpay_payment_id: response.razorpay_payment_id,
+    razorpay_order_id: response.razorpay_order_id,
+    razorpay_signature: response.razorpay_signature,
+    dbOrderId: dbId,
+  }
+);
 
             if (verifyRes.data?.success) {
-              toast.success("Order placed successfully");
-              clearCart();
-              localStorage.removeItem("shippingInfo");
-              navigate("/order-success");
-            } else {
-              toast.error("Payment verification failed");
-            }
+  const orderId = verifyRes.data.orderId;   // comes from verifyRazorpayPayment
+
+  toast.success("Order placed successfully");
+  clearCart();
+  localStorage.removeItem("shippingInfo");
+  localStorage.removeItem("brightrose_cart_v1"); // ensure storage cart is cleared
+
+  navigate(`/order-success/${orderId}`);
+} else {
+  toast.error("Payment verification failed");
+}
+
           } catch (err) {
             console.error(err);
             toast.error("Payment verification error");

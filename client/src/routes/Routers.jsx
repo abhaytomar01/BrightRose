@@ -71,8 +71,9 @@ const Routers = () => {
 {/* Shipping and Order Confirmation Pages (protected routes) */}
 <Route element={<PrivateRoute />}>
   <Route path="/shipping" element={<Shipping />} />
-  <Route path="/order/confirm" element={<OrderSuccess />} />
-  <Route path="/order/failed" element={<OrderFailed />} />
+  <Route path="/order-success/:id" element={<OrderSuccess />} />
+  <Route path="/order-failed" element={<OrderFailed />} />
+
 </Route>
 
 

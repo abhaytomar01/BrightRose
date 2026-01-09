@@ -1,20 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import SeoData from "../../../SEO/SeoData";
 
 const OrderFailed = () => {
   const navigate = useNavigate();
-  const [time, setTime] = useState(3);
+  const [time, setTime] = useState(5);
+  const timerRef = useRef(null);
 
   useEffect(() => {
-    if (time === 0) {
-      navigate("/cart");
-      return;
-    }
-    const interval = setInterval(() => setTime((t) => t - 1), 1000);
-    return () => clearInterval(interval);
-  }, [time]);
+    timerRef.current = setInterval(() => {
+      setTime((t) => {
+        if (t === 1) {
+          clearInterval(timerRef.current);
+          navigate("/cart");
+        }
+        return t - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timerRef.current);
+  }, [navigate]);
 
   return (
     <>
@@ -22,7 +28,6 @@ const OrderFailed = () => {
 
       <main className="min-h-screen bg-[#F8F6F3] flex items-center justify-center px-6 py-20 font-[Manrope]">
         <div className="bg-white shadow-lg border border-[#e8e2d9] rounded-2xl p-10 max-w-lg w-full text-center">
-
           {/* Icon + Heading */}
           <div className="flex flex-col items-center gap-3">
             <ErrorOutlineIcon className="text-red-600" style={{ fontSize: 50 }} />

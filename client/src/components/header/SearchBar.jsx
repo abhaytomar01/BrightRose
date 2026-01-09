@@ -32,12 +32,11 @@ const SearchBar = () => {
 
     try {
       const res = await axios.get(
-        `${API_BASE}/api/v1/products/search/${encodeURIComponent(searchTerm)}`
-      );
-
-      const data = res.data?.products || [];
-      setResults(data.slice(0, 8));
-      setOpen(true);
+  `${API_BASE}/api/v1/products/search/${encodeURIComponent(term)}`
+);
+const data = res.data?.products || [];
+setResults(data.slice(0, 8));
+setOpen(data.length > 0);
     } catch (error) {
       console.error("Error searching products:", error);
       setOpen(false);

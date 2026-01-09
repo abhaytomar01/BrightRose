@@ -1,6 +1,7 @@
 // server/controllers/payment/paymentController.js
 import crypto from "crypto";
 import Order from "../../models/orderModel.js";
+import Product from "../../models/productModel.js"; // ✅ add this
 import razorpay from "../../config/razorpay.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
@@ -76,8 +77,6 @@ export const createRazorpayOrder = async (req, res) => {
   }
 };
 
-
-// 2️⃣ VERIFY PAYMENT (frontend callback)
 export const verifyRazorpayPayment = async (req, res) => {
   try {
     const {
@@ -107,6 +106,7 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
+    // ✅ Fetch order
     const order = await Order.findById(dbOrderId).populate("user");
     if (!order) {
       return res.status(404).json({
@@ -115,6 +115,16 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
+    // If already paid (e.g., retry), return idempotent success
+    if (order.paymentInfo?.status === "paid") {
+      return res.status(200).json({
+        success: true,
+        message: "Payment already verified",
+        orderId: order._id,
+      });
+    }
+
+    // ✅ Update payment info + status
     order.paymentInfo = {
       provider: "razorpay",
       orderId: razorpay_order_id,
@@ -124,8 +134,28 @@ export const verifyRazorpayPayment = async (req, res) => {
     };
     order.orderStatus = "PAID";
 
+    // ✅ Update inventory per product
+    // order.products: [{ productId, quantity, ... }]
+    for (const item of order.products) {
+      if (!item.productId) continue;
+
+      // item.productId is stored as String in your schema
+      const product = await Product.findById(item.productId);
+      if (!product) continue; // keep going; log in real app
+
+      // Prevent negative stock
+      const qty = Number(item.quantity || 0);
+      if (qty <= 0) continue;
+
+      const newStock = (product.stock || 0) - qty;
+      product.stock = newStock < 0 ? 0 : newStock;
+
+      await product.save();
+    }
+
     await order.save();
 
+    // ✅ Generate invoice and send mail (already there)
     const invoicePath = await generateInvoicePDF(order);
 
     if (order.buyer?.email) {
@@ -140,7 +170,7 @@ export const verifyRazorpayPayment = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Payment verified successfully",
-      order,
+      orderId: order._id,   // 🔥 simpler for frontend
     });
   } catch (err) {
     console.error("❌ Payment verification error:", err);
@@ -150,3 +180,4 @@ export const verifyRazorpayPayment = async (req, res) => {
     });
   }
 };
+
