@@ -312,7 +312,7 @@ const fetchWishlistFromServer = async () => {
   }}
 />
 
-    <div className="max-w-8xl mx-2 px-0 pt-24 md:pt-36 pb-36 bg-white text-[#1A1A1A]">
+    <div className="max-w-8xl mx-2 px-0 pt-16 md:pt-20 pb-36 bg-white text-[#1A1A1A]">
       {/* PRODUCT MAIN */}
       <div className="grid md:grid-cols-2 gap-6 mt-4">
         {/* LEFT – GALLERY */}

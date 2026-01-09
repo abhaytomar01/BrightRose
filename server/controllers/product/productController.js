@@ -125,14 +125,19 @@ export const deleteProduct = async (req, res) => {
 // ===============================
 // FILTER PRODUCTS (Production Ready)
 // ===============================
+// controllers/product/productController.js
 export const filterProducts = async (req, res) => {
   try {
     const {
       weave,
       style,
       priceMin = 0,
-      priceMax = 100000
+      priceMax = 100000,
+      // category, color, ratings // reserved for future use
     } = req.query;
+
+    const min = Number(priceMin) || 0;
+    const max = Number(priceMax) || 100000;
 
     const query = {};
 
@@ -143,27 +148,26 @@ export const filterProducts = async (req, res) => {
     if (style) query.tagSlugs = { $in: [style] };
 
     // PRICE FILTER
-    query.price = { $gte: priceMin, $lte: priceMax };
+    query.price = { $gte: min, $lte: max };
 
     let products = await productModel.find(query).sort({ createdAt: -1 });
 
     const BASE = "https://www.thebrightrose.com";
 
-    // Fix image URLs
     products = products.map((p) => {
       p.images = (p.images || []).map((img) => ({
         filename: img.filename,
         url: img.url.startsWith("http")
           ? img.url
-          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`
+          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
       }));
 
       if (!p.images.length) {
         p.images = [
           {
             url: `${BASE}/uploads/fallback.jpg`,
-            filename: "fallback.jpg"
-          }
+            filename: "fallback.jpg",
+          },
         ];
       }
 
@@ -173,15 +177,15 @@ export const filterProducts = async (req, res) => {
     return res.json({
       success: true,
       count: products.length,
-      products
+      products,
     });
-
   } catch (error) {
     console.error("FILTER PRODUCTS ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to filter products"
+      message: "Failed to filter products",
     });
   }
 };
+
 

@@ -157,30 +157,27 @@ export default function Header() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [isHome]);
 
-  /** SEARCH **/
+ /** SEARCH (right panel) **/
 const [searchTerm, setSearchTerm] = useState("");
 const [searchResults, setSearchResults] = useState([]);
 const [loading, setLoading] = useState(false);
 const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-const searchWrapperRef = useRef(null);
-
-// Close dropdown when clicking outside
+// Close on Esc
 useEffect(() => {
-  const handleClickOutside = (e) => {
-    if (
-      searchWrapperRef.current &&
-      !searchWrapperRef.current.contains(e.target)
-    ) {
+  if (!isSearchOpen) return;
+  const onKeyDown = (e) => {
+    if (e.key === "Escape") {
       setIsSearchOpen(false);
+      setSearchTerm("");
+      setSearchResults([]);
     }
   };
+  window.addEventListener("keydown", onKeyDown);
+  return () => window.removeEventListener("keydown", onKeyDown);
+}, [isSearchOpen]);
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
-
-// Debounced search request
+// Debounced search (reuse your API logic)
 useEffect(() => {
   const term = searchTerm.trim();
 
@@ -200,12 +197,10 @@ useEffect(() => {
       );
       const products = res.data?.products || [];
       setSearchResults(products.slice(0, 8));
-      setIsSearchOpen(products.length > 0);
     } catch (err) {
       if (err.name !== "CanceledError" && err.name !== "AbortError") {
         console.error("Search error:", err);
       }
-      setIsSearchOpen(false);
     } finally {
       setLoading(false);
     }
@@ -216,6 +211,7 @@ useEffect(() => {
     controller.abort();
   };
 }, [searchTerm]);
+
 
 
   return (
@@ -287,76 +283,16 @@ useEffect(() => {
           )}
 
           <div className="flex items-center gap-4">
-  {/* <button onClick={() => setIsSearchOpen(true)}>
-    <Search size={20} />
-  </button> */}
-
-  <div
-  ref={searchWrapperRef}
-  className="relative flex-1 max-w-md mx-4"
+  <button
+  type="button"
+  onClick={() => setIsSearchOpen(true)}
+  className="p-2 rounded-full hover:bg-black/5 transition"
+  aria-label="Search"
 >
-  <div className="flex items-center bg-[#f0f5ff] rounded-full border border-gray-200 px-3 py-1">
-    <Search className="text-gray-500 w-4 h-4" />
-    <input
-      type="text"
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      onFocus={() => {
-        if (searchResults.length > 0) setIsSearchOpen(true);
-      }}
-      placeholder="Search for Products, Brands and More"
-      autoComplete="off"
-      className="flex-1 bg-transparent outline-none px-3 text-sm md:text-base text-gray-700 placeholder-gray-500"
-    />
-  </div>
+  <Search size={20} />
+</button>
 
-  {/* Dropdown */}
-  {isSearchOpen && (
-    <div className="absolute mt-2 left-0 right-0 bg-white rounded-xl shadow-2xl border border-gray-100 z-[999] max-h-80 overflow-y-auto">
-      {loading && searchResults.length === 0 && (
-        <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
-      )}
 
-      {!loading && searchResults.length === 0 && searchTerm.trim() && (
-        <div className="px-4 py-3 text-sm text-gray-500">
-          No products found
-        </div>
-      )}
-
-      {searchResults.map((product) => (
-        <Link
-          key={product._id}
-          to={`/product/${product._id}`}
-          className="flex items-center gap-4 px-4 py-3 hover:bg-[#f9f4f4] transition-colors"
-          onClick={() => {
-            setIsSearchOpen(false);
-            setSearchTerm("");
-          }}
-        >
-          <img
-            src={
-              product.images?.[0]?.url?.startsWith("http")
-                ? product.images[0].url
-                : `${import.meta.env.VITE_SERVER_URL}${product.images?.[0]?.url || ""}`
-            }
-            alt={product.name}
-            className="w-10 h-10 object-cover rounded-md border border-gray-200"
-          />
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-800">
-              {product.name?.length > 50
-                ? `${product.name.substring(0, 50)}…`
-                : product.name}
-            </span>
-            <span className="text-xs text-gray-500">
-              ₹{(product.price || 0).toLocaleString()}
-            </span>
-          </div>
-        </Link>
-      ))}
-    </div>
-  )}
-</div>
 
 
   <button onClick={handleWishlistClick}>
@@ -453,6 +389,7 @@ useEffect(() => {
         <Link to="/products" onClick={() => setOpen(false)}>Shop All</Link>
         <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
         <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+        <Link to="/atelier" onClick={() => setOpen(false)}>Custom Order</Link>
         <Link to="/Terms" onClick={() => setOpen(false)}>Terms & Conditions</Link>
         <Link to="/privacy" onClick={() => setOpen(false)}>Privacy Policy</Link>
         <Link to="/exchange-return" onClick={() => setOpen(false)}>Shipping Policy</Link>
@@ -480,6 +417,142 @@ useEffect(() => {
 
 
       {/* SEARCH PANEL (FIXED) */}
+     {isSearchOpen && (
+  <div className="fixed inset-0 z-[9999] flex justify-end">
+    {/* Backdrop */}
+    <div
+      className="flex-1 bg-black/30 backdrop-blur-sm"
+      onClick={() => {
+        setIsSearchOpen(false);
+        setSearchTerm("");
+        setSearchResults([]);
+      }}
+    />
+
+    {/* Sliding panel */}
+    <div className="w-full sm:w-[480px] md:w-[520px] h-full bg-white shadow-2xl border-l border-gray-200 transform transition-transform duration-300 ease-out translate-x-0">
+      {/* Header row */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <button
+          type="button"
+          onClick={() => {
+            setIsSearchOpen(false);
+            setSearchTerm("");
+            setSearchResults([]);
+          }}
+          className="flex items-center gap-2 text-sm text-gray-800 hover:underline"
+        >
+          <X size={16} />
+          <span>Close</span>
+        </button>
+
+        <button
+          type="button"
+          className="p-2 rounded-full hover:bg-gray-100"
+          aria-label="Search"
+        >
+          <Search size={18} />
+        </button>
+      </div>
+
+      {/* Search input */}
+      <div className="px-6 pt-4 pb-2">
+        <div className="flex items-center gap-3 border-b border-gray-300 pb-2">
+          <Search className="w-4 h-4 text-gray-500" />
+          <input
+            autoFocus
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="What are you looking for?"
+            className="flex-1 bg-transparent outline-none text-sm md:text-base text-gray-900 placeholder-gray-500"
+          />
+          <button
+            type="button"
+            onClick={() => setSearchTerm("")}
+            className="text-xs text-gray-500 hover:underline"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      {/* Suggestions */}
+      <div className="px-6 py-4 overflow-y-auto h-[calc(100%-140px)]">
+        <div className="mb-5">
+          <h3 className="text-xs font-semibold tracking-wide text-gray-500 mb-2">
+            Suggestions
+          </h3>
+          <div className="flex flex-col gap-1 text-sm text-gray-800">
+            {["Jacket", "Saree", "Silk", "Blouse", "Corset"].map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setSearchTerm(item)}
+                className="text-left hover:underline"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Results or 'You may also like' */}
+        <div className="mt-4">
+          <h3 className="text-xs font-semibold tracking-wide text-gray-500 mb-2">
+            {searchTerm.trim() ? "Results" : "You may also like"}
+          </h3>
+
+          {loading && searchResults.length === 0 && (
+            <div className="py-3 text-sm text-gray-500">Searching…</div>
+          )}
+
+          {!loading && searchResults.length === 0 && searchTerm.trim() && (
+            <div className="py-3 text-sm text-gray-500">
+              No products found
+            </div>
+          )}
+
+          <div className="space-y-2">
+            {searchResults.map((product) => (
+              <Link
+                key={product._id}
+                to={`/product/${product._id}`}
+                className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchTerm("");
+                  setSearchResults([]);
+                }}
+              >
+                <img
+                  src={
+                    product.images?.[0]?.url?.startsWith("http")
+                      ? product.images[0].url
+                      : `${import.meta.env.VITE_SERVER_URL}${product.images?.[0]?.url || ""}`
+                  }
+                  alt={product.name}
+                  className="w-12 h-12 object-cover rounded-md border border-gray-200"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-800">
+                    {product.name?.length > 40
+                      ? `${product.name.substring(0, 40)}…`
+                      : product.name}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    ₹{(product.price || 0).toLocaleString()}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       
     </>
   );

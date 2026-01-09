@@ -189,7 +189,7 @@ const Products = () => {
         </div>
       )}
 
-      <main className="w-full pt-2 pb-5 mt-32 md:mt-36 bg-pureWhite">
+      <main className="w-full pt-2 pb-5 mt-24 md:mt-28 bg-pureWhite">
         <div className="flex flex-col-reverse lg:flex-row gap-3 w-full px-2 sm:px-4 md:px-6 mt-2 md:mt-4">
 
           {/* Desktop Sidebar Filter */}
