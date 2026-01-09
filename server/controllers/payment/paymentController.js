@@ -1,7 +1,7 @@
 // server/controllers/payment/paymentController.js
 import crypto from "crypto";
 import Order from "../../models/orderModel.js";
-import Product from "../../models/productModel.js"; // ✅ add this
+import Product from "../../models/productModel.js";
 import razorpay from "../../config/razorpay.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
@@ -11,20 +11,52 @@ export const createRazorpayOrder = async (req, res) => {
   try {
     const { amount, cartItems, shippingAddress } = req.body;
 
-    if (!amount || amount <= 0) {
+    // Basic validation
+    if (!amount || Number(amount) <= 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid amount",
       });
     }
 
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart is empty",
+      });
+    }
+
+    if (
+      !shippingAddress ||
+      !shippingAddress.address ||
+      !shippingAddress.city ||
+      !shippingAddress.state ||
+      !shippingAddress.pincode
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Incomplete shipping address",
+      });
+    }
+
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      console.error("❌ Razorpay keys missing in env");
+      return res.status(500).json({
+        success: false,
+        message: "Payment configuration error",
+      });
+    }
+
+    const totalAmount = Number(amount);
+    const shippingCharge = Number(shippingAddress.shippingCharge || 0);
+    const subtotal = totalAmount - shippingCharge;
+
     const razorpayOrder = await razorpay.orders.create({
-      amount: Math.round(amount * 100), // rupees → paise
+      amount: Math.round(totalAmount * 100), // rupees → paise
       currency: "INR",
       receipt: `rcpt_${Date.now()}`,
     });
 
-    // map cartItems → products
     const products = (cartItems || []).map((i) => ({
       productId: i._id || i.productId,
       name: i.name,
@@ -49,10 +81,10 @@ export const createRazorpayOrder = async (req, res) => {
         pincode: shippingAddress.pincode,
         country: "India",
       },
-      subtotal: Number(amount) - Number(shippingAddress.shippingCharge || 0),
-      shippingCharge: Number(shippingAddress.shippingCharge || 0),
+      subtotal,
+      shippingCharge,
       tax: 0,
-      totalAmount: amount,
+      totalAmount,
       paymentInfo: {
         provider: "razorpay",
         orderId: razorpayOrder.id,
@@ -77,6 +109,7 @@ export const createRazorpayOrder = async (req, res) => {
   }
 };
 
+// 2️⃣ VERIFY RAZORPAY PAYMENT
 export const verifyRazorpayPayment = async (req, res) => {
   try {
     const {
@@ -93,6 +126,14 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      console.error("❌ RAZORPAY_KEY_SECRET missing");
+      return res.status(500).json({
+        success: false,
+        message: "Payment configuration error",
+      });
+    }
+
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -106,7 +147,6 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // ✅ Fetch order
     const order = await Order.findById(dbOrderId).populate("user");
     if (!order) {
       return res.status(404).json({
@@ -115,7 +155,6 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // If already paid (e.g., retry), return idempotent success
     if (order.paymentInfo?.status === "paid") {
       return res.status(200).json({
         success: true,
@@ -124,7 +163,6 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // ✅ Update payment info + status
     order.paymentInfo = {
       provider: "razorpay",
       orderId: razorpay_order_id,
@@ -134,16 +172,12 @@ export const verifyRazorpayPayment = async (req, res) => {
     };
     order.orderStatus = "PAID";
 
-    // ✅ Update inventory per product
-    // order.products: [{ productId, quantity, ... }]
     for (const item of order.products) {
       if (!item.productId) continue;
 
-      // item.productId is stored as String in your schema
       const product = await Product.findById(item.productId);
-      if (!product) continue; // keep going; log in real app
+      if (!product) continue;
 
-      // Prevent negative stock
       const qty = Number(item.quantity || 0);
       if (qty <= 0) continue;
 
@@ -155,7 +189,6 @@ export const verifyRazorpayPayment = async (req, res) => {
 
     await order.save();
 
-    // ✅ Generate invoice and send mail (already there)
     const invoicePath = await generateInvoicePDF(order);
 
     if (order.buyer?.email) {
@@ -170,7 +203,7 @@ export const verifyRazorpayPayment = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Payment verified successfully",
-      orderId: order._id,   // 🔥 simpler for frontend
+      orderId: order._id,
     });
   } catch (err) {
     console.error("❌ Payment verification error:", err);
@@ -180,4 +213,3 @@ export const verifyRazorpayPayment = async (req, res) => {
     });
   }
 };
-
