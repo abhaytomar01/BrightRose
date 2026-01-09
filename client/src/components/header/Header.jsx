@@ -61,12 +61,12 @@ export default function Header() {
   ====================== **/
   const [open, setOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  // const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   /** SEARCH **/
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [searchResults, setSearchResults] = useState([]);
+  // const [loading, setLoading] = useState(false);
 
   /** HEADER **/
   const [isScrolled, setIsScrolled] = useState(false);
@@ -86,21 +86,21 @@ export default function Header() {
   const SCALE_END = SMALL_SIZE / BIG_SIZE;
 
   /** SEARCH REQUEST **/
-  useEffect(() => {
-    if (!searchTerm.trim()) return;
-    const t = setTimeout(async () => {
-      try {
-        setLoading(true);
-        const res = await api.get(
-          `/products/search/${encodeURIComponent(searchTerm)}`
-        );
-        setSearchResults(res.data.products || []);
-      } finally {
-        setLoading(false);
-      }
-    }, 400);
-    return () => clearTimeout(t);
-  }, [searchTerm]);
+  // useEffect(() => {
+  //   if (!searchTerm.trim()) return;
+  //   const t = setTimeout(async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await api.get(
+  //         `/products/search/${encodeURIComponent(searchTerm)}`
+  //       );
+  //       setSearchResults(res.data.products || []);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }, 400);
+  //   return () => clearTimeout(t);
+  // }, [searchTerm]);
 
   /** SCROLL **/
   useEffect(() => {
@@ -156,6 +156,67 @@ export default function Header() {
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
   }, [isHome]);
+
+  /** SEARCH **/
+const [searchTerm, setSearchTerm] = useState("");
+const [searchResults, setSearchResults] = useState([]);
+const [loading, setLoading] = useState(false);
+const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+const searchWrapperRef = useRef(null);
+
+// Close dropdown when clicking outside
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (
+      searchWrapperRef.current &&
+      !searchWrapperRef.current.contains(e.target)
+    ) {
+      setIsSearchOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+// Debounced search request
+useEffect(() => {
+  const term = searchTerm.trim();
+
+  if (!term) {
+    setSearchResults([]);
+    setLoading(false);
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(
+        `/products/search/${encodeURIComponent(term)}`,
+        { signal: controller.signal }
+      );
+      const products = res.data?.products || [];
+      setSearchResults(products.slice(0, 8));
+      setIsSearchOpen(products.length > 0);
+    } catch (err) {
+      if (err.name !== "CanceledError" && err.name !== "AbortError") {
+        console.error("Search error:", err);
+      }
+      setIsSearchOpen(false);
+    } finally {
+      setLoading(false);
+    }
+  }, 350);
+
+  return () => {
+    clearTimeout(timeoutId);
+    controller.abort();
+  };
+}, [searchTerm]);
+
 
   return (
     <>
@@ -226,9 +287,77 @@ export default function Header() {
           )}
 
           <div className="flex items-center gap-4">
-  <button onClick={() => setIsSearchOpen(true)}>
+  {/* <button onClick={() => setIsSearchOpen(true)}>
     <Search size={20} />
-  </button>
+  </button> */}
+
+  <div
+  ref={searchWrapperRef}
+  className="relative flex-1 max-w-md mx-4"
+>
+  <div className="flex items-center bg-[#f0f5ff] rounded-full border border-gray-200 px-3 py-1">
+    <Search className="text-gray-500 w-4 h-4" />
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      onFocus={() => {
+        if (searchResults.length > 0) setIsSearchOpen(true);
+      }}
+      placeholder="Search for Products, Brands and More"
+      autoComplete="off"
+      className="flex-1 bg-transparent outline-none px-3 text-sm md:text-base text-gray-700 placeholder-gray-500"
+    />
+  </div>
+
+  {/* Dropdown */}
+  {isSearchOpen && (
+    <div className="absolute mt-2 left-0 right-0 bg-white rounded-xl shadow-2xl border border-gray-100 z-[999] max-h-80 overflow-y-auto">
+      {loading && searchResults.length === 0 && (
+        <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+      )}
+
+      {!loading && searchResults.length === 0 && searchTerm.trim() && (
+        <div className="px-4 py-3 text-sm text-gray-500">
+          No products found
+        </div>
+      )}
+
+      {searchResults.map((product) => (
+        <Link
+          key={product._id}
+          to={`/product/${product._id}`}
+          className="flex items-center gap-4 px-4 py-3 hover:bg-[#f9f4f4] transition-colors"
+          onClick={() => {
+            setIsSearchOpen(false);
+            setSearchTerm("");
+          }}
+        >
+          <img
+            src={
+              product.images?.[0]?.url?.startsWith("http")
+                ? product.images[0].url
+                : `${import.meta.env.VITE_SERVER_URL}${product.images?.[0]?.url || ""}`
+            }
+            alt={product.name}
+            className="w-10 h-10 object-cover rounded-md border border-gray-200"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-800">
+              {product.name?.length > 50
+                ? `${product.name.substring(0, 50)}…`
+                : product.name}
+            </span>
+            <span className="text-xs text-gray-500">
+              ₹{(product.price || 0).toLocaleString()}
+            </span>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )}
+</div>
+
 
   <button onClick={handleWishlistClick}>
       <Heart size={20} />
@@ -351,52 +480,7 @@ export default function Header() {
 
 
       {/* SEARCH PANEL (FIXED) */}
-      {isSearchOpen && (
-        <>
-          <div
-  className="fixed inset-0 bg-black/60 backdrop-blur-md z-[950]"
-  onClick={() => setIsSearchOpen(false)}
-/>
-
-<div className="fixed right-0 top-0 h-full w-full sm:w-[520px] bg-white z-[1000] shadow-xl flex flex-col">
-
-            <div className="flex justify-between px-6 py-5 border-b">
-              <button onClick={() => setIsSearchOpen(false)}>
-                <X size={28} />
-              </button>
-              <Search size={20} />
-            </div>
-
-            <div className="px-6 py-5 border-b">
-              <input
-                autoFocus
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="What are you looking for?"
-                className="w-full text-[15px] outline-none"
-              />
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-6 py-6">
-              {loading && <p>Searching…</p>}
-              {searchResults.map((p) => (
-                <Link
-                  key={p._id}
-                  to={`/product/${p._id}`}
-                  onClick={() => setIsSearchOpen(false)}
-                  className="flex gap-4 border-b py-4"
-                >
-                  <img src={p.images?.[0]?.url} className="w-20 h-24 object-cover" />
-                  <div>
-                    <p>{p.name}</p>
-                    <p className="text-sm text-neutral-500">₹{p.price}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+      
     </>
   );
 }

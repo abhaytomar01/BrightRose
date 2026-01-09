@@ -34,6 +34,7 @@ const SearchBar = () => {
       const res = await axios.get(
   `${API_BASE}/api/v1/products/search/${encodeURIComponent(term)}`
 );
+
 const data = res.data?.products || [];
 setResults(data.slice(0, 8));
 setOpen(data.length > 0);

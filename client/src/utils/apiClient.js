@@ -1,10 +1,12 @@
 // src/utils/apiClient.js
 import axios from "axios";
 
+const API_BASE =
+  import.meta.env.VITE_SERVER_URL || "https://www.thebrightrose.com";
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_SERVER_URL ||
-    "https://www.thebrightrose.com",
+  // Always point to /api/v1
+  baseURL: `${API_BASE}/api/v1`,
 });
 
 // FIXED TOKEN SYSTEM
@@ -16,7 +18,7 @@ api.interceptors.request.use((config) => {
     const adminToken = adminRaw ? JSON.parse(adminRaw)?.token : null;
     const userToken = userRaw ? JSON.parse(userRaw)?.token : null;
 
-    // ✅ If route contains "admin-" in the endpoint → use admin token
+    // If route contains "admin-" in the endpoint → use admin token
     if (config.url.includes("admin-")) {
       if (adminToken) {
         config.headers.Authorization = `Bearer ${adminToken}`;
@@ -24,11 +26,10 @@ api.interceptors.request.use((config) => {
       return config;
     }
 
-    // ✅ Otherwise → use user token
+    // Otherwise → use user token
     if (userToken) {
       config.headers.Authorization = `Bearer ${userToken}`;
     }
-
   } catch (e) {
     console.error("Token attach error:", e);
   }
