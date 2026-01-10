@@ -18,11 +18,21 @@ const makeKey = (productId, size = "", color = "") =>
   `${productId || ""}::${size || ""}::${color || ""}`;
 
 export const CartProvider = ({ children }) => {
-  const { authUser } = useAuth();
-  const userId = authUser?.user?._id || "guest";
+  let authUserId = "guest";
 
-  const CART_KEY = `${LOCAL_KEY_PREFIX}_${userId}`;
-  const SAVE_LATER_KEY = `${LOCAL_SAVE_LATER_PREFIX}_${userId}`;
+  try {
+    const authCtx = useAuth();
+    if (authCtx && authCtx.authUser?.user?._id) {
+      authUserId = authCtx.authUser.user._id;
+    }
+  } catch {
+    // AuthProvider not mounted yet – fall back to guest
+    authUserId = "guest";
+  }
+
+  const userId = authUserId;
+  const CART_KEY = `brightrose_cart_v1_${userId}`;
+  const SAVE_LATER_KEY = `brightrose_saveLater_v1_${userId}`;
 
   // -----------------------------
   // Load Cart & Save-Later Items
