@@ -8,7 +8,7 @@ import getOrders from "../controllers/user/getOrders.js";
 import getOrderDetail from "../controllers/user/getOrderDetail.js";
 import getAdminOrders from "../controllers/user/getAdminOrders.js"; 
 import updateOrder from "../controllers/user/updateOrder.js";
-import getAllUserOrder from "../controllers/user/adminUserController.js";
+import getAllUsersAdmin from "../controllers/user/adminUserController.js";
 import { 
   getAddresses,
   addAddress,

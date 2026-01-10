@@ -1,8 +1,16 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+// context/cart.jsx
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "./auth";
 
-const LOCAL_KEY = "brightrose_cart_v1";
-const LOCAL_SAVE_LATER = "brightrose_saveLater_v1";
+const LOCAL_KEY_PREFIX = "brightrose_cart_v1";
+const LOCAL_SAVE_LATER_PREFIX = "brightrose_saveLater_v1";
 
 const CartContext = createContext();
 
@@ -10,12 +18,18 @@ const makeKey = (productId, size = "", color = "") =>
   `${productId || ""}::${size || ""}::${color || ""}`;
 
 export const CartProvider = ({ children }) => {
+  const { authUser } = useAuth();
+  const userId = authUser?.user?._id || "guest";
+
+  const CART_KEY = `${LOCAL_KEY_PREFIX}_${userId}`;
+  const SAVE_LATER_KEY = `${LOCAL_SAVE_LATER_PREFIX}_${userId}`;
+
   // -----------------------------
   // Load Cart & Save-Later Items
   // -----------------------------
   const [cartItems, setCartItems] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
+      return JSON.parse(localStorage.getItem(CART_KEY)) || [];
     } catch {
       return [];
     }
@@ -23,26 +37,44 @@ export const CartProvider = ({ children }) => {
 
   const [saveLaterItems, setSaveLaterItems] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(LOCAL_SAVE_LATER)) || [];
+      return JSON.parse(localStorage.getItem(SAVE_LATER_KEY)) || [];
     } catch {
       return [];
     }
   });
 
-  // Coupon storage
   const [coupon, setCoupon] = useState(null);
-
-  // USER COUNTRY (needed for shipping)
   const [country, setCountry] = useState("India");
 
-  // Save into localStorage
+  // Save into localStorage per user
   useEffect(() => {
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(cartItems));
-  }, [cartItems]);
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+    } catch {}
+  }, [cartItems, CART_KEY]);
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_SAVE_LATER, JSON.stringify(saveLaterItems));
-  }, [saveLaterItems]);
+    try {
+      localStorage.setItem(SAVE_LATER_KEY, JSON.stringify(saveLaterItems));
+    } catch {}
+  }, [saveLaterItems, SAVE_LATER_KEY]);
+
+  // When user changes, reload that user's cart
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(CART_KEY);
+      setCartItems(stored ? JSON.parse(stored) : []);
+    } catch {
+      setCartItems([]);
+    }
+
+    try {
+      const storedSave = localStorage.getItem(SAVE_LATER_KEY);
+      setSaveLaterItems(storedSave ? JSON.parse(storedSave) : []);
+    } catch {
+      setSaveLaterItems([]);
+    }
+  }, [CART_KEY, SAVE_LATER_KEY]);
 
   // -----------------------------
   // Normalize product structure
@@ -68,7 +100,6 @@ export const CartProvider = ({ children }) => {
     };
   };
 
-  // ADD TO CART
   const addToCart = (product, qty = 1, opts = {}) => {
     if (!product || !(product._id || product.productId)) {
       toast.error("Invalid product");
@@ -94,7 +125,6 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // UPDATE ITEM QTY
   const updateQuantity = (key, qty) => {
     setCartItems((prev) =>
       prev.map((it) =>
@@ -105,12 +135,10 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  // REMOVE FROM CART
   const removeFromCart = (key) => {
     setCartItems((prev) => prev.filter((it) => it.key !== key));
   };
 
-  // SAVE FOR LATER
   const moveToSaveLater = (key) => {
     setCartItems((prevCart) => {
       const idx = prevCart.findIndex((it) => it.key === key);
@@ -123,7 +151,6 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // MOVE BACK TO CART
   const moveToCartFromSaveLater = (key, qty = 1) => {
     setSaveLaterItems((prev) => {
       const idx = prev.findIndex((it) => it.key === key);
@@ -145,9 +172,6 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => setCartItems([]);
 
-  // -----------------------------
-  // TOTAL CALCULATIONS
-  // -----------------------------
   const { subtotal, totalItems } = useMemo(() => {
     return cartItems.reduce(
       (acc, it) => {
@@ -160,24 +184,12 @@ export const CartProvider = ({ children }) => {
     );
   }, [cartItems]);
 
-  // -----------------------------------
-  // SHIPPING WILL BE CALCULATED IN CHECKOUT (Delhivery API)
-  // So remove shipping from here!
-  // -----------------------------------
-  const shipping = 0; // Always 0 (Now handled by checkout)
-
-  // GST Included — Extract effective GST (12%)
+  const shipping = 0;
   const gstRate = 12;
   const tax = Number(((subtotal * gstRate) / (100 + gstRate)).toFixed(2));
-
   const discount = Number(coupon?.amount || 0);
-
-  // GrandTotal WITHOUT SHIPPING (Checkout will add)
   const grandTotal = Number((subtotal - discount).toFixed(2));
 
-  // -----------------------------
-  // CONTEXT VALUE
-  // -----------------------------
   const value = {
     cartItems,
     saveLaterItems,
@@ -190,7 +202,7 @@ export const CartProvider = ({ children }) => {
     clearCart,
 
     subtotal,
-    shipping, // ALWAYS 0 here
+    shipping,
     tax,
     discount,
     grandTotal,

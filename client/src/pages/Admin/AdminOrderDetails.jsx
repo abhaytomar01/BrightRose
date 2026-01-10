@@ -64,7 +64,9 @@ const AdminOrderDetails = () => {
 
         {/* Title */}
         <h1 className="text-2xl font-semibold">Order Details</h1>
-        <p className="text-sm text-gray-500">Order ID: {order._id}</p>
+        <p className="text-sm text-gray-500">
+  Order ID: {order.orderId || order._id}
+</p>
         <p className="text-sm text-gray-600">
           Ordered on: {new Date(createdAt).toLocaleString()}
         </p>

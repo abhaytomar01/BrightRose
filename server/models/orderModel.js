@@ -73,6 +73,9 @@ const OrderSchema = new mongoose.Schema(
       default: "PLACED",
     },
 
+    // numeric sequence for BR-YYYY-XXXX
+    sequence: { type: Number, default: 0 },
+
     invoicePath: String,
 
     statusHistory: [
@@ -88,7 +91,17 @@ const OrderSchema = new mongoose.Schema(
 // ===============================
 // Add Status to History Automatically
 // ===============================
-OrderSchema.pre("save", function (next) {
+OrderSchema.pre("save", async function (next) {
+  // set sequence only once when order is first created
+  if (this.isNew) {
+    const last = await this.constructor
+      .findOne({ sequence: { $gt: 0 } })
+      .sort({ sequence: -1 })
+      .select("sequence");
+    const lastSeq = last?.sequence || 999; // first order => 1000
+    this.sequence = lastSeq + 1;
+  }
+
   if (this.isModified("orderStatus")) {
     this.statusHistory.push({
       status: this.orderStatus,
@@ -105,5 +118,20 @@ OrderSchema.pre("save", function (next) {
 
   next();
 });
+
+// ===============================
+// Virtual public BR order id
+// ===============================
+OrderSchema.virtual("publicOrderId").get(function () {
+  const year = this.createdAt
+    ? this.createdAt.getFullYear()
+    : new Date().getFullYear();
+  const seq = this.sequence || 0;
+  if (!seq) return `BR-${year}-${this._id.toString().slice(-6)}`;
+  return `BR-${year}-${seq}`;
+});
+
+OrderSchema.set("toJSON", { virtuals: true });
+OrderSchema.set("toObject", { virtuals: true });
 
 export default mongoose.model("Order", OrderSchema);

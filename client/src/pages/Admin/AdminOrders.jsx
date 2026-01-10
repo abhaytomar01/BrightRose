@@ -64,7 +64,7 @@ const AdminOrders = () => {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
                 <div>
                   <p className="text-sm text-gray-600">Order ID</p>
-                  <p className="font-semibold text-lg">{o._id}</p>
+                  <p className="font-semibold text-lg">{o.orderId || o._id}</p>
                   <p className="text-sm text-gray-500">
                     {new Date(o.createdAt).toLocaleString()}
                   </p>

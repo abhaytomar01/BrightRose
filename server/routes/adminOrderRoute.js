@@ -9,13 +9,8 @@ import {
 
 const router = express.Router();
 
-// List all orders
 router.get("/orders", requireSignIn, isAdmin, getAllOrdersAdmin);
-
-// Single order details
 router.get("/order/:id", requireSignIn, isAdmin, getSingleOrderAdmin);
-
-// Update order status
 router.put("/order-status/:id", requireSignIn, isAdmin, updateOrderStatusAdmin);
 
 export default router;

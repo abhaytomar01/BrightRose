@@ -173,7 +173,9 @@ const verifyRes = await axios.post(
   toast.success("Order placed successfully");
   clearCart();
   localStorage.removeItem("shippingInfo");
-  localStorage.removeItem("brightrose_cart_v1"); // ensure storage cart is cleared
+  const userId = authUser?.user?._id || "guest";
+localStorage.removeItem(`brightrose_cart_v1_${userId}`);
+
 
   navigate(`/order-success/${orderId}`);
 } else {
