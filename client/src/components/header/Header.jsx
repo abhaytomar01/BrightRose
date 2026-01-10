@@ -395,7 +395,7 @@ useEffect(() => {
 
         <Link to="/products" onClick={() => setOpen(false)}>Shop All</Link>
         {/* <Link to="/login" onClick={() => setOpen(false)}>Login</Link> */}
-        // NEW
+        
 <Link to={userAccountLink} onClick={() => setOpen(false)}>
   {userAccountLabel}
 </Link>
