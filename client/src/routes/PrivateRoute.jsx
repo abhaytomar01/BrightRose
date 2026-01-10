@@ -15,9 +15,9 @@ const PrivateRoute = () => {
 
       try {
         // FIXED → store response in res
-        const res = await api.get("/api/v1/auth/user-auth", {
-          headers: { Authorization: `Bearer ${authUser.token}` },
-        });
+        const res = await api.get("/auth/user-auth", {
+  headers: { Authorization: `Bearer ${authUser.token}` },
+});
 
         setOk(res.data?.ok === true);
       } catch (err) {
