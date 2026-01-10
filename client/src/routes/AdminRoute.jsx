@@ -31,7 +31,7 @@ const AdminRoute = () => {
 
   const verifyAdmin = async () => {
     try {
-      const res = await api.get("/api/v1/auth/admin-auth");
+      const res = await api.get("/auth/admin-auth");
       setOk(res.data?.ok === true);
     } catch (err) {
       setOk(false);
