@@ -25,9 +25,9 @@ const allowedInternal = Object.values(UI_TO_INTERNAL_STATUS);
 // List all orders (mapped for UI)
 export const getAllOrdersAdmin = async (req, res) => {
   try {
-    const orders = await Order.find()
-      .sort({ createdAt: -1 })
-      .select("-__v");
+    const orders = await Order.find({ "paymentInfo.status": "paid" })
+  .sort({ createdAt: -1 })
+  .select("-__v");
 
     const formatted = orders.map((o) => ({
       _id: o._id,

@@ -8,7 +8,7 @@ import getOrders from "../controllers/user/getOrders.js";
 import getOrderDetail from "../controllers/user/getOrderDetail.js";
 import getAdminOrders from "../controllers/user/getAdminOrders.js"; 
 import updateOrder from "../controllers/user/updateOrder.js";
-import getAllUserOrder from "../controllers/user/getAllUserOrder.js";
+import getAllUserOrder from "../controllers/user/adminUserController.js";
 import { 
   getAddresses,
   addAddress,
@@ -53,5 +53,5 @@ router.get("/admin-order-detail", isAdmin, getOrderDetail);
 router.patch("/update/order-status", isAdmin, updateOrder);
 
 //get all order and delete if possible
-router.get("/get-all-order", requireSignIn, getAllUserOrder);
+router.get("/all-users", requireSignIn, isAdmin, getAllUsersAdmin);
 export default router;
