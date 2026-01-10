@@ -49,7 +49,7 @@ const AdminLogin = () => {
     setSubmitting(true);
     try {
       // Use api client directly (baseURL + interceptors)
-      const res = await api.post("/api/v1/auth/admin-login", { email, password });
+      const res = await api.post("/auth/admin-login", { email, password });
 
 
       if (res?.data?.success) {
