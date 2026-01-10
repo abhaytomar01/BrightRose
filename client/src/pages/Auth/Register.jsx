@@ -3,8 +3,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/auth";
+
 
 const Register = () => {
+  const { loginUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,19 +52,19 @@ const Register = () => {
       );
 
       if (res.data.success) {
-        localStorage.setItem(
-          "auth_user",
-          JSON.stringify({ user: res.data.user, token: res.data.token })
-        );
+  const payload = { user: res.data.user, token: res.data.token };
 
-        toast.success("Registered successfully!");
+  // set context + localStorage + axios header
+  await loginUser(payload);
 
-        // Redirect to intended page 🔥
-        navigate(redirectTo, { replace: true });
+  toast.success("Registered successfully!");
 
-      } else {
-        toast.error(res.data?.message || "Registration failed");
-      }
+  // Redirect to intended page
+  navigate(redirectTo, { replace: true });
+} else {
+  toast.error(res.data?.message || "Registration failed");
+}
+
     } catch (err) {
       toast.error(err.response?.data?.message || "Something went wrong");
     } finally {

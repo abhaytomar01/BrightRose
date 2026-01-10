@@ -76,21 +76,30 @@ export const AuthProvider = ({ children }) => {
   // LOGIN USER
   // -----------------------------------------------------
   const loginUser = async (data) => {
-    setAuthUser(data);
-    localStorage.setItem("auth_user", JSON.stringify(data));
+  // allow calling loginUser(null) to clear state if ever needed
+  if (!data || !data.token) {
+    localStorage.removeItem("auth_user");
+    setAuthUser({ user: null, token: "" });
+    setWishlist([]);
+    delete axios.defaults.headers.common["Authorization"];
+    return;
+  }
 
-    // instantly apply axios header
-    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+  setAuthUser(data);
+  localStorage.setItem("auth_user", JSON.stringify(data));
 
-    if (data?.token) {
-      try {
-        const res = await getWishlistAPI(data.token);
-        setWishlist(res.data.wishlist || []);
-      } catch {
-        setWishlist([]);
-      }
+  // instantly apply axios header
+  axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
+  if (data?.token) {
+    try {
+      const res = await getWishlistAPI(data.token);
+      setWishlist(res.data.wishlist || []);
+    } catch {
+      setWishlist([]);
     }
-  };
+  }
+};
 
   // -----------------------------------------------------
   // LOGIN ADMIN

@@ -16,6 +16,13 @@ export default function Header() {
   const { authUser, authAdmin } = useAuth();
   const navigate = useNavigate();
 
+  const isUserLoggedIn = !!authUser?.token;
+const userAccountLink = isUserLoggedIn
+  ? "/user/dashboard/profile"
+  : "/login";
+const userAccountLabel = isUserLoggedIn ? "Account" : "Login";
+
+
   /** ======================
    WISHLIST CLICK
   ====================== **/
@@ -387,7 +394,11 @@ useEffect(() => {
         </div>
 
         <Link to="/products" onClick={() => setOpen(false)}>Shop All</Link>
-        <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+        {/* <Link to="/login" onClick={() => setOpen(false)}>Login</Link> */}
+        // NEW
+<Link to={userAccountLink} onClick={() => setOpen(false)}>
+  {userAccountLabel}
+</Link>
         <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
         <Link to="/atelier" onClick={() => setOpen(false)}>Custom Order</Link>
         <Link to="/Terms" onClick={() => setOpen(false)}>Terms & Conditions</Link>

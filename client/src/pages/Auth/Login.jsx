@@ -40,26 +40,27 @@ const Login = () => {
       );
 
       if (res.data?.success) {
-        toast.success("Login successful!");
+  toast.success("Login successful!");
 
-        loginUser({
-          user: res.data.user,
-          token: res.data.token,
-        });
+  const payload = {
+    user: res.data.user,
+    token: res.data.token,
+  };
 
-        if (remember) {
-          localStorage.setItem(
-            "auth_user",
-            JSON.stringify({ user: res.data.user, token: res.data.token })
-          );
-        }
+  // hydrate context (also sets localStorage + axios header)
+  await loginUser(payload);
 
-        // ===== REDIRECT TO INTENDED PAGE =====
-        navigate(redirectTo, { replace: true });
+  if (remember) {
+    // this line is now optional; you can remove or keep it
+    localStorage.setItem("auth_user", JSON.stringify(payload));
+  }
 
-      } else {
-        toast.error(res.data?.message || "Invalid credentials");
-      }
+  // redirect to intended page
+  navigate(redirectTo, { replace: true });
+} else {
+  toast.error(res.data?.message || "Invalid credentials");
+}
+
     } catch (err) {
       toast.error(err.response?.data?.message || "Incorrect email or password");
     } finally {
