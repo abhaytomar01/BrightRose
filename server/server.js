@@ -127,6 +127,9 @@ import { paymentWebhook } from "./controllers/payment/paymentWebhook.js";
 import shippingRoute from "./routes/shippingRoute.js";
 import geoipRoute from "./routes/geoipRoute.js";
 import shippingRateRoute from "./routes/shippingRateRoute.js";
+import adminOrderRoute from "./routes/adminOrderRoute.js";
+
+
 
 // ==============================
 // Connect Database
@@ -157,7 +160,7 @@ app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/shipping", shippingRoute);
 app.use("/api/v1/geoip", geoipRoute);
 app.use("/api/v1/admin/shipping", shippingRateRoute);
-
+app.use("/api/v1/orders/admin", adminOrderRoute);
 // ------------------------------
 // Webhook route that needs raw body
 // Important: express.raw used specifically for this route

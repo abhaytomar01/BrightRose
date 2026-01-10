@@ -155,6 +155,7 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
+    // Idempotent: already paid
     if (order.paymentInfo?.status === "paid") {
       return res.status(200).json({
         success: true,
@@ -163,6 +164,7 @@ export const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
+    // Update payment + status
     order.paymentInfo = {
       provider: "razorpay",
       orderId: razorpay_order_id,
@@ -172,9 +174,9 @@ export const verifyRazorpayPayment = async (req, res) => {
     };
     order.orderStatus = "PAID";
 
+    // Inventory
     for (const item of order.products) {
       if (!item.productId) continue;
-
       const product = await Product.findById(item.productId);
       if (!product) continue;
 
@@ -183,20 +185,76 @@ export const verifyRazorpayPayment = async (req, res) => {
 
       const newStock = (product.stock || 0) - qty;
       product.stock = newStock < 0 ? 0 : newStock;
-
       await product.save();
     }
 
+    // Generate invoice PDF
+    const { filepath, filename } = await generateInvoicePDF(order);
+    order.invoicePath = filepath;
+
     await order.save();
 
-    const invoicePath = await generateInvoicePDF(order);
+    // Common info for emails
+    const orderSummaryHtml = `
+      <p><strong>Order ID:</strong> ${order._id}</p>
+      <p><strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}</p>
+      <p><strong>Name:</strong> ${order.buyer?.name || ""}</p>
+      <p><strong>Email:</strong> ${order.buyer?.email || ""}</p>
+      <p><strong>Phone:</strong> ${order.buyer?.phone || ""}</p>
+      <p><strong>Shipping:</strong><br/>
+        ${order.shippingInfo?.address || ""}<br/>
+        ${order.shippingInfo?.city || ""}, ${order.shippingInfo?.state || ""} - ${
+          order.shippingInfo?.pincode || ""
+        }<br/>
+        ${order.shippingInfo?.country || ""}
+      </p>
+      <hr/>
+      <p><strong>Items:</strong></p>
+      <ul>
+        ${order.products
+          .map(
+            (p) =>
+              `<li>${p.name} (${p.size || "—"}) × ${p.quantity} – ₹${
+                p.price
+              }</li>`
+          )
+          .join("")}
+      </ul>
+      <p><strong>Subtotal:</strong> ₹${order.subtotal.toLocaleString()}</p>
+      <p><strong>Shipping:</strong> ₹${order.shippingCharge.toLocaleString()}</p>
+      <p><strong>Tax (GST incl.):</strong> ₹${order.tax.toLocaleString()}</p>
+      <p><strong>Total:</strong> ₹${order.totalAmount.toLocaleString()}</p>
+      <p><strong>Payment:</strong> Razorpay – ${razorpay_payment_id}</p>
+    `;
 
+    // 1) Customer email
     if (order.buyer?.email) {
       await sendMail({
         to: order.buyer.email,
-        subject: "Order Confirmed – Bright Rose",
-        html: `<p>Your order has been confirmed.</p>`,
-        attachments: [{ path: invoicePath }],
+        subject: "Your Bright Rose order is confirmed",
+        html: `
+          <p>Dear ${order.buyer?.name || "Customer"},</p>
+          <p>Thank you for shopping with Bright Rose. Your order has been confirmed and is now being processed.</p>
+          ${orderSummaryHtml}
+          <p>We'll notify you again when your order is shipped.</p>
+          <p>Warm regards,<br/>Bright Rose Team</p>
+        `,
+        attachments: [{ path: filepath, filename }],
+      });
+    }
+
+    // 2) Internal ops email
+    const opsEmail = process.env.ORDERS_EMAIL || process.env.EMAIL_FROM;
+    if (opsEmail) {
+      await sendMail({
+        to: opsEmail,
+        subject: `New order #${order._id} – Bright Rose`,
+        html: `
+          <p>New paid order received.</p>
+          ${orderSummaryHtml}
+          <p>Use the attached invoice for packing and finance.</p>
+        `,
+        attachments: [{ path: filepath, filename }],
       });
     }
 
