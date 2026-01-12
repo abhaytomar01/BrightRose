@@ -1,7 +1,7 @@
 // server/routes/adminOrderRoute.js currently imports some controller
 // Adjust that controller (e.g. adminOrderController.js):
 
-import Order from "../models/orderModel.js";
+import Order from "../../models/orderModel.js";
 
 export const adminGetAllOrders = async (req, res) => {
   try {
