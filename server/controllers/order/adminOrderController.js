@@ -1,9 +1,7 @@
-// server/routes/adminOrderRoute.js currently imports some controller
-// Adjust that controller (e.g. adminOrderController.js):
-
+// server/controllers/order/adminOrderController.js
 import Order from "../../models/orderModel.js";
 
-export const adminGetAllOrders = async (req, res) => {
+export const getAllOrdersAdmin = async (req, res) => {
   try {
     const orders = await Order.find({ "paymentInfo.status": "paid" })
       .sort({ createdAt: -1 })
@@ -14,12 +12,17 @@ export const adminGetAllOrders = async (req, res) => {
       orderId: o.publicOrderId,
       createdAt: o.createdAt,
       orderStatus:
-        o.orderStatus === "PAID" ? "Processing" :
-        o.orderStatus === "SHIPPED" ? "Shipped" :
-        o.orderStatus === "OUT_FOR_DELIVERY" ? "Out For Delivery" :
-        o.orderStatus === "DELIVERED" ? "Delivered" :
-        o.orderStatus === "CANCELLED" ? "Cancelled" :
-        "Processing",
+        o.orderStatus === "PAID"
+          ? "Processing"
+          : o.orderStatus === "SHIPPED"
+          ? "Shipped"
+          : o.orderStatus === "OUT_FOR_DELIVERY"
+          ? "Out For Delivery"
+          : o.orderStatus === "DELIVERED"
+          ? "Delivered"
+          : o.orderStatus === "CANCELLED"
+          ? "Cancelled"
+          : "Processing",
       totalAmount: o.totalAmount,
       paymentInfo: o.paymentInfo,
       invoiceUrl: o.invoicePath ? `uploads/invoices/${o._id}.pdf` : null,
