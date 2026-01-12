@@ -173,6 +173,15 @@ export const verifyRazorpayPayment = async (req, res) => {
       status: "paid",
     };
     order.orderStatus = "PAID";
+      
+    try {
+  const shipment = await createBluedartShipment(order);
+  order.shipment = shipment;
+  order.orderStatus = "SHIPPED"; // or keep PAID and let ops move it later
+} catch (shipErr) {
+  console.error("Bluedart shipment error:", shipErr);
+  // keep order as PAID so you can retry shipment manually
+}
 
     // Inventory
     for (const item of order.products) {

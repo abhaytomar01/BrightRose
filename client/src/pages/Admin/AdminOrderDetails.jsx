@@ -31,6 +31,7 @@ const AdminOrderDetails = () => {
 
   useEffect(() => {
     if (authAdmin?.token) fetchOrder();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authAdmin?.token]);
 
   // Update order status
@@ -55,18 +56,25 @@ const AdminOrderDetails = () => {
   if (loading) return <Spinner />;
   if (!order) return <p className="p-10">Order not found.</p>;
 
-  const { items, address, paymentInfo, orderStatus, createdAt, totalAmount, invoiceUrl } =
-    order;
+  const {
+    items,
+    address,
+    paymentInfo,
+    orderStatus,
+    createdAt,
+    totalAmount,
+    invoiceUrl,
+    shipment,
+  } = order;
 
   return (
     <main className="px-4 sm:px-10 py-10">
       <div className="max-w-5xl mx-auto space-y-8">
-
         {/* Title */}
         <h1 className="text-2xl font-semibold">Order Details</h1>
         <p className="text-sm text-gray-500">
-  Order ID: {order.orderId || order._id}
-</p>
+          Order ID: {order.orderId || order._id}
+        </p>
         <p className="text-sm text-gray-600">
           Ordered on: {new Date(createdAt).toLocaleString()}
         </p>
@@ -160,6 +168,44 @@ const AdminOrderDetails = () => {
           </h3>
         </div>
 
+        {/* SHIPMENT (BLUEDART) */}
+        {shipment?.awb && (
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="font-semibold mb-3">Shipment</h2>
+            <p className="text-sm">
+              Carrier:{" "}
+              <span className="font-medium">
+                {shipment.carrier || "Bluedart"}
+              </span>
+            </p>
+            <p className="text-sm">
+              AWB: <span className="font-medium">{shipment.awb}</span>
+            </p>
+            <div className="mt-2 flex flex-wrap gap-4">
+              {shipment.trackingUrl && (
+                <a
+                  href={shipment.trackingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-blue-600 underline"
+                >
+                  Track on Bluedart
+                </a>
+              )}
+              {shipment.labelUrl && (
+                <a
+                  href={`${import.meta.env.VITE_SERVER_URL}/${shipment.labelUrl}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-[#AD000F] underline"
+                >
+                  Download Shipping Label
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* INVOICE DOWNLOAD */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="font-semibold mb-3">Invoice</h2>
@@ -169,14 +215,16 @@ const AdminOrderDetails = () => {
               className="text-[#AD000F] underline hover:text-black transition"
               href={`${import.meta.env.VITE_SERVER_URL}/${invoiceUrl}`}
               target="_blank"
+              rel="noreferrer"
             >
               Download Invoice PDF
             </a>
           ) : (
-            <p className="text-sm text-gray-400">Invoice not generated.</p>
+            <p className="text-sm text-gray-400">
+              Invoice not generated.
+            </p>
           )}
         </div>
-
       </div>
     </main>
   );

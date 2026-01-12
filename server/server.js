@@ -26,6 +26,11 @@ console.log("ENV Loaded:", {
   MODE: process.env.NODE_ENV,
   VITE_SERVER_URL: process.env.VITE_SERVER_URL ? "[present]" : "[missing]"
 });
+console.log("Bluedart ENV:", {
+  login: process.env.BLUEDART_LOGIN,
+  code: process.env.BLUEDART_CUSTOMER_CODE,
+  waybillUrl: process.env.BLUEDART_WAYBILL_URL,
+});
 
 // ==============================
 // App & Basic Middleware

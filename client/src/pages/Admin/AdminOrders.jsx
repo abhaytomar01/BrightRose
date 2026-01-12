@@ -13,7 +13,7 @@ const AdminOrders = () => {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/orders`,
         {
-          headers: { Authorization: `Bearer ${authAdmin.token}` }
+          headers: { Authorization: `Bearer ${authAdmin.token}` },
         }
       );
       setOrders(res.data.orders || []);
@@ -64,14 +64,18 @@ const AdminOrders = () => {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
                 <div>
                   <p className="text-sm text-gray-600">Order ID</p>
-                  <p className="font-semibold text-lg">{o.orderId || o._id}</p>
+                  <p className="font-semibold text-lg">
+                    {o.orderId || o._id}
+                  </p>
                   <p className="text-sm text-gray-500">
                     {new Date(o.createdAt).toLocaleString()}
                   </p>
                 </div>
 
                 <div className="mt-3 md:mt-0">
-                  <label className="text-sm font-medium">Update Status:</label>
+                  <label className="text-sm font-medium">
+                    Update Status:
+                  </label>
                   <select
                     className="ml-2 px-3 py-2 border rounded"
                     value={o.orderStatus}
@@ -79,7 +83,9 @@ const AdminOrders = () => {
                   >
                     <option value="Processing">Processing</option>
                     <option value="Shipped">Shipped</option>
-                    <option value="Out For Delivery">Out For Delivery</option>
+                    <option value="Out For Delivery">
+                      Out For Delivery
+                    </option>
                     <option value="Delivered">Delivered</option>
                     <option value="Cancelled">Cancelled</option>
                   </select>
@@ -98,8 +104,8 @@ const AdminOrders = () => {
               <div className="bg-gray-50 p-4 rounded-lg mb-4">
                 <p className="font-medium">Address</p>
                 <p className="text-sm mt-1">
-                  {o.address?.address}, {o.address?.city}, {o.address?.state} -{" "}
-                  {o.address?.pincode}
+                  {o.address?.address}, {o.address?.city},{" "}
+                  {o.address?.state} - {o.address?.pincode}
                 </p>
               </div>
 
@@ -143,9 +149,52 @@ const AdminOrders = () => {
 
                 <div>
                   <p className="text-sm text-gray-600">Total Amount</p>
-                  <p className="font-semibold text-lg">₹{o.totalAmount}</p>
+                  <p className="font-semibold text-lg">
+                    ₹{o.totalAmount}
+                  </p>
                 </div>
               </div>
+
+              {/* Shipment (Bluedart) */}
+              {o.shipment?.awb && (
+                <div className="mt-4 border-t pt-3">
+                  <p className="text-sm text-gray-600">Shipment</p>
+                  <p className="text-sm">
+                    Carrier:{" "}
+                    <span className="font-medium">
+                      {o.shipment.carrier || "Bluedart"}
+                    </span>
+                  </p>
+                  <p className="text-sm">
+                    AWB:{" "}
+                    <span className="font-medium">
+                      {o.shipment.awb}
+                    </span>
+                  </p>
+                  <div className="mt-1 flex flex-wrap gap-3">
+                    {o.shipment.trackingUrl && (
+                      <a
+                        href={o.shipment.trackingUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-blue-600 underline"
+                      >
+                        Track on Bluedart
+                      </a>
+                    )}
+                    {o.shipment.labelUrl && (
+                      <a
+                        href={`${import.meta.env.VITE_SERVER_URL}/${o.shipment.labelUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-xs text-[#AD000F] underline"
+                      >
+                        Download Shipping Label
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Invoice Download */}
               <div className="mt-4">
@@ -164,7 +213,6 @@ const AdminOrders = () => {
                   </p>
                 )}
               </div>
-
             </div>
           ))}
         </div>

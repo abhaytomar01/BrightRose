@@ -1,6 +1,21 @@
 // server/models/orderModel.js
 import mongoose from "mongoose";
 
+const ShipmentSchema = new mongoose.Schema(
+  {
+    carrier: { type: String, default: "BLUEDART" },
+    awb: String,
+    labelUrl: String,
+    serviceType: String,
+    mode: String,
+    pickupDate: Date,
+    trackingUrl: String,
+    rawRequest: Object,
+    rawResponse: Object,
+  },
+  { _id: false }
+);
+
 // ===============================
 // Order Item Schema
 // ===============================
@@ -72,6 +87,8 @@ const OrderSchema = new mongoose.Schema(
       ],
       default: "PLACED",
     },
+    
+    shipment: ShipmentSchema, 
 
     // numeric sequence for BR-YYYY-XXXX
     sequence: { type: Number, default: 0 },

@@ -34,9 +34,9 @@ const Home = () => {
   url="/"
 />
 
-            <ScrollToTopOnRouteChange />
-            {/* <Categories /> */}
-           <main className="flex flex-col items-center gap-6 pb-10 bg-pureWhite text-neutralDark">
+ <ScrollToTopOnRouteChange />
+    {/* <Categories /> */}
+ <main className="flex flex-col items-center gap-6 pb-10 bg-pureWhite text-neutralDark">
 
     <Banner />
      <FeaturedStyle
