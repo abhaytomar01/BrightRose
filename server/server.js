@@ -46,9 +46,11 @@ app.set("trust proxy", 1);
 const allowedOrigins = [
   "https://www.thebrightrose.com",
   "https://thebrightrose.com",
+  "https://admin.thebrightrose.com",
   "http://localhost:5173",
   "http://localhost:3000",
 ];
+
 
 app.use(
   cors({
