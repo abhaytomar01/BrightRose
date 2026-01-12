@@ -1,14 +1,15 @@
 // client/src/pages/user/Checkout/Checkout.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
 
 export default function Checkout() {
-  // ---------- Hooks (fixed order) ----------
+  // ---------- Hooks ----------
   const navigate = useNavigate();
+  const location = useLocation();
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
   const token = authUser?.token;
@@ -19,6 +20,17 @@ export default function Checkout() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [shippingInfo, setShippingInfo] = useState(null);
   const [dbOrderId, setDbOrderId] = useState(null);
+
+  // ---------- Auth guard: redirect if not logged in ----------
+  useEffect(() => {
+    if (!token) {
+      localStorage.setItem(
+        "redirectAfterLogin",
+        location.pathname || "/checkout"
+      );
+      navigate("/login");
+    }
+  }, [token, navigate, location.pathname]);
 
   // ---------- Load shipping from localStorage ----------
   useEffect(() => {
@@ -156,32 +168,29 @@ export default function Checkout() {
         handler: async (response) => {
           try {
             // 3) Verify payment on backend
-            // inside handler: async (response) => { ... }
-const verifyRes = await axios.post(
-  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
-  {
-    razorpay_payment_id: response.razorpay_payment_id,
-    razorpay_order_id: response.razorpay_order_id,
-    razorpay_signature: response.razorpay_signature,
-    dbOrderId: dbId,
-  }
-);
+            const verifyRes = await axios.post(
+              `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                dbOrderId: dbId,
+              }
+            );
 
             if (verifyRes.data?.success) {
-  const orderId = verifyRes.data.orderId;   // comes from verifyRazorpayPayment
+              const orderId = verifyRes.data.orderId;
 
-  toast.success("Order placed successfully");
-  clearCart();
-  localStorage.removeItem("shippingInfo");
-  const userId = authUser?.user?._id || "guest";
-localStorage.removeItem(`brightrose_cart_v1_${userId}`);
+              toast.success("Order placed successfully");
+              clearCart();
+              localStorage.removeItem("shippingInfo");
+              const userId = authUser?.user?._id || "guest";
+              localStorage.removeItem(`brightrose_cart_v1_${userId}`);
 
-
-  navigate(`/order-success/${orderId}`);
-} else {
-  toast.error("Payment verification failed");
-}
-
+              navigate(`/order-success/${orderId}`);
+            } else {
+              toast.error("Payment verification failed");
+            }
           } catch (err) {
             console.error(err);
             toast.error("Payment verification error");
@@ -196,8 +205,14 @@ localStorage.removeItem(`brightrose_cart_v1_${userId}`);
 
       rzp.open();
     } catch (err) {
-      console.error(err);
-      toast.error("Payment failed");
+      if (err.response?.status === 401) {
+        toast.error("Session expired. Please log in to continue.");
+        localStorage.setItem("redirectAfterLogin", "/checkout");
+        navigate("/login");
+      } else {
+        console.error(err);
+        toast.error("Payment failed");
+      }
     } finally {
       setPaymentProcessing(false);
     }
@@ -212,6 +227,8 @@ localStorage.removeItem(`brightrose_cart_v1_${userId}`);
   };
 
   const prevStep = () => setStep((s) => s - 1);
+
+
 
   // ---------- UI ----------
   return (
