@@ -1,3 +1,4 @@
+// server/routes/userRoute.js
 import express from "express";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 import getWishlist from "../controllers/user/getWishlist.js";
@@ -6,10 +7,10 @@ import createSession from "../controllers/user/createSession.js";
 import handleSuccess from "../controllers/user/handleSuccess.js";
 import getOrders from "../controllers/user/getOrders.js";
 import getOrderDetail from "../controllers/user/getOrderDetail.js";
-import getAdminOrders from "../controllers/user/getAdminOrders.js"; 
+import getAdminOrders from "../controllers/user/getAdminOrders.js";
 import updateOrder from "../controllers/user/updateOrder.js";
 import { getAllUsersAdmin } from "../controllers/user/adminUserController.js";
-import { 
+import {
   getAddresses,
   addAddress,
   updateAddress,
@@ -29,7 +30,6 @@ router.post("/update-wishlist", requireSignIn, updateWishlist);
 
 // get wishlist products
 router.get("/wishlist-products", requireSignIn, getWishlist);
-
 
 router.get("/addresses", requireSignIn, getAddresses);
 router.post("/address", requireSignIn, addAddress);
@@ -52,6 +52,7 @@ router.get("/admin-order-detail", isAdmin, getOrderDetail);
 //update order status
 router.patch("/update/order-status", isAdmin, updateOrder);
 
-//get all order and delete if possible
+//get all users (admin)
 router.get("/all-users", requireSignIn, isAdmin, getAllUsersAdmin);
+
 export default router;
