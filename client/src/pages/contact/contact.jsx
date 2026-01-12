@@ -79,7 +79,7 @@ const Contact = () => {
   image="/og-contact.jpg"
   url="/contact"
 />
-    <section className="bg-[#FAF9F6] min-h-screen pt-28">
+    <section className="bg-[#ffffff] min-h-screen pt-28">
 
   {/* ================= HERO ================= */}
   <div className="max-w-4xl mx-auto px-6 text-center">

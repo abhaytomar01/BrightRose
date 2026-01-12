@@ -45,11 +45,11 @@ const Home = () => {
         
     />
 
-    <FeaturedCollections
+    {/* <FeaturedCollections
         title="Shop By Weave"
         subtitle="Discover timeless pieces crafted for modern living"
         
-    />
+    /> */}
    
 
     {/* <BrandStory
@@ -65,7 +65,7 @@ const Home = () => {
 
 
 
-    <section className="relative w-full overflow-hidden  h-[75vh] md:h-95vh ">
+    <section className="relative w-full overflow-hidden  h-[90vh] md:h-98vh ">
 
   {/* BACKGROUND IMAGE */}
   <img
@@ -174,7 +174,6 @@ const Home = () => {
     />
 
 
-    <WhyChooseUs />
 
     <LifestyleBanner
         title=""
@@ -183,6 +182,8 @@ const Home = () => {
         buttonLink="/products"
         imageUrl={brightrosehome}
     />
+    <WhyChooseUs />
+
 
     {/* <Testimonials /> */}
         {/* <ProductCard

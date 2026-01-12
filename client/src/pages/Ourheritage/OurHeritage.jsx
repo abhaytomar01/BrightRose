@@ -178,7 +178,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
 
       {/* Elegant Heading */}
       <h2 className="font-[manrope] text-[18px] md:text-[26px]  leading-tight mb-6">
-        About <span className="uppercase text-[#b28c6e]">Bright Rose</span>
+        About <span className="uppercase text-neutral-700">Bright Rose</span>
       </h2>
 
       {/* Body Text */}
@@ -195,8 +195,8 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
       </p>
 
       {/* Pull Quote Block */}
-      <div className="mt-6 border-l-[2.5px] border-[#2c6656] pl-5">
-        <p className="italic text-[#2c6656] text-[12px] md:text-[15px] leading-relaxed text-justify">
+      <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
+        <p className="italic text-neutral-700 text-[12px] md:text-[15px] leading-relaxed text-justify">
           “Our knowledge of weaving is deeply valued within families and passed down
           as tradition. Many artisans master the craft so beautifully that they can
           weave with their eyes closed.”

@@ -10,7 +10,7 @@ const WhyChooseUs = ({
   ],
 }) => {
   return (
-    <section className="w-full py-10 md:py-20 bg-gradient-to-b from-[#faf8f6] to-[#f7f4f0] select-none">
+    <section className="w-full py-10 md:py-20 bg-gradient-to-b from-[#ffffff] to-[#ffffff] select-none">
       
       <div className="max-w-[1500px] mx-auto px-5 sm:px-10 lg:px-20 text-center">
 
