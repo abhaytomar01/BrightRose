@@ -20,6 +20,7 @@ import OrderFailed from "../pages/user/Cart/OrderFailed";
 import OrderDetails from "../pages/user/Orders/OrderDetails";
 import Checkout from "../pages/user/Checkout/Checkout";
 import AtelierSection from "../components/AtelierSection.jsx";
+import Collection from "../pages/collection/Collection";
 
 // 🔹 Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard";
@@ -64,6 +65,7 @@ const Routers = () => {
 
       {/* Cart & Checkout Flow */}
 <Route path="/cart" element={<Cart />} />
+<Route path="/collection" element={<Collection />} />
 
 {/* Checkout - address, payment, and review in one flow */}
 <Route path="/checkout" element={<Checkout />} />

@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
 import about1 from "../../assets/images/about1.jpg";
 import creative2 from "../../assets/images/creative2.jpg";
-import ourstory from "../../assets/images/fallback.jpg";
+import ourstory from "../../assets/images/braboutcover.png";
 
 gsap.registerPlugin(ScrollTrigger);
 

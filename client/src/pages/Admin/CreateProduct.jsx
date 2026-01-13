@@ -11,10 +11,37 @@ const MAX_IMAGES = 10;
 const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
+const WEAVE_OPTIONS = [
+  { label: "None", value: "" },
+  { label: "Kanchipuram", value: "kanchipuram" },
+  { label: "Banarasi", value: "banarasi" },
+  { label: "Pashmina", value: "pashmina" },
+  { label: "Plain", value: "plain" },
+  { label: "Katan", value: "katan" },
+  { label: "Pochampalley", value: "pochampalley" },
+  { label: "Brocade", value: "brocade" },
+];
+
+const STYLE_OPTIONS = [
+  { label: "None", value: "" },
+  { label: "Saree", value: "saree" },
+  { label: "Dresses", value: "dresses" },
+  { label: "Blazers", value: "blazers" },
+  { label: "Skirt", value: "skirt" },
+  { label: "Pants", value: "pants" },
+  { label: "Corsets", value: "corsets" },
+  { label: "Tops", value: "tops" },
+];
+
+
+
 const CreateProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
+  const [weaveSlug, setWeaveSlug] = useState("");
+const [styleSlug, setStyleSlug] = useState("");
+
 
   const [form, setForm] = useState({
     name: "",
@@ -107,6 +134,10 @@ const CreateProduct = () => {
       fd.append("tags", JSON.stringify(tags));
       fd.append("sizes", JSON.stringify(sizes));
       fd.append("maxQuantity", String(maxQuantity));
+      // filter fields expected by backend filterProducts
+fd.append("weavingSlug", weaveSlug || "");
+fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
+
 
       imagesFiles.forEach((file) => fd.append("images", file));
 
@@ -151,6 +182,46 @@ const CreateProduct = () => {
               className="border p-2 rounded"
             />
           ))}
+
+          {/* Filter slugs for frontend filters */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label className="block font-medium mb-1">Weave (slug)</label>
+    <select
+      value={weaveSlug}
+      onChange={(e) => setWeaveSlug(e.target.value)}
+      className="border p-2 rounded w-full"
+    >
+      {WEAVE_OPTIONS.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+    <p className="text-xs text-neutral-500 mt-1">
+      Used for filter &quot;Weaves&quot; (e.g. Kanchipuram, Banarasi).
+    </p>
+  </div>
+
+  <div>
+    <label className="block font-medium mb-1">Style (slug)</label>
+    <select
+      value={styleSlug}
+      onChange={(e) => setStyleSlug(e.target.value)}
+      className="border p-2 rounded w-full"
+    >
+      {STYLE_OPTIONS.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+    <p className="text-xs text-neutral-500 mt-1">
+      Used for filter &quot;Style&quot; (e.g. Saree, Dresses).
+    </p>
+  </div>
+</div>
+
 
           {/* sizes */}
           <div>

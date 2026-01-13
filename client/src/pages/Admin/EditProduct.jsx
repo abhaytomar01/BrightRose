@@ -15,6 +15,9 @@ const EditProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
   const { productId } = useParams();
+  const [weaveSlug, setWeaveSlug] = useState("");
+const [styleSlug, setStyleSlug] = useState("");
+
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -66,6 +69,10 @@ const EditProduct = () => {
           price: p.price ?? "",
           stock: p.stock ?? "",
         });
+
+        setWeaveSlug(p.weavingSlug || "");
+setStyleSlug(Array.isArray(p.tagSlugs) && p.tagSlugs.length ? p.tagSlugs[0] : "");
+
 
         setTags(p.tags || []);
         setOldImages(p.images || []); // backend returns {url, filename}
@@ -144,6 +151,11 @@ const EditProduct = () => {
       fd.append("sizes", JSON.stringify(sizes));
       fd.append("maxQuantity", String(maxQuantity));
 
+      // filter fields for backend
+fd.append("weavingSlug", weaveSlug || "");
+fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
+
+
       newFiles.forEach((file) => fd.append("images", file));
 
       const res = await axios.patch(
@@ -187,6 +199,39 @@ const EditProduct = () => {
             className="border p-2 rounded"
           />
         ))}
+        {/* Filter slugs for frontend filters */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label className="block font-medium mb-1">Weave (slug)</label>
+    <select
+      value={weaveSlug}
+      onChange={(e) => setWeaveSlug(e.target.value)}
+      className="border p-2 rounded w-full"
+    >
+      {WEAVE_OPTIONS.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  <div>
+    <label className="block font-medium mb-1">Style (slug)</label>
+    <select
+      value={styleSlug}
+      onChange={(e) => setStyleSlug(e.target.value)}
+      className="border p-2 rounded w-full"
+    >
+      {STYLE_OPTIONS.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
 
         {/* sizes */}
         <div>

@@ -1,67 +1,35 @@
+// server/models/productModel.js
 import mongoose from "mongoose";
-import slugify from "slugify";
-
-const imageSchema = new mongoose.Schema({
-  url: { type: String, required: true },
-  filename: { type: String, required: true }
-});
 
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
 
-    fabric: String,
-    color: String,
-    weavingArt: String,          // Ex: "Kanchipuram", "Banarasi Silk"
-    weavingSlug: String,         // auto generated → "kanchipuram"
+    category: { type: String, default: "" },
 
-    uniqueness: String,
-    sizeInfo: String,
-    description: String,
-    specification: String,
-    care: String,
-    sku: String,
+    // For filtering:
+    weavingSlug: { type: String, index: true },      // e.g. "kanchipuram"
+    tagSlugs: { type: [String], default: [], index: true }, // e.g. ["saree", "dresses"]
 
-    price: Number,
-    stock: Number,
+    brandName: { type: String, default: "" },
+    logo: { type: String, default: "" },
 
-    tags: { type: [String], default: [] },
-    tagSlugs: { type: [String], default: [] }, // For style filter future
+    images: [
+      {
+        filename: String,
+        url: String,
+      },
+    ],
 
-    sizes: {
-      type: [String],
-      default: ["XS", "S", "M", "L", "XL", "XXL"]
+    specifications: {
+      type: [String], // storing as JSON strings as you already do
+      default: [],
     },
-
-    maxQuantity: { type: Number, default: 10 },
-
-    images: { type: [imageSchema], default: [] },
-
-    brand: {
-      name: String,
-      logo: imageSchema
-    }
   },
   { timestamps: true }
 );
 
-/* =====================================================
-    AUTO CREATE SLUGS BEFORE SAVE
-===================================================== */
-productSchema.pre("save", function (next) {
-  // Weave slug
-  if (this.weavingArt) {
-    this.weavingSlug = slugify(this.weavingArt, { lower: true });
-  }
-
-  // Tag slugs (future Style Filter etc.)
-  if (this.tags && this.tags.length > 0) {
-    this.tagSlugs = this.tags.map(t =>
-      slugify(t, { lower: true })
-    );
-  }
-
-  next();
-});
-
-export default mongoose.model("Product", productSchema);
+const productModel = mongoose.model("Product", productSchema);
+export default productModel;
