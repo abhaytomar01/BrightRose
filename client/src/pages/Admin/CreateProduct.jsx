@@ -12,7 +12,6 @@ const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
-  { label: "None", value: "" },
   { label: "Kanchipuram", value: "kanchipuram" },
   { label: "Banarasi", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
@@ -23,7 +22,6 @@ const WEAVE_OPTIONS = [
 ];
 
 const STYLE_OPTIONS = [
-  { label: "None", value: "" },
   { label: "Saree", value: "saree" },
   { label: "Dresses", value: "dresses" },
   { label: "Blazers", value: "blazers" },
@@ -34,14 +32,10 @@ const STYLE_OPTIONS = [
 ];
 
 
-
 const CreateProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
   const [isSubmit, setIsSubmit] = useState(false);
-  const [weaveSlug, setWeaveSlug] = useState("");
-const [styleSlug, setStyleSlug] = useState("");
-
 
   const [form, setForm] = useState({
     name: "",
@@ -52,17 +46,22 @@ const [styleSlug, setStyleSlug] = useState("");
     sku: "",
     price: "",
     stock: "",
+    care: "",
+    specification: "",
   });
 
-  // sizes selected by admin
-  const [sizes, setSizes] = useState([...ALL_SIZES]); // default all enabled
-  const [maxQuantity, setMaxQuantity] = useState(10); // default
+  const [sizes, setSizes] = useState([...ALL_SIZES]);
+  const [maxQuantity, setMaxQuantity] = useState(10);
 
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
 
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesFiles, setImagesFiles] = useState([]);
+
+  // NEW: filter slug state
+  const [weaveSlug, setWeaveSlug] = useState("");
+  const [styleSlug, setStyleSlug] = useState("");
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -121,7 +120,6 @@ const [styleSlug, setStyleSlug] = useState("");
         return;
       }
 
-      // at least one size should be selected
       if (!sizes.length) {
         toast.error("Please select at least one size");
         setIsSubmit(false);
@@ -134,10 +132,10 @@ const [styleSlug, setStyleSlug] = useState("");
       fd.append("tags", JSON.stringify(tags));
       fd.append("sizes", JSON.stringify(sizes));
       fd.append("maxQuantity", String(maxQuantity));
-      // filter fields expected by backend filterProducts
-fd.append("weavingSlug", weaveSlug || "");
-fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
+      // send slugs used by filters
+      fd.append("weavingSlug", weaveSlug || "");
+      fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
       imagesFiles.forEach((file) => fd.append("images", file));
 
@@ -183,45 +181,38 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
             />
           ))}
 
-          {/* Filter slugs for frontend filters */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div>
-    <label className="block font-medium mb-1">Weave (slug)</label>
-    <select
-      value={weaveSlug}
-      onChange={(e) => setWeaveSlug(e.target.value)}
-      className="border p-2 rounded w-full"
-    >
-      {WEAVE_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-    <p className="text-xs text-neutral-500 mt-1">
-      Used for filter &quot;Weaves&quot; (e.g. Kanchipuram, Banarasi).
-    </p>
-  </div>
+          {/* Weave + Style slugs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-medium mb-1">Weave (slug)</label>
+              <select
+                value={weaveSlug}
+                onChange={(e) => setWeaveSlug(e.target.value)}
+                className="border p-2 rounded w-full"
+              >
+                {WEAVE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-  <div>
-    <label className="block font-medium mb-1">Style (slug)</label>
-    <select
-      value={styleSlug}
-      onChange={(e) => setStyleSlug(e.target.value)}
-      className="border p-2 rounded w-full"
-    >
-      {STYLE_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-    <p className="text-xs text-neutral-500 mt-1">
-      Used for filter &quot;Style&quot; (e.g. Saree, Dresses).
-    </p>
-  </div>
-</div>
-
+            <div>
+              <label className="block font-medium mb-1">Style (slug)</label>
+              <select
+                value={styleSlug}
+                onChange={(e) => setStyleSlug(e.target.value)}
+                className="border p-2 rounded w-full"
+              >
+                {STYLE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           {/* sizes */}
           <div>
@@ -252,16 +243,21 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
           {/* maxQuantity */}
           <div>
-            <label className="block font-medium mb-2">Max Quantity per order</label>
+            <label className="block font-medium mb-2">
+              Max Quantity per order
+            </label>
             <input
               type="number"
               min={1}
               value={maxQuantity}
-              onChange={(e) => setMaxQuantity(Math.max(1, Number(e.target.value || 1)))}
+              onChange={(e) =>
+                setMaxQuantity(Math.max(1, Number(e.target.value || 1)))
+              }
               className="border p-2 rounded w-40"
             />
             <p className="text-sm text-neutral-500 mt-1">
-              User cannot increase quantity beyond this number (also limited by stock).
+              User cannot increase quantity beyond this number (also limited by
+              stock).
             </p>
           </div>
 
@@ -312,10 +308,17 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
               ))}
             </div>
 
-            <input type="file" multiple accept="image/*" onChange={handleImages} />
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImages}
+            />
           </div>
 
-          <button className="bg-orange-500 text-white w-full p-2 rounded">Submit</button>
+          <button className="bg-orange-500 text-white w-full p-2 rounded">
+            Submit
+          </button>
         </form>
       )}
     </>

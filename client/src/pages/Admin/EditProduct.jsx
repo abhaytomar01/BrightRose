@@ -12,7 +12,6 @@ const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
-  { label: "None", value: "" },
   { label: "Kanchipuram", value: "kanchipuram" },
   { label: "Banarasi", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
@@ -23,7 +22,6 @@ const WEAVE_OPTIONS = [
 ];
 
 const STYLE_OPTIONS = [
-  { label: "None", value: "" },
   { label: "Saree", value: "saree" },
   { label: "Dresses", value: "dresses" },
   { label: "Blazers", value: "blazers" },
@@ -38,9 +36,6 @@ const EditProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
   const { productId } = useParams();
-  const [weaveSlug, setWeaveSlug] = useState("");
-const [styleSlug, setStyleSlug] = useState("");
-
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -54,22 +49,25 @@ const [styleSlug, setStyleSlug] = useState("");
     sku: "",
     price: "",
     stock: "",
+    care: "",
+    specification: "",
   });
 
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
 
-  // Local server images
-  const [oldImages, setOldImages] = useState([]); // {url, filename}
+  const [oldImages, setOldImages] = useState([]);
   const [removedImages, setRemovedImages] = useState([]);
 
-  // new uploads
   const [newFiles, setNewFiles] = useState([]);
   const [newPreviews, setNewPreviews] = useState([]);
 
-  // sizes and maxQuantity
   const [sizes, setSizes] = useState([...ALL_SIZES]);
   const [maxQuantity, setMaxQuantity] = useState(10);
+
+  // NEW: slug state
+  const [weaveSlug, setWeaveSlug] = useState("");
+  const [styleSlug, setStyleSlug] = useState("");
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -93,14 +91,18 @@ const [styleSlug, setStyleSlug] = useState("");
           stock: p.stock ?? "",
         });
 
-        setWeaveSlug(p.weavingSlug || "");
-setStyleSlug(Array.isArray(p.tagSlugs) && p.tagSlugs.length ? p.tagSlugs[0] : "");
-
-
         setTags(p.tags || []);
-        setOldImages(p.images || []); // backend returns {url, filename}
-        setSizes(Array.isArray(p.sizes) && p.sizes.length ? p.sizes : [...ALL_SIZES]);
+        setOldImages(p.images || []);
+        setSizes(
+          Array.isArray(p.sizes) && p.sizes.length ? p.sizes : [...ALL_SIZES]
+        );
         setMaxQuantity(p.maxQuantity ?? 10);
+
+        // load slugs from DB
+        setWeaveSlug(p.weavingSlug || "");
+        setStyleSlug(
+          Array.isArray(p.tagSlugs) && p.tagSlugs.length ? p.tagSlugs[0] : ""
+        );
       } catch (err) {
         toast.error("Unable to load product");
       } finally {
@@ -174,10 +176,9 @@ setStyleSlug(Array.isArray(p.tagSlugs) && p.tagSlugs.length ? p.tagSlugs[0] : ""
       fd.append("sizes", JSON.stringify(sizes));
       fd.append("maxQuantity", String(maxQuantity));
 
-      // filter fields for backend
-fd.append("weavingSlug", weaveSlug || "");
-fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
-
+      // send slugs
+      fd.append("weavingSlug", weaveSlug || "");
+      fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
       newFiles.forEach((file) => fd.append("images", file));
 
@@ -211,7 +212,10 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
     <>
       <SeoData title="Edit Product" />
 
-      <form className="p-4 bg-white rounded shadow flex flex-col gap-4" onSubmit={submitHandler}>
+      <form
+        className="p-4 bg-white rounded shadow flex flex-col gap-4"
+        onSubmit={submitHandler}
+      >
         {Object.keys(form).map((key) => (
           <input
             key={key}
@@ -222,40 +226,39 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
             className="border p-2 rounded"
           />
         ))}
-        
-        {/* Filter slugs for frontend filters */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <div>
-    <label className="block font-medium mb-1">Weave (slug)</label>
-    <select
-      value={weaveSlug}
-      onChange={(e) => setWeaveSlug(e.target.value)}
-      className="border p-2 rounded w-full"
-    >
-      {WEAVE_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-  </div>
 
-  <div>
-    <label className="block font-medium mb-1">Style (slug)</label>
-    <select
-      value={styleSlug}
-      onChange={(e) => setStyleSlug(e.target.value)}
-      className="border p-2 rounded w-full"
-    >
-      {STYLE_OPTIONS.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
-  </div>
-</div>
+        {/* Weave + Style slugs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-medium mb-1">Weave (slug)</label>
+            <select
+              value={weaveSlug}
+              onChange={(e) => setWeaveSlug(e.target.value)}
+              className="border p-2 rounded w-full"
+            >
+              {WEAVE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          <div>
+            <label className="block font-medium mb-1">Style (slug)</label>
+            <select
+              value={styleSlug}
+              onChange={(e) => setStyleSlug(e.target.value)}
+              className="border p-2 rounded w-full"
+            >
+              {STYLE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
         {/* sizes */}
         <div>
@@ -283,16 +286,21 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
         {/* maxQuantity */}
         <div>
-          <label className="block font-medium mb-2">Max Quantity per order</label>
+          <label className="block font-medium mb-2">
+            Max Quantity per order
+          </label>
           <input
             type="number"
             min={1}
             value={maxQuantity}
-            onChange={(e) => setMaxQuantity(Math.max(1, Number(e.target.value || 1)))}
+            onChange={(e) =>
+              setMaxQuantity(Math.max(1, Number(e.target.value || 1)))
+            }
             className="border p-2 rounded w-40"
           />
           <p className="text-sm text-neutral-500 mt-1">
-            User cannot increase quantity beyond this number (also limited by stock).
+            User cannot increase quantity beyond this number (also limited by
+            stock).
           </p>
         </div>
 
@@ -304,7 +312,11 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
             className="border p-2"
             placeholder="Add tag"
           />
-          <button type="button" onClick={addTag} className="ml-2 bg-blue-600 text-white px-3 rounded">
+          <button
+            type="button"
+            onClick={addTag}
+            className="ml-2 bg-blue-600 text-white px-3 rounded"
+          >
             Add
           </button>
 
@@ -323,15 +335,15 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
           {oldImages.map((img) => (
             <div key={img.filename} className="relative">
               <img
-  src={
-    img.url.startsWith("http")
-      ? img.url
-      : `${import.meta.env.VITE_SERVER_URL}${
-          img.url.startsWith("/") ? img.url : "/" + img.url
-        }`
-  }
-  className="w-20 h-20 object-cover border"
-/>
+                src={
+                  img.url.startsWith("http")
+                    ? img.url
+                    : `${import.meta.env.VITE_SERVER_URL}${
+                        img.url.startsWith("/") ? img.url : "/" + img.url
+                      }`
+                }
+                className="w-20 h-20 object-cover border"
+              />
 
               <button
                 type="button"
@@ -346,7 +358,12 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
         {/* NEW IMAGES */}
         <h3 className="font-bold">Add New Images</h3>
-        <input type="file" multiple accept="image/*" onChange={handleNewImages} />
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleNewImages}
+        />
 
         <div className="flex gap-2 overflow-x-auto">
           {newPreviews.map((p, i) => (
@@ -363,7 +380,9 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
           ))}
         </div>
 
-        <button className="bg-orange-500 text-white w-full p-2 rounded">Update</button>
+        <button className="bg-orange-500 text-white w-full p-2 rounded">
+          Update
+        </button>
 
         <Link
           to="/admin/dashboard/all-products"

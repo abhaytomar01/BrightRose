@@ -28,27 +28,9 @@ const SideFilter = ({
   /* OPTIONS */
   const categories = ["All"];
 
-  const weavesSubcategories = [
-    "All",
-    "Kanchipuram",
-    "Banarasi",
-    "Pashmina",
-    "Plain",
-    "Katan",
-    "Pochampalley",
-    "Brocade",
-  ];
+const weavesSubcategories = ["All", "Kanchipuram", "Banarasi", "Pashmina", "Plain", "Katan", "Pochampalley", "Brocade"];
+const styleSubcategories = ["All", "Blazers", "Skirt", "Pants", "Saree", "Dresses", "Corsets", "Tops"];
 
-  const styleSubcategories = [
-    "All",
-    "Blazers",
-    "Skirt",
-    "Pants",
-    "Saree",
-    "Dresses",
-    "Corsets",
-    "Tops",
-  ];
 
   /* PRICE — debounce update to parent */
   useEffect(() => {
@@ -109,8 +91,9 @@ const SideFilter = ({
             <Option
               key={w}
               text={w}
-              isActive={weave === slugify(w) || (w === "All" && !weave)}
-              onClick={() => setWeave(w === "All" ? "" : slugify(w))}
+            isActive={weave === w.toLowerCase() || (w === "All" && !weave)}
+onClick={() => setWeave(w === "All" ? "" : w.toLowerCase())}
+
             />
           ))}
         </ul>
@@ -124,8 +107,9 @@ const SideFilter = ({
             <Option
               key={s}
               text={s}
-              isActive={style === slugify(s) || (s === "All" && !style)}
-              onClick={() => setStyle(s === "All" ? "" : slugify(s))}
+              isActive={style === s.toLowerCase() || (s === "All" && !style)}
+onClick={() => setStyle(s === "All" ? "" : s.toLowerCase())}
+
             />
           ))}
         </ul>
