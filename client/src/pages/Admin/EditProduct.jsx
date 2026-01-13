@@ -11,6 +11,29 @@ const MAX_IMAGES = 10;
 const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
+const WEAVE_OPTIONS = [
+  { label: "None", value: "" },
+  { label: "Kanchipuram", value: "kanchipuram" },
+  { label: "Banarasi", value: "banarasi" },
+  { label: "Pashmina", value: "pashmina" },
+  { label: "Plain", value: "plain" },
+  { label: "Katan", value: "katan" },
+  { label: "Pochampalley", value: "pochampalley" },
+  { label: "Brocade", value: "brocade" },
+];
+
+const STYLE_OPTIONS = [
+  { label: "None", value: "" },
+  { label: "Saree", value: "saree" },
+  { label: "Dresses", value: "dresses" },
+  { label: "Blazers", value: "blazers" },
+  { label: "Skirt", value: "skirt" },
+  { label: "Pants", value: "pants" },
+  { label: "Corsets", value: "corsets" },
+  { label: "Tops", value: "tops" },
+];
+
+
 const EditProduct = () => {
   const { authAdmin } = useAuth();
   const navigate = useNavigate();
@@ -199,6 +222,7 @@ fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
             className="border p-2 rounded"
           />
         ))}
+        
         {/* Filter slugs for frontend filters */}
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
   <div>
