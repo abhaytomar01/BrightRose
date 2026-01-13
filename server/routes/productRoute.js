@@ -6,15 +6,14 @@ import newProduct from "../controllers/product/newProduct.js";
 import updateProduct from "../controllers/product/updateProduct.js";
 import getSingleProduct from "../controllers/product/getSingleProduct.js";
 import deleteProduct from "../controllers/product/deleteProduct.js";
-import { filterProducts } from "../controllers/product/productController.js";
+import { getAllProducts, filterProducts } from "../controllers/product/productController.js";
 import searchProductController from "../controllers/product/searchProductController.js";
-import filterProducts from "../controllers/product/filterProducts.js";
 
 const router = express.Router();
 
 // PUBLIC
 router.get("/search/:keyword", searchProductController); // 🔥 add this
-// router.get("/", getAllProducts);
+router.get("/", getAllProducts);
 router.get("/filter", filterProducts);
 router.get("/:id", getSingleProduct);
 
