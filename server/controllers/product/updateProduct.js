@@ -14,6 +14,7 @@ const updateProduct = async (req, res) => {
   try {
     const id = req.params.id;
     const product = await productModel.findById(id);
+    console.log("UPDATE BODY:", req.body.weavingSlug, req.body.tagSlugs);
 
     if (!product) {
       return res

@@ -7,7 +7,6 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 const slugify = (v) =>
   v.toLowerCase().replace(/\s*&\s*|\s*\/\s*/g, "-").replace(/\s+/g, "-");
 
-
 const SideFilter = ({
   price,
   setPrice,
@@ -27,10 +26,26 @@ const SideFilter = ({
 
   /* OPTIONS */
   const categories = ["All"];
-
-const weavesSubcategories = ["All", "Kanchipuram", "Banarasi", "Pashmina", "Plain", "Katan", "Pochampalley", "Brocade"];
-const styleSubcategories = ["All", "Blazers", "Skirt", "Pants", "Saree", "Dresses", "Corsets", "Tops"];
-
+  const weavesSubcategories = [
+    "All",
+    "Kanchipuram",
+    "Banarasi",
+    "Pashmina",
+    "Plain",
+    "Katan",
+    "Pochampalley",
+    "Brocade",
+  ];
+  const styleSubcategories = [
+    "All",
+    "Blazers",
+    "Skirt",
+    "Pants",
+    "Saree",
+    "Dresses",
+    "Corsets",
+    "Tops",
+  ];
 
   /* PRICE — debounce update to parent */
   useEffect(() => {
@@ -69,7 +84,11 @@ const styleSubcategories = ["All", "Blazers", "Skirt", "Pants", "Saree", "Dresse
   return (
     <aside className="w-full bg-white">
       {/* CATEGORY */}
-      <SectionHeader label="Category" openState={openCategory} setOpenState={setOpenCategory} />
+      <SectionHeader
+        label="Category"
+        openState={openCategory}
+        setOpenState={setOpenCategory}
+      />
       <Collapse in={openCategory}>
         <ul className="py-2 space-y-1">
           {categories.map((cat) => (
@@ -84,23 +103,30 @@ const styleSubcategories = ["All", "Blazers", "Skirt", "Pants", "Saree", "Dresse
       </Collapse>
 
       {/* WEAVES */}
-      <SectionHeader label="Weaves" openState={openWeaves} setOpenState={setOpenWeaves} />
+      <SectionHeader
+        label="Weaves"
+        openState={openWeaves}
+        setOpenState={setOpenWeaves}
+      />
       <Collapse in={openWeaves}>
         <ul className="py-2 space-y-1">
           {weavesSubcategories.map((w) => (
             <Option
               key={w}
               text={w}
-            isActive={weave === w.toLowerCase() || (w === "All" && !weave)}
-onClick={() => setWeave(w === "All" ? "" : w.toLowerCase())}
-
+              isActive={weave === w.toLowerCase() || (w === "All" && !weave)}
+              onClick={() => setWeave(w === "All" ? "" : w.toLowerCase())}
             />
           ))}
         </ul>
       </Collapse>
 
       {/* STYLE */}
-      <SectionHeader label="Style" openState={openStyle} setOpenState={setOpenStyle} />
+      <SectionHeader
+        label="Style"
+        openState={openStyle}
+        setOpenState={setOpenStyle}
+      />
       <Collapse in={openStyle}>
         <ul className="py-2 space-y-1">
           {styleSubcategories.map((s) => (
@@ -108,15 +134,18 @@ onClick={() => setWeave(w === "All" ? "" : w.toLowerCase())}
               key={s}
               text={s}
               isActive={style === s.toLowerCase() || (s === "All" && !style)}
-onClick={() => setStyle(s === "All" ? "" : s.toLowerCase())}
-
+              onClick={() => setStyle(s === "All" ? "" : s.toLowerCase())}
             />
           ))}
         </ul>
       </Collapse>
 
       {/* PRICE */}
-      <SectionHeader label="Price" openState={openPrice} setOpenState={setOpenPrice} />
+      <SectionHeader
+        label="Price"
+        openState={openPrice}
+        setOpenState={setOpenPrice}
+      />
       <Collapse in={openPrice}>
         <div className="py-3">
           <div className="flex justify-between text-xs text-gray-700 mb-3">
@@ -134,7 +163,7 @@ onClick={() => setStyle(s === "All" ? "" : s.toLowerCase())}
             value={tempPrice}
             onChange={(_, v) => setTempPrice(v)}
             min={0}
-            max={10000}
+            max={100000}
             step={500}
             sx={{
               color: "#444",

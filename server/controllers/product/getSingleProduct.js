@@ -1,8 +1,11 @@
+// server/controllers/product/getSingleProduct.js
 import productModel from "../../models/productModel.js";
 
 const getSingleProduct = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id);
+    const { id } = req.params;
+
+    const product = await productModel.findById(id);
 
     if (!product) {
       return res.status(404).json({
@@ -31,11 +34,11 @@ const getSingleProduct = async (req, res) => {
       ];
     }
 
+    // Slug fields (weavingSlug, tagSlugs) are returned as stored and used by admin edit + filters
     return res.json({
       success: true,
       product,
     });
-
   } catch (error) {
     console.error("GET SINGLE PRODUCT ERROR:", error);
     return res.status(500).json({
