@@ -102,6 +102,24 @@ const updateProduct = async (req, res) => {
     }
 
     // -----------------------------
+    // NEW: Weave / Style slugs
+    // -----------------------------
+    if (typeof req.body.weavingSlug === "string") {
+      product.weavingSlug = req.body.weavingSlug.trim();
+    }
+
+    if (req.body.tagSlugs) {
+      try {
+        const parsed = JSON.parse(req.body.tagSlugs);
+        if (Array.isArray(parsed)) {
+          product.tagSlugs = parsed;
+        }
+      } catch (e) {
+        console.log("tagSlugs parse failed — keeping old tagSlugs");
+      }
+    }
+
+    // -----------------------------
     // Other simple fields
     // -----------------------------
     const allowedFields = [
