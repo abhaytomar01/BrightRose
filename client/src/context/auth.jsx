@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { getWishlistAPI } from "../api/wishlist";
-import { useCart } from "./cart";
 
 const AuthContext = createContext();
 
@@ -10,9 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState({ user: null, token: "" });
   const [authAdmin, setAuthAdmin] = useState({ user: null, token: "" });
   const [loading, setLoading] = useState(true);
-
-  // Cart context (used to clear cart on logout)
-  const { clearCart } = useCart();
 
   // -----------------------------------------------------
   // WISHLIST
@@ -86,7 +82,12 @@ export const AuthProvider = ({ children }) => {
       setAuthUser({ user: null, token: "" });
       setWishlist([]);
       delete axios.defaults.headers.common["Authorization"];
-      clearCart(); // ensure cart is cleared when login is reset
+
+      // clear all per-user cart keys on hard reset
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith("brightrose_cart_v1_"))
+        .forEach((k) => localStorage.removeItem(k));
+
       return;
     }
 
@@ -124,8 +125,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("auth_user");
     setAuthUser({ user: null, token: "" });
     setWishlist([]);
-    clearCart(); // clears per-user local cart + hits /cart/clear for logged-in users
     delete axios.defaults.headers.common["Authorization"];
+
+    // Clear any stored carts so next user does not see previous items
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("brightrose_cart_v1_"))
+      .forEach((k) => localStorage.removeItem(k));
   };
 
   // -----------------------------------------------------

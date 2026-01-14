@@ -1,4 +1,4 @@
-// context/cart.jsx
+// src/context/cart.jsx
 import React, {
   createContext,
   useContext,
@@ -16,7 +16,15 @@ const makeKey = (productId, size = "", color = "") =>
   `${productId || ""}::${size || ""}::${color || ""}`;
 
 export const CartProvider = ({ children }) => {
-  const { authUser } = useAuth();
+  // SAFELY access auth; if used outside AuthProvider, authCtx will be undefined
+  let authUser = null;
+  try {
+    const authCtx = useAuth();
+    authUser = authCtx?.authUser || null;
+  } catch {
+    authUser = null;
+  }
+
   const authUserId = authUser?.user?._id || "guest";
   const userId = authUserId;
 
@@ -85,7 +93,7 @@ export const CartProvider = ({ children }) => {
           `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/my-cart`
         );
         const serverItems = (res.data.cartItems || []).map((doc) => ({
-          key: doc.key || doc._id, // backend sets key = Cart _id
+          key: doc.key || doc._id,
           _id: doc.productId,
           name: doc.name,
           price: doc.price,
