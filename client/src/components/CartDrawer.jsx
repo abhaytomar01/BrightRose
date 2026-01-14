@@ -10,7 +10,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
     cartItems = [],
     subtotal = 0,
     totalItems = 0,
-    addToCart,
     updateQuantity,
     removeFromCart,
   } = useCart();
@@ -19,14 +18,12 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
 
   const increase = (item) => {
     const q = item.quantity + 1;
-    addToCart(item, q);
     updateQuantity(item.key, q);
   };
 
   const decrease = (item) => {
     if (item.quantity > 1) {
       const q = item.quantity - 1;
-      addToCart(item, q);
       updateQuantity(item.key, q);
     } else {
       removeFromCart(item.key);
@@ -42,7 +39,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-[999]" onClose={setIsOpen}>
-        
         {/* Overlay */}
         <Transition.Child
           as={Fragment}
@@ -59,7 +55,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
         {/* Drawer */}
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-y-0 right-0 flex max-w-full">
-
             <Transition.Child
               as={Fragment}
               enter="transform transition ease-out duration-300"
@@ -70,7 +65,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
               leaveTo="translate-x-full"
             >
               <Dialog.Panel className="w-screen max-w-md bg-white shadow-xl h-full flex flex-col">
-
                 {/* Header */}
                 <div className="flex justify-between items-center px-6 py-5 border-b">
                   <div className="flex items-center gap-2">
@@ -102,11 +96,11 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                         key={item.key}
                         className="flex justify-between gap-3 pb-5 mb-5 border-b"
                       >
-                        
                         {/* Image */}
                         <img
                           src={item.image}
                           className="w-20 h-24 object-cover rounded-md border"
+                          alt={item.name}
                         />
 
                         {/* Details */}
@@ -119,7 +113,8 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                           )}
 
                           <p className="font-semibold mt-1">
-                            ₹{(item.discountPrice || item.price).toLocaleString()}
+                            ₹
+                            {(item.discountPrice || item.price).toLocaleString()}
                           </p>
 
                           {/* Quantity */}
@@ -144,7 +139,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
 
                 {/* Footer Price Section */}
                 <div className="border-t px-6 py-4 space-y-2">
-
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
                     <span>₹{subtotal.toLocaleString()}</span>
@@ -165,12 +159,10 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     Check out
                   </button>
                 </div>
-
               </Dialog.Panel>
             </Transition.Child>
           </div>
         </div>
-
       </Dialog>
     </Transition.Root>
   );

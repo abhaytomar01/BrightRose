@@ -20,43 +20,44 @@ export default function Checkout() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [shippingInfo, setShippingInfo] = useState(null);
   const [dbOrderId, setDbOrderId] = useState(null);
-  // Add to top states:
+
   const [userAddresses, setUserAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
 
+  // ---------- Load addresses from backend ----------
   useEffect(() => {
-  const loadUserAddresses = async () => {
-    if (!token) return;
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/user/addresses`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+    const loadUserAddresses = async () => {
+      if (!token) return;
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/user/addresses`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      const list = data.addresses || [];
-      setUserAddresses(list);
+        const list = data.addresses || [];
+        setUserAddresses(list);
 
-      if (list.length > 0) {
-        const def = list.find((a) => a.isDefault) || list[0];
-        setSelectedAddressId(def._id);
-        setShippingInfo({
-          address: def.address,
-          city: def.city,
-          state: def.state,
-          pincode: def.pincode,
-          phoneNo: def.phone,
-          name: def.name,
-        });
+        if (list.length > 0) {
+          const def = list.find((a) => a.isDefault) || list[0];
+          setSelectedAddressId(def._id);
+          setShippingInfo({
+            address: def.address,
+            city: def.city,
+            state: def.state,
+            pincode: def.pincode,
+            phoneNo: def.phone,
+            name: def.name,
+          });
+        }
+      } catch (err) {
+        console.error("Load addresses failed:", err);
       }
-    } catch (err) {
-      console.error("Load addresses failed:", err);
-    }
-  };
+    };
 
-  loadUserAddresses();
-}, [token]);
+    loadUserAddresses();
+  }, [token]);
 
-  // ---------- Auth guard: redirect if not logged in ----------
+  // ---------- Auth guard ----------
   useEffect(() => {
     if (!token) {
       localStorage.setItem(
@@ -66,34 +67,6 @@ export default function Checkout() {
       navigate("/login");
     }
   }, [token, navigate, location.pathname]);
-
-  // ---------- Load shipping from localStorage ----------
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("shippingInfo");
-      if (!stored) {
-        navigate("/shipping");
-        return;
-      }
-      const parsed = JSON.parse(stored);
-      if (!parsed?.address || !parsed?.pincode) {
-        navigate("/shipping");
-        return;
-      }
-      setShippingInfo(parsed);
-    } catch {
-      navigate("/shipping");
-    }
-  }, [navigate]);
-
-  // While shippingInfo is loading / redirecting
-  if (!shippingInfo) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading shipping details...</p>
-      </div>
-    );
-  }
 
   // ---------- Safe numeric totals ----------
   const safeSubtotal = Number(subtotal || 0);
@@ -218,7 +191,6 @@ export default function Checkout() {
 
               toast.success("Order placed successfully");
               clearCart();
-              localStorage.removeItem("shippingInfo");
               const userId = authUser?.user?._id || "guest";
               localStorage.removeItem(`brightrose_cart_v1_${userId}`);
 
@@ -263,8 +235,6 @@ export default function Checkout() {
 
   const prevStep = () => setStep((s) => s - 1);
 
-
-
   // ---------- UI ----------
   return (
     <div className="min-h-screen bg-[#fafafa] mt-10 md:mt-20">
@@ -273,65 +243,68 @@ export default function Checkout() {
         <div className="px-6 md:px-12 py-10 border-r">
           {/* STEP 1 */}
           {step === 1 && (
-  <>
-    <h2 className="text-lg font-semibold mb-4">Shipping</h2>
+            <>
+              <h2 className="text-lg font-semibold mb-4">Shipping</h2>
 
-    {/* Saved addresses from account */}
-    <div className="space-y-3 mb-6">
-      {userAddresses.map((addr) => (
-        <label
-          key={addr._id}
-          className="flex items-center p-4 border rounded-md cursor-pointer hover:bg-gray-50"
-        >
-          <input
-            type="radio"
-            name="address"
-            className="mr-3"
-            checked={selectedAddressId === addr._id}
-            onChange={() => {
-              setSelectedAddressId(addr._id);
-              setShippingInfo({
-                address: addr.address,
-                city: addr.city,
-                state: addr.state,
-                pincode: addr.pincode,
-                phoneNo: addr.phone,
-                name: addr.name,
-              });
-            }}
-          />
-          <div>
-            <p className="font-medium">{addr.name}</p>
-            <p>
-              {addr.address}, {addr.city}, {addr.state} – {addr.pincode}
-            </p>
-            <p className="text-sm text-gray-500">Phone: {addr.phone}</p>
-          </div>
-        </label>
-      ))}
+              {/* Saved addresses from account */}
+              <div className="space-y-3 mb-6">
+                {userAddresses.map((addr) => (
+                  <label
+                    key={addr._id}
+                    className="flex items-center p-4 border rounded-md cursor-pointer hover:bg-gray-50"
+                  >
+                    <input
+                      type="radio"
+                      name="address"
+                      className="mr-3"
+                      checked={selectedAddressId === addr._id}
+                      onChange={() => {
+                        setSelectedAddressId(addr._id);
+                        setShippingInfo({
+                          address: addr.address,
+                          city: addr.city,
+                          state: addr.state,
+                          pincode: addr.pincode,
+                          phoneNo: addr.phone,
+                          name: addr.name,
+                        });
+                      }}
+                    />
+                    <div>
+                      <p className="font-medium">{addr.name}</p>
+                      <p>
+                        {addr.address}, {addr.city}, {addr.state} –{" "}
+                        {addr.pincode}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Phone: {addr.phone}
+                      </p>
+                    </div>
+                  </label>
+                ))}
 
-      {userAddresses.length === 0 && (
-        <p className="text-sm">
-          No saved address.{" "}
-          <button
-            onClick={() => navigate("/user/dashboard/address")}
-            className="underline"
-          >
-            Add address in your account
-          </button>
-        </p>
-      )}
-    </div>
+                {userAddresses.length === 0 && (
+                  <p className="text-sm">
+                    No saved address.{" "}
+                    <button
+                      onClick={() => navigate("/user/dashboard/address")}
+                      className="underline"
+                    >
+                      Add address in your account
+                    </button>
+                  </p>
+                )}
+              </div>
 
-    <button
-      onClick={nextStep}
-      disabled={loadingShipping || !selectedAddressId}
-      className="mt-2 w-full bg-black text-white py-4 rounded-md"
-    >
-      {loadingShipping ? "Calculating Shipping..." : "Continue"}
-    </button>
-  </>
-)}
+              <button
+                onClick={nextStep}
+                disabled={loadingShipping || !selectedAddressId}
+                className="mt-2 w-full bg-black text-white py-4 rounded-md"
+              >
+                {loadingShipping ? "Calculating Shipping..." : "Continue"}
+              </button>
+            </>
+          )}
 
           {/* STEP 2 */}
           {step === 2 && (
