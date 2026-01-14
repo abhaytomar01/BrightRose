@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/cart";
+import { useAuth } from "../../../context/auth";
 import { toast } from "react-toastify";
 import SeoData from "../../../SEO/SeoData";
 
@@ -15,15 +16,16 @@ const Cart = () => {
     removeFromCart,
   } = useCart();
 
+  const { authUser } = useAuth();
   const navigate = useNavigate();
 
-  /* Disable Body Scroll When Cart Open */
+  // Disable Body Scroll When Cart Open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "auto");
   }, []);
 
-  /* Close on ESC key */
+  // Close on ESC key
   useEffect(() => {
     const handleEsc = (e) => e.key === "Escape" && navigate(-1);
     window.addEventListener("keydown", handleEsc);
@@ -41,6 +43,16 @@ const Cart = () => {
     } else {
       updateQuantity(item.key, item.quantity - 1);
     }
+  };
+
+  const handleCheckoutClick = () => {
+    if (!authUser?.token) {
+      // remember intent then force login, so per-user cart gets loaded
+      localStorage.setItem("redirectAfterLogin", "/checkout");
+      navigate("/login");
+      return;
+    }
+    navigate("/checkout");
   };
 
   return (
@@ -87,7 +99,10 @@ const Cart = () => {
             </p>
           ) : (
             cartItems.map((item) => (
-              <div key={item.key} className="flex justify-between gap-4">
+              <div
+                key={item.key || item._id} // key should be Cart document id from backend
+                className="flex justify-between gap-4"
+              >
                 <img
                   src={item.image}
                   alt={item.name}
@@ -154,7 +169,7 @@ const Cart = () => {
             </div>
 
             <button
-              onClick={() => navigate("/checkout")}
+              onClick={handleCheckoutClick}
               className="
                 w-full mt-5 py-4 rounded-md
                 bg-[#302f2f] hover:bg-black

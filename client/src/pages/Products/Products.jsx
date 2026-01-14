@@ -78,74 +78,68 @@ const Products = () => {
   }, []);
 
   // Load FILTERED PRODUCTS only when filters change
-  useEffect(() => {
-    // Check if any filter is active
-    const filterIsActive =
-      category ||
-      weave ||
-      style ||
-      debouncedPrice[0] !== 0 ||
-      debouncedPrice[1] !== 100000;
+  // Load FILTERED PRODUCTS only when filters change - This runs AUTOMATICALLY
+useEffect(() => {
+  // Check if any filter is active
+  const filterIsActive =
+    category ||
+    weave ||
+    style ||
+    debouncedPrice[0] !== 0 ||
+    debouncedPrice[1] !== 100000;
 
-    if (!filterIsActive) {
-      // If no filter is active, fetch all products again
-      const fetchAllProducts = async () => {
-        try {
-          setLoading(true);
-          const res = await axios.get(
-            `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
-          );
-          setProducts(res.data.products || []);
-          setProductsCount(res.data.products?.length || 0);
-        } catch (error) {
-          console.error("Failed to load products:", error);
-          toast.error("Failed to load products.");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchAllProducts();
-      return;
-    }
-
-    // If filter is active, fetch filtered products
-    const fetchFiltered = async () => {
+  if (!filterIsActive) {
+    // If no filter is active, fetch all products again
+    const fetchAllProducts = async () => {
       try {
         setLoading(true);
-
-        // Build query params - MATCHING BACKEND EXPECTATIONS
-        const params = {};
-
-        if (category) params.category = category;
-
-        // ✅ FIXED: Send as weavingSlug not weave
-        if (weave) params.weavingSlug = weave;
-
-        // ✅ FIXED: Send as tagSlugs not style
-        if (style) params.tagSlugs = style;
-
-        params.priceMin = debouncedPrice[0];
-        params.priceMax = debouncedPrice[1];
-
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
-          { params }
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
         );
-
         setProducts(res.data.products || []);
         setProductsCount(res.data.products?.length || 0);
       } catch (error) {
-        console.error("Error loading filtered products:", error);
-        toast.error("Failed to load filtered products.");
-        setProducts([]);
-        setProductsCount(0);
+        console.error("Failed to load products:", error);
+        toast.error("Failed to load products.");
       } finally {
         setLoading(false);
       }
     };
+    fetchAllProducts();
+    return;
+  }
 
-    fetchFiltered();
-  }, [debouncedPrice, category, weave, style]);
+  // If filter is active, fetch filtered products
+  const fetchFiltered = async () => {
+    try {
+      setLoading(true);
+
+      const params = {};
+      if (category) params.category = category;
+      if (weave) params.weavingSlug = weave;
+      if (style) params.tagSlugs = style;
+      params.priceMin = debouncedPrice[0];
+      params.priceMax = debouncedPrice[1];
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
+        { params }
+      );
+
+      setProducts(res.data.products || []);
+      setProductsCount(res.data.products?.length || 0);
+    } catch (error) {
+      console.error("Error loading filtered products:", error);
+      toast.error("Failed to load filtered products.");
+      setProducts([]);
+      setProductsCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchFiltered();
+}, [debouncedPrice, category, weave, style]); // ← This triggers automatically when filters change
 
   // Load Wishlist
   useEffect(() => {
@@ -230,12 +224,12 @@ const Products = () => {
             >
               RESET FILTERS
             </button>
-            <button
+            {/* <button
               className="flex-1 bg-black text-white text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-800 transition"
               onClick={() => setShowFilterPopup(false)}
             >
               APPLY FILTERS
-            </button>
+            </button> */}
           </div>
         </div>
       )}
@@ -249,7 +243,7 @@ const Products = () => {
                 <h3 className="font-semibold text-lg">Filters</h3>
                 <button
                   onClick={handleResetFilters}
-                  className="text-xs text-blue-600 hover:text-blue-800 font-medium underline cursor-pointer transition"
+                  className="text-xs text-neutralDark/60 hover:text-neutralDark/80 font-medium underline cursor-pointer transition"
                 >
                   Reset All
                 </button>

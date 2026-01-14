@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { getWishlistAPI } from "../api/wishlist";
+import { useCart } from "./cart";
 
 const AuthContext = createContext();
 
@@ -9,6 +10,9 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState({ user: null, token: "" });
   const [authAdmin, setAuthAdmin] = useState({ user: null, token: "" });
   const [loading, setLoading] = useState(true);
+
+  // Cart context (used to clear cart on logout)
+  const { clearCart } = useCart();
 
   // -----------------------------------------------------
   // WISHLIST
@@ -76,30 +80,31 @@ export const AuthProvider = ({ children }) => {
   // LOGIN USER
   // -----------------------------------------------------
   const loginUser = async (data) => {
-  // allow calling loginUser(null) to clear state if ever needed
-  if (!data || !data.token) {
-    localStorage.removeItem("auth_user");
-    setAuthUser({ user: null, token: "" });
-    setWishlist([]);
-    delete axios.defaults.headers.common["Authorization"];
-    return;
-  }
-
-  setAuthUser(data);
-  localStorage.setItem("auth_user", JSON.stringify(data));
-
-  // instantly apply axios header
-  axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-
-  if (data?.token) {
-    try {
-      const res = await getWishlistAPI(data.token);
-      setWishlist(res.data.wishlist || []);
-    } catch {
+    // allow calling loginUser(null) to clear state if ever needed
+    if (!data || !data.token) {
+      localStorage.removeItem("auth_user");
+      setAuthUser({ user: null, token: "" });
       setWishlist([]);
+      delete axios.defaults.headers.common["Authorization"];
+      clearCart(); // ensure cart is cleared when login is reset
+      return;
     }
-  }
-};
+
+    setAuthUser(data);
+    localStorage.setItem("auth_user", JSON.stringify(data));
+
+    // instantly apply axios header
+    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
+    if (data?.token) {
+      try {
+        const res = await getWishlistAPI(data.token);
+        setWishlist(res.data.wishlist || []);
+      } catch {
+        setWishlist([]);
+      }
+    }
+  };
 
   // -----------------------------------------------------
   // LOGIN ADMIN
@@ -119,6 +124,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("auth_user");
     setAuthUser({ user: null, token: "" });
     setWishlist([]);
+    clearCart(); // clears per-user local cart + hits /cart/clear for logged-in users
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   // -----------------------------------------------------
@@ -127,6 +134,7 @@ export const AuthProvider = ({ children }) => {
   const logoutAdmin = () => {
     localStorage.removeItem("auth_admin");
     setAuthAdmin({ user: null, token: "" });
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   return (
