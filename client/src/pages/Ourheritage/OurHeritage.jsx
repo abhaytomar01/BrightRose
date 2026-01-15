@@ -269,42 +269,44 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
       {[
         {
           num: "I.",
-          text: "We begin with the belief that clothing is not just worn — it is felt. A quiet expression of who you are and where you come from.",
+          head: "ITS INHERENTLY CIRCULAR",
+          text: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
         },
         {
-          num: "II.",
-          text: "Rooted in India’s handloom legacy, Bright Rose exists to celebrate intricate weaves, time-honoured techniques, and the hands that bring them to life",
+          num: "II. ITS HONOURS TIME, NOT SPEED",
+          text: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
         },
         {
-          num: "III.",
-          text: "Each piece is thoughtfully handcrafted, allowing heritage textiles to find new meaning through modern, effortless silhouettes.",
+          num: "III. ITS ROOTED IN LOCAL ECOSYSTEMS",
+          text: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
         },
         {
-          num: "IV.",
-          text: "We design for the woman who moves through the world with intention — grounded in tradition, yet unapologetically contemporary.",
+          num: "IV. ITS EMPOWERS AT GRASSROOT",
+          text: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
         },
         {
-          num: "V.",
-          text: "Our garments are not created for a moment, but for a lifetime — versatile enough to be worn across occasions and years.",
+          num: "V. ITS RESISTS SAMENESS",
+          text: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
         },
         {
-          num: "VI.",
-          text: "We believe true luxury lies in restraint — in details that whisper rather than shout, where craftsmanship speaks louder than excess.",
+          num: "VI. ITS PREDATES AND OUTLIVES TRENDS",
+          text: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
         }
       ].map((item, i) => (
        <div
                   key={i}
-                  className="grid grid-cols-[70px_1fr] md:grid-cols-[720px_1fr] items-center py-10 md:py-14"
+                  className="grid grid-rows-[70px_1fr] md:grid-cols-[720px_1fr] items-center py-10 md:py-14"
                 >
                   {/* Hover Target */}
                   <span
                     onMouseEnter={() => setManifestoImage(item.img)}
                     onMouseLeave={() => setManifestoImage(null)}
                     onMouseMove={handleManifestoMove}
-                    className="font-[manrope] text-[24px] md:text-[34px] cursor-pointer"
+                    className="font-[manrope] text-[18px] md:text-[20px] cursor-pointer"
                   >
-                    {item.num}  
+                    {item.num}  {item.head}
                   </span>
+                  
 
                   <p className="uppercase tracking-[0.18em] text-[10px] md:text-[13px] leading-relaxed max-w-[420px]">
                     {item.text}

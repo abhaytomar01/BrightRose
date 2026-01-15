@@ -1,13 +1,13 @@
 // server/routes/cartRoutes.js
 import express from "express";
-import { requireSignIn } from "../middlewares/authMiddleware.js";
+import { requireSignIn } from "../middleware/authMiddleware.js";
 import {
   getMyCart,
   addToCart,
   updateCartItem,
   removeCartItem,
   clearMyCart,
-} from "../controllers/cart/cartController.js";
+} from "../controllers/product/cartController.js";
 
 const router = express.Router();
 

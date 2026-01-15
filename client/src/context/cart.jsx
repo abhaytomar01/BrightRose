@@ -1,5 +1,6 @@
 // src/context/cart.jsx
-import React, {
+import React,
+{
   createContext,
   useContext,
   useEffect,
@@ -27,6 +28,7 @@ export const CartProvider = ({ children }) => {
 
   const authUserId = authUser?.user?._id || "guest";
   const userId = authUserId;
+  const hasToken = !!authUser?.token && userId !== "guest";
 
   const CART_KEY = `brightrose_cart_v1_${userId}`;
   const SAVE_LATER_KEY = `brightrose_saveLater_v1_${userId}`;
@@ -86,7 +88,7 @@ export const CartProvider = ({ children }) => {
   // For logged-in users, sync cart from server
   useEffect(() => {
     const syncFromServer = async () => {
-      if (!authUser?.token || userId === "guest") return;
+      if (!hasToken) return;
 
       try {
         const res = await axios.get(
@@ -113,7 +115,7 @@ export const CartProvider = ({ children }) => {
     };
 
     syncFromServer();
-  }, [authUser?.token, userId, CART_KEY]);
+  }, [hasToken, CART_KEY]);
 
   // -----------------------------
   // Normalize product structure
@@ -150,6 +152,7 @@ export const CartProvider = ({ children }) => {
 
     const item = normalize(product, qty, opts);
 
+    // Always update local state (guest + logged-in)
     setCartItems((prev) => {
       const idx = prev.findIndex((p) => p.key === item.key);
       const updated = [...prev];
@@ -167,8 +170,8 @@ export const CartProvider = ({ children }) => {
 
     toast.success("Cart updated");
 
-    // sync with server for logged-in users
-    if (authUser?.token && userId !== "guest") {
+    // Sync with server only for logged-in users
+    if (hasToken) {
       try {
         await axios.post(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/add`,
@@ -185,6 +188,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (key, qty) => {
+    // Always update local state
     setCartItems((prev) =>
       prev.map((it) =>
         it.key === key
@@ -193,7 +197,8 @@ export const CartProvider = ({ children }) => {
       )
     );
 
-    if (authUser?.token && userId !== "guest") {
+    // Sync with server only for logged-in users
+    if (hasToken) {
       axios
         .put(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/update/${key}`,
@@ -204,9 +209,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (key) => {
+    // Always update local state
     setCartItems((prev) => prev.filter((it) => it.key !== key));
 
-    if (authUser?.token && userId !== "guest") {
+    // Sync with server only for logged-in users
+    if (hasToken) {
       axios
         .delete(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/remove/${key}`
@@ -247,10 +254,12 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = () => {
+    // Always clear local
     setCartItems([]);
     localStorage.removeItem(CART_KEY);
 
-    if (authUser?.token && userId !== "guest") {
+    // Sync with server only for logged-in users
+    if (hasToken) {
       axios
         .delete(`${import.meta.env.VITE_SERVER_URL}/api/v1/cart/clear`)
         .catch((err) => console.error("CLEAR CART API ERROR:", err));

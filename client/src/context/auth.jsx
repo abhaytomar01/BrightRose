@@ -81,7 +81,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("auth_user");
       setAuthUser({ user: null, token: "" });
       setWishlist([]);
-      delete axios.defaults.headers.common["Authorization"];
 
       // clear all per-user cart keys on hard reset
       Object.keys(localStorage)
@@ -93,9 +92,6 @@ export const AuthProvider = ({ children }) => {
 
     setAuthUser(data);
     localStorage.setItem("auth_user", JSON.stringify(data));
-
-    // instantly apply axios header
-    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
 
     if (data?.token) {
       try {
@@ -113,9 +109,6 @@ export const AuthProvider = ({ children }) => {
   const loginAdmin = (data) => {
     setAuthAdmin(data);
     localStorage.setItem("auth_admin", JSON.stringify(data));
-
-    // instantly apply axios header
-    axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
   };
 
   // -----------------------------------------------------
@@ -125,7 +118,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("auth_user");
     setAuthUser({ user: null, token: "" });
     setWishlist([]);
-    delete axios.defaults.headers.common["Authorization"];
 
     // Clear any stored carts so next user does not see previous items
     Object.keys(localStorage)
@@ -139,7 +131,6 @@ export const AuthProvider = ({ children }) => {
   const logoutAdmin = () => {
     localStorage.removeItem("auth_admin");
     setAuthAdmin({ user: null, token: "" });
-    delete axios.defaults.headers.common["Authorization"];
   };
 
   return (
