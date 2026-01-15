@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import SideFilter from "../../components/ProductListing/SideFilter";
 import ProductListing from "../../components/ProductListing/ProductListing";
-import Spinner from "../../components/Spinner";
 
 const Collection = () => {
   const [products, setProducts] = useState([]);
@@ -11,7 +10,7 @@ const Collection = () => {
   const [loading, setLoading] = useState(true);
 
   // filters
-  const [price, setPrice] = useState([0, 10000]);
+  const [price, setPrice] = useState([0, 100000]);
   const [category, setCategory] = useState("");
   const [weave, setWeave] = useState("");
   const [style, setStyle] = useState("");
@@ -25,22 +24,25 @@ const Collection = () => {
       setLoading(true);
 
       const params = {
-        priceMin: price[0],
-        priceMax: price[1],
-      };
-      if (weave) params.weave = weave;
-      if (style) params.style = style;
-      // category reserved: if backend added later, just add params.category
+  priceMin: price[0],
+  priceMax: price[1],
+};
+if (weave) params.weavingSlug = weave;
+if (style) params.tagSlugs = style;
+if (category) params.category = category;
+
 
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
         { params }
       );
 
-      if (res.data?.success) {
+      if (res.data?.success !== false) {
+        // assume backend returns array in res.data.products
         setProducts(res.data.products || []);
-        setProductsCount(res.data.count || 0);
-        setCurrentPage(1); // reset to first page on every filter change
+        // if backend uses a 'count' field use that, otherwise length
+        setProductsCount(res.data.count ?? (res.data.products?.length || 0));
+        setCurrentPage(1);
       } else {
         setProducts([]);
         setProductsCount(0);
@@ -58,7 +60,7 @@ const Collection = () => {
   useEffect(() => {
     fetchFiltered();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price, weave, style]);
+  }, [price, weave, style, category]);
 
   const handlePageChange = (_, page) => {
     setCurrentPage(page);

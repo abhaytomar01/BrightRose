@@ -111,32 +111,36 @@ useEffect(() => {
 
   // If filter is active, fetch filtered products
   const fetchFiltered = async () => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const params = {};
-      if (category) params.category = category;
-      if (weave) params.weavingSlug = weave;
-      if (style) params.tagSlugs = style;
-      params.priceMin = debouncedPrice[0];
-      params.priceMax = debouncedPrice[1];
+    const params = {};
+    if (category) params.category = category;
 
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
-        { params }
-      );
+    // use slugs on frontend
+    if (weave) params.weavingSlug = weave;
+    if (style) params.tagSlugs = style;
 
-      setProducts(res.data.products || []);
-      setProductsCount(res.data.products?.length || 0);
-    } catch (error) {
-      console.error("Error loading filtered products:", error);
-      toast.error("Failed to load filtered products.");
-      setProducts([]);
-      setProductsCount(0);
-    } finally {
-      setLoading(false);
-    }
-  };
+    params.priceMin = debouncedPrice[0];
+    params.priceMax = debouncedPrice[1];
+
+    const res = await axios.get(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
+      { params }
+    );
+
+    setProducts(res.data.products || []);
+    setProductsCount(res.data.count ?? (res.data.products?.length || 0));
+  } catch (error) {
+    console.error("Error loading filtered products:", error);
+    toast.error("Failed to load filtered products.");
+    setProducts([]);
+    setProductsCount(0);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   fetchFiltered();
 }, [debouncedPrice, category, weave, style]); // ← This triggers automatically when filters change

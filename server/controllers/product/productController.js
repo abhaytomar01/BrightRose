@@ -131,9 +131,10 @@ export const filterProducts = async (req, res) => {
     const {
       weave,
       style,
+      weavingSlug,
+      tagSlugs,
       priceMin = 0,
       priceMax = 100000,
-      // category, color, ratings // reserved for future use
     } = req.query;
 
     const min = Number(priceMin) || 0;
@@ -141,11 +142,13 @@ export const filterProducts = async (req, res) => {
 
     const query = {};
 
-    // WEAVE FILTER
-    if (weave) query.weavingSlug = weave;
+    // WEAVE FILTER (prefer weavingSlug if provided)
+    const weaveValue = weavingSlug || weave;
+    if (weaveValue) query.weavingSlug = weaveValue;
 
-    // STYLE FILTER
-    if (style) query.tagSlugs = { $in: [style] };
+    // STYLE FILTER (prefer tagSlugs if provided)
+    const styleValue = tagSlugs || style;
+    if (styleValue) query.tagSlugs = { $in: [styleValue] };
 
     // PRICE FILTER
     query.price = { $gte: min, $lte: max };
