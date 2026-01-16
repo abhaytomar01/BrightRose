@@ -291,7 +291,36 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         {
           num: "VI. ITS PREDATES AND OUTLIVES TRENDS",
           text: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
-        }
+        },
+        {
+          num: "VII. IT'S CULTURALLY SIGNIFICANT",
+          text: "Our designs are not random. They are rich with symbolism mangoes for -fertility, lotuses for purity, parrots for love. Every motif is civilizational memory, not trend forecasting.",
+        },
+        {
+          num: "VIII. IT DOESN'T RELY ON MACHINES",
+          text: "It relies on memory, on muscle, on mastery. Artisans are the original slow fashion designers. Their skills are honed over decades, passed down generations. This is craft, not commodity.",
+        },
+        {
+          num: "IX. ITS BUILT TO LAST",
+          text: "Handwoven, hand-stitched, hand-dyed, every detail is made to endure. This is generational, not disposable. Local, low carbon, low waste.",
+        },
+        {
+          num: "X. IT'S FASHION THAT FEEL LIKE HOME",
+          text: "In a world obsessed with what's new, Indian craftsmanship reminds us what's true. Slow fashion here is not a buzzword, it's a birthright. Our inheritance",
+        },
+        {
+          num: "XI. INDIAN CRAFTSMANSHIP DOESN'T NEED VALIDATION",
+          text: "It needs visibility. Value. And voices that protect it.",
+        },
+        {
+          num: "XII. SUPPORT INDIAN ARTISANS",
+          text: "Wear your culture with pride. Made in India clothing is not a compromise, it's a reclaiming, a rebellion. It is soil-to-soul style.", 
+        },
+        {
+          num: "XIII. WHEN YOU CHOOSE INDIAN CRAFT AND DESIGN",
+          text: "You don't just wear beauty, you invest in culture and preserve a dynasty. You wear knowledge, resistance, devotion, and home. You choose memory, meaning, mastery - over marketing. You fund futures, woven into fabric",
+        },
+
       ].map((item, i) => (
        <div
                   key={i}
