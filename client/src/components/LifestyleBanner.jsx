@@ -1,5 +1,5 @@
-// src/components/HeroLifestyleSlider.jsx
-import React, { useEffect, useState } from "react";
+// src/components/LifestyleBanner.jsx
+import { useEffect, useState } from "react";
 import abouthebrand from "../assets/images/banners/abouthebrand.jpg";
 
 const slides = [
@@ -43,7 +43,7 @@ const slides = [
 
 const AUTOPLAY_DELAY = 6000;
 
-export default function HeroLifestyleSlider() {
+export default function LifestyleBanner() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
