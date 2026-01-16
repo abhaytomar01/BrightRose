@@ -465,7 +465,10 @@ const fetchWishlistFromServer = async () => {
 
           {/* PRICE */}
           <div>
-            <p className="text-[22px] md:text-[26px] font-light text-neutral-900">₹{product.price}</p>
+            <p className="text-[22px] md:text-[26px] font-light text-neutral-900">
+  ₹{Number(product.price).toLocaleString("en-IN")}
+</p>
+
             <p className="text-[11px] text-neutral-500 mt-1 tracking-wide">(Inclusive of all taxes)</p>
           </div>
 
@@ -699,8 +702,11 @@ Please note that each return or exchange request is considered as an individual 
 
               <div className="p-4 text-center">
                 <p className="text-neutralDark text-sm font-medium line-clamp-1">{item.name}</p>
+                
+               <p className="text-neutralDark/70 text-sm mt-1 font-medium">
+  ₹{Number(item.price).toLocaleString("en-IN")}
+</p>
 
-                <p className="text-neutralDark/70 text-sm mt-1 font-medium">₹{item.price?.toLocaleString()}</p>
               </div>
             </Link>
           ))}

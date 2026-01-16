@@ -1,52 +1,140 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// src/components/HeroLifestyleSlider.jsx
+import React, { useEffect, useState } from "react";
+import aboutthebrand from "../assets/images/banners/abouthebrand.jpg";
 
-const LifestyleBanner = ({
-  title = "The Red Gold Edit — Luxury with Simplicity",
-  buttonText = "Explore the Look",
-  buttonLink = "/collections",
-  imageUrl = "",
-}) => {
+const slides = [
+  {
+    id: 1,
+    title: "ITS INHERENTLY CIRCULAR",
+    subtitle: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
+    imageUrl: aboutthebrand,
+  },
+  {
+    id: 2,
+    title: "ITS HONOURS TIME, NOT SPEED",
+    subtitle: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
+    imageUrl: aboutthebrand, 
+  },
+  {
+    id: 3,
+    title: "ITS ROOTED IN LOCAL ECOSYSTEMS",
+    subtitle: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
+    imageUrl: aboutthebrand,
+  },
+  {
+    id: 4,
+    title: "ITS EMPOWERS AT GRASSROOT",
+    subtitle: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
+    imageUrl: aboutthebrand,
+  },
+  {
+    id: 5,
+    title: "ITS RESISTS SAMENESS",
+    subtitle: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
+    imageUrl: aboutthebrand,
+  },
+  {
+    id: 6,
+    title: "ITS PREDATES AND OUTLIVES TRENDS",
+    subtitle: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
+    imageUrl: aboutthebrand,
+  },
+];
+
+const AUTOPLAY_DELAY = 6000;
+
+export default function HeroLifestyleSlider() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setActive((prev) => (prev + 1) % slides.length),
+      AUTOPLAY_DELAY
+    );
+    return () => clearInterval(id);
+  }, []);
+
+  const next = () => setActive((p) => (p + 1) % slides.length);
+  const prev = () => setActive((p) => (p - 1 + slides.length) % slides.length);
+
   return (
-    <section className="w-full relative bg-pureWhite">
-      {/* Banner Image */}
-      <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] relative overflow-hidden">
-        <img
-          src={imageUrl}
-          alt="Lifestyle Banner"
-          className="w-full h-full object-cover cover brightness-95"
-        />
-
-        {/* Gold + Neutral Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralLight/20 to-neutralDark/40"></div>
-
-        {/* Central Content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-6 mt-20 md:mt-36 text-center">
-          <h2 className="text-white text-lg sm:text-xl md:text-3xl lg:text-6xl font-light mb-6 drop-shadow-lg tracking-tight">
-            {title}
-          </h2>
-
-          <Link
-            to={buttonLink}
-            className="
-              bg-neutralDark/50
-              text-white
-              px-8
-              py-3
-              rounded-lg
-              text-lg
-              font-medium
-              border border-neutralDark/70
-              transition-all duration-300
-              hover:neutralDark/80 hover:shadow-xl
-            "
+    <section className="relative w-full bg-black text-white overflow-hidden">
+      <div className="relative h-[80vh] md:h-[90vh] w-full">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+              index === active
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }`}
           >
-            {buttonText}
-          </Link>
-        </div>
+            {/* Background */}
+            <div className="w-full h-full relative">
+              <img
+                src={slide.imageUrl}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/70" />
+
+              {/* Text content */}
+              <div className="absolute inset-0 flex items-end md:items-center">
+                <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 pb-14 md:pb-0">
+                  <div className="max-w-xl md:max-w-2xl">
+                    <p className="uppercase tracking-[0.25em] text-[11px] md:text-xs text-neutral-300 mb-4">
+                      Bright Rose 
+                    </p>
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-light leading-tight md:leading-[1.1] text-neutral-200">
+                      {slide.title}
+                    </h2>
+                    <p className="mt-4 md:mt-6 text-sm md:text-base text-neutral-200 leading-relaxed">
+                      {slide.subtitle}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Arrows */}
+      <button
+        onClick={prev}
+        className="flex absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/30 backdrop-blur hover:bg-black/60 transition"
+      >
+        ‹
+      </button>
+      <button
+        onClick={next}
+        className="flex absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/30 backdrop-blur hover:bg-black/60 transition"
+      >
+        ›
+      </button>
+
+      {/* Dots */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 md:gap-3">
+        {slides.map((slide, index) => (
+          <button
+            key={slide.id}
+            onClick={() => setActive(index)}
+            className="group flex items-center gap-2"
+          >
+            <span
+              className={`h-[3px] md:h-[4px] rounded-full transition-all duration-300 ${
+                index === active
+                  ? "w-10 md:w-14 bg-white"
+                  : "w-4 md:w-6 bg-white/40 group-hover:bg-white/70"
+              }`}
+            />
+            <span className="hidden md:block text-[10px] uppercase tracking-[0.2em] text-white/60">
+              {`0${index + 1}`}
+            </span>
+          </button>
+        ))}
       </div>
     </section>
   );
-};
-
-export default LifestyleBanner;
+}

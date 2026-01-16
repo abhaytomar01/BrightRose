@@ -175,13 +175,8 @@ const Home = () => {
 
 
 
-    <LifestyleBanner
-        title=""
-        subtitle=""
-        buttonText="Explore the Look"
-        buttonLink="/products"
-        imageUrl={brightrosehome}
-    />
+    <LifestyleBanner />
+
     <WhyChooseUs />
 
 
