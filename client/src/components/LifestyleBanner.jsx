@@ -1,43 +1,47 @@
 // src/components/LifestyleBanner.jsx
 import { useEffect, useState } from "react";
-import abouthebrand from "../assets/images/banners/abouthebrand.jpg";
+import slide1 from "../assets/images/slider1.webp";
+import slide2 from "../assets/images/creative1.jpg";
+import slide3 from "../assets/images/banners/abouthebrand.jpg";
+import slide4 from "../assets/images/slider4.jpg";
+import slide5 from "../assets/images/about2.jpg";
 
 const slides = [
   {
     id: 1,
     title: "ITS INHERENTLY CIRCULAR",
     subtitle: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
-    imageUrl: abouthebrand,
+    imageUrl: slide2,
   },
   {
     id: 2,
     title: "ITS HONOURS TIME, NOT SPEED",
     subtitle: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
-    imageUrl: abouthebrand, 
+    imageUrl: slide1, 
   },
   {
     id: 3,
     title: "ITS ROOTED IN LOCAL ECOSYSTEMS",
     subtitle: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
-    imageUrl: abouthebrand,
+    imageUrl: slide3,
   },
   {
     id: 4,
     title: "ITS EMPOWERS AT GRASSROOT",
     subtitle: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
-    imageUrl: abouthebrand,
+    imageUrl: slide4, 
   },
   {
     id: 5,
     title: "ITS RESISTS SAMENESS",
     subtitle: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
-    imageUrl: abouthebrand,
+    imageUrl: slide1,
   },
   {
     id: 6,
     title: "ITS PREDATES AND OUTLIVES TRENDS",
     subtitle: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
-    imageUrl: abouthebrand,
+    imageUrl: slide5,
   },
 ];  
 
