@@ -20,50 +20,56 @@ const Contact = () => {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
+ // inside Contact component
 
-    // bot protection
-    if (form.honey !== "") return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!captchaToken) {
-      alert("Please verify that you are not a robot.");
-      return;
-    }
+  // bot protection
+  if (form.honey !== "") return;
 
-    setLoading(true);
-
-    try {
-      const res = await axios.post(
-  "https://www.thebrightrose.com/api/v1/contact",
-  {
-    name: form.name,
-    email: form.email,
-    message: form.message,
-    token: captchaToken,   // <-- THIS MUST MATCH BACKEND
-  },
-  {
-    headers: {
-      "Content-Type": "application/json",
-    },
+  if (!captchaToken) {
+    alert("Please verify that you are not a robot.");
+    return;
   }
-);
 
+  setLoading(true);
 
-      if (res.data.success) {
-        setSent(true);
-        setForm({ name: "", email: "", message: "", honey: "" });
-        setCaptchaToken("");
-        setTimeout(() => setSent(false), 5000);
-      } else {
-        alert(res.data.message || "Failed to send message.");
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/contact`, // ✅ use env URL
+      {
+        name: form.name,
+        email: form.email,
+        message: form.message,
+        token: captchaToken, // ✅ matches backend: const { name, email, message, token }
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      alert("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
+    );
+
+    if (res.data.success) {
+      setSent(true);
+      setForm({ name: "", email: "", message: "", honey: "" });
+      setCaptchaToken("");
+      setTimeout(() => setSent(false), 5000);
+    } else {
+      alert(res.data.message || "Failed to send message.");
     }
-  };
+  } catch (error) {
+    console.error(
+      "Contact error:",
+      error?.response?.data || error.message
+    );
+    alert("Something went wrong. Try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
