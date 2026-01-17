@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
 import about1 from "../../assets/images/about1.jpg";
 import creative2 from "../../assets/images/creative2.jpg";
-import ourstory from "../../assets/images/braboutcover.png";
+import ourstory from "../../assets/images/weavecoverphone.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -158,7 +158,8 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         </div>
       </section> */}
 
-     <section className="relative bg-[#fff] py-20 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
+
+  <section className="relative bg-[#fff] pt-20 pb-4 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
 
   {/* Soft Background Accent */}
   <div className="absolute -right-10 top-20 w-[260px] h-[260px] md:w-[340px] md:h-[340px] rounded-full bg-[#CFAF9A]/10 blur-3xl"></div>
@@ -188,14 +189,14 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         of <span className="tracking-wide">INTRICATE WEAVES</span>.
       </p>
 
-      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-8 text-justify">
+      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-2 text-justify">
         Known as the Queen of Flowers, the rose inspires us with its layered petals,
         depth, vibrance, and emotion. Just like every rose is unique, each of our garments
         carries its own soul, bold hues, and distinct character — just like you.
       </p>
 
       {/* Pull Quote Block */}
-      <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
+      {/* <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
         <p className="italic text-neutral-700 text-[12px] md:text-[15px] leading-relaxed text-justify">
           “Our knowledge of weaving is deeply valued within families and passed down
           as tradition. Many artisans master the craft so beautifully that they can
@@ -204,7 +205,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         <p className="not-italic mt-3 text-neutral-700 text-xs md:text-sm font-medium">
           — Master Weaver, Chand (Varanasi)
         </p>
-      </div>
+      </div> */}
     </div>
 
     {/* RIGHT VISUAL STORY PANEL */}
@@ -216,12 +217,12 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
 
         <img 
           src={ourstory}
-          className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[520px] object-cover"
+          className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[580px] object-cover"
           alt="Bright Rose weaving"
         />
 
         {/* Floating Tag */}
-        <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm px-4 py-2 text-[11px] tracking-widest uppercase">
+        <div className="absolute bottom-20 right-0 md:right-2 bg-white/80 backdrop-blur-sm px-4 py-2 text-[11px] tracking-widest uppercase">
           Artisan Made • India
         </div>
 
@@ -261,7 +262,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
   <div className="max-w-[1200px] mx-auto">
 
     {/* CENTER HEADING (PERFECTLY ALIGNED) */}
-    <h2 className="text-center font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-8 md:mb-12">
+    <h2 className="text-center font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-2 md:mb-10">
       OUR STORY
     </h2>
 

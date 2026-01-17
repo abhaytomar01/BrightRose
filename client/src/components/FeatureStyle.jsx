@@ -2,10 +2,10 @@
 
 import React from "react";
 
-import silkpocketdress from "../assets/images/silkpocketdress.jpg";
-import ikkatcollection from "../assets/images/ikkatsilkcorset.jpg";
-import trenchcoat from "../assets/images/silktrenchcoat.jpg";
-import blazertrouser from "../assets/images/blazertrouser.jpg";
+import silkpocketdress from "../assets/images/silkpocketdress.webp";
+import ikkatcollection from "../assets/images/ikkatsilkcorset.webp";
+import trenchcoat from "../assets/images/silktrenchcoat.webp";
+import blazertrouser from "../assets/images/blazertrouser.webp";
 
 const collections = [
   {

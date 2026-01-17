@@ -39,7 +39,7 @@ const slides = [
     subtitle: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
     imageUrl: abouthebrand,
   },
-];
+];  
 
 const AUTOPLAY_DELAY = 6000;
 

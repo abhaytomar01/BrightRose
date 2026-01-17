@@ -1,3 +1,4 @@
+// src/pages/products/Products.jsx
 import Pagination from "@mui/material/Pagination";
 import { useState, useEffect } from "react";
 import Product from "../../components/ProductListing/Product";
@@ -15,18 +16,24 @@ const Products = () => {
   const { auth, isAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
 
+  // --- read all query params ONCE for initial state ---
+  const searchParams = new URLSearchParams(location.search);
+  const initialCategory = searchParams.get("category") || "";
+  const initialWeave = searchParams.get("weave") || "";
+  const initialStyle = searchParams.get("style") || "";
+  const initialPriceMin = searchParams.get("priceMin");
+  const initialPriceMax = searchParams.get("priceMax");
+
   // Filters
-  const [price, setPrice] = useState([0, 100000]);
+  const [price, setPrice] = useState([
+    initialPriceMin ? Number(initialPriceMin) : 0,
+    initialPriceMax ? Number(initialPriceMax) : 100000,
+  ]);
   const [debouncedPrice, setDebouncedPrice] = useState(price);
 
-  const [category, setCategory] = useState(
-    location.search ? location.search.split("=")[1] : ""
-  );
-
-  const queryParams = new URLSearchParams(location.search);
-  const initialWeave = queryParams.get("weave") || "";
+  const [category, setCategory] = useState(initialCategory);
   const [weave, setWeave] = useState(initialWeave);
-  const [style, setStyle] = useState("");
+  const [style, setStyle] = useState(initialStyle);
 
   // Product Data
   const [products, setProducts] = useState([]);
@@ -55,8 +62,24 @@ const Products = () => {
     return () => clearTimeout(handler);
   }, [price]);
 
-  // Load ALL PRODUCTS initially
+  // Load ALL PRODUCTS initially (but skip when query has any filter)
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const hasCategory = !!params.get("category");
+    const hasWeave = !!params.get("weave");
+    const hasStyle = !!params.get("style");
+    const hasPriceMin = params.has("priceMin");
+    const hasPriceMax = params.has("priceMax");
+
+    const anyFilterInUrl =
+      hasCategory || hasWeave || hasStyle || hasPriceMin || hasPriceMax;
+
+    if (anyFilterInUrl) {
+      // let filtered useEffect handle it
+      setLoading(false);
+      return;
+    }
+
     const fetchAllProducts = async () => {
       try {
         setLoading(true);
@@ -75,75 +98,68 @@ const Products = () => {
     };
 
     fetchAllProducts();
-  }, []);
+  }, [location.search]);
 
   // Load FILTERED PRODUCTS only when filters change
-  // Load FILTERED PRODUCTS only when filters change - This runs AUTOMATICALLY
-useEffect(() => {
-  // Check if any filter is active
-  const filterIsActive =
-    category ||
-    weave ||
-    style ||
-    debouncedPrice[0] !== 0 ||
-    debouncedPrice[1] !== 100000;
+  useEffect(() => {
+    const filterIsActive =
+      category ||
+      weave ||
+      style ||
+      debouncedPrice[0] !== 0 ||
+      debouncedPrice[1] !== 100000;
 
-  if (!filterIsActive) {
-    // If no filter is active, fetch all products again
-    const fetchAllProducts = async () => {
+    if (!filterIsActive) {
+      // no filters -> all products
+      const fetchAllProducts = async () => {
+        try {
+          setLoading(true);
+          const res = await axios.get(
+            `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
+          );
+          setProducts(res.data.products || []);
+          setProductsCount(res.data.products?.length || 0);
+        } catch (error) {
+          console.error("Failed to load products:", error);
+          toast.error("Failed to load products.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAllProducts();
+      return;
+    }
+
+    const fetchFiltered = async () => {
       try {
         setLoading(true);
+
+        const params = {};
+        if (category) params.category = category;
+        if (weave) params.weavingSlug = weave;
+        if (style) params.tagSlugs = style;
+        params.priceMin = debouncedPrice[0];
+        params.priceMax = debouncedPrice[1];
+
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
+          { params }
         );
+
         setProducts(res.data.products || []);
-        setProductsCount(res.data.products?.length || 0);
+        setProductsCount(res.data.count ?? (res.data.products?.length || 0));
       } catch (error) {
-        console.error("Failed to load products:", error);
-        toast.error("Failed to load products.");
+        console.error("Error loading filtered products:", error);
+        toast.error("Failed to load filtered products.");
+        setProducts([]);
+        setProductsCount(0);
       } finally {
         setLoading(false);
       }
     };
-    fetchAllProducts();
-    return;
-  }
 
-  // If filter is active, fetch filtered products
-  const fetchFiltered = async () => {
-  try {
-    setLoading(true);
-
-    const params = {};
-    if (category) params.category = category;
-
-    // use slugs on frontend
-    if (weave) params.weavingSlug = weave;
-    if (style) params.tagSlugs = style;
-
-    params.priceMin = debouncedPrice[0];
-    params.priceMax = debouncedPrice[1];
-
-    const res = await axios.get(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
-      { params }
-    );
-
-    setProducts(res.data.products || []);
-    setProductsCount(res.data.count ?? (res.data.products?.length || 0));
-  } catch (error) {
-    console.error("Error loading filtered products:", error);
-    toast.error("Failed to load filtered products.");
-    setProducts([]);
-    setProductsCount(0);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  fetchFiltered();
-}, [debouncedPrice, category, weave, style]); // ← This triggers automatically when filters change
+    fetchFiltered();
+  }, [debouncedPrice, category, weave, style]);
 
   // Load Wishlist
   useEffect(() => {
@@ -217,7 +233,7 @@ useEffect(() => {
             setStyle={setStyle}
           />
 
-          {/* Reset & Apply Buttons */}
+          {/* Reset Button */}
           <div className="flex gap-2 mt-5">
             <button
               className="flex-1 bg-gray-200 text-black text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-300 transition"
@@ -228,12 +244,6 @@ useEffect(() => {
             >
               RESET FILTERS
             </button>
-            {/* <button
-              className="flex-1 bg-black text-white text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-800 transition"
-              onClick={() => setShowFilterPopup(false)}
-            >
-              APPLY FILTERS
-            </button> */}
           </div>
         </div>
       )}

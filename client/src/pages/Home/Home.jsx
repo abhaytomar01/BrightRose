@@ -1,19 +1,11 @@
-import { useAuth } from "../../context/auth";
 import ScrollToTopOnRouteChange from "../../utils/ScrollToTopOnRouteChange";
-// import Categories from "../../components/header/Categories"; 
 import Banner from "./Banner/Banner";
-import CustomOrderWrapper from "./CustomOrderWrapper";
-import custom from "../../assets/images/custom.jpg"
-import { electronicProducts } from "../../utils/electronics";
-import { fashionProducts } from "../../utils/fashion";
 import SeoData from "../../SEO/SeoData";
-import FeaturedCollections from "../../components/FeatureCollection";
 import FeaturedStyle from "../../components/FeatureStyle";
 import FeaturedProducts from "../../components/FeaturedProducts";
 import WhyChooseUs from "../../components/WhyChooseUs"; 
 import LifestyleBanner from "../../components/LifestyleBanner";
-import brightrosehome from "../../assets/images/lastbannerdesktop.jpg";
-import abouthomeimage from "../../assets/images/abouthomeimage.jpg";
+import abouthomeimage from "../../assets/images/abouthomeimage.webp";
 
 const Home = () => {
     return (
