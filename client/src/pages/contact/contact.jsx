@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import SeoData from "../../SEO/SeoData";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
   const [form, setForm] = useState({
@@ -15,7 +15,7 @@ const Contact = () => {
 
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState("");
+  // const [captchaToken, setCaptchaToken] = useState("");
 
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -26,48 +26,48 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   // bot protection
-  if (form.honey !== "") return;
+  // if (form.honey !== "") return;
 
-  if (!captchaToken) {
-    alert("Please verify that you are not a robot.");
-    return;
-  }
+  // if (!captchaToken) {
+  //   alert("Please verify that you are not a robot.");
+  //   return;
+  // }
 
   setLoading(true);
 
-  try {
-    const res = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/contact`, // ✅ use env URL
-      {
-        name: form.name,
-        email: form.email,
-        message: form.message,
-        token: captchaToken, // ✅ matches backend: const { name, email, message, token }
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  // try {
+  //   const res = await axios.post(
+  //     `${import.meta.env.VITE_SERVER_URL}/api/v1/contact`, // ✅ use env URL
+  //     {
+  //       name: form.name,
+  //       email: form.email,
+  //       message: form.message,
+  //       token: captchaToken, // ✅ matches backend: const { name, email, message, token }
+  //     },
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
 
-    if (res.data.success) {
-      setSent(true);
-      setForm({ name: "", email: "", message: "", honey: "" });
-      setCaptchaToken("");
-      setTimeout(() => setSent(false), 5000);
-    } else {
-      alert(res.data.message || "Failed to send message.");
-    }
-  } catch (error) {
-    console.error(
-      "Contact error:",
-      error?.response?.data || error.message
-    );
-    alert("Something went wrong. Try again.");
-  } finally {
-    setLoading(false);
-  }
+  //   if (res.data.success) {
+  //     setSent(true);
+  //     setForm({ name: "", email: "", message: "", honey: "" });
+  //     setCaptchaToken("");
+  //     setTimeout(() => setSent(false), 5000);
+  //   } else {
+  //     alert(res.data.message || "Failed to send message.");
+  //   }
+  // } catch (error) {
+  //   console.error(
+  //     "Contact error:",
+  //     error?.response?.data || error.message
+  //   );
+  //   alert("Something went wrong. Try again.");
+  // } finally {
+  //   setLoading(false);
+  // }
 };
 
 
@@ -188,12 +188,12 @@ const handleSubmit = async (e) => {
             </div>
 
             {/* ⭐ ADD reCAPTCHA CHECKBOX HERE ⭐ */}
-            <div className="flex justify-center my-3">
+            {/* <div className="flex justify-center my-3">
   <ReCAPTCHA
     sitekey="6Ld68z0sAAAAAEuiFdrMMQQc87HF0VsJaW7wo4yR"
     onChange={(token) => setCaptchaToken(token)}
   />
-</div>
+</div> */}
 
 
             <button

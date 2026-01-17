@@ -5,7 +5,9 @@ import axios from "axios";
 // contactController.js
 export const sendContactMessage = async (req, res) => {
   try {
-    const { name, email, message, token } = req.body;
+    // const { name, email, message, token } = req.body;
+    const { name, email, message } = req.body;
+
 
     if (!name || !email || !message) {
       return res
@@ -14,25 +16,25 @@ export const sendContactMessage = async (req, res) => {
     }
 
     // =============== Verify reCAPTCHA ================
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    // const secretKey = process.env.RECAPTCHA_SECRET_KEY;
 
-    const recaptchaVerify = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      null,
-      {
-        params: {
-          secret: secretKey,
-          response: token,
-        },
-      }
-    );
+    // const recaptchaVerify = await axios.post(
+    //   "https://www.google.com/recaptcha/api/siteverify",
+    //   null,
+    //   {
+    //     params: {
+    //       secret: secretKey,
+    //       response: token,
+    //     },
+    //   }
+    // );
 
-    if (!recaptchaVerify.data.success) {
-      return res.status(400).json({
-        success: false,
-        message: "reCAPTCHA verification failed",
-      });
-    }
+    // if (!recaptchaVerify.data.success) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "reCAPTCHA verification failed",
+    //   });
+    // }
 
     // =============== Save to DB ======================
     await Contact.create({
