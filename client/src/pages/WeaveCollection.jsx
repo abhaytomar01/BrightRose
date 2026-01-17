@@ -137,6 +137,7 @@ const WeaveCollection = () => {
                     <img
                       src={sub.image}
                       alt={sub.name}
+                      loading="lazy"
                       className="
                         w-full h-[390px] md:h-[430px] object-cover
                         transition-all duration-[900ms]

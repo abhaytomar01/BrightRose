@@ -219,6 +219,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
           src={ourstory}
           className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[580px] object-cover"
           alt="Bright Rose weaving"
+          loading="lazy"
         />
 
         {/* Floating Tag */}
@@ -255,6 +256,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         src={manifestoImage}
         className="w-[260px] h-[360px] object-cover shadow-2xl"
         alt=""
+        loading="lazy"
       />
     </div>
   )}
@@ -365,6 +367,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
     <img
       src={creative2}
       alt="Bright Rose Collection"
+      loading="lazy"
       className="
         absolute inset-0 w-full h-full object-cover
         transition-all duration-500

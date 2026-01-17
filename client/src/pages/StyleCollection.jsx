@@ -106,6 +106,7 @@ const StyleCollection = () => {
                     <img
                       src={sub.image}
                       alt={sub.name}
+                      loading="lazy"
                       className="w-full h-[520px] sm:h-[380px] md:h-[420px] object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>

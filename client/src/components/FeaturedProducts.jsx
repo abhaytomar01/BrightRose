@@ -131,6 +131,7 @@ const FeaturedProducts = ({
                     <img
                       src={product.image}
                       alt={product.name}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
                     />
                   </div>

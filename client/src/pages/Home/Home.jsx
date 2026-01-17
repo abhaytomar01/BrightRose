@@ -63,6 +63,7 @@ const Home = () => {
   <img
     src={abouthomeimage}
     alt="Bright Rose Story"
+    loading="lazy"
     className="
       absolute inset-0
       w-full h-full 

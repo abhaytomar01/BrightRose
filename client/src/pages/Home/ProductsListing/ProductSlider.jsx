@@ -55,6 +55,7 @@ const ProductSlider = ({ title, products, logo }) => {
                     {logo && (
                         <img
                             src={logo}
+                            loading="lazy"
                             alt="card"
                             className="hidden md:block w-full mt-7"
                         />

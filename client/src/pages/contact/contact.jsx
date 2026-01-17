@@ -77,6 +77,7 @@ const Contact = () => {
     "bespoke couture enquiry"
   ]}
   image="/og-contact.jpg"
+  loading="lazy"
   url="/contact"
 />
     <section className="bg-[#ffffff] min-h-screen pt-28">

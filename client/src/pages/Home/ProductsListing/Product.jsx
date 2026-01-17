@@ -12,6 +12,7 @@ const Product = ({ image, name, offer, tag }) => {
                     className="w-full h-full object-contain"
                     src={image}
                     alt={name}
+                    loading="lazy"
                 />
             </div>
             <h2 className="font-medium text-sm mt-2">{name}</h2>
