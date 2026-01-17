@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import slide1 from "../assets/images/slider1.webp";
 import slide2 from "../assets/images/creative1.jpg";
-import slide3 from "../assets/images/banners/abouthebrand.jpg";
+import slide3 from "../assets/images/slider3.jpg";
 import slide4 from "../assets/images/slider4.jpg";
 import slide5 from "../assets/images/about2.jpg";
 
