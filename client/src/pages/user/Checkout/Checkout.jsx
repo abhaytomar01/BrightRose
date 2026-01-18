@@ -38,7 +38,7 @@ export default function Checkout() {
         setUserAddresses(list);
 
         if (list.length > 0) {
-          const def = list.find((a) => a.isDefault) || list[0];
+          const def = list.find(a => a.isDefault) || list[0];
           setSelectedAddressId(def._id);
           setShippingInfo({
             address: def.address,
@@ -75,10 +75,10 @@ export default function Checkout() {
 
   // ---------- Shipping calculation ----------
   const fetchShippingCharge = async () => {
-    if (!shippingInfo?.pincode) {
-      toast.error("Shipping pincode missing");
-      return;
-    }
+    if (!shippingInfo || !selectedAddressId) {
+  toast.error("Please select a shipping address");
+  return;
+}
 
     setLoadingShipping(true);
     try {
@@ -287,11 +287,14 @@ export default function Checkout() {
                   <p className="text-sm">
                     No saved address.{" "}
                     <button
-                      onClick={() => navigate("/user/dashboard/address")}
-                      className="underline"
-                    >
-                      Add address in your account
-                    </button>
+  onClick={() =>
+    navigate("/user/dashboard/address?redirect=/checkout")
+  }
+  className="underline"
+>
+  Add address in your account
+</button>
+
                   </p>
                 )}
               </div>

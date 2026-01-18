@@ -25,16 +25,6 @@ const userSchema = new mongoose.Schema({
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
 });
 
-// Ensure only one default address
-userSchema.pre('save', function(next) {
-  if (this.addresses && this.addresses.some(a => a.isDefault)) {
-    this.addresses = this.addresses.map(a => ({ ...a, isDefault: false }));
-    const defaultAddr = this.addresses.find(a => a.isDefault);
-    if (defaultAddr) defaultAddr.isDefault = true;
-  }
-  next();
-});
-
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.passwordHash);
 };

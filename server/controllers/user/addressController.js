@@ -43,20 +43,21 @@ export const addAddress = async (req, res) => {
     }
 
     // If user sets new default → remove other defaults
-    if (isDefault) {
-      user.addresses.forEach((a) => (a.default = false));
-    }
+   if (isDefault) {
+  user.addresses.forEach(a => a.isDefault = false);
+}
 
-    user.addresses.push({
-      label: label || "Home",
-      name,
-      phone,
-      address,
-      city,
-      state,
-      pincode,
-      default: !!isDefault
-    });
+user.addresses.push({
+  label: label || "Home",
+  name,
+  phone,
+  address,
+  city,
+  state,
+  pincode,
+  isDefault: !!isDefault
+});
+
 
     await user.save();
 
@@ -91,11 +92,12 @@ export const updateAddress = async (req, res) => {
       return res.status(404).send({ success: false, message: "Address not found" });
 
     // Handle default logic
-    if (updateData.default === true) {
-      user.addresses.forEach((a) => (a.default = false));
-    }
+    if (updateData.isDefault === true) {
+  user.addresses.forEach(a => a.isDefault = false);
+}
 
-    Object.assign(addressItem, updateData);
+Object.assign(addressItem, updateData);
+
 
     await user.save();
 
