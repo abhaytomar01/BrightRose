@@ -10,6 +10,7 @@ export const requireSignIn = async (req, res, next) => {
     const authHeader = req.headers.authorization || "";
 
     if (!authHeader.startsWith("Bearer ")) {
+      console.error("AUTH ERROR: Missing Bearer token");
       return res.status(401).json({
         success: false,
         message: "Authorization token missing",
@@ -40,6 +41,7 @@ export const requireSignIn = async (req, res, next) => {
     const user = await User.findById(decoded._id).select("_id name email role");
 
     if (!user) {
+      console.error("AUTH ERROR: User not found for id:", decoded._id);
       return res.status(401).json({
         success: false,
         message: "User not found",
