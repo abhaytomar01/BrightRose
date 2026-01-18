@@ -141,53 +141,31 @@ export const getAllOrders = async (req, res) => {
     5️⃣ ADMIN – UPDATE ORDER STATUS
 ====================================================== */
 
-
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
 
     const order = await Order.findById(req.params.id);
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+    if (!order)
+      return res.status(404).json({ success: false, message: "Order not found" });
 
-    // 🚨 Prevent duplicate shipment creation
-    const shouldCreateShipment =
-      status === "PACKED" &&
-      !order.shipment?.awb &&
-      order.shippingInfo?.pincode;
+    order.orderStatus = status;
 
-    if (shouldCreateShipment) {
+    // ✅ When admin marks as SHIPPED, create Bluedart shipment if not already created
+    if (status === "SHIPPED" && !order.shipment?.awb) {
       try {
         const shipment = await createBluedartShipment(order);
-
-        order.shipment = {
-          carrier: shipment.carrier || "BLUEDART",
-          awb: shipment.awb,
-          labelUrl: shipment.labelUrl,
-          trackingUrl:
-            shipment.trackingUrl ||
-            `https://www.bluedart.com/tracking?awb=${shipment.awb}`,
-          rawRequest: shipment.rawRequest,
-          rawResponse: shipment.rawResponse,
-        };
-      } catch (shipErr) {
-        console.error("Bluedart shipment failed:", shipErr.message);
-
-        return res.status(500).json({
-          success: false,
-          message:
-            "Order packed but shipment creation failed. Try again.",
-        });
+        order.shipment = shipment; // fills carrier, awb, labelUrl, trackingUrl, rawRequest, rawResponse
+      } catch (e) {
+        console.error("Bluedart shipment error:", e.message);
+        // Option: return error here if you want to block status change
+        // return res.status(500).json({ success: false, message: "Failed to create shipment" });
       }
     }
 
-    // ✅ Update order status
-    order.orderStatus = status;
     await order.save();
+
+    // existing email notifications switch(status) { ... } stays as is
 
     return res.json({
       success: true,
@@ -202,6 +180,7 @@ export const updateOrderStatus = async (req, res) => {
     });
   }
 };
+
 
 
 export const getOrderByIdAdmin = async (req, res) => {

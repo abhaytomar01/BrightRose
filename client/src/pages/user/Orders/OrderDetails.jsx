@@ -49,6 +49,7 @@ const OrderDetails = () => {
     orderStatus,
     createdAt,
     invoicePath,
+    shipment, // ⬅️ comes from orderModel
   } = order;
 
   // map backend enum to Tracker steps
@@ -96,6 +97,37 @@ const OrderDetails = () => {
               ) : (
                 <p className="text-xs text-gray-500">
                   Invoice will be available once the order is processed.
+                </p>
+              )}
+            </div>
+
+            {/* ⭐ Shipping tracking + label */}
+            <div className="mt-4 space-y-1 text-sm">
+              {shipment?.trackingUrl && (
+                <a
+                  href={shipment.trackingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#AD000F] underline hover:text-black transition block"
+                >
+                  Track Shipment
+                </a>
+              )}
+
+              {shipment?.labelUrl && (
+                <a
+                  href={shipment.labelUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#AD000F] underline hover:text-black transition block"
+                >
+                  Download Shipping Label
+                </a>
+              )}
+
+              {shipment?.awb && (
+                <p className="text-xs text-gray-600">
+                  AWB: {shipment.awb}
                 </p>
               )}
             </div>
