@@ -15,7 +15,7 @@ export const createBluedartShipment = async (order) => {
   // Map order to Bluedart request shape (pseudo; adjust to actual WSDL/JSON):
   const totalWeightKg =
     order.products.reduce(
-      (w, p) => w + Number(p.quantity || 0) * 0.5,
+      (w, p) => w + Number(p.quantity || 0) * 1,
       0.5
     );
 

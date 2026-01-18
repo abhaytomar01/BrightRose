@@ -1,7 +1,7 @@
 import axios from "axios";
 import { chargeableWeightKg } from "./weight.js";
 
-export const calculateDelhiveryShipping = async ({ pincode, weightKg = 0.5, dims = {} }) => {
+export const calculateDelhiveryShipping = async ({ pincode, weightKg = 1, dims = {} }) => {
   try {
     // 1. Check pincode serviceability
     const r = await axios.get(

@@ -11,69 +11,41 @@ export const createRazorpayOrder = async (req, res) => {
   try {
     const { amount, cartItems, shippingAddress } = req.body;
 
-    // Basic validation
-    if (!amount || Number(amount) <= 0) {
+    if (!amount || amount <= 0 || !cartItems?.length) {
       return res.status(400).json({
         success: false,
-        message: "Invalid amount",
+        message: "Invalid order data",
       });
     }
 
-    if (!Array.isArray(cartItems) || cartItems.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Cart is empty",
-      });
-    }
-
-    if (
-      !shippingAddress ||
-      !shippingAddress.address ||
-      !shippingAddress.city ||
-      !shippingAddress.state ||
-      !shippingAddress.pincode
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Incomplete shipping address",
-      });
-    }
-
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      console.error("❌ Razorpay keys missing in env");
-      return res.status(500).json({
-        success: false,
-        message: "Payment configuration error",
-      });
-    }
-
-    const totalAmount = Number(amount);
-    const shippingCharge = Number(shippingAddress.shippingCharge || 0);
-    const subtotal = totalAmount - shippingCharge;
-
+    // 1️⃣ Create Razorpay Order
     const razorpayOrder = await razorpay.orders.create({
-      amount: Math.round(totalAmount * 100), // rupees → paise
+      amount: Math.round(amount * 100),
       currency: "INR",
-      receipt: `rcpt_${Date.now()}`,
+      receipt: `br_${Date.now()}`,
     });
 
-    const products = (cartItems || []).map((i) => ({
-      productId: i._id || i.productId,
-      name: i.name,
-      image: i.image,
-      price: i.discountPrice || i.price,
-      quantity: i.quantity,
-      size: i.size,
+    // 2️⃣ MAP CART ITEMS → ORDER PRODUCTS (IMPORTANT FIX)
+    const products = cartItems.map((item) => ({
+      productId: item._id || item.productId,
+      name: item.name,
+      image: item.image,
+      price: Number(item.discountPrice ?? item.price),
+      quantity: Number(item.quantity),
+      size: item.selectedSize || item.size || null, // ✅ FIX
     }));
 
+    // 3️⃣ CREATE ORDER IN DB
     const order = await Order.create({
-      user: req.user?._id || null,
+      user: req.user._id,
       buyer: {
-        name: req.user?.name,
-        email: req.user?.email,
-        phone: shippingAddress?.phoneNo,
+        name: req.user.name,
+        email: req.user.email,
+        phone: shippingAddress.phoneNo,
       },
-      products,
+
+      products, // ✅ FIXED DATA GOES HERE
+
       shippingInfo: {
         address: shippingAddress.address,
         city: shippingAddress.city,
@@ -81,30 +53,32 @@ export const createRazorpayOrder = async (req, res) => {
         pincode: shippingAddress.pincode,
         country: "India",
       },
-      subtotal,
-      shippingCharge,
-      tax: 0,
-      totalAmount,
+
+      subtotal: amount,
+      shippingCharge: shippingAddress.shippingCharge || 0,
+      totalAmount: amount,
+
       paymentInfo: {
         provider: "razorpay",
         orderId: razorpayOrder.id,
         status: "pending",
       },
+
       orderStatus: "PLACED",
     });
 
     return res.status(200).json({
       success: true,
       orderId: razorpayOrder.id,
-      amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
       dbOrderId: order._id,
     });
+
   } catch (err) {
-    console.error("❌ Razorpay create order error:", err);
+    console.error("❌ createRazorpayOrder error:", err);
     return res.status(500).json({
       success: false,
-      message: "Failed to create payment order",
+      message: "Failed to create order",
     });
   }
 };

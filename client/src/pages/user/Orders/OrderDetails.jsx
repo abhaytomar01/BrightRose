@@ -42,14 +42,24 @@ const OrderDetails = () => {
   if (!order) return <p className="p-10">Order not found.</p>;
 
   const {
-    items,
-    address,
-    amount,
+    products,
+    shippingInfo,
+    buyer,
+    totalAmount,
     orderStatus,
     createdAt,
-    invoiceUrl,  // <-- new
-    invoiceId    // <-- new
+    invoicePath,
   } = order;
+
+  // map backend enum to Tracker steps
+  const trackerStep =
+    orderStatus === "DELIVERED"
+      ? 3
+      : orderStatus === "OUT_FOR_DELIVERY"
+      ? 2
+      : orderStatus === "SHIPPED" || orderStatus === "PACKED"
+      ? 1
+      : 0; // PLACED / PAID / default
 
   return (
     <>
@@ -58,25 +68,25 @@ const OrderDetails = () => {
 
       <main className="px-4 sm:px-10 py-10">
         <div className="max-w-4xl mx-auto space-y-6">
-
           {/* Address Block */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold mb-3">Delivery Address</h2>
 
-            <p className="font-medium">{address?.name}</p>
-            <p className="text-sm text-gray-600">{address?.email}</p>
+            <p className="font-medium">{buyer?.name}</p>
+            <p className="text-sm text-gray-600">{buyer?.email}</p>
 
             <p className="text-sm">
-              {address?.address}, {address?.city}, {address?.state} - {address?.pincode}
+              {shippingInfo?.address}, {shippingInfo?.city},{" "}
+              {shippingInfo?.state} - {shippingInfo?.pincode}
             </p>
 
-            <p className="text-sm mt-1">Phone: {address?.phone}</p>
+            <p className="text-sm mt-1">Phone: {buyer?.phone}</p>
 
             {/* ⭐ Invoice Download */}
             <div className="mt-4">
-              {invoiceUrl ? (
+              {invoicePath ? (
                 <a
-                  href={`${import.meta.env.VITE_SERVER_URL}/${invoiceUrl}`}
+                  href={`${import.meta.env.VITE_SERVER_URL}/${invoicePath}`}
                   target="_blank"
                   rel="noreferrer"
                   className="text-[#AD000F] underline text-sm hover:text-black transition"
@@ -89,22 +99,35 @@ const OrderDetails = () => {
                 </p>
               )}
             </div>
+
+            {/* Order amount summary */}
+            <div className="mt-4 text-sm">
+              <p className="font-medium">Order Total: ₹{totalAmount}</p>
+            </div>
           </div>
 
           {/* Items */}
-          {items.map((item) => (
+          {products?.map((item) => (
             <div
-              key={item._id}
+              key={item._id || `${item.productId}-${item.size}`}
               className="bg-white rounded shadow p-6 flex gap-5"
             >
               <img
                 src={item.image}
                 className="w-28 h-28 object-contain"
                 draggable="false"
+                alt={item.name}
               />
               <div>
                 <p className="font-medium text-sm">{item.name}</p>
-                <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
+                {item.size && (
+                  <p className="text-xs text-gray-600">
+                    Size: {item.size}
+                  </p>
+                )}
+                <p className="text-xs text-gray-600">
+                  Qty: {item.quantity}
+                </p>
                 <p className="font-semibold mt-2">
                   ₹{item.quantity * item.price}
                 </p>
@@ -114,18 +137,7 @@ const OrderDetails = () => {
 
           {/* Order Tracker */}
           <div className="bg-white rounded shadow p-6">
-            <Tracker
-              orderOn={createdAt}
-              activeStep={
-                orderStatus === "Delivered"
-                  ? 3
-                  : orderStatus === "Out For Delivery"
-                  ? 2
-                  : orderStatus === "Shipped"
-                  ? 1
-                  : 0
-              }
-            />
+            <Tracker orderOn={createdAt} activeStep={trackerStep} />
           </div>
         </div>
       </main>

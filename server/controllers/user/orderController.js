@@ -2,6 +2,7 @@ import Order from "../../models/orderModel.js";
 import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 import { orderEmails } from "../../services/orderEmailService.js";   // <-- add this at top
+import { createBluedartShipment } from "../../services/bluedartService.js";
 
 
 /* ======================================================
@@ -146,40 +147,53 @@ export const updateOrderStatus = async (req, res) => {
     const { status } = req.body;
 
     const order = await Order.findById(req.params.id);
-    if (!order)
-      return res.status(404).json({ success: false, message: "Order not found" });
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
 
+    // 🚨 Prevent duplicate shipment creation
+    const shouldCreateShipment =
+      status === "PACKED" &&
+      !order.shipment?.awb &&
+      order.shippingInfo?.pincode;
+
+    if (shouldCreateShipment) {
+      try {
+        const shipment = await createBluedartShipment(order);
+
+        order.shipment = {
+          carrier: shipment.carrier || "BLUEDART",
+          awb: shipment.awb,
+          labelUrl: shipment.labelUrl,
+          trackingUrl:
+            shipment.trackingUrl ||
+            `https://www.bluedart.com/tracking?awb=${shipment.awb}`,
+          rawRequest: shipment.rawRequest,
+          rawResponse: shipment.rawResponse,
+        };
+      } catch (shipErr) {
+        console.error("Bluedart shipment failed:", shipErr.message);
+
+        return res.status(500).json({
+          success: false,
+          message:
+            "Order packed but shipment creation failed. Try again.",
+        });
+      }
+    }
+
+    // ✅ Update order status
     order.orderStatus = status;
     await order.save();
-
-    switch (status) {
-      case "PACKED":
-        await orderEmails.packed(order);
-        break;
-
-      case "SHIPPED":
-        await orderEmails.shipped(order);
-        break;
-
-      case "OUT_FOR_DELIVERY":
-        await orderEmails.outForDelivery(order);
-        break;
-
-      case "DELIVERED":
-        await orderEmails.delivered(order);
-        break;
-
-      case "CANCELLED":
-        await orderEmails.cancelled(order);
-        break;
-    }
 
     return res.json({
       success: true,
       message: "Order status updated",
       order,
     });
-
   } catch (err) {
     console.error("UpdateStatus Error:", err);
     return res.status(500).json({
