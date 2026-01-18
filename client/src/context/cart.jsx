@@ -1,6 +1,5 @@
 // src/context/cart.jsx
-import React,
-{
+import React, {
   createContext,
   useContext,
   useEffect,
@@ -10,6 +9,13 @@ import React,
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "./auth";
+import {
+  fetchMyCart,
+  addToCartAPI,
+  updateCartItemAPI,
+  removeCartItemAPI,
+  clearCartAPI,
+} from "../api/cart";
 
 const CartContext = createContext();
 
@@ -28,7 +34,8 @@ export const CartProvider = ({ children }) => {
 
   const authUserId = authUser?.user?._id || "guest";
   const userId = authUserId;
-  const hasToken = !!authUser?.token && userId !== "guest";
+  const token = authUser?.token || "";
+  const hasToken = !!token && userId !== "guest";
 
   const CART_KEY = `brightrose_cart_v1_${userId}`;
   const SAVE_LATER_KEY = `brightrose_saveLater_v1_${userId}`;
@@ -91,10 +98,8 @@ export const CartProvider = ({ children }) => {
       if (!hasToken) return;
 
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/my-cart`
-        );
-        const serverItems = (res.data.cartItems || []).map((doc) => ({
+        const data = await fetchMyCart(token); // ✅ sends Bearer token
+        const serverItems = (data.cartItems || []).map((doc) => ({
           key: doc.key || doc._id,
           _id: doc.productId,
           name: doc.name,
@@ -115,7 +120,7 @@ export const CartProvider = ({ children }) => {
     };
 
     syncFromServer();
-  }, [hasToken, CART_KEY]);
+  }, [hasToken, token, CART_KEY]);
 
   // -----------------------------
   // Normalize product structure
@@ -173,14 +178,11 @@ export const CartProvider = ({ children }) => {
     // Sync with server only for logged-in users
     if (hasToken) {
       try {
-        await axios.post(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/add`,
-          {
-            productId: product._id || product.productId,
-            quantity: qty,
-            size: opts.size || "",
-          }
-        );
+        await addToCartAPI(token, {
+          productId: product._id || product.productId,
+          quantity: qty,
+          size: opts.size || "",
+        }); // ✅ Bearer token
       } catch (err) {
         console.error("ADD CART API ERROR:", err);
       }
@@ -199,12 +201,9 @@ export const CartProvider = ({ children }) => {
 
     // Sync with server only for logged-in users
     if (hasToken) {
-      axios
-        .put(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/update/${key}`,
-          { quantity: qty }
-        )
-        .catch((err) => console.error("UPDATE CART API ERROR:", err));
+      updateCartItemAPI(token, key, { quantity: qty }).catch((err) =>
+        console.error("UPDATE CART API ERROR:", err)
+      );
     }
   };
 
@@ -214,11 +213,9 @@ export const CartProvider = ({ children }) => {
 
     // Sync with server only for logged-in users
     if (hasToken) {
-      axios
-        .delete(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/cart/remove/${key}`
-        )
-        .catch((err) => console.error("REMOVE CART API ERROR:", err));
+      removeCartItemAPI(token, key).catch((err) =>
+        console.error("REMOVE CART API ERROR:", err)
+      );
     }
   };
 
@@ -260,9 +257,9 @@ export const CartProvider = ({ children }) => {
 
     // Sync with server only for logged-in users
     if (hasToken) {
-      axios
-        .delete(`${import.meta.env.VITE_SERVER_URL}/api/v1/cart/clear`)
-        .catch((err) => console.error("CLEAR CART API ERROR:", err));
+      clearCartAPI(token).catch((err) =>
+        console.error("CLEAR CART API ERROR:", err)
+      );
     }
   };
 
