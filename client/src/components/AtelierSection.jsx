@@ -1,5 +1,5 @@
 import React from "react";
-import BRDESKTOP from "../assets/images/BRDESKTOP.png";
+import BRDESKTOP from "../assets/images/BRDESKTOP.webp";
 
 const steps = [
   {

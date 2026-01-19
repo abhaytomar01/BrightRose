@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
-import weavecover from "../assets/images/weavecover.jpg";
+import weavecover from "../assets/images/weavecover.webp";
 import Img1 from "../assets/images/3.jpg";
 import Img2 from "../assets/images/4.jpg";
 import Img3 from "../assets/images/5.jpg";

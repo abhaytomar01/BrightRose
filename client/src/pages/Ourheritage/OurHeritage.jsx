@@ -5,9 +5,8 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
-import about1 from "../../assets/images/about1.jpg";
-import creative2 from "../../assets/images/creative2.jpg";
-import ourstory from "../../assets/images/weavecoverphone.jpg";
+import creative2 from "../../assets/images/creative2.webp";
+import ourstory from "../../assets/images/weavecoverphone.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
