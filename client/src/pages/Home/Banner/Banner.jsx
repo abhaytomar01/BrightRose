@@ -8,6 +8,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import mobileVideo from "../../../assets/images/Banners/video2.mp4";
 import desktopVideo from "../../../assets/images/Banners/video1.mp4";
 import { Link } from "react-router-dom";
+import videocover1 from "../../../assets/images/Banners/videocover1.png";
+import videocover2 from "../../../assets/images/Banners/videocover2.png";
 
 export const PreviousBtn = ({ className, onClick }) => (
   <div
@@ -52,41 +54,41 @@ const Banner = () => {
 
   return (
     <section
-  className="
-    relative w-full overflow-hidden
-    h-[calc(100vh+72px)]
-    min-h-[calc(100svh+72px)]
-    -mt-[72px]
-  "
->
+      className="
+        relative w-full overflow-hidden
+        h-[calc(100vh+72px)]
+        min-h-[calc(100svh+72px)]
+        -mt-[72px]
+      "
+    >
       <Slider
         {...settings}
         className="h-full [&_.slick-list]:h-full [&_.slick-track]:h-full"
       >
         <div className="relative w-full h-[calc(100vh+72px)] min-h-[calc(100svh+72px)]">
-          {/* VIDEO */}
           {/* DESKTOP VIDEO */}
-<video
-  src={desktopVideo}
-  autoPlay
-  loop
-  muted
-  playsInline
-  preload="auto"
-  className="hidden md:block absolute inset-0 w-full h-full object-cover"
-/>
+          <video
+            src={desktopVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster={videocover1} // cover while loading on desktop
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
+          />
 
-{/* MOBILE VIDEO */}
-<video
-  src={mobileVideo}
-  autoPlay
-  loop
-  muted
-  playsInline
-  preload="auto"
-  className="block md:hidden absolute inset-0 w-full h-full object-cover"
-/>
-
+          {/* MOBILE VIDEO */}
+          <video
+            src={mobileVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster={videocover2} // cover while loading on mobile
+            className="block md:hidden absolute inset-0 w-full h-full object-cover"
+          />
 
           {/* GRADIENT */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/15 to-transparent" />
@@ -94,16 +96,16 @@ const Banner = () => {
           {/* CTA */}
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-[12vh] sm:pb-[14vh] text-center text-white z-10">
             <p className="text-[14px] sm:text-[16px] tracking-[0.18em] uppercase mb-5 font-light text-white">
-              Bright Rose Gift 
+              Bright Rose Gift
             </p>
 
             <div className="flex gap-4">
               <button className="px-6 sm:px-8 py-2.5 border bg-white text-black  text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
-               <Link to="/weavecollection"> Shop the Weave</Link>
+                <Link to="/weavecollection">Shop the Weave</Link>
               </button>
 
               <button className="px-6 sm:px-8 py-2.5 border bg-white text-black text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
-                <Link to="/stylecollection"> Shop the Style</Link>
+                <Link to="/stylecollection">Shop the Style</Link>
               </button>
             </div>
           </div>
