@@ -64,11 +64,11 @@ const StyleCollection = () => {
 
       <div className="bg-pureWhite text-neutralDark min-h-screen">
         {/* HERO */}
-        <section className="relative h-[65vh] sm:h-[100vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[65vh] sm:h-[85vh] flex items-center justify-center overflow-hidden">
           <img
             src={stylecover}
             alt="Style Collection Hero"
-            className="absolute inset-0 w-full h-full object-cover brightness-95"
+            className="absolute inset-0 w-full h-full object-cover brightness-85"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60"></div>
 

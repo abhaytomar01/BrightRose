@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
-import weavecover from "../assets/images/weavecover.webp";
+import weavecover from "../assets/images/weavecovernew.jpg";
 import Img1 from "../assets/images/3.jpg";
 import Img2 from "../assets/images/4.jpg";
 import Img3 from "../assets/images/5.jpg";
@@ -84,11 +84,11 @@ const WeaveCollection = () => {
 
       <div className="bg-pureWhite text-neutralDark min-h-screen">
         {/* HERO */}
-        <section className="relative h-[60vh] sm:h-[95vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[60vh] sm:h-[85vh] flex items-center justify-center overflow-hidden">
           <img
             src={weavecover}
             alt="Weave Collection Hero"
-            className="absolute inset-0 w-full h-full object-cover top-0 brightness-95"
+            className="absolute inset-0 w-full h-full object-cover top-0 brightness-85"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60" />
 
