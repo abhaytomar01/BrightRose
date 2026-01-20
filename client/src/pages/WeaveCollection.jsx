@@ -84,7 +84,7 @@ const WeaveCollection = () => {
 
       <div className="bg-pureWhite text-neutralDark min-h-screen">
         {/* HERO */}
-        <section className="relative h-[60vh] sm:h-[68vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[60vh] sm:h-[95vh] flex items-center justify-center overflow-hidden">
           <img
             src={weavecover}
             alt="Weave Collection Hero"

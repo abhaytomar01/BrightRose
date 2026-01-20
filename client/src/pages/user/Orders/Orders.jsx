@@ -91,7 +91,7 @@ const Orders = () => {
                 />
                 <button
                   type="button"
-                  className="px-5 bg-black text-white flex items-center gap-2"
+                  className="px-5 bg-black text-white pt-10 pb-10 flex items-center gap-2"
                 >
                   <Search size={18} />
                   Search

@@ -64,7 +64,7 @@ const StyleCollection = () => {
 
       <div className="bg-pureWhite text-neutralDark min-h-screen">
         {/* HERO */}
-        <section className="relative h-[65vh] sm:h-[65vh] flex items-center justify-center overflow-hidden">
+        <section className="relative h-[65vh] sm:h-[100vh] flex items-center justify-center overflow-hidden">
           <img
             src={stylecover}
             alt="Style Collection Hero"

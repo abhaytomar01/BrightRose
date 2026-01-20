@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
 import creative2 from "../../assets/images/creative2.webp";
-import ourstory from "../../assets/images/weavecoverphone.webp";
+import ourstory from "../../assets/images/braboutcover.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -195,7 +195,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
       </p>
 
       {/* Pull Quote Block */}
-      {/* <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
+       <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
         <p className="italic text-neutral-700 text-[12px] md:text-[15px] leading-relaxed text-justify">
           “Our knowledge of weaving is deeply valued within families and passed down
           as tradition. Many artisans master the craft so beautifully that they can
@@ -204,7 +204,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         <p className="not-italic mt-3 text-neutral-700 text-xs md:text-sm font-medium">
           — Master Weaver, Chand (Varanasi)
         </p>
-      </div> */}
+      </div>
     </div>
 
     {/* RIGHT VISUAL STORY PANEL */}
@@ -263,8 +263,8 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
   <div className="max-w-[1200px] mx-auto">
 
     {/* CENTER HEADING (PERFECTLY ALIGNED) */}
-    <h2 className="text-center font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-2 md:mb-10">
-      OUR STORY
+    <h2 className="text-center uppercase font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-2 md:mb-10">
+      Why Craft Matters
     </h2>
 
     <div className="divide-y divide-neutral-300/70">
