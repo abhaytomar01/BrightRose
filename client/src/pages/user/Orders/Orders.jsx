@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+// src/pages/user/orders/Orders.jsx
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import OrderItem from "./OrderItem";
 import Spinner from "../../../components/Spinner";
@@ -13,10 +14,14 @@ const Orders = () => {
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // always array
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      setOrders([]);
+      return;
+    }
 
     const fetchOrders = async () => {
       try {
@@ -32,6 +37,7 @@ const Orders = () => {
         setOrders(res.data.orders || []);
       } catch (err) {
         console.error("Order fetch error:", err);
+        setOrders([]);
       } finally {
         setLoading(false);
       }
@@ -40,12 +46,30 @@ const Orders = () => {
     fetchOrders();
   }, [token]);
 
-  // Search filter
-  const filteredOrders = orders.filter((o) =>
-    o.items.some((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase())
-    )
+  const safeOrders = useMemo(
+    () => (Array.isArray(orders) ? orders : []),
+    [orders]
   );
+
+  // Flatten orders → order lines, to search & render per product line
+  const lines = useMemo(() => {
+    return safeOrders.flatMap((order) =>
+      (order.products || []).map((item, index) => ({
+        order,
+        item,
+        key: `${order._id}-${item._id || index}`,
+      }))
+    );
+  }, [safeOrders]);
+
+  // Search filter on product name
+  const filteredLines = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return lines;
+    return lines.filter((line) =>
+      (line.item.name || "").toLowerCase().includes(q)
+    );
+  }, [lines, search]);
 
   return (
     <>
@@ -57,7 +81,6 @@ const Orders = () => {
             <Spinner />
           ) : (
             <div className="flex flex-col gap-5 w-full">
-
               {/* Search */}
               <form className="flex items-center w-full sm:w-9/12 bg-white border rounded shadow-sm">
                 <input
@@ -76,7 +99,7 @@ const Orders = () => {
               </form>
 
               {/* Empty */}
-              {filteredOrders.length === 0 && (
+              {filteredLines.length === 0 && (
                 <div className="flex flex-col items-center bg-white p-10 rounded shadow">
                   <img
                     src="https://cdn-icons-png.flaticon.com/512/1376/1376786.png"
@@ -93,13 +116,11 @@ const Orders = () => {
                 </div>
               )}
 
-              {/* Orders List */}
-              {filteredOrders
-                .map((order) =>
-                  order.items.map((item, index) => (
-                    <OrderItem key={index} order={order} item={item} />
-                  ))
-                )
+              {/* Orders List (one card per ordered product) */}
+              {filteredLines
+                .map(({ order, item, key }) => (
+                  <OrderItem key={key} order={order} item={item} />
+                ))
                 .reverse()}
             </div>
           )}

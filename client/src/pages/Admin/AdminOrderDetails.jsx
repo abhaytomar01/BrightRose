@@ -1,51 +1,69 @@
-import { useEffect, useState } from "react";
+// src/pages/Admin/AdminOrderDetails.jsx
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Spinner from "../../components/Spinner";
 import { useAuth } from "../../context/auth";
 
+const STATUS_OPTIONS = [
+  "PLACED",
+  "PAID",
+  "PACKED",
+  "SHIPPED",
+  "OUT_FOR_DELIVERY",
+  "DELIVERED",
+  "CANCELLED",
+];
+
 const AdminOrderDetails = () => {
   const { id } = useParams();
   const { authAdmin } = useAuth();
+  const token = authAdmin?.token;
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch single order details
   const fetchOrder = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/order/${id}`,
         {
-          headers: { Authorization: `Bearer ${authAdmin.token}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-
-      setOrder(res.data.order);
+      setOrder(res.data.order || null);
     } catch (error) {
       console.error("Order detail error:", error);
+      setOrder(null);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (authAdmin?.token) fetchOrder();
+    fetchOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authAdmin?.token]);
+  }, [token, id]);
 
-  // Update order status
   const updateStatus = async (newStatus) => {
+    if (!token) return;
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/order-status/${id}`,
         { status: newStatus },
         {
-          headers: { Authorization: `Bearer ${authAdmin.token}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      if (res.data.success) {
+      if (res.data.success && res.data.order) {
+        setOrder(res.data.order);
+      } else {
         fetchOrder();
       }
     } catch (err) {
@@ -56,15 +74,21 @@ const AdminOrderDetails = () => {
   if (loading) return <Spinner />;
   if (!order) return <p className="p-10">Order not found.</p>;
 
+  const safeProducts = useMemo(
+    () => (Array.isArray(order.products) ? order.products : []),
+    [order.products]
+  );
+
   const {
-    items,
-    address,
+    buyer,
+    shippingInfo,
     paymentInfo,
     orderStatus,
     createdAt,
     totalAmount,
-    invoiceUrl,
+    invoicePath,
     shipment,
+    publicOrderId,
   } = order;
 
   return (
@@ -73,7 +97,7 @@ const AdminOrderDetails = () => {
         {/* Title */}
         <h1 className="text-2xl font-semibold">Order Details</h1>
         <p className="text-sm text-gray-500">
-          Order ID: {order.orderId || order._id}
+          Order ID: {publicOrderId || order._id}
         </p>
         <p className="text-sm text-gray-600">
           Ordered on: {new Date(createdAt).toLocaleString()}
@@ -84,15 +108,15 @@ const AdminOrderDetails = () => {
           <h2 className="font-semibold mb-3">Order Status</h2>
 
           <select
-            className="px-4 py-2 border rounded focus:ring-[#AD000F] focus:outline-none"
+            className="px-4 py-2 border rounded focus:ring-[#AD000F] focus:outline-none text-sm"
             value={orderStatus}
             onChange={(e) => updateStatus(e.target.value)}
           >
-            <option value="Processing">Processing</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Out For Delivery">Out For Delivery</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>
+                {s.replace(/_/g, " ")}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -100,17 +124,17 @@ const AdminOrderDetails = () => {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="font-semibold mb-3">Customer Details</h2>
 
-          <p className="font-medium">{address?.name}</p>
-          <p className="text-sm text-gray-600">{address?.email}</p>
-          <p className="text-sm">{address?.phone}</p>
+          <p className="font-medium">{buyer?.name}</p>
+          <p className="text-sm text-gray-600">{buyer?.email}</p>
+          <p className="text-sm">{buyer?.phone}</p>
         </div>
 
         {/* SHIPPING ADDRESS */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="font-semibold mb-3">Shipping Address</h2>
           <p className="text-sm">
-            {address?.address}, {address?.city}, {address?.state} -{" "}
-            {address?.pincode}
+            {shippingInfo?.address}, {shippingInfo?.city},{" "}
+            {shippingInfo?.state} - {shippingInfo?.pincode}
           </p>
         </div>
 
@@ -119,9 +143,9 @@ const AdminOrderDetails = () => {
           <h2 className="font-semibold mb-4">Items</h2>
 
           <div className="space-y-4">
-            {items.map((i) => (
+            {safeProducts.map((i, idx) => (
               <div
-                key={i._id}
+                key={i._id || `${order._id}-${idx}`}
                 className="flex gap-5 border rounded-lg p-3 bg-gray-50"
               >
                 <img
@@ -132,8 +156,14 @@ const AdminOrderDetails = () => {
 
                 <div className="flex flex-col justify-between">
                   <p className="font-medium">{i.name}</p>
-                  <p className="text-sm text-gray-600">Size: {i.size}</p>
-                  <p className="text-sm text-gray-600">Qty: {i.quantity}</p>
+                  {i.size && (
+                    <p className="text-sm text-gray-600">
+                      Size: {i.size}
+                    </p>
+                  )}
+                  <p className="text-sm text-gray-600">
+                    Qty: {i.quantity}
+                  </p>
                   <p className="font-semibold text-gray-800 mt-2">
                     ₹{i.price * i.quantity}
                   </p>
@@ -210,10 +240,10 @@ const AdminOrderDetails = () => {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="font-semibold mb-3">Invoice</h2>
 
-          {invoiceUrl ? (
+          {invoicePath ? (
             <a
               className="text-[#AD000F] underline hover:text-black transition"
-              href={`${import.meta.env.VITE_SERVER_URL}/${invoiceUrl}`}
+              href={`${import.meta.env.VITE_SERVER_URL}/${invoicePath}`}
               target="_blank"
               rel="noreferrer"
             >
