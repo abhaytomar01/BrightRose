@@ -22,7 +22,7 @@ const WEAVE_OPTIONS = [
 ];
 
 const STYLE_OPTIONS = [
-  { label: "Saree", value: "saree" },
+  { label: "Sarees", value: "sarees" },
   { label: "Dresses", value: "dresses" },
   { label: "Blazers", value: "blazers" },
   { label: "Skirt", value: "skirt" },
