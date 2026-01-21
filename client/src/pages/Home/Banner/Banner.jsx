@@ -101,11 +101,11 @@ const Banner = () => {
 
             <div className="flex gap-4">
               <button className="px-6 sm:px-8 py-2.5 border bg-white text-black  text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
-                <Link to="/weavecollection">Shop the Weave</Link>
+                <Link to="/weavecollection">Weaves Edit</Link>
               </button>
 
               <button className="px-6 sm:px-8 py-2.5 border bg-white text-black text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
-                <Link to="/stylecollection">Shop the Style</Link>
+                <Link to="/stylecollection">Styles Edit</Link>
               </button>
             </div>
           </div>
