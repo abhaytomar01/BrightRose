@@ -9,7 +9,7 @@ import skirtnpants from "../assets/images/skirtndtrouser.jpg";
 import sarees from "../assets/images/saree.jpg";
 import jacketnblazers from "../assets/images/jacket&blazer.jpg";
 import blazers from "../assets/images/blazers.webp";
-import pants from "../assets/images/pants.jpg";
+// import pants from "../assets/images/pants.jpg";
 import ikkatsilkcorset from "../assets/images/ikkatsilkcorset.webp";
 
 /* ------------------------------
@@ -34,12 +34,7 @@ const subcategories = [
     desc: "Contemporary silhouettes with traditional craftsmanship.",
     image: skirtnpants,
   },
-   {
-    name: "Pants",
-    slug: "pants",
-    desc: "Contemporary silhouettes with traditional craftsmanship.",
-    image: pants,
-  },
+  
   {
     name: "Saree",
     slug: "saree",
