@@ -13,12 +13,12 @@ const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
   { label: "Kanchipuram", value: "kanchipuram" },
-  { label: "Banarasi", value: "banarasi" },
+  { label: "Banarasi Brocade", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
-  { label: "Plain", value: "plain" },
-  { label: "Katan", value: "katan" },
-  { label: "Pochampalley", value: "pochampalley" },
-  { label: "Brocade", value: "brocade" },
+  { label: "Handloom Plain", value: "plain" },
+  { label: "Kantha", value: "katan" },
+  { label: "Pochampalley Ikkat", value: "pochampalley" },
+  { label: "Narayanpet", value: "narayanpet" },
 ];
 
 const STYLE_OPTIONS = [

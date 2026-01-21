@@ -21,46 +21,53 @@ import Img10 from "../assets/images/12.jpg";
 ------------------------------ */
 const subcategories = [
   {
+    heritage: "Tamil Nadu Heritage Weave",
     name: "Kanchipuram",
     slug: "kanchipuram",
     desc: "Woven in Tamil Nadu, Kanchipuram silk is known for its rich mulberry silk and contrasting borders. Traditionally crafted for ceremonial wear, each piece reflects centuries of South Indian weaving mastery and enduring grandeur.",
     image: Img1,
   },
   {
-    name: "Katan",
+    heritage: "Bengal Heritage Weave",
+    name: "Kantha",
     slug: "katan",
-    desc: "The Queen of Banarasi Weaves. Among all the fabrics of Banaras, Katan silk reigns supreme. Known as the purest form of Banarasi weaving, Katan is smooth, lustrous, and incredibly strong — making it the perfect canvas for the city's most intricate brocades.",
+    desc: "Every piece of Kantha is one-of-a-kind because there were and still are no strict rules to follow. However, there are certain symbols and motifs that are widely recognized, where each design has a personal charm, shaped by the artist’s unique perspective, style and colour palette.",
     image: Img2,
   },
   {
-    name: "Banarasi",
+    heritage: "Uttar Pradesh Heritage Weave",
+    name: "Banarasi Brocade",
     slug: "banarasi",
-    desc: "A symbol of Indian opulence, Banarasi textiles are woven in Varanasi using fine silk and rich zari. Known for their elaborate motifs and regal finish, they remain timeless heirlooms passed down through generations.",
+    desc: "The Banarasi brocade saw its golden age during Emperor Akhbar’s Mughal rule. The infusion of the Persian designs with Indian motifs, formed the iconic ornate patterns such as the floral vines, creepers, and the timeless paisley design. With this blend of cultures, the Banarasi weaving became a priceless element of the Indian textile history.",
     image: Img5,
   },
   {
-    name: "Pochampalley",
+    heritage: "Telangana Heritage Weave",
+    name: "Pochampalley Ikkat",
     slug: "pochampalley",
     desc: "Hailing from Telangana, Pochampally Ikat is created through a meticulous resist-dyeing process where yarns are dyed before weaving. The precision of its geometric patterns reflects exceptional planning and skill.",
     image: Img7,
   },
   {
+    heritage: "Kashmir Heritage Weave",
     name: "Pashmina",
     slug: "pashmina",
-    desc: "Pashmina weaving dates back centuries and is deeply rooted in the culture of Kashmir. The wool, sourced from the Changthangi goat, is known for its unmatched softness and warmth. Historically, Pashmina shawls were worn by royalty and were considered a symbol of luxury.",
+    desc: "Exquisitely handcrafted, pashmina weave is a wild of imagination for Kashmir’s master embroiderers. The elaborate patterns on the body of Pashmina shawls are inspired by the blossoming beauty of Kashmir valley, its colorful flowers, birds, animals, and medieval art and architecture. Mughal motifs such as floral vines and paintings of rare and exquisite plants and birds are found in plenty on the Kashmiri Pashmina weave.",
     image: Img6,
   },
   {
-    name: "Plain",
+    heritage: "Bihar & Jharkhand Heritage Weave",
+    name: "Handloom Plain",
     slug: "plain",
-    desc: "The simplest structure in different textiles of India. Every weft thread crosses over one warp, then under the next, creating a clean and versatile cloth.",
+    desc: "Handloom weaving is a traditional method where sarees are woven manually using a hand-operated loom. This age-old technique involves the weaver interlacing the warp and weft threads to create intricate patterns and designs. The handloom weaving process is labour-intensive, requiring immense skill and patience.",
     image: Img4,
   },
   {
-    name: "Brocade",
+    heritage: "Andhra Pradesh Heritage Weave",
+    name: "Narayanpet",
     // use the exact slug you use in DB for brocade products
-    slug: "banarasi",
-    desc: "Gadwal textiles are distinguished by their unique structure — cotton bodies woven with pure silk borders and pallavs. Lightweight yet grand, they were traditionally designed for comfort in warm climates without compromising elegance.",
+    slug: "narayanpet",
+    desc: "The pioneers of Narayanpet silk were weavers in the time of Chatrapati Shivaji in 1630 AD who settled in a village of the same name in Andhra Pradesh. It is said that once when Chattrapati Shivaji was traveling across the Narayanpet region, he set up camp at Narayanpet. After camping for a few days, he continued his travels, but he left behind a few weavers.  ",
     image: Img8,
   },
 ];
@@ -161,7 +168,7 @@ const WeaveCollection = () => {
                         text-[10px] text-neutral-500
                       "
                     >
-                      Heritage Weave
+                      {sub.heritage}
                     </p>
 
                     <h3

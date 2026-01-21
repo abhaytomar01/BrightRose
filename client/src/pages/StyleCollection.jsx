@@ -23,9 +23,9 @@ const subcategories = [
     image: jacketnblazers,
   },
   {
-    name: "Blazers",
+    name: "Blazers & Coats",
     slug: "blazers", // must match backend tagSlugs
-    desc: "Tailored elegance crafted with handwoven textiles.",
+    desc: "Sharp, elongated tailoring for statement layering from day to evening.",
     image: blazers,
   },
   {
@@ -56,7 +56,7 @@ const subcategories = [
   {
     name: "Tops",
     slug: "tops",
-    desc: "Structured yet comfortable pieces with artisanal detailing.",
+    desc: "Versatile separates designed to pair seamlessly with your elevated wardrobe.",
     image: corsetndtops,
   },
 ];

@@ -29,19 +29,19 @@ const SideFilter = ({
   const weavesSubcategories = [
     "All",
     "Kanchipuram",
-    "Banarasi",
+    "Banarasi Brocade",
     "Pashmina",
-    "Plain",
-    "Katan",
-    "Pochampalley",
-    "Brocade",
+    "Handloom Plain",
+    "Kantha",
+    "Pochampalley Ikkat",
+    "Narayanpet",
   ];
   const styleSubcategories = [
     "All",
     "Blazers",
     "Skirt",
     "Pants",
-    "Saree",
+    "Sarees",
     "Dresses",
     "Corsets",
     "Tops",
@@ -165,7 +165,7 @@ const SideFilter = ({
             value={tempPrice}
             onChange={(_, v) => setTempPrice(v)}
             min={0}
-            max={100000}
+            max={150000}
             step={500}
             sx={{
               color: "#444",

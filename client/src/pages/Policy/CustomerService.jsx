@@ -19,7 +19,7 @@ Our brand consultants will not only help you decide on garments that are best su
 __________
 <p>You may connect with a representative of our client services team at any time via:<br/>
 
-e-mail: brightrose.India@gmail.com <br/>
+e-mail: brightrose.india@gmail.com <br/>
 whatsapp: +91-9910929099<br/>
 
 </p>
