@@ -14,6 +14,8 @@ import Img7 from "../assets/images/9.jpg";
 import Img8 from "../assets/images/10.jpg";
 import Img9 from "../assets/images/11.jpg";
 import Img10 from "../assets/images/12.jpg";
+import pashmina from "../assets/images/pashmina.jpg";
+import narayanpetImg from "../assets/images/narayanpet.jpg";
 
 /* ------------------------------
    Subcategories with slugs
@@ -53,7 +55,7 @@ const subcategories = [
     name: "Pashmina",
     slug: "pashmina",
     desc: "Exquisitely handcrafted, pashmina weave is a wild of imagination for Kashmir’s master embroiderers. The elaborate patterns on the body of Pashmina shawls are inspired by the blossoming beauty of Kashmir valley, its colorful flowers, birds, animals, and medieval art and architecture. Mughal motifs such as floral vines and paintings of rare and exquisite plants and birds are found in plenty on the Kashmiri Pashmina weave.",
-    image: Img6,
+    image: pashmina,
   },
   {
     heritage: "Bihar & Jharkhand Heritage Weave",
@@ -68,7 +70,7 @@ const subcategories = [
     // use the exact slug you use in DB for brocade products
     slug: "narayanpet",
     desc: "The pioneers of Narayanpet silk were weavers in the time of Chatrapati Shivaji in 1630 AD who settled in a village of the same name in Andhra Pradesh. It is said that once when Chattrapati Shivaji was traveling across the Narayanpet region, he set up camp at Narayanpet. After camping for a few days, he continued his travels, but he left behind a few weavers.  ",
-    image: Img8,
+    image: narayanpetImg,
   },
 ];
 
