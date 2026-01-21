@@ -35,7 +35,7 @@ const userAccountLabel = isUserLoggedIn ? "Account" : "Login";
     }
 
     navigate("/user/wishlist");
-  };
+  };  
 
   /** ======================
    RESPONSIVE CONFIG

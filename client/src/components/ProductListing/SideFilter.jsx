@@ -45,6 +45,8 @@ const SideFilter = ({
     "Dresses",
     "Corsets",
     "Tops",
+    "Jacket",
+    "Shirt",
   ];
 
   /* PRICE — debounce update to parent */

@@ -29,6 +29,8 @@ const STYLE_OPTIONS = [
   { label: "Pants", value: "pants" },
   { label: "Corsets", value: "corsets" },
   { label: "Tops", value: "tops" },
+   { label: "Jacket", value: "jacket" },
+  { label: "Shirt", value: "shirt" },
 ];
 
 

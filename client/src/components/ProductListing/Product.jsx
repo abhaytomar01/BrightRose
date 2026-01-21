@@ -9,9 +9,19 @@ const Product = ({
   name,
   price,
 }) => {
-  return (
+  // Debug – keep while testing
+  console.log("Product _id:", _id);
+  console.log("images:", images);
+  console.log("first image:", images?.[0]);
+  console.log("first image url:", images?.[0]?.url);
 
-    
+  // Safely pick main image
+  const mainImage =
+    images && images.length > 0 && images[0]?.url
+      ? images[0].url
+      : fallbackImage;
+
+  return (
     <motion.div
       className="w-full bg-white overflow-hidden cursor-pointer"
       initial={{ opacity: 0, y: 10 }}
@@ -21,7 +31,8 @@ const Product = ({
       <Link to={`/product/${_id}`}>
         <div className="relative w-full aspect-[3/4] overflow-hidden">
           <img
-            src={images?.[0]?.url || fallbackImage}
+            src={mainImage}
+            loading="lazy"
             className="w-full h-full object-cover transition-all duration-500"
             alt={name}
           />
@@ -39,7 +50,6 @@ const Product = ({
         </p>
       </div>
     </motion.div>
-
   );
 };
 

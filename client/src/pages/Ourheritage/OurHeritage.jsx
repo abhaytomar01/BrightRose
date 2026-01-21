@@ -223,7 +223,7 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
 
         {/* Floating Tag */}
         <div className="absolute bottom-20 right-0 md:right-2 bg-white/80 backdrop-blur-sm px-4 py-2 text-[11px] tracking-widest uppercase">
-          Handwoven India
+          Handwoven in India
         </div>
 
       </div>
