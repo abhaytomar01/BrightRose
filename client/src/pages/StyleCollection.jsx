@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
+
 import stylecover from "../assets/images/stylecover.webp";
 import corsetndtops from "../assets/images/corsetndtops.jpg";
 import dresses from "../assets/images/dresses.webp";
@@ -14,14 +15,16 @@ import jacketnblazers from "../assets/images/jacket&blazer.jpg";
 ------------------------------ */
 const subcategories = [
   {
-    name: "Coats / Blazers",
-    slug: "blazers", // must match backend tagSlugs
+    name: "Jackets / Blazers",
+    // send BOTH style slugs in one query value
+    slug: "jackets,blazers",
     desc: "Tailored elegance crafted with handwoven textiles.",
     image: jacketnblazers,
   },
   {
     name: "Skirt & Pants",
-    slug: "skirt",
+    // if you have separate styles for skirt and pants
+    slug: "skirt,pants",
     desc: "Contemporary silhouettes with traditional craftsmanship.",
     image: skirtnpants,
   },
@@ -39,7 +42,8 @@ const subcategories = [
   },
   {
     name: "Corsets & Tops",
-    slug: "corsets",
+    // if there is a separate style for tops, include both
+    slug: "corsets,tops",
     desc: "Structured yet comfortable pieces with artisanal detailing.",
     image: corsetndtops,
   },
@@ -70,7 +74,7 @@ const StyleCollection = () => {
             alt="Style Collection Hero"
             className="absolute inset-0 w-full h-full object-cover brightness-85"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-neutralDark/30 to-neutralDark/60" />
 
           <motion.div
             initial={{ opacity: 0, y: 35 }}
