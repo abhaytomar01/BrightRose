@@ -1,23 +1,21 @@
-import React, { useState } from "react";
-import { Facebook, Instagram, ChevronDown } from "lucide-react";
+import React from "react";
+import razorpayIcon from "../../assets/images/razorpay-icon.svg";
+import facebook from "../../assets/images/facebook.png";
+import instagram from "../../assets/images/instagram.png";
 
 const FooterSection = ({ title, children }) => {
   return (
     <div className="text-center sm:text-left">
-      {/* Title (same on mobile & desktop) */}
       <h3 className="text-[12px] uppercase tracking-[0.3em] text-neutral-300 mb-4 sm:mb-6 font-light">
         {title}
       </h3>
 
-      {/* Content always visible, just spaced differently on mobile */}
       <div className="sm:block space-y-3">
         {children}
       </div>
     </div>
-    
   );
 };
-
 
 const Footer = () => {
   return (
@@ -119,15 +117,27 @@ const Footer = () => {
           <div className="flex items-center justify-center sm:justify-start gap-6 mt-4">
             <a
               href="https://www.facebook.com/share/16JsCKdwXn/"
-              className="text-neutral-300 hover:text-white transition-colors duration-200"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full overflow-hidden"
             >
-              <Facebook size={20} />
+              <img
+                src={facebook}
+                alt="Facebook"
+                className="h-7 w-8 object-contain"
+              />
             </a>
             <a
               href="https://www.instagram.com/brightrose_india/"
-              className="text-neutral-300 hover:text-white transition-colors duration-200"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full overflow-hidden"
             >
-              <Instagram size={20} />
+              <img
+                src={instagram}
+                alt="Instagram"
+                className="h-8 w-8 object-contain"
+              />
             </a>
           </div>
         </FooterSection>
@@ -138,14 +148,17 @@ const Footer = () => {
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg"
               className="h-6 opacity-80 invert"
+              alt="Visa"
             />
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
               className="h-6 opacity-80 invert"
+              alt="Mastercard"
             />
             <img
-              src="/src/assets/images/razorpay-icon.svg"
+              src={razorpayIcon}
               className="h-6 opacity-80 invert"
+              alt="Razorpay"
             />
           </div>
 

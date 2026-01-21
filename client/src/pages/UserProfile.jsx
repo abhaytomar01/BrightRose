@@ -121,11 +121,11 @@ const UserProfile = () => {
 
         {/* IMAGE */}
         <div className="hidden md:flex justify-center items-start pt-4">
-          <img
+          {/* <img
             src="https://www.dior.com/couture/var/dior/storage/images/horizon/customer-account/my-account/37553058-5-eng-GB/my-account_1440_1200.jpg"
             alt="luxury"
             className="w-[80%] rounded-xl shadow-md object-cover"
-          />
+          /> */}
         </div>
       </div>
 
