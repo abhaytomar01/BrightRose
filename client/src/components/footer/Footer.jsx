@@ -2,6 +2,7 @@ import React from "react";
 import razorpayIcon from "../../assets/images/razorpay-icon.svg";
 import facebook from "../../assets/images/facebook.png";
 import instagram from "../../assets/images/instagram.png";
+import brlogo from "../../assets/images/brlogo.png";
 
 const FooterSection = ({ title, children }) => {
   return (
@@ -9,7 +10,6 @@ const FooterSection = ({ title, children }) => {
       <h3 className="text-[12px] uppercase tracking-[0.3em] text-neutral-300 mb-4 sm:mb-6 font-light">
         {title}
       </h3>
-
       <div className="sm:block space-y-3">
         {children}
       </div>
@@ -20,10 +20,8 @@ const FooterSection = ({ title, children }) => {
 const Footer = () => {
   return (
     <footer className="w-full bg-[#060607] pt-12 pb-10 text-neutral-200">
-      {/* Glow top border */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-40" />
 
-      {/* MAIN FOOTER GRID */}
       <div
         className="
           max-w-[1500px]
@@ -171,9 +169,13 @@ const Footer = () => {
       {/* BRAND SIGNATURE */}
       <div className="max-w-[1500px] mx-auto mt-12 px-6 lg:px-20">
         <div className="border-t border-white/10 pt-6">
-          <h1 className="text-center font-[PlayfairDisplay] text-[16px] md:text-[18px] tracking-[0.4em] text-neutral-100">
-            BRIGHT ROSE
-          </h1>
+          <div className="flex justify-center">
+            <img
+              src={brlogo}
+              className="h-16 object-contain"
+              alt="Bright Rose"
+            />
+          </div>
           <p className="mt-3 text-center text-[11px] text-neutral-400 tracking-[0.22em] uppercase">
             Crafted with intention in India
           </p>
