@@ -12,11 +12,11 @@ const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
-   { label: "Kanchipuram", value: "kanchipuram" },
+    { label: "Kanchipuram", value: "kanchipuram" },
   { label: "Banarasi Brocade", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
   { label: "Handloom Plain", value: "plain" },
-  { label: "Kantha", value: "katan" },
+  { label: "Kantha", value: "kantha" },              // <-- FIX HERE
   { label: "Pochampalley Ikkat", value: "pochampalley" },
   { label: "Narayanpet", value: "narayanpet" },
 ];

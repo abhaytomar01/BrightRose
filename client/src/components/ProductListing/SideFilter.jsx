@@ -27,13 +27,13 @@ const SideFilter = ({
   /* OPTIONS */
   const categories = ["All"];
   const weavesSubcategories = [
-     "All",
+    "All",
   "kanchipuram",
   "banarasi",
   "pashmina",
   "plain",
-  "katan",        // match your WEAVE_OPTIONS value
-  "pochampalley", // match your WEAVE_OPTIONS value
+  "kantha",        // must match WEAVE_OPTIONS
+  "pochampalley",  // must match WEAVE_OPTIONS
   "narayanpet",
   ];
   const styleSubcategories = [
@@ -49,6 +49,11 @@ const SideFilter = ({
   "shirt",
   ];
 
+  const displayWeave = (slug) =>
+  slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+
+const displayStyle = (slug) =>
+  slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
   /* PRICE — debounce update to parent */
   useEffect(() => {
     const t = setTimeout(() => setPrice(tempPrice), 300);
@@ -111,11 +116,11 @@ const SideFilter = ({
         setOpenState={setOpenWeaves}
       />
       <Collapse in={openWeaves}>
-        <ul className="py-2 space-y-1">
+       <ul className="py-2 space-y-1">
   {weavesSubcategories.map((w) => (
     <Option
       key={w}
-      text={w === "All" ? "All" : w.charAt(0).toUpperCase() + w.slice(1)}
+      text={displayWeave(w)}
       isActive={weave === w || (w === "All" && !weave)}
       onClick={() => setWeave(w === "All" ? "" : w)}
     />
@@ -134,7 +139,7 @@ const SideFilter = ({
   {styleSubcategories.map((s) => (
     <Option
       key={s}
-      text={s === "All" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+      text={displayStyle(s)}
       isActive={style === s || (s === "All" && !style)}
       onClick={() => setStyle(s === "All" ? "" : s)}
     />
