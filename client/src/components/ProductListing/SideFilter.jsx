@@ -27,26 +27,26 @@ const SideFilter = ({
   /* OPTIONS */
   const categories = ["All"];
   const weavesSubcategories = [
-    "All",
-    "Kanchipuram",
-    "Banarasi Brocade",
-    "Pashmina",
-    "Handloom Plain",
-    "Kantha",
-    "Pochampalley Ikkat",
-    "Narayanpet",
+     "All",
+  "kanchipuram",
+  "banarasi",
+  "pashmina",
+  "plain",
+  "katan",        // match your WEAVE_OPTIONS value
+  "pochampalley", // match your WEAVE_OPTIONS value
+  "narayanpet",
   ];
   const styleSubcategories = [
-    "All",
-    "Blazers",
-    "Skirt",
-    "Pants",
-    "Sarees",
-    "Dresses",
-    "Corsets",
-    "Tops",
-    "Jacket",
-    "Shirt",
+   "All",
+  "sarees",
+  "dresses",
+  "blazers",
+  "skirt",
+  "pants",
+  "corsets",
+  "tops",
+  "jacket",
+  "shirt",
   ];
 
   /* PRICE — debounce update to parent */
@@ -112,15 +112,15 @@ const SideFilter = ({
       />
       <Collapse in={openWeaves}>
         <ul className="py-2 space-y-1">
-          {weavesSubcategories.map((w) => (
-            <Option
-              key={w}
-              text={w}
-              isActive={weave === w.toLowerCase() || (w === "All" && !weave)}
-              onClick={() => setWeave(w === "All" ? "" : w.toLowerCase())}
-            />
-          ))}
-        </ul>
+  {weavesSubcategories.map((w) => (
+    <Option
+      key={w}
+      text={w === "All" ? "All" : w.charAt(0).toUpperCase() + w.slice(1)}
+      isActive={weave === w || (w === "All" && !weave)}
+      onClick={() => setWeave(w === "All" ? "" : w)}
+    />
+  ))}
+</ul>
       </Collapse>
 
       {/* STYLE */}
@@ -131,15 +131,15 @@ const SideFilter = ({
       />
       <Collapse in={openStyle}>
         <ul className="py-2 space-y-1">
-          {styleSubcategories.map((s) => (
-            <Option
-              key={s}
-              text={s}
-              isActive={style === s.toLowerCase() || (s === "All" && !style)}
-              onClick={() => setStyle(s === "All" ? "" : s.toLowerCase())}
-            />
-          ))}
-        </ul>
+  {styleSubcategories.map((s) => (
+    <Option
+      key={s}
+      text={s === "All" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
+      isActive={style === s || (s === "All" && !style)}
+      onClick={() => setStyle(s === "All" ? "" : s)}
+    />
+  ))}
+</ul>
       </Collapse>
 
       {/* PRICE */}
