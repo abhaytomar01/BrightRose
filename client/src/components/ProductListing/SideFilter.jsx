@@ -26,34 +26,37 @@ const SideFilter = ({
 
   /* OPTIONS */
   const categories = ["All"];
+
   const weavesSubcategories = [
     "All",
-  "kanchipuram",
-  "banarasi",
-  "pashmina",
-  "plain",
-  "kantha",        // must match WEAVE_OPTIONS
-  "pochampalley",  // must match WEAVE_OPTIONS
-  "narayanpet",
+    "kanchipuram",
+    "banarasi",
+    "pashmina",
+    "plain",
+    "kantha",
+    "pochampalley",
+    "narayanpet",
   ];
+
   const styleSubcategories = [
-   "All",
-  "sarees",
-  "dresses",
-  "blazers",
-  "skirt",
-  "pants",
-  "corsets",
-  "tops",
-  "jacket",
-  "shirt",
+    "All",
+    "sarees",
+    "dresses",
+    "blazers",
+    "skirt",
+    "pants",
+    "corsets",
+    "tops",
+    "jacket",
+    "shirt",
   ];
 
   const displayWeave = (slug) =>
-  slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+    slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
 
-const displayStyle = (slug) =>
-  slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+  const displayStyle = (slug) =>
+    slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+
   /* PRICE — debounce update to parent */
   useEffect(() => {
     const t = setTimeout(() => setPrice(tempPrice), 300);
@@ -116,16 +119,25 @@ const displayStyle = (slug) =>
         setOpenState={setOpenWeaves}
       />
       <Collapse in={openWeaves}>
-       <ul className="py-2 space-y-1">
-  {weavesSubcategories.map((w) => (
-    <Option
-      key={w}
-      text={displayWeave(w)}
-      isActive={weave === w || (w === "All" && !weave)}
-      onClick={() => setWeave(w === "All" ? "" : w)}
-    />
-  ))}
-</ul>
+        <ul className="py-2 space-y-1">
+          {weavesSubcategories.map((w) => (
+            <Option
+              key={w}
+              text={displayWeave(w)}
+              isActive={weave === w || (w === "All" && !weave)}
+              onClick={() => {
+                if (w === "All") {
+                  // clear weave only
+                  setWeave("");
+                } else {
+                  // set weave and CLEAR style so only weave is active
+                  setWeave(w);
+                  setStyle("");
+                }
+              }}
+            />
+          ))}
+        </ul>
       </Collapse>
 
       {/* STYLE */}
@@ -136,15 +148,24 @@ const displayStyle = (slug) =>
       />
       <Collapse in={openStyle}>
         <ul className="py-2 space-y-1">
-  {styleSubcategories.map((s) => (
-    <Option
-      key={s}
-      text={displayStyle(s)}
-      isActive={style === s || (s === "All" && !style)}
-      onClick={() => setStyle(s === "All" ? "" : s)}
-    />
-  ))}
-</ul>
+          {styleSubcategories.map((s) => (
+            <Option
+              key={s}
+              text={displayStyle(s)}
+              isActive={style === s || (s === "All" && !style)}
+              onClick={() => {
+                if (s === "All") {
+                  // clear style only
+                  setStyle("");
+                } else {
+                  // set style and CLEAR weave so only style is active
+                  setStyle(s);
+                  setWeave("");
+                }
+              }}
+            />
+          ))}
+        </ul>
       </Collapse>
 
       {/* PRICE */}
@@ -170,8 +191,8 @@ const displayStyle = (slug) =>
             value={tempPrice}
             onChange={(_, v) => setTempPrice(v)}
             min={0}
-            max={150000}
-            step={500}
+            max={200000}
+            step={1000}
             sx={{
               color: "#444",
               "& .MuiSlider-thumb": {
