@@ -293,7 +293,7 @@ useEffect(() => {
   <button
   type="button"
   onClick={() => setIsSearchOpen(true)}
-  className="p-2 rounded-full hover:bg-black/5 transition"
+  className=" rounded-full hover:bg-black/5 transition"
   aria-label="Search"
 >
   <Search size={20} />

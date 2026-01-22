@@ -27,7 +27,7 @@ const Products = () => {
   // Filters
   const [price, setPrice] = useState([
     initialPriceMin ? Number(initialPriceMin) : 0,
-    initialPriceMax ? Number(initialPriceMax) : 100000,
+    initialPriceMax ? Number(initialPriceMax) : 200000,
   ]);
   const [debouncedPrice, setDebouncedPrice] = useState(price);
 
@@ -107,7 +107,7 @@ const Products = () => {
       weave ||
       style ||
       debouncedPrice[0] !== 0 ||
-      debouncedPrice[1] !== 100000;
+      debouncedPrice[1] !== 200000;
 
     if (!filterIsActive) {
       // no filters -> all products
