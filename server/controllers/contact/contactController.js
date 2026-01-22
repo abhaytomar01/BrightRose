@@ -4,6 +4,9 @@ import Contact from "../../models/contactModel.js";
 
 export const sendContactMessage = async (req, res) => {
   try {
+       console.log("CONTACT_EMAIL runtime:", process.env.CONTACT_EMAIL);
+    console.log("CONTACT_EMAIL_PASS runtime:", process.env.CONTACT_EMAIL_PASS);
+    
     const { name, email, message } = req.body;
 
     // basic validation
