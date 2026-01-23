@@ -9,17 +9,20 @@ const Product = ({
   name,
   price,
 }) => {
-  // Debug – keep while testing
-  console.log("Product _id:", _id);
-  console.log("images:", images);
-  console.log("first image:", images?.[0]);
-  console.log("first image url:", images?.[0]?.url);
-
-  // Safely pick main image
+  // Pick main image safely
   const mainImage =
     images && images.length > 0 && images[0]?.url
       ? images[0].url
       : fallbackImage;
+
+  /**
+   * IMPORTANT:
+   * Your backend / CDN should ideally support width params.
+   * If not, this STILL works — browser will reuse the same image.
+   */
+  const image400 = mainImage;
+  const image800 = mainImage;
+  const image1600 = mainImage;
 
   return (
     <motion.div
@@ -29,13 +32,39 @@ const Product = ({
     >
       {/* IMAGE */}
       <Link to={`/product/${_id}`}>
-        <div className="relative w-full aspect-[3/4] overflow-hidden">
-          <img
-            src={mainImage}
-            loading="lazy"
-            className="w-full h-full object-cover transition-all duration-500"
-            alt={name}
-          />
+        <div  className="
+    relative
+    w-full
+    aspect-[3/4]
+    bg-[#dcd6d3]
+    overflow-hidden
+    flex
+    items-start
+  ">
+        <img
+    src={image800}
+    srcSet={`
+      ${image400} 400w,
+      ${image800} 800w,
+      ${image1600} 1600w
+    `}
+    sizes="(max-width: 768px) 50vw,
+           (max-width: 1200px) 33vw,
+           25vw"
+    loading="lazy"
+    decoding="async"
+    alt={name}
+    className="
+      w-full
+      h-full
+      object-contain
+      object-top
+      pt-4
+      transition-transform
+      duration-500
+      hover:scale-[1.03]
+    "
+  />
         </div>
       </Link>
 
