@@ -7,6 +7,8 @@ import { generateInvoicePDF } from "../../utils/invoiceGenerator.js";
 import { sendMail } from "../../utils/mailer.js";
 
 // 1️⃣ CREATE RAZORPAY ORDER
+// server/controllers/payment/paymentController.js
+
 export const createRazorpayOrder = async (req, res) => {
   try {
     const { amount, cartItems, shippingAddress } = req.body;
@@ -25,26 +27,27 @@ export const createRazorpayOrder = async (req, res) => {
       receipt: `br_${Date.now()}`,
     });
 
-    // 2️⃣ MAP CART ITEMS → ORDER PRODUCTS (IMPORTANT FIX)
+    // 2️⃣ Map cart items
     const products = cartItems.map((item) => ({
       productId: item._id || item.productId,
       name: item.name,
       image: item.image,
       price: Number(item.discountPrice ?? item.price),
       quantity: Number(item.quantity),
-      size: item.selectedSize || item.size || null, // ✅ FIX
+      size: item.selectedSize || item.size || null,
     }));
 
-    // 3️⃣ CREATE ORDER IN DB
+    // 3️⃣ Create order in DB (user OR guest)
     const order = await Order.create({
-      user: req.user._id,
+      user: req.user?._id || null,          // guest-safe
+
       buyer: {
-        name: req.user.name,
-        email: req.user.email,
-        phone: shippingAddress.phoneNo,
+        name: shippingAddress?.name || req.user?.name || "",
+        email: shippingAddress?.email || req.user?.email || "",
+        phone: shippingAddress?.phoneNo || "",
       },
 
-      products, // ✅ FIXED DATA GOES HERE
+      products,
 
       shippingInfo: {
         address: shippingAddress.address,
@@ -73,7 +76,6 @@ export const createRazorpayOrder = async (req, res) => {
       currency: razorpayOrder.currency,
       dbOrderId: order._id,
     });
-
   } catch (err) {
     console.error("❌ createRazorpayOrder error:", err);
     return res.status(500).json({
@@ -82,6 +84,7 @@ export const createRazorpayOrder = async (req, res) => {
     });
   }
 };
+
 
 // 2️⃣ VERIFY RAZORPAY PAYMENT
 export const verifyRazorpayPayment = async (req, res) => {

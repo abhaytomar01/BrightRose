@@ -36,7 +36,7 @@ const Product = ({
     relative
     w-full
     aspect-[3/4]
-    bg-[#dcd6d3]
+    bg-[#dfd8d7]
     overflow-hidden
     flex
     items-start

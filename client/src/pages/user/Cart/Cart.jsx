@@ -46,12 +46,7 @@ const Cart = () => {
   };
 
   const handleCheckoutClick = () => {
-    if (!authUser?.token) {
-      // remember intent then force login, so per-user cart gets loaded
-      localStorage.setItem("redirectAfterLogin", "/checkout");
-      navigate("/login");
-      return;
-    }
+    
     navigate("/checkout");
   };
 
