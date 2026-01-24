@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../../context/cart";
 import { useAuth } from "../../../context/auth";
+import upi from "../../../assets/images/upi.svg";
+import visa from "../../../assets/images/visa.svg";
+import mastercard from "../../../assets/images/master.svg";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -49,47 +52,49 @@ export default function Checkout() {
 
   /* ---------------- SHIPPING CALC ---------------- */
   const fetchShippingCharge = async () => {
-    if (
-      !shippingInfo.firstName ||
-      !shippingInfo.lastName ||
-      !shippingInfo.address ||
-      !shippingInfo.city ||
-      !shippingInfo.state ||
-      !shippingInfo.pincode ||
-      !shippingInfo.phone
-    ) {
-      toast.error("Please fill all delivery details");
-      return false;
-    }
+  if (
+    !shippingInfo.firstName ||
+    !shippingInfo.lastName ||
+    !shippingInfo.address ||
+    !shippingInfo.city ||
+    !shippingInfo.state ||
+    !shippingInfo.pincode ||
+    !shippingInfo.phone
+  ) {
+    toast.error("Please fill all delivery details");
+    return null;
+  }
 
-    setLoadingShipping(true);
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
-        {
-          pincode: shippingInfo.pincode,
-          weightKg: cartItems.reduce(
-            (w, i) => w + Number(i.quantity || 0) * 0.5,
-            0.5
-          ),
-          dims: { l: 30, b: 20, h: 10 },
-        }
-      );
-
-      if (res.data?.success) {
-        setShippingCharge(Number(res.data.amount || 0));
-        return true;
-      } else {
-        toast.error("Shipping calculation failed");
-        return false;
+  setLoadingShipping(true);
+  try {
+    const res = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
+      {
+        pincode: shippingInfo.pincode,
+        weightKg: cartItems.reduce(
+          (w, i) => w + Number(i.quantity || 0) * 0.5,
+          0.5
+        ),
+        dims: { l: 30, b: 20, h: 10 },
       }
-    } catch {
-      toast.error("Shipping service unavailable");
-      return false;
-    } finally {
-      setLoadingShipping(false);
+    );
+
+    if (res.data?.success) {
+      const amount = Number(res.data.amount || 0);
+      setShippingCharge(amount); // update UI
+      return amount;             // ✅ return immediately
+    } else {
+      toast.error("Shipping calculation failed");
+      return null;
     }
-  };
+  } catch {
+    toast.error("Shipping service unavailable");
+    return null;
+  } finally {
+    setLoadingShipping(false);
+  }
+};
+
 
   /* ---------------- RAZORPAY ---------------- */
   const loadRazorpay = () =>
@@ -103,59 +108,60 @@ export default function Checkout() {
     });
 
   const handlePayment = async () => {
-    const shippingOk = await fetchShippingCharge();
-    if (!shippingOk) return;
+  const shippingAmount = await fetchShippingCharge();
+  if (shippingAmount === null) return;
 
-    setPaymentProcessing(true);
-    try {
-      const loaded = await loadRazorpay();
-      if (!loaded) return toast.error("Razorpay failed to load");
+  const payableAmount = safeSubtotal + shippingAmount;
 
-      const orderRes = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-        {
-          amount: Math.round(finalTotal),
-          cartItems,
-          shippingAddress: {
-            ...shippingInfo,
-            name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-            phoneNo: shippingInfo.phone,
-            shippingCharge,
-            billingAddress: billingSameAsShipping
-              ? shippingInfo
-              : billingInfo,
-          },
+  setPaymentProcessing(true);
+  try {
+    const loaded = await loadRazorpay();
+    if (!loaded) return toast.error("Razorpay failed to load");
+
+    const orderRes = await axios.post(
+      `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+      {
+        amount: Math.round(payableAmount), // ✅ correct total
+        cartItems,
+        shippingAddress: {
+          ...shippingInfo,
+          name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+          phoneNo: shippingInfo.phone,
+          shippingCharge: shippingAmount,
+          billingAddress: billingSameAsShipping
+            ? shippingInfo
+            : billingInfo,
         },
-        token
-          ? { headers: { Authorization: `Bearer ${token}` } }
-          : {}
-      );
+      },
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    );
 
-      const { orderId, dbOrderId } = orderRes.data;
+    const { orderId, dbOrderId } = orderRes.data;
 
-      const rzp = new window.Razorpay({
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        order_id: orderId,
-        amount: finalTotal * 100,
-        currency: "INR",
-        name: "Bright Rose",
-        handler: async (response) => {
-          await axios.post(
-            `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
-            { ...response, dbOrderId }
-          );
-          clearCart();
-          navigate("/order-success");
-        },
-      });
+    const rzp = new window.Razorpay({
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      order_id: orderId,
+      amount: payableAmount * 100, // ✅ paise
+      currency: "INR",
+      name: "Bright Rose",
+      handler: async (response) => {
+        await axios.post(
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+          { ...response, dbOrderId }
+        );
+        clearCart();
+        navigate("/order-success");
+      },
+    });
 
-      rzp.open();
-    } catch {
-      toast.error("Payment failed");
-    } finally {
-      setPaymentProcessing(false);
-    }
-  };
+    rzp.open();
+  } catch {
+    toast.error("Payment failed");
+  } finally {
+    setPaymentProcessing(false);
+  }
+};
+
 
   /* ---------------- UI ---------------- */
   return (
@@ -298,24 +304,45 @@ export default function Checkout() {
           )}
 
           {/* PAYMENT */}
-          <h2 className="text-lg font-semibold mb-4">Payment</h2>
-          <div className="border rounded p-4 mb-6">
-            Razorpay Secure (UPI, Cards, Wallets)
-          </div>
+          {/* PAYMENT */}
+<h2 className="text-lg font-semibold mb-2">Payment</h2>
+<p className="text-sm text-gray-500 mb-3">
+  All transactions are secure and encrypted.
+</p>
 
-          <button
+<div className="border border-blue-600 rounded-lg overflow-hidden mb-6">
+  <div className="flex items-center justify-between p-4 bg-blue-50">
+    <span className="text-sm font-medium">
+      Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)
+    </span>
+
+    <div className="flex items-center gap-2">
+      <img src={upi} alt="UPI" className="h-5" />
+      <img src={visa} alt="Visa" className="h-5" />
+      <img src={mastercard} alt="Mastercard" className="h-5" />
+      <span className="text-xs border px-2 py-0.5 rounded">+17</span>
+    </div>
+  </div>
+
+  <div className="p-4 text-sm text-gray-600 bg-white">
+    You'll be redirected to Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)
+    to complete your purchase.
+  </div>
+   <button
             onClick={handlePayment}
             disabled={paymentProcessing}
             className="w-full bg-blue-600 text-white py-4 rounded text-lg"
           >
             {paymentProcessing ? "Processing..." : "Pay now"}
           </button>
+</div>
+
 
           {/* POLICIES */}
           <div className="text-sm text-gray-500 mt-6 space-x-3 mb-6">
-            <Link to="/refund-policy" className="underline">Refund policy</Link>
-            <Link to="/shipping-policy" className="underline">Shipping</Link>
-            <Link to="/privacy-policy" className="underline">Privacy policy</Link>
+            <Link to="/exchange-return" className="underline">Exchange/Return policy</Link>
+            <Link to="/exchange-return" className="underline">Shipping</Link>
+            <Link to="/privacy" className="underline">Privacy policy</Link>
             <Link to="/terms" className="underline">Terms of service</Link>
             <Link to="/contact" className="underline">Contact</Link>
           </div>
