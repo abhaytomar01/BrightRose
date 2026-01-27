@@ -30,9 +30,7 @@ const AdminOrders = () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/orders`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setOrders(res.data.orders || []);
     } catch (err) {
@@ -45,11 +43,18 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [token]);
+
+  // ✅ MUST be before any return
+  const safeOrders = useMemo(
+    () => (Array.isArray(orders) ? orders : []),
+    [orders]
+  );
 
   const updateStatus = async (orderId, status) => {
     if (!token) return;
+
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/order-status/${orderId}`,
@@ -57,13 +62,11 @@ const AdminOrders = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (res.data.success && res.data.order) {
-        const updated = res.data.order;
+      if (res.data?.success && res.data?.order) {
         setOrders((prev) =>
-          prev.map((o) => (o._id === updated._id ? updated : o))
+          prev.map((o) => (o._id === res.data.order._id ? res.data.order : o))
         );
       } else {
-        // fallback: full refetch
         fetchOrders();
       }
     } catch (error) {
@@ -72,11 +75,6 @@ const AdminOrders = () => {
   };
 
   if (loading) return <Spinner />;
-
-  const safeOrders = useMemo(
-    () => (Array.isArray(orders) ? orders : []),
-    [orders]
-  );
 
   return (
     <div className="p-6">
@@ -87,166 +85,48 @@ const AdminOrders = () => {
       ) : (
         <div className="flex flex-col gap-6">
           {safeOrders.map((o) => (
-            <div
-              key={o._id}
-              className="bg-white border rounded-lg shadow-md p-5"
-            >
-              {/* Order Header */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+            <div key={o._id} className="bg-white border rounded-lg shadow-md p-5">
+              {/* Header */}
+              <div className="flex justify-between mb-3">
                 <div>
-                  <p className="text-sm text-gray-600">Order ID</p>
-                  <p className="font-semibold text-lg">
+                  <p className="text-sm text-gray-500">
                     {o.publicOrderId || o._id}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs">
                     {new Date(o.createdAt).toLocaleString()}
                   </p>
-                  <p className="text-sm text-gray-500">
-                    {o.buyer?.name} · {o.buyer?.phone}
-                  </p>
                 </div>
 
-                <div className="mt-1 md:mt-0">
-                  <label className="text-sm font-medium">
-                    Update Status:
-                  </label>
-                  <select
-                    className="ml-2 px-3 py-2 border rounded text-sm"
-                    value={o.orderStatus}
-                    onChange={(e) => updateStatus(o._id, e.target.value)}
-                  >
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s} value={s}>
-                        {s.replace(/_/g, " ")}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Customer Info */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <p className="font-medium">Customer Details</p>
-                <p className="text-sm mt-1">{o.buyer?.name}</p>
-                <p className="text-sm">{o.buyer?.email}</p>
-                <p className="text-sm">{o.buyer?.phone}</p>
-              </div>
-
-              {/* Address */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <p className="font-medium">Address</p>
-                <p className="text-sm mt-1">
-                  {o.shippingInfo?.address}, {o.shippingInfo?.city},{" "}
-                  {o.shippingInfo?.state} - {o.shippingInfo?.pincode}
-                </p>
-              </div>
-
-              {/* Order Items */}
-              <div>
-                <p className="font-medium mb-2">Items</p>
-                <div className="space-y-4">
-                  {(o.products || []).map((i, idx) => (
-                    <div
-                      key={i._id || `${o._id}-${idx}`}
-                      className="flex gap-4 border rounded p-3 bg-gray-50"
-                    >
-                      <img
-                        src={i.image}
-                        className="w-20 h-20 object-contain rounded"
-                        draggable="false"
-                      />
-                      <div>
-                        <p className="font-medium text-sm">{i.name}</p>
-                        {i.size && (
-                          <p className="text-xs">Size: {i.size}</p>
-                        )}
-                        <p className="text-xs">Qty: {i.quantity}</p>
-                        <p className="font-semibold mt-1">
-                          ₹{i.price * i.quantity}
-                        </p>
-                      </div>
-                    </div>
+                <select
+                  value={o.orderStatus}
+                  onChange={(e) => updateStatus(o._id, e.target.value)}
+                  className="border px-3 py-2 rounded text-sm"
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>
+                      {s.replace(/_/g, " ")}
+                    </option>
                   ))}
-                </div>
+                </select>
               </div>
 
-              {/* Payment & Total */}
-              <div className="flex justify-between items-center mt-5 py-3 border-t">
-                <div>
-                  <p className="text-sm text-gray-600">Payment</p>
-                  <p className="font-medium text-sm">
-                    {o.paymentInfo?.status === "paid"
-                      ? "Paid (Online)"
-                      : "Cash on Delivery"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-600">Total Amount</p>
-                  <p className="font-semibold text-lg">
-                    ₹{o.totalAmount}
-                  </p>
-                </div>
-              </div>
-
-              {/* Shipment (Bluedart) */}
-              {o.shipment?.awb && (
-                <div className="mt-4 border-t pt-3">
-                  <p className="text-sm text-gray-600">Shipment</p>
-                  <p className="text-sm">
-                    Carrier:{" "}
-                    <span className="font-medium">
-                      {o.shipment.carrier || "Bluedart"}
-                    </span>
-                  </p>
-                  <p className="text-sm">
-                    AWB:{" "}
-                    <span className="font-medium">
-                      {o.shipment.awb}
-                    </span>
-                  </p>
-                  <div className="mt-1 flex flex-wrap gap-3">
-                    {o.shipment.trackingUrl && (
-                      <a
-                        href={o.shipment.trackingUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-blue-600 underline"
-                      >
-                        Track on Bluedart
-                      </a>
-                    )}
-                    {o.shipment.labelUrl && (
-                      <a
-                        href={`${import.meta.env.VITE_SERVER_URL}/${o.shipment.labelUrl}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs text-[#AD000F] underline"
-                      >
-                        Download Shipping Label
-                      </a>
-                    )}
+              {/* Items */}
+              {(o.products || []).map((i, idx) => (
+                <div
+                  key={i._id || `${o._id}-${idx}`}
+                  className="flex gap-4 border rounded p-3 mb-2"
+                >
+                  <img src={i.image} className="w-20 h-20 object-contain" />
+                  <div>
+                    <p className="font-medium">{i.name}</p>
+                    {i.size && <p className="text-xs">Size: {i.size}</p>}
+                    <p className="text-xs">Qty: {i.quantity}</p>
+                    <p className="font-semibold">
+                      ₹{i.price * i.quantity}
+                    </p>
                   </div>
                 </div>
-              )}
-
-              {/* Invoice Download */}
-              <div className="mt-4">
-                {o.invoicePath ? (
-                  <a
-                    href={`${import.meta.env.VITE_SERVER_URL}/${o.invoicePath}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#AD000F] underline hover:text-black transition text-sm"
-                  >
-                    Download Invoice (PDF)
-                  </a>
-                ) : (
-                  <p className="text-xs text-gray-500">
-                    Invoice will be generated after order confirmation.
-                  </p>
-                )}
-              </div>
+              ))}
             </div>
           ))}
         </div>
