@@ -57,13 +57,12 @@ const Home = () => {
 
 
 
-    <section className="relative w-full overflow-hidden  h-[90vh] md:h-98vh ">
+  <section className="relative w-full overflow-hidden  h-[90vh] md:h-98vh ">
 
   {/* BACKGROUND IMAGE */}
   <img
     src={abouthomeimage}
     alt="Bright Rose Story"
-    loading="lazy"
     className="
       absolute inset-0
       w-full h-full 
