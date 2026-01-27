@@ -624,9 +624,9 @@ const fetchWishlistFromServer = async () => {
       content: (
         <div className="space-y-3 leading-relaxed text-sm text-neutralDark/70 text-justify">
           <p>
-          In order to minimise any discrepancies, almost all our products for direct sale on website address are free of conventional sizing. This mitigates the need for most return issues concerning inaccurate fit. However, if you are unsure of any aspect of the purchase, we implore you to contact a member of our client services team before placing any orders. Your purchase is eligible for return or exchange only if it meets the following conditions:<br/>
+          {/* In order to minimise any discrepancies, almost all our products for direct sale on website address are free of conventional sizing. This mitigates the need for most return issues concerning inaccurate fit. However, if you are unsure of any aspect of the purchase, we implore you to contact a member of our client services team before placing any orders. Your purchase is eligible for return or exchange only if it meets the following conditions:<br/>
 1. An incorrect product has been delivered to you<br/>
-2. If the product you receive has a genuine manufacturing defect<br/>
+2. If the product you receive has a genuine manufacturing defect<br/> */}
 Please note that each return or exchange request is considered as an individual case. We are unable to offer refunds if we have been given an incorrect or incomplete shipping address, or if there have been three (3) failed delivery attempts by our shipping partners and/or if the package has been refused by the recipient.
           </p>
 
