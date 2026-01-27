@@ -61,7 +61,7 @@ const AllProducts = () => {
         </div>
       ),
     },
-    { field: "category", headerName: "Category", minWidth: 110, flex: 0.3 },
+
     {
       field: "stock",
       headerName: "Stock",
@@ -76,20 +76,7 @@ const AllProducts = () => {
       flex: 0.3,
       renderCell: (params) => <span>₹{params.row.price?.toLocaleString()}</span>
     },
-    {
-      field: "discount_price",
-      headerName: "Discount",
-      minWidth: 140,
-      flex: 0.3,
-      renderCell: (params) => <span>₹{params.row.discount_price?.toLocaleString()}</span>
-    },
-    {
-      field: "rating",
-      headerName: "Rating",
-      minWidth: 110,
-      flex: 0.25,
-      renderCell: (params) => <Rating readOnly value={params.row.rating} size="small" precision={0.5} />
-    },
+    
     {
       field: "actions",
       headerName: "Actions",
@@ -137,3 +124,20 @@ const AllProducts = () => {
 };
 
 export default AllProducts;
+
+
+    // { field: "category", headerName: "Category", minWidth: 110, flex: 0.3 },
+    // {
+    //   field: "discount_price",
+    //   headerName: "Discount",
+    //   minWidth: 140,
+    //   flex: 0.3,
+    //   renderCell: (params) => <span>₹{params.row.discount_price?.toLocaleString()}</span>
+    // },
+    // {
+    //   field: "rating",
+    //   headerName: "Rating",
+    //   minWidth: 110,
+    //   flex: 0.25,
+    //   renderCell: (params) => <Rating readOnly value={params.row.rating} size="small" precision={0.5} />
+    // },
