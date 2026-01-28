@@ -417,10 +417,10 @@ useEffect(() => {
           </button>
         </div>
 
-        <div className="bg-mutedGray/50 px-4 py-3 mt-6 text-center text-sm text-neutral-600">
+        {/* <div className="bg-mutedGray/50 px-4 py-3 mt-6 text-center text-sm text-neutral-600">
         <Link to={adminIconLink} onClick={() => setOpen(false)}>Admin</Link>
 
-        </div>
+        </div> */}
       </nav>
     </aside>
   </>

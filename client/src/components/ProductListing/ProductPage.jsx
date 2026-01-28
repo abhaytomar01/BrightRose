@@ -329,7 +329,8 @@ const fetchWishlistFromServer = async () => {
                 className={`w-full h-[140px] bg-white rounded-md overflow-hidden cursor-pointer border 
         ${selectedIndex === idx ? "border-black" : "border-neutral-300"}`}
               >
-                <img src={img} className="w-full h-full object-contain bg-neutral-50" />
+                <img src={img} className="w-full h-full object-cover object-center" />
+
               </div>
             ))}
           </div>
@@ -337,8 +338,7 @@ const fetchWishlistFromServer = async () => {
           {/* MAIN IMAGE AREA */}
           <div className="flex-1 relative">
             {/* DESKTOP MAIN IMAGE – REAL IMAGE + HOVER ZOOM */}
-            <div
-              className="hidden md:flex items-center justify-center w-full h-[650px] bg-neutral-50 rounded-lg relative overflow-hidden"
+           <div className="hidden md:flex w-full aspect-[4/5] bg-neutral-50 rounded-lg relative overflow-hidden"
               onMouseEnter={() => setIsZoom(true)}
               onMouseLeave={() => setIsZoom(false)}
               onMouseMove={(e) => {
@@ -351,9 +351,10 @@ const fetchWishlistFromServer = async () => {
             >
               {/* BASE IMAGE (always visible, perfectly sized) */}
               <img
-                src={selectedImage}
-                className="max-h-full max-w-full object-contain transition-opacity duration-200"
-              />
+  src={selectedImage}
+  className="w-full h-full object-cover object-center"
+/>
+
 
               {/* ZOOMED IMAGE (only visible on hover) */}
               {isZoom && (
@@ -393,12 +394,17 @@ const fetchWishlistFromServer = async () => {
               >
                 {gallery.map((img, idx) => (
                   <div
-                    key={idx}
-                    className="w-full flex-shrink-0 flex justify-center bg-neutral-50"
-                    onClick={() => openLightbox(idx)}
-                  >
-                    <img src={img} className="max-h-[550px] object-contain" />
-                  </div>
+  key={idx}
+  className="w-full flex-shrink-0 aspect-[4/5] bg-neutral-50 overflow-hidden"
+  onClick={() => openLightbox(idx)}
+>
+  <img
+    src={img}
+    className="w-full h-full object-cover object-center"
+    alt=""
+  />
+</div>
+
                 ))}
               </div>
             </div>
