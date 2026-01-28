@@ -117,6 +117,7 @@ const FeaturedProducts = ({
           <div className="w-16 h-[2px] bg-[#c7a97d] mx-auto mt-5"></div>
         </div>
 
+        <div className="featured-slider-container">
         {/* Product Slider */}
         <Slider {...settings}  className="will-change-transform">
           {products.map((product) => (
@@ -161,7 +162,7 @@ const FeaturedProducts = ({
             </div>
           ))}
         </Slider>
-
+          </div>
       </div>
     </section>
   );

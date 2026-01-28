@@ -63,7 +63,7 @@ export default function LifestyleBanner() {
 
   return (
     <section className="relative w-full bg-black text-white overflow-hidden">
-      <div className="relative min-h-screen w-full flex items-center">
+      <div className="relative min-h-screen w-full lifestyle-banner-container">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -79,7 +79,7 @@ export default function LifestyleBanner() {
                 src={slide.imageUrl}
                 alt={slide.title}
                 loading="lazy"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover select-none"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-black/70 via-black/20 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/70" />

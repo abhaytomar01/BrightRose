@@ -28,32 +28,25 @@ html {
   scroll-padding-top: 72px;  /* Account for fixed header */
 }
 
-/* ONLY target body/content sections - NOT header/animations */
-body main,
-body section:not(.header-section) {
+/* Use *opt-in* classes instead */
+.gpu-section {
   -webkit-backface-visibility: hidden;
-  transform: translateZ(0);  /* Selective GPU acceleration */
-}
-
-/* Fix vh jank + overflow-hidden repaint */
-@supports (height: 100svh) {
-  .h-[90vh], .h-98vh, .h-[80vh] {
-    height: 90svh;  /* Small viewport height - no recalc */
-  }
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Slider-specific anti-jank */
-.react-slick-slider {
+.featured-slider-container {
   will-change: transform;
-  contain: layout style paint;  /* Contain repaints */
+  contain: layout style paint;
+}
+
+.lifestyle-banner-container {
+  will-change: opacity, transform;
+  contain: layout paint;
 }
 
 
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 html,
 body {
   margin: 0;
