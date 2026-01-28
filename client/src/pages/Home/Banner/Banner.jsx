@@ -32,14 +32,14 @@ export const NextBtn = ({ className, onClick }) => (
 const Banner = () => {
   const settings = {
     autoplay: true,
-  autoplaySpeed: 4000,
-  dots: true,
-  infinite: true,
-  speed: 700,          // lower than 1000
-  fade: false,         // turn off slick's fade animations
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  pauseOnHover: false,
+    autoplaySpeed: 4000,
+    dots: true,
+    infinite: true,
+    speed: 700,
+    fade: false,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    pauseOnHover: false,
     prevArrow: <PreviousBtn />,
     nextArrow: <NextBtn />,
     appendDots: (dots) => (
@@ -56,18 +56,16 @@ const Banner = () => {
     <section
       className="
         relative w-full overflow-hidden
-    h-screen
-    -mt-[72px]
-    banner-root
+        h-[calc(100vh+72px)]
+        -mt-[72px]
+        banner-root
       "
-      // min-h-[calc(100svh+72px)]
     >
       <Slider
         {...settings}
         className="h-full [&_.slick-list]:h-full [&_.slick-track]:h-full"
       >
-        <div className="relative w-full h-screen">
-          {/* [calc(100vh+72px)] min-h-[calc(100svh+72px)] */}
+        <div className="relative w-full h-[calc(100vh+72px)]">
           {/* DESKTOP VIDEO */}
           <video
             src={desktopVideo}
@@ -76,7 +74,7 @@ const Banner = () => {
             muted
             playsInline
             preload="auto"
-            poster={videocover1} // cover while loading on desktop
+            poster={videocover1}
             className="hidden md:block absolute inset-0 w-full h-full object-cover"
           />
 
@@ -88,7 +86,7 @@ const Banner = () => {
             muted
             playsInline
             preload="auto"
-            poster={videocover2} // cover while loading on mobile
+            poster={videocover2}
             className="block md:hidden absolute inset-0 w-full h-full object-cover"
           />
 
@@ -102,7 +100,7 @@ const Banner = () => {
             </p>
 
             <div className="flex gap-4">
-              <button className="px-6 sm:px-8 py-2.5 border bg-white text-black  text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
+              <button className="px-6 sm:px-8 py-2.5 border bg-white text-black text-[12px] sm:text-[13px] tracking-[0.2em] uppercase transition-all duration-300">
                 <Link to="/weavecollection">Weaves Edit</Link>
               </button>
 
