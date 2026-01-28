@@ -53,29 +53,29 @@ const Home = () => {
         learnMoreLink="/ourheritage"
     /> */}
 
-  <section className="relative w-full overflow-hidden min-h-screen flex items-center gpu-section">
-
+  <section className="relative w-full overflow-hidden min-h-screen flex items-center">
+ {/* gpu-section */}
   {/* BACKGROUND IMAGE */}
-  <img
-    src={abouthomeimage}
-    alt="Bright Rose Story"
-    className="
-      absolute inset-0
-      w-full h-full
-      object-cover
-      object-[65%_center]
-      md:object-center
-    "
-  />
-
-  {/* DARK OVERLAY (luxury tone) */}
-  <div
-    className="
-      absolute inset-0
-      bg-[rgba(0,0,0,0.55)]
-      md:bg-[rgba(0,0,0,0.45)]
-    "
-  />
+   {/* BACKGROUND IMAGE */}
+  <div className="absolute inset-0">
+    <img
+      src={abouthomeimage}
+      alt="Bright Rose Story"
+      className="
+        w-full h-full
+        object-cover
+        object-[65%_center]
+        md:object-center
+      "
+    />
+    <div
+      className="
+        absolute inset-0
+        bg-[rgba(0,0,0,0.55)]
+        md:bg-[rgba(0,0,0,0.45)]
+      "
+    />
+  </div>
 
   {/* CONTENT */}
   <div

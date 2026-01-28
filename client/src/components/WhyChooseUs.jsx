@@ -69,15 +69,16 @@ const WhyChooseUs = ({
       </div>
 
       {/* Fade-Up Animation */}
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeUp {
-          animation: fadeUp 0.9s ease forwards;
-        }
-      `}</style>
+    <style>{`
+  @keyframes fadeInSoft {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fadeUp {
+    animation: fadeInSoft 0.9s ease forwards;
+  }
+`}</style>
+
     </section>
   );
 };

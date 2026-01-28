@@ -3,42 +3,55 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
+/* ---------- Tailwind layers ---------- */
 @layer base {
-    section {
-        @apply py-[5px];
-    }
+  section {
+    @apply py-[5px];
+  }
 }
 
 @layer components {
-    .container {
-        @apply px-5 max-w-[100vw];
-    }
+  .container {
+    @apply px-5 max-w-[100vw];
+  }
 }
 
-/* Global smooth scroll + iOS fix */
+/* ---------- Global layout / scroll ---------- */
+
+/* Smooth scroll + iOS momentum, header offset */
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  scroll-padding-top: 72px;  /* Account for fixed header */
+  scroll-padding-top: 72px;
 }
 
-/* Use *opt-in* classes instead */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ---------- GPU helpers (opt‑in only) ---------- */
+
+/* Use this only on specific heavy sections if needed */
 .gpu-section {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
 }
+
+/* ---------- Home banner (video + react‑slick) ---------- */
+
 .banner-root {
   will-change: opacity, transform;
   contain: layout paint;
 }
-/* Prevent extra transforms on slick slides when fading */
+
 .banner-root .slick-slide {
   transform: none !important;
 }
@@ -49,31 +62,32 @@ html {
   will-change: transform;
 }
 
-/* Slider-specific anti-jank */
+.banner-root video {
+  display: block;
+  backface-visibility: hidden;
+}
+
+/* ---------- Featured products slider ---------- */
+
 .featured-slider-container {
   will-change: transform;
   contain: layout style paint;
 }
 
+/* ---------- Lifestyle banner ---------- */
+
 .lifestyle-banner-container {
-  will-change: opacity, transform;
+  will-change: opacity;
   contain: layout paint;
 }
 
+/* ---------- Typography helpers ---------- */
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.logofont{
+.logofont {
   font-family: 'Playfair Display', serif;
 }
-.animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
-}
+
+/* ---------- Admin UI styles ---------- */
 
 .admin-card {
   background: #FAF8F3;
@@ -90,6 +104,7 @@ body {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
 .admin-btn:hover {
   opacity: 0.85;
 }
@@ -129,6 +144,7 @@ body {
   font-size: 14px;
   border-bottom: 1px solid #eee;
 }
+
 .admin-link:hover {
   background: #f1f3f5;
 }
@@ -138,30 +154,28 @@ body {
   color: #0070f3 !important;
 }
 
-/* add to global stylesheet (index.css / global.css) */
+/* ---------- Animations ---------- */
 
 @keyframes slideIn {
   from { transform: translateX(-100%); }
   to   { transform: translateX(0%); }
 }
 
-/* Tailwind doesn't let us animate custom names without config — helper class */
 .animate-slideIn {
   animation: slideIn 0.34s cubic-bezier(.2,.9,.2,1) forwards;
 }
 
-/* small helper so header translate is smooth */
-header {
-  will-change: transform, background-color;
-}
-
-/* if using Tailwind JIT you can convert these classes; otherwise keep this file */
-
+/* Single, consistent fadeIn (scale+opacity) */
 @keyframes fadeIn {
-  from {opacity:0; transform:scale(.95)}
-  to {opacity:1; transform:scale(1)}
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
+
 .animate-fadeIn {
   animation: fadeIn .3s ease-out;
 }
 
+/* Header animation hint */
+header {
+  will-change: transform, background-color;
+}

@@ -32,14 +32,14 @@ export const NextBtn = ({ className, onClick }) => (
 const Banner = () => {
   const settings = {
     autoplay: true,
-    autoplaySpeed: 4000,
-    dots: true,
-    infinite: true,
-    speed: 1000,
-    fade: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    pauseOnHover: false,
+  autoplaySpeed: 4000,
+  dots: true,
+  infinite: true,
+  speed: 700,          // lower than 1000
+  fade: false,         // turn off slick's fade animations
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  pauseOnHover: false,
     prevArrow: <PreviousBtn />,
     nextArrow: <NextBtn />,
     appendDots: (dots) => (
@@ -57,10 +57,10 @@ const Banner = () => {
       className="
         relative w-full overflow-hidden
         h-[calc(100vh+72px)]
-        min-h-[calc(100svh+72px)]
         -mt-[72px]
         banner-root
       "
+      // min-h-[calc(100svh+72px)]
     >
       <Slider
         {...settings}
