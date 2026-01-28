@@ -83,15 +83,17 @@ const FeaturedProducts = ({
 
   const settings = {
     dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 4500,
+  cssEase: "ease-in-out",
   swipeToSlide: true,
-  focusOnSelect: false,  // Prevents scroll interference
   pauseOnHover: true,
+  focusOnSelect: false,
+  adaptiveHeight: false,
     prevArrow: <PreviousBtn />,
     nextArrow: <NextBtn />,
     responsive: [

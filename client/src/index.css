@@ -34,6 +34,20 @@ html {
   backface-visibility: hidden;
   transform: translateZ(0);
 }
+.banner-root {
+  will-change: opacity, transform;
+  contain: layout paint;
+}
+/* Prevent extra transforms on slick slides when fading */
+.banner-root .slick-slide {
+  transform: none !important;
+}
+
+.banner-root .slick-list,
+.banner-root .slick-track {
+  height: 100% !important;
+  will-change: transform;
+}
 
 /* Slider-specific anti-jank */
 .featured-slider-container {

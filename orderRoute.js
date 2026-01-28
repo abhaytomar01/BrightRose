@@ -7,9 +7,9 @@ import {
   getOrderByIdAdmin,    // admin single order
   getAllOrders,
   updateOrderStatus
-} from "../controllers/user/orderController.js";
+} from "./server/controllers/user/orderController.js";
 
-import { requireSignIn, isAdmin } from "../middleware/authMiddleware.js";
+import { requireSignIn, isAdmin } from "./server/middleware/authMiddleware.js";
 
 const router = express.Router();
 

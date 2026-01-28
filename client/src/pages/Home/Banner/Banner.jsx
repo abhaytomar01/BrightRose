@@ -59,6 +59,7 @@ const Banner = () => {
         h-[calc(100vh+72px)]
         min-h-[calc(100svh+72px)]
         -mt-[72px]
+        banner-root
       "
     >
       <Slider
