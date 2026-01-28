@@ -40,29 +40,22 @@ const Product = ({
   overflow-hidden
 ">
   <img
-    src={image800}
-    srcSet={`
-      ${image400} 400w,
-      ${image800} 800w,
-      ${image1600} 1600w
-    `}
-    sizes="(max-width: 768px) 50vw,
-           (max-width: 1200px) 33vw,
-           25vw"
-    loading="lazy"
-    decoding="async"
-    alt={name}
-    className="
-      absolute
-      inset-0
-      w-full
-      h-full
-      object-cover
-      object-center
-      transition-transform
-      duration-500
-      hover:scale-[1.03]
-    "
+     src={mainImage}
+  loading="lazy"
+  decoding="async"
+  alt={name}
+  className="
+    absolute
+    inset-0
+    w-full
+    h-full
+    object-cover
+    object-center
+    transition-transform
+    duration-500
+    will-change-transform
+    hover:scale-[1.02]
+  "
   />
 </div>
 
