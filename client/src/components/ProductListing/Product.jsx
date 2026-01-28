@@ -32,16 +32,14 @@ const Product = ({
     >
       {/* IMAGE */}
       <Link to={`/product/${_id}`}>
-        <div  className="
-    relative
-    w-full
-    aspect-[3/4]
-    bg-[#dfd8d7]
-    overflow-hidden
-    flex
-    items-start
-  ">
-        <img
+        <div className="
+  relative
+  w-full
+  aspect-[3/4]
+  bg-[#dfd8d7]
+  overflow-hidden
+">
+  <img
     src={image800}
     srcSet={`
       ${image400} 400w,
@@ -55,17 +53,19 @@ const Product = ({
     decoding="async"
     alt={name}
     className="
+      absolute
+      inset-0
       w-full
       h-full
-      object-contain
-      object-top
-      pt-4
+      object-cover
+      object-center
       transition-transform
       duration-500
       hover:scale-[1.03]
     "
   />
-        </div>
+</div>
+
       </Link>
 
       {/* TEXT */}
