@@ -34,7 +34,6 @@ const Home = () => {
      <FeaturedStyle
         title="Shop By Style"
         subtitle="Discover timeless pieces crafted for modern living"
-        
     />
 
     {/* <FeaturedCollections
@@ -54,10 +53,7 @@ const Home = () => {
         learnMoreLink="/ourheritage"
     /> */}
 
-
-
-
-  <section className="relative w-full overflow-hidden  h-[90vh] md:h-98vh ">
+  <section className="relative w-full overflow-hidden min-h-screen flex items-center">
 
   {/* BACKGROUND IMAGE */}
   <img
@@ -65,7 +61,7 @@ const Home = () => {
     alt="Bright Rose Story"
     className="
       absolute inset-0
-      w-full h-full 
+      w-full h-full
       object-cover
       object-[65%_center]
       md:object-center

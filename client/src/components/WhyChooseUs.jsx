@@ -36,7 +36,7 @@ const WhyChooseUs = ({
                 bg-white/70 backdrop-blur-lg rounded-xl shadow-md hover:shadow-xl
                 border border-neutral-200 hover:border-[#bca47c]/60
                 px-4 py-8 flex flex-col items-center
-                transition-all duration-500 animate-fadeUp
+                transition-all duration-500 intersection-observer animate-fadeUp
               "
               style={{ animationDelay: `${index * 0.15}s` }}
             >

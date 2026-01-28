@@ -245,7 +245,7 @@ useEffect(() => {
 
       {/* HEADER */}
       <header
-  className={`fixed top-0 left-0 w-full z-[500] duration-300
+  className={`header-section fixed top-0 left-0 right-0 w-full z-[500] duration-300
     ${
       isHome
         ? isScrolled

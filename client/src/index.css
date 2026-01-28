@@ -21,6 +21,35 @@
     }
 }
 
+/* Global smooth scroll + iOS fix */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 72px;  /* Account for fixed header */
+}
+
+/* ONLY target body/content sections - NOT header/animations */
+body main,
+body section:not(.header-section) {
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);  /* Selective GPU acceleration */
+}
+
+/* Fix vh jank + overflow-hidden repaint */
+@supports (height: 100svh) {
+  .h-[90vh], .h-98vh, .h-[80vh] {
+    height: 90svh;  /* Small viewport height - no recalc */
+  }
+}
+
+/* Slider-specific anti-jank */
+.react-slick-slider {
+  will-change: transform;
+  contain: layout style paint;  /* Contain repaints */
+}
+
+
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -128,3 +157,4 @@ header {
 .animate-fadeIn {
   animation: fadeIn .3s ease-out;
 }
+

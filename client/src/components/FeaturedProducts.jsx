@@ -84,11 +84,14 @@ const FeaturedProducts = ({
   const settings = {
     dots: false,
     infinite: true,
-    speed: 700,
+    speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3800,
+    autoplaySpeed: 5000,
+  swipeToSlide: true,
+  focusOnSelect: false,  // Prevents scroll interference
+  pauseOnHover: true,
     prevArrow: <PreviousBtn />,
     nextArrow: <NextBtn />,
     responsive: [
@@ -115,7 +118,7 @@ const FeaturedProducts = ({
         </div>
 
         {/* Product Slider */}
-        <Slider {...settings}>
+        <Slider {...settings}  className="will-change-transform">
           {products.map((product) => (
             <div key={product.id} className="px-4 py-6">
 
@@ -131,7 +134,7 @@ const FeaturedProducts = ({
                     <img
                       src={product.image}
                       alt={product.name}
-       
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
                     />
                   </div>
