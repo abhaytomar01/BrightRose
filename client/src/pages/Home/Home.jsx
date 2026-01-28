@@ -81,9 +81,9 @@ const Home = () => {
   <div
     className="
       relative z-10
-      flex flex-col items-center justify-center text-center
-      min-h-[85vh] md:min-h-[90vh]
-      px-6 sm:px-10
+    flex flex-col items-center justify-center text-center
+    h-screen
+    px-6 sm:px-10
     "
   >
 

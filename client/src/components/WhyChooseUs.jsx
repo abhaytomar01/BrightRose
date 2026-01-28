@@ -13,7 +13,6 @@ const WhyChooseUs = ({
     <section className="w-full py-10 md:py-20 bg-gradient-to-b from-[#ffffff] to-[#ffffff] select-none">
       
       <div className="max-w-[1500px] mx-auto px-5 sm:px-10 lg:px-20 text-center">
-
         {/* SECTION TITLE */}
         <h2 className="text-[28px] sm:text-[34px] md:text-[40px] font-light text-neutral-900 tracking-wide">
           Why Choose Us
@@ -28,7 +27,6 @@ const WhyChooseUs = ({
 
         {/* GRID */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mt-6">
-
           {highlights.map((item, index) => (
             <div
               key={index}
@@ -36,7 +34,7 @@ const WhyChooseUs = ({
                 bg-white/70 backdrop-blur-lg rounded-xl shadow-md hover:shadow-xl
                 border border-neutral-200 hover:border-[#bca47c]/60
                 px-4 py-8 flex flex-col items-center
-                transition-all duration-500 intersection-observer animate-fadeUp
+                transition-all duration-500 animate-fadeUp
               "
               style={{ animationDelay: `${index * 0.15}s` }}
             >
@@ -64,21 +62,19 @@ const WhyChooseUs = ({
               </p>
             </div>
           ))}
-
         </div>
       </div>
 
-      {/* Fade-Up Animation */}
-    <style>{`
-  @keyframes fadeInSoft {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .animate-fadeUp {
-    animation: fadeInSoft 0.9s ease forwards;
-  }
-`}</style>
-
+      {/* Fade-In Animation (one-time, opacity only) */}
+      <style>{`
+        @keyframes fadeInSoft {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fadeUp {
+          animation: fadeInSoft 0.9s ease forwards;
+        }
+      `}</style>
     </section>
   );
 };

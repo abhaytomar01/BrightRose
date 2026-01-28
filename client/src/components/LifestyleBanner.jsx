@@ -62,8 +62,8 @@ export default function LifestyleBanner() {
   const prev = () => setActive((p) => (p - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative w-full bg-black text-white overflow-hidden">
-      <div className="relative min-h-screen w-full lifestyle-banner-container">
+  <section className="relative w-full bg-black text-white overflow-hidden">
+  <div className="relative min-h-[90vh] w-full lifestyle-banner-container">
         {slides.map((slide, index) => (
           <div
             key={slide.id}

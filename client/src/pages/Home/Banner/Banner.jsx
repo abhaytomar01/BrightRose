@@ -56,9 +56,9 @@ const Banner = () => {
     <section
       className="
         relative w-full overflow-hidden
-        h-[calc(100vh+72px)]
-        -mt-[72px]
-        banner-root
+    h-screen
+    -mt-[72px]
+    banner-root
       "
       // min-h-[calc(100svh+72px)]
     >
@@ -66,7 +66,8 @@ const Banner = () => {
         {...settings}
         className="h-full [&_.slick-list]:h-full [&_.slick-track]:h-full"
       >
-        <div className="relative w-full h-[calc(100vh+72px)] min-h-[calc(100svh+72px)]">
+        <div className="relative w-full h-screen">
+          {/* [calc(100vh+72px)] min-h-[calc(100svh+72px)] */}
           {/* DESKTOP VIDEO */}
           <video
             src={desktopVideo}
