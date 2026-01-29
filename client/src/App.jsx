@@ -3,6 +3,7 @@ import './index.css';
 import Layout from "./layouts/Layout";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import SitePrivacyNotice  from "./components/SitePrivacyNotice.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -15,7 +16,7 @@ function App() {
         });
     }, [pathname]);
     return (
-        <>
+        <> <SitePrivacyNotice />
             <Layout />
         </>
     );
