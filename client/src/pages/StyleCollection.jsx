@@ -8,9 +8,9 @@ import dresses from "../assets/images/dresses.webp";
 import skirtnpants from "../assets/images/skirtndtrouser.jpg";
 import sarees from "../assets/images/saree.jpg";
 import jacketnblazers from "../assets/images/jacket&blazer.jpg";
-import blazers from "../assets/images/blazers.webp";
+import blazers from "../assets/images/blazers1.jpg";
 // import pants from "../assets/images/pants.jpg";
-import ikkatsilkcorset from "../assets/images/ikkatsilkcorset.webp";
+import ikkatsilkcorset from "../assets/images/ikkatsilkcorset1.jpg";
 
 /* ------------------------------
    Subcategories (Luxury Styles)
