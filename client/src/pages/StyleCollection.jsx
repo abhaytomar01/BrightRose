@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SeoData from "../SEO/SeoData.jsx";
 import stylecover from "../assets/images/stylecover.webp";
-import corsetndtops from "../assets/images/corsetndtops.jpg";
+import corsetndtops from "../assets/images/corsetndtops1.jpg";
 import dresses from "../assets/images/dresses.webp";
 import skirtnpants from "../assets/images/skirtndtrouser.jpg";
 import sarees from "../assets/images/saree.jpg";
