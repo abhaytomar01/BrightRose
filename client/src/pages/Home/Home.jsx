@@ -61,12 +61,8 @@ const Home = () => {
     <img
       src={abouthomeimage}
       alt="Bright Rose Story"
-      className="
-        w-full h-full
-        object-cover
-        object-[65%_center]
-        md:object-center
-      "
+      className="w-full h-full object-cover object-[65%_center] md:object-center will-change-transform"
+
     />
     <div
       className="
@@ -82,8 +78,10 @@ const Home = () => {
     className="
       relative z-10
     flex flex-col items-center justify-center text-center
-    h-screen
+    min-h-screen
     px-6 sm:px-10
+    transform-gpu
+
     "
   >
 

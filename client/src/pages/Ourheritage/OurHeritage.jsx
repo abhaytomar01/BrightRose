@@ -43,78 +43,78 @@ const TIMELINE_PHASES = [
 /* -----------------------------------
    BRAND TIMELINE
 ----------------------------------- */
-function BrandTimeline() {
-  const containerRef = useRef(null);
-  const progressRef = useRef(null);
-  const itemsRef = useRef([]);
+// function BrandTimeline() {
+//   const containerRef = useRef(null);
+//   const progressRef = useRef(null);
+//   const itemsRef = useRef([]);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.set(itemsRef.current, { opacity: 0.25, y: 30 });
-      gsap.set(progressRef.current, { height: "0%" });
+//   useEffect(() => {
+//     const ctx = gsap.context(() => {
+//       gsap.set(itemsRef.current, { opacity: 0.25, y: 30 });
+//       gsap.set(progressRef.current, { height: "0%" });
 
-      gsap.to(progressRef.current, {
-        height: "100%",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top center",
-          end: "bottom center",
-          scrub: true,
-        },
-      });
+//       gsap.to(progressRef.current, {
+//         height: "100%",
+//         scrollTrigger: {
+//           trigger: containerRef.current,
+//           start: "top center",
+//           end: "bottom center",
+//           scrub: true,
+//         },
+//       });
 
-      itemsRef.current.forEach((el) => {
-        ScrollTrigger.create({
-          trigger: el,
-          start: "top center+=80",
-          onEnter: () =>
-            gsap.to(el, { opacity: 1, y: 0, duration: 0.6 }),
-          onLeaveBack: () =>
-            gsap.to(el, { opacity: 0.25, y: 30, duration: 0.6 }),
-        });
-      });
-    });
+//       itemsRef.current.forEach((el) => {
+//         ScrollTrigger.create({
+//           trigger: el,
+//           start: "top center+=80",
+//           onEnter: () =>
+//             gsap.to(el, { opacity: 1, y: 0, duration: 0.6 }),
+//           onLeaveBack: () =>
+//             gsap.to(el, { opacity: 0.25, y: 30, duration: 0.6 }),
+//         });
+//       });
+//     });
 
-    return () => ctx.revert();
-  }, []);
+//     return () => ctx.revert();
+//   }, []);
 
-  return (
-    <section ref={containerRef} className="bg-[#faf9f7] py-44 px-6">
-      <div className="max-w-6xl mx-auto relative">
-        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-300">
-          <div ref={progressRef} className="absolute top-0 w-full bg-neutral-800" />
-        </div>
+//   return (
+//     <section ref={containerRef} className="bg-[#faf9f7] py-44 px-6">
+//       <div className="max-w-6xl mx-auto relative">
+//         <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-300">
+//           <div ref={progressRef} className="absolute top-0 w-full bg-neutral-800" />
+//         </div>
 
-        <div className="space-y-56">
-          {TIMELINE_PHASES.map((item, i) => (
-            <div
-              key={i}
-              ref={(el) => (itemsRef.current[i] = el)}
-              className="grid grid-cols-1 md:grid-cols-2 gap-20 relative"
-            >
-              <div className="md:text-right pr-12">
-                <h3 className="font-[manrope] text-4xl">
-                  {item.phase}
-                </h3>
-                <p className="uppercase tracking-widest text-xs mt-4">
-                  {item.title}
-                </p>
-              </div>
+//         <div className="space-y-56">
+//           {TIMELINE_PHASES.map((item, i) => (
+//             <div
+//               key={i}
+//               ref={(el) => (itemsRef.current[i] = el)}
+//               className="grid grid-cols-1 md:grid-cols-2 gap-20 relative"
+//             >
+//               <div className="md:text-right pr-12">
+//                 <h3 className="font-[manrope] text-4xl">
+//                   {item.phase}
+//                 </h3>
+//                 <p className="uppercase tracking-widest text-xs mt-4">
+//                   {item.title}
+//                 </p>
+//               </div>
 
-              <div className="pl-12 space-y-4 max-w-sm text-sm text-neutral-600">
-                {item.content.map((c, idx) => (
-                  <p key={idx}>{c}</p>
-                ))}
-              </div>
+//               <div className="pl-12 space-y-4 max-w-sm text-sm text-neutral-600">
+//                 {item.content.map((c, idx) => (
+//                   <p key={idx}>{c}</p>
+//                 ))}
+//               </div>
 
-              <span className="absolute left-1/2 top-2 w-3 h-3 bg-neutral-800 rounded-full -translate-x-1/2" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+//               <span className="absolute left-1/2 top-2 w-3 h-3 bg-neutral-800 rounded-full -translate-x-1/2" />
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
 
 /* -----------------------------------
    MAIN PAGE
