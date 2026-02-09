@@ -410,10 +410,10 @@ useEffect(() => {
         {/* FOOTER BUTTONS */}
         <div className="mt-6 pt-4 border-t flex gap-3">
           <button className="flex-1 py-3 border rounded-md">
-            <Link to="/weavecollection">Weave</Link>
+            <Link to="/weavecollection">Weave Edit</Link>
           </button>
           <button className="flex-1 py-3 bg-neutral-100 rounded-md">
-            <Link to="/stylecollection">Style</Link>
+            <Link to="/stylecollection">Style Edit</Link>
           </button>
         </div>
 
