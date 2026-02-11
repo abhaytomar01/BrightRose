@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema(
     category: { type: String, default: "" },
 
     // For filtering:
-    weavingSlug: { type: String, index: true },      // e.g. "kanchipuram"
+    weavingSlug: { type: String, index: true },          // e.g. "kanchipuram"
     tagSlugs: { type: [String], default: [], index: true }, // e.g. ["saree", "dresses"]
 
     brandName: { type: String, default: "" },
@@ -27,6 +27,13 @@ const productSchema = new mongoose.Schema(
       type: [String], // storing as JSON strings as you already do
       default: [],
     },
+
+    // ✅ IMPORTANT: match your DB structure
+    sizes: { type: [String], default: [] },  // e.g. ["XS","S","M","L"]
+    color: { type: String, default: "" },    // e.g. "Red & Gold"
+
+    // If you don't actually use this, you can remove it later.
+    size: { type: String, default: "" },     // legacy / optional
   },
   { timestamps: true }
 );

@@ -1,6 +1,6 @@
 // src/pages/products/Products.jsx
 import Pagination from "@mui/material/Pagination";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Product from "../../components/ProductListing/Product";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -21,10 +21,12 @@ const Products = () => {
   const initialCategory = searchParams.get("category") || "";
   const initialWeave = searchParams.get("weave") || "";
   const initialStyle = searchParams.get("style") || "";
+  const initialSize = searchParams.get("size") || "";     // 👈 NEW
+  const initialColor = searchParams.get("color") || "";   // 👈 NEW
   const initialPriceMin = searchParams.get("priceMin");
   const initialPriceMax = searchParams.get("priceMax");
 
-  // Filters
+  // Filters - ADDED size/color states 👇
   const [price, setPrice] = useState([
     initialPriceMin ? Number(initialPriceMin) : 0,
     initialPriceMax ? Number(initialPriceMax) : 200000,
@@ -34,6 +36,8 @@ const Products = () => {
   const [category, setCategory] = useState(initialCategory);
   const [weave, setWeave] = useState(initialWeave);
   const [style, setStyle] = useState(initialStyle);
+  const [size, setSize] = useState(initialSize);     // 👈 NEW
+  const [color, setColor] = useState(initialColor);  // 👈 NEW
 
   // Product Data
   const [products, setProducts] = useState([]);
@@ -51,10 +55,10 @@ const Products = () => {
   const currentProducts = products.slice(startIndex, endIndex);
   const totalPages = Math.ceil(productsCount / productsPerPage);
 
-  // Reset pagination when filters change
+  // Reset pagination when ANY filter changes 👇
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedPrice, category, weave, style]);
+  }, [debouncedPrice, category, weave, style, size, color]);  // 👈 ADDED size/color
 
   // Debounce price
   useEffect(() => {
@@ -62,106 +66,61 @@ const Products = () => {
     return () => clearTimeout(handler);
   }, [price]);
 
-  // Load ALL PRODUCTS initially (but skip when query has any filter)
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const hasCategory = !!params.get("category");
-    const hasWeave = !!params.get("weave");
-    const hasStyle = !!params.get("style");
-    const hasPriceMin = params.has("priceMin");
-    const hasPriceMax = params.has("priceMax");
+  // 🔥 NEW: Unified fetch function that handles ALL filters
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
 
-    const anyFilterInUrl =
-      hasCategory || hasWeave || hasStyle || hasPriceMin || hasPriceMax;
+      // Check if NO filters active → fetch ALL products
+      const filterIsActive =
+        category || weave || style || size || color ||  // 👈 ADDED size/color
+        debouncedPrice[0] !== 0 ||
+        debouncedPrice[1] !== 200000;
 
-    if (anyFilterInUrl) {
-      // let filtered useEffect handle it
-      setLoading(false);
-      return;
-    }
-
-    const fetchAllProducts = async () => {
-      try {
-        setLoading(true);
+      if (!filterIsActive) {
+        // Fetch ALL products
         const res = await axios.get(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
         );
         setProducts(res.data.products || []);
         setProductsCount(res.data.products?.length || 0);
-      } catch (error) {
-        console.error("Failed to load products:", error);
-        toast.error("Failed to load products.");
-        setProducts([]);
-      } finally {
-        setLoading(false);
+        return;
       }
-    };
 
-    fetchAllProducts();
-  }, [location.search]);
-
-  // Load FILTERED PRODUCTS only when filters change
-  useEffect(() => {
-    const filterIsActive =
-      category ||
-      weave ||
-      style ||
-      debouncedPrice[0] !== 0 ||
-      debouncedPrice[1] !== 200000;
-
-    if (!filterIsActive) {
-      // no filters -> all products
-      const fetchAllProducts = async () => {
-        try {
-          setLoading(true);
-          const res = await axios.get(
-            `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
-          );
-          setProducts(res.data.products || []);
-          setProductsCount(res.data.products?.length || 0);
-        } catch (error) {
-          console.error("Failed to load products:", error);
-          toast.error("Failed to load products.");
-        } finally {
-          setLoading(false);
-        }
+      // Fetch FILTERED products
+      const params = {
+        category: category || "",
+        weavingSlug: weave || "",
+        tagSlugs: style || "",
+        size: size || "",        // 👈 NEW
+        color: color || "",      // 👈 NEW
+        priceMin: debouncedPrice[0],
+        priceMax: debouncedPrice[1],
       };
-      fetchAllProducts();
-      return;
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
+        { params }
+      );
+
+      setProducts(res.data.products || []);
+      setProductsCount(res.data.count ?? (res.data.products?.length || 0));
+    } catch (error) {
+      console.error("Error loading products:", error);
+      toast.error("Failed to load products.");
+      setProducts([]);
+      setProductsCount(0);
+    } finally {
+      setLoading(false);
     }
+  }, [debouncedPrice, category, weave, style, size, color]);  // 👈 ADDED deps
 
-    const fetchFiltered = async () => {
-      try {
-        setLoading(true);
+  // Fetch products when filters change
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
-        const params = {};
-        if (category) params.category = category;
-        if (weave) params.weavingSlug = weave;
-        if (style) params.tagSlugs = style;
-        params.priceMin = debouncedPrice[0];
-        params.priceMax = debouncedPrice[1];
-
-        const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/products/filter`,
-          { params }
-        );
-
-        setProducts(res.data.products || []);
-        setProductsCount(res.data.count ?? (res.data.products?.length || 0));
-      } catch (error) {
-        console.error("Error loading filtered products:", error);
-        toast.error("Failed to load filtered products.");
-        setProducts([]);
-        setProductsCount(0);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFiltered();
-  }, [debouncedPrice, category, weave, style]);
-
-  // Load Wishlist
+  // Load Wishlist (unchanged)
   useEffect(() => {
     const fetchWishlistItems = async () => {
       try {
@@ -182,13 +141,14 @@ const Products = () => {
   // Mobile Filter Popup
   const [showFilterPopup, setShowFilterPopup] = useState(false);
 
-  // Reset all filters function
+  // Reset ALL filters function - UPDATED 👇
   const handleResetFilters = () => {
     setPrice([0, 200000]);
     setCategory("");
     setWeave("");
     setStyle("");
-    setCurrentPage(1);
+    setSize("");     // 👈 NEW
+    setColor("");    // 👈 NEW
     toast.success("Filters reset!");
   };
 
@@ -207,50 +167,61 @@ const Products = () => {
         url="/products"
       />
 
-      {/* FULL SCREEN MOBILE FILTER OVERLAY */}
-      {showFilterPopup && (
-        <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
-          {/* Header */}
-          <div className="flex justify-between items-center border-b pb-3 mb-4">
-            <h2 className="text-xl font-semibold">Filters</h2>
-            <button
-              onClick={() => setShowFilterPopup(false)}
-              className="text-lg font-semibold cursor-pointer hover:opacity-70"
-            >
-              ✕
-            </button>
-          </div>
+      {/* FULL SCREEN MOBILE FILTER OVERLAY - UPDATED SideFilter props 👇 */}
+     // 🔥 UPDATED: Mobile Filter Popup with auto-close callback
+{showFilterPopup && (
+  <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
+    {/* Header */}
+    <div className="flex justify-between items-center border-b pb-3 mb-4">
+      <h2 className="text-xl font-semibold">Filters</h2>
+      <button
+        onClick={() => setShowFilterPopup(false)}
+        className="text-lg font-semibold cursor-pointer hover:opacity-70"
+      >
+        ✕
+      </button>
+    </div>
 
-          {/* Full Screen SideFilter */}
-          <SideFilter
-            price={price}
-            category={category}
-            setPrice={setPrice}
-            setCategory={setCategory}
-            weave={weave}
-            setWeave={setWeave}
-            style={style}
-            setStyle={setStyle}
-          />
+    {/* 🔥 SideFilter with onFilterApply callback */}
+    <SideFilter
+      price={price}
+      setPrice={setPrice}
+      category={category}
+      setCategory={setCategory}
+      weave={weave}
+      setWeave={setWeave}
+      style={style}
+      setStyle={setStyle}
+      size={size}
+      setSize={setSize}
+      color={color}
+      setColor={setColor}
+      // 🔥 NEW: Auto-close callback
+      onFilterApply={(filterType) => {
+        console.log(`Applied ${filterType} filter`); // Optional: for debugging
+        setShowFilterPopup(false); // 🔥 AUTO-CLOSE FILTER POPUP
+      }}
+    />
 
-          {/* Reset Button */}
-          <div className="flex gap-2 mt-5">
-            <button
-              className="flex-1 bg-gray-200 text-black text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-300 transition"
-              onClick={() => {
-                handleResetFilters();
-                setShowFilterPopup(false);
-              }}
-            >
-              RESET FILTERS
-            </button>
-          </div>
-        </div>
-      )}
+    {/* Reset Button - Also auto-closes */}
+    <div className="flex gap-2 mt-5">
+      <button
+        className="flex-1 bg-gray-200 text-black text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-300 transition"
+        onClick={() => {
+          handleResetFilters();
+          setShowFilterPopup(false); // 🔥 AUTO-CLOSE
+        }}
+      >
+        RESET FILTERS
+      </button>
+    </div>
+  </div>
+)}
 
-      <main className="w-full pt-2 pb-5 mt-16 md:mt-20 bg-pureWhite">
+
+      <main className="w-full pt-2 pb-5 mt-6 md:mt-20 bg-pureWhite">
         <div className="flex flex-col-reverse lg:flex-row gap-3 w-full px-2 sm:px-4 md:px-6 mt-2 md:mt-4">
-          {/* Desktop Sidebar Filter */}
+          {/* Desktop Sidebar Filter - ALL PROPS 👇 */}
           <div className="hidden lg:block w-[23%] min-w-[280px]">
             <div className="border border-mutedGray/60 rounded-lg p-4">
               <div className="flex justify-between items-center mb-4">
@@ -264,18 +235,22 @@ const Products = () => {
               </div>
               <SideFilter
                 price={price}
-                category={category}
                 setPrice={setPrice}
+                category={category}
                 setCategory={setCategory}
                 weave={weave}
                 setWeave={setWeave}
                 style={style}
                 setStyle={setStyle}
+                size={size}           // 👈 NEW
+                setSize={setSize}     // 👈 NEW
+                color={color}         // 👈 NEW
+                setColor={setColor}   // 👈 NEW
               />
             </div>
           </div>
 
-          {/* Product Grid */}
+          {/* Product Grid - UNCHANGED */}
           <div className="w-full lg:w-[77%] relative">
             {loading && <Spinner />}
 
@@ -335,7 +310,7 @@ const Products = () => {
         </div>
       </main>
 
-      {/* MOBILE STICKY FILTER BUTTON */}
+      {/* MOBILE STICKY FILTER BUTTON - UNCHANGED */}
       <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t z-[999] py-3 px-6 flex items-center justify-center shadow-md">
         <button
           onClick={() => setShowFilterPopup(true)}
@@ -350,4 +325,3 @@ const Products = () => {
 };
 
 export default Products;
-

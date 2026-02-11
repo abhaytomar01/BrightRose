@@ -4,9 +4,6 @@ import productModel from "../../models/productModel.js";
 // ===============================
 // GET ALL PRODUCTS
 // ===============================
-// ===============================
-// GET ALL PRODUCTS (FIXED URL)
-// ===============================
 export const getAllProducts = async (req, res) => {
   try {
     let products = await productModel.find().sort({ createdAt: -1 });
@@ -14,21 +11,19 @@ export const getAllProducts = async (req, res) => {
     const BASE = "https://www.thebrightrose.com";
 
     products = products.map((p) => {
-      // Format images correctly
       p.images = (p.images || []).map((img) => ({
         filename: img.filename,
         url: img.url.startsWith("http")
           ? img.url
-          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`
+          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
       }));
 
-      // fallback
       if (!p.images.length) {
         p.images = [
           {
             url: `${BASE}/uploads/fallback.jpg`,
-            filename: "fallback.jpg"
-          }
+            filename: "fallback.jpg",
+          },
         ];
       }
 
@@ -36,7 +31,6 @@ export const getAllProducts = async (req, res) => {
     });
 
     return res.json({ success: true, products });
-
   } catch (error) {
     console.error("GET ALL PRODUCTS ERROR:", error);
     return res.status(500).json({
@@ -46,13 +40,8 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-
-
 // ===============================
 // GET SINGLE PRODUCT
-// ===============================
-// ===============================
-// GET SINGLE PRODUCT (FIXED URL)
 // ===============================
 export const getSingleProduct = async (req, res) => {
   try {
@@ -62,10 +51,11 @@ export const getSingleProduct = async (req, res) => {
     const product = await productModel.findById(id);
 
     if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
     }
 
-    // Fix URLs
     product.images = (product.images || []).map((img) => ({
       filename: img.filename,
       url: img.url.startsWith("http")
@@ -73,7 +63,6 @@ export const getSingleProduct = async (req, res) => {
         : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
     }));
 
-    // fallback
     if (!product.images.length) {
       product.images = [
         {
@@ -84,7 +73,6 @@ export const getSingleProduct = async (req, res) => {
     }
 
     return res.json({ success: true, product });
-
   } catch (error) {
     console.error("GET PRODUCT ERROR:", error);
     return res.status(500).json({
@@ -93,7 +81,6 @@ export const getSingleProduct = async (req, res) => {
     });
   }
 };
-
 
 // ===============================
 // DELETE PRODUCT
@@ -123,72 +110,56 @@ export const deleteProduct = async (req, res) => {
 };
 
 // ===============================
-// FILTER PRODUCTS (Production Ready)
+// FILTER PRODUCTS
 // ===============================
 // controllers/product/productController.js
 export const filterProducts = async (req, res) => {
   try {
+    console.log("RAW QUERY:", req.query);  // 👈 add this
+
     const {
-      weave,
-      style,
+      category,
       weavingSlug,
       tagSlugs,
-      priceMin = 0,
-      priceMax = 100000,
+      size,
+      color,
+      priceMin,
+      priceMax,
     } = req.query;
 
-    const min = Number(priceMin) || 0;
-    const max = Number(priceMax) || 100000;
+    const filter = {};
 
-    const query = {};
+    if (category) filter.category = category;
+    if (weavingSlug) filter.weavingSlug = weavingSlug;
+    if (tagSlugs) filter.tagSlugs = tagSlugs;
 
-    // WEAVE FILTER (prefer weavingSlug if provided)
-    const weaveValue = weavingSlug || weave;
-    if (weaveValue) query.weavingSlug = weaveValue;
+    if (size) filter.sizes = size;  // match any element in sizes array
 
-    // STYLE FILTER (prefer tagSlugs if provided)
-    const styleValue = tagSlugs || style;
-    if (styleValue) query.tagSlugs = { $in: [styleValue] };
+    if (color) {
+      filter.color = {
+        $regex: color.trim(),
+        $options: "i",
+      };
+    }
 
-    // PRICE FILTER
-    query.price = { $gte: min, $lte: max };
+    if (priceMin !== undefined && priceMax !== undefined) {
+      filter.price = {
+        $gte: Number(priceMin) || 0,
+        $lte: Number(priceMax) || 200000,
+      };
+    }
 
-    let products = await productModel.find(query).sort({ createdAt: -1 });
+    console.log("FILTER:", filter);  // already there
 
-    const BASE = "https://www.thebrightrose.com";
-
-    products = products.map((p) => {
-      p.images = (p.images || []).map((img) => ({
-        filename: img.filename,
-        url: img.url.startsWith("http")
-          ? img.url
-          : `${BASE}${img.url.startsWith("/") ? img.url : "/" + img.url}`,
-      }));
-
-      if (!p.images.length) {
-        p.images = [
-          {
-            url: `${BASE}/uploads/fallback.jpg`,
-            filename: "fallback.jpg",
-          },
-        ];
-      }
-
-      return p;
-    });
+    const products = await productModel.find(filter);
 
     return res.json({
-      success: true,
-      count: products.length,
       products,
+      count: products.length,
     });
-  } catch (error) {
-    console.error("FILTER PRODUCTS ERROR:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to filter products",
-    });
+  } catch (err) {
+    console.error("filterProducts error:", err);
+    res.status(500).json({ error: "Failed to filter products" });
   }
 };
-
 

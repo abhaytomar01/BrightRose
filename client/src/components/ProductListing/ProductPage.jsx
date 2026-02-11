@@ -355,7 +355,6 @@ const fetchWishlistFromServer = async () => {
   className="w-full h-full object-cover object-center"
 />
 
-
               {/* ZOOMED IMAGE (only visible on hover) */}
               {isZoom && (
                 <img

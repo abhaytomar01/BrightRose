@@ -3,7 +3,6 @@ import Slider from "@mui/material/Slider";
 import { Collapse } from "@mui/material";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
-/* helpers */
 const slugify = (v) =>
   v.toLowerCase().replace(/\s*&\s*|\s*\/\s*/g, "-").replace(/\s+/g, "-");
 
@@ -16,17 +15,24 @@ const SideFilter = ({
   setWeave,
   style,
   setStyle,
+  size,
+  setSize,
+  color,
+  setColor,
+  // 🔥 NEW: onFilterApply callback for mobile auto-close
+  onFilterApply,
 }) => {
   const [openCategory, setOpenCategory] = useState(true);
   const [openWeaves, setOpenWeaves] = useState(false);
   const [openStyle, setOpenStyle] = useState(false);
   const [openPrice, setOpenPrice] = useState(true);
+  const [openSize, setOpenSize] = useState(false);
+  const [openColor, setOpenColor] = useState(false);
 
   const [tempPrice, setTempPrice] = useState(price);
 
-  /* OPTIONS */
+  /* OPTIONS - UNCHANGED */
   const categories = ["All"];
-
   const weavesSubcategories = [
     "All",
     "kanchipuram",
@@ -37,7 +43,6 @@ const SideFilter = ({
     "pochampalley",
     "narayanpet",
   ];
-
   const styleSubcategories = [
     "All",
     "sarees",
@@ -50,18 +55,50 @@ const SideFilter = ({
     "jacket",
     "shirt",
   ];
+  const sizeOptions = [
+    "All",
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL",
+    "Free Size",
+  ];
+  const colorOptions = [
+    "All",
+    "Red",
+    "Blue",
+    "Green",
+    "Black",
+    "White",
+    "Pink",
+    "Yellow",
+    "Purple",
+    "Maroon",
+    "Gold",
+    "Ivory",
+    "Grey",
+  ];
 
   const displayWeave = (slug) =>
     slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
-
   const displayStyle = (slug) =>
     slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+  const displaySize = (s) => (s === "All" ? "All Sizes" : s);
+  const displayColor = (c) => (c === "All" ? "All Colors" : c);
 
-  /* PRICE — debounce update to parent */
   useEffect(() => {
     const t = setTimeout(() => setPrice(tempPrice), 300);
     return () => clearTimeout(t);
   }, [tempPrice, setPrice]);
+
+  // 🔥 NEW: Auto-close handler for mobile
+  const handleFilterApply = (filterType) => {
+    if (onFilterApply) {
+      onFilterApply(filterType);
+    }
+  };
 
   const SectionHeader = ({ label, openState, setOpenState }) => (
     <div
@@ -77,9 +114,13 @@ const SideFilter = ({
     </div>
   );
 
-  const Option = ({ text, isActive, onClick }) => (
+  const Option = ({ text, isActive, onClick, filterType }) => (
     <li
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+        // 🔥 AUTO-CLOSE ON MOBILE when filter applied
+        handleFilterApply(filterType);
+      }}
       className={`cursor-pointer px-3 py-2 rounded-md text-sm transition 
         ${
           isActive
@@ -107,14 +148,15 @@ const SideFilter = ({
               text={cat}
               isActive={category === slugify(cat) || (cat === "All" && !category)}
               onClick={() => setCategory(cat === "All" ? "" : slugify(cat))}
+              filterType="category"
             />
           ))}
         </ul>
       </Collapse>
 
-      {/* WEAVES */}
+      {/* WEAVES - 🔥 AUTO-CLOSE ADDED */}
       <SectionHeader
-        label="Weaves"
+        label="Weave"
         openState={openWeaves}
         setOpenState={setOpenWeaves}
       />
@@ -127,20 +169,19 @@ const SideFilter = ({
               isActive={weave === w || (w === "All" && !weave)}
               onClick={() => {
                 if (w === "All") {
-                  // clear weave only
                   setWeave("");
                 } else {
-                  // set weave and CLEAR style so only weave is active
                   setWeave(w);
                   setStyle("");
                 }
               }}
+              filterType="weave"
             />
           ))}
         </ul>
       </Collapse>
 
-      {/* STYLE */}
+      {/* STYLE - 🔥 AUTO-CLOSE ADDED */}
       <SectionHeader
         label="Style"
         openState={openStyle}
@@ -155,20 +196,59 @@ const SideFilter = ({
               isActive={style === s || (s === "All" && !style)}
               onClick={() => {
                 if (s === "All") {
-                  // clear style only
                   setStyle("");
                 } else {
-                  // set style and CLEAR weave so only style is active
                   setStyle(s);
                   setWeave("");
                 }
               }}
+              filterType="style"
             />
           ))}
         </ul>
       </Collapse>
 
-      {/* PRICE */}
+      {/* SIZE - 🔥 AUTO-CLOSE ADDED */}
+      <SectionHeader
+        label="Size"
+        openState={openSize}
+        setOpenState={setOpenSize}
+      />
+      <Collapse in={openSize}>
+        <ul className="py-2 space-y-1">
+          {sizeOptions.map((sz) => (
+            <Option
+              key={sz}
+              text={displaySize(sz)}
+              isActive={size === sz || (sz === "All" && !size)}
+              onClick={() => setSize(sz === "All" ? "" : sz)}
+              filterType="size"
+            />
+          ))}
+        </ul>
+      </Collapse>
+
+      {/* COLOR - 🔥 AUTO-CLOSE ADDED */}
+      <SectionHeader
+        label="Color"
+        openState={openColor}
+        setOpenState={setOpenColor}
+      />
+      <Collapse in={openColor}>
+        <ul className="py-2 space-y-1">
+          {colorOptions.map((c) => (
+            <Option
+              key={c}
+              text={displayColor(c)}
+              isActive={color === c || (c === "All" && !color)}
+              onClick={() => setColor(c === "All" ? "" : c)}
+              filterType="color"
+            />
+          ))}
+        </ul>
+      </Collapse>
+
+      {/* PRICE - 🔥 AUTO-CLOSE ON PRICE CHANGE */}
       <SectionHeader
         label="Price"
         openState={openPrice}
@@ -186,10 +266,13 @@ const SideFilter = ({
               <p className="font-medium">₹{tempPrice[1]}</p>
             </div>
           </div>
-
           <Slider
             value={tempPrice}
-            onChange={(_, v) => setTempPrice(v)}
+            onChange={(_, v) => {
+              setTempPrice(v);
+              // 🔥 AUTO-CLOSE ON PRICE DRAG (with small delay)
+              setTimeout(() => handleFilterApply("price"), 500);
+            }}
             min={0}
             max={200000}
             step={1000}
