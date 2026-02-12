@@ -1,5 +1,6 @@
 // client/src/pages/user/Checkout/Checkout.jsx
 import { useState } from "react";
+import Select from "react-select";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,6 +9,10 @@ import { useAuth } from "../../../context/auth";
 import upi from "../../../assets/images/upi.svg";
 import visa from "../../../assets/images/visa.svg";
 import mastercard from "../../../assets/images/master.svg";
+import { countries } from "./countries.js";
+import { states } from "./states.js";
+import { countryCodes } from "./countryCodes.js";
+
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -22,17 +27,56 @@ export default function Checkout() {
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
   const [shippingInfo, setShippingInfo] = useState({
-    country: "India",
-    firstName: "",
-    lastName: "",
-    email: authUser?.user?.email || "",
-    address: "",
-    apartment: "",
-    city: "",
-    state: "Delhi",
-    pincode: "",
-    phone: "",
-  });
+  country: "",
+  phoneCode: "",
+  firstName: "",
+  lastName: "",
+  email: authUser?.user?.email || "",
+  address: "",
+  apartment: "",
+  city: "",
+  state: "Delhi",
+  pincode: "",
+  phone: "",
+});
+
+const [errors, setErrors] = useState({});
+
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: "52px",   // 🔥 matches py-3 inputs
+    height: "52px",
+    borderRadius: "6px",
+    borderColor: state.isFocused ? "#2563eb" : base.borderColor,
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#2563eb",
+    },
+  }),
+
+  valueContainer: (base) => ({
+    ...base,
+    height: "52px",
+    padding: "0 12px",
+  }),
+
+  input: (base) => ({
+    ...base,
+    margin: "0px",
+  }),
+
+  indicatorsContainer: (base) => ({
+    ...base,
+    height: "52px",
+  }),
+
+  placeholder: (base) => ({
+    ...base,
+    color: "#9ca3af", // matches Tailwind gray-400
+  }),
+};
+
 
   const [billingInfo, setBillingInfo] = useState({
     country: "India",
@@ -50,20 +94,32 @@ export default function Checkout() {
   const taxAmount = +(safeSubtotal * 0.1526).toFixed(2); // example GST ~15.26%
   const finalTotal = safeSubtotal + shippingCharge;
 
+  /* ---------------- VALIDATION ---------------- */
+const validateFields = () => {
+  const newErrors = {};
+
+  if (!shippingInfo.phoneCode)
+    newErrors.phoneCode = "Select country code";
+
+  if (!shippingInfo.phone)
+    newErrors.phone = "Enter mobile number";
+
+  else if (shippingInfo.phone.length < 6)
+    newErrors.phone = "Invalid mobile number";
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+
+
   /* ---------------- SHIPPING CALC ---------------- */
   const fetchShippingCharge = async () => {
-  if (
-    !shippingInfo.firstName ||
-    !shippingInfo.lastName ||
-    !shippingInfo.address ||
-    !shippingInfo.city ||
-    !shippingInfo.state ||
-    !shippingInfo.pincode ||
-    !shippingInfo.phone
-  ) {
-    toast.error("Please fill all delivery details");
-    return null;
-  }
+if (!validateFields()) {
+  toast.error("Please fill required fields");
+  return null;
+}
+
 
   setLoadingShipping(true);
   try {
@@ -126,7 +182,7 @@ export default function Checkout() {
         shippingAddress: {
           ...shippingInfo,
           name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-          phoneNo: shippingInfo.phone,
+phoneNo: `${shippingInfo.phoneCode}${shippingInfo.phone}`,
           shippingCharge: shippingAmount,
           billingAddress: billingSameAsShipping
             ? shippingInfo
@@ -192,13 +248,20 @@ export default function Checkout() {
           {/* DELIVERY */}
           <h2 className="text-lg font-semibold mb-4">Delivery</h2>
 
-          <select className="border w-full px-3 py-3 mb-4 rounded">
-            <option>India</option>
-            <option>United States</option>
-            <option>United Kingdom</option>
-            <option>Australia</option>
-            <option>Canada</option>
-          </select>
+          <Select
+          styles={selectStyles}
+  options={countries}
+  placeholder="Select country"
+  value={countries.find(c => c.value === shippingInfo.country)}
+  onChange={(selected) =>
+    setShippingInfo({
+      ...shippingInfo,
+      country: selected.value,
+    })
+  }
+  className="mb-4"
+  isSearchable
+/>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
@@ -241,17 +304,20 @@ export default function Checkout() {
                 setShippingInfo({ ...shippingInfo, city: e.target.value })
               }
             />
-            <select
-              className="border px-3 py-3 rounded"
-              value={shippingInfo.state}
-              onChange={(e) =>
-                setShippingInfo({ ...shippingInfo, state: e.target.value })
-              }
-            >
-              <option>Delhi</option>
-              <option>Maharashtra</option>
-              <option>Karnataka</option>
-            </select>
+        <Select
+        styles={selectStyles}
+  options={states}
+  placeholder="Select state"
+  value={states.find(s => s.value === shippingInfo.state)}
+  onChange={(selected) =>
+    setShippingInfo({
+      ...shippingInfo,
+      state: selected.value,
+    })
+  }
+  isSearchable
+/>
+
             <input
               className="border px-3 py-3 rounded"
               placeholder="PIN code"
@@ -261,13 +327,67 @@ export default function Checkout() {
             />
           </div>
 
-          <input
-            className="border w-full px-3 py-3 mb-6 rounded"
-            placeholder="Phone"
-            onChange={(e) =>
-              setShippingInfo({ ...shippingInfo, phone: e.target.value })
-            }
-          />
+        <div className="mb-6">
+  <div className="flex gap-2">
+
+    {/* COUNTRY CODE */}
+<Select
+styles={selectStyles}
+  options={countryCodes.map(c => ({
+    value: c.dial_code,
+    label: `${c.name} (${c.dial_code})`
+  }))}
+  placeholder="Country code"
+  value={
+    countryCodes.find(c => c.dial_code === shippingInfo.phoneCode)
+      ? {
+          value: shippingInfo.phoneCode,
+          label: countryCodes.find(
+            c => c.dial_code === shippingInfo.phoneCode
+          ).name + ` (${shippingInfo.phoneCode})`
+        }
+      : null
+  }
+  onChange={(selected) =>
+    setShippingInfo({
+      ...shippingInfo,
+      phoneCode: selected.value,
+    })
+  }
+  className="w-full sm:w-44"
+  isSearchable
+/>
+
+
+
+    {/* PHONE */}
+    <input
+    type="tel"
+      value={shippingInfo.phone}
+      placeholder="Mobile number"
+      className={`border flex-1 px-3 py-3 text-base rounded ${
+        errors.phone ? "border-red-500" : ""
+      }`}
+     onChange={(e) => {
+  const numbersOnly = e.target.value.replace(/\D/g, "");
+
+  if (numbersOnly.length <= 12) { // prevents crazy input
+    setShippingInfo({
+      ...shippingInfo,
+      phone: numbersOnly,
+    });
+  }
+}}
+
+    />
+  </div>
+
+  {(errors.phoneCode || errors.phone) && (
+    <p className="text-red-500 text-xs mt-1">
+      {errors.phoneCode || errors.phone}
+    </p>
+  )}
+</div>
 
           {/* BILLING */}
           <h2 className="text-lg font-semibold mb-4">Billing address</h2>
@@ -330,7 +450,12 @@ export default function Checkout() {
   </div>
    <button
             onClick={handlePayment}
-            disabled={paymentProcessing}
+           disabled={
+  paymentProcessing ||
+  !shippingInfo.phone ||
+  !shippingInfo.phoneCode
+}
+
             className="w-full bg-blue-600 text-white py-4 rounded text-lg"
           >
             {paymentProcessing ? "Processing..." : "Pay now"}
