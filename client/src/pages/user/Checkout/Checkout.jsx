@@ -1,5 +1,5 @@
-
 // client/src/pages/user/Checkout/Checkout.jsx
+
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
+
   const token = authUser?.token;
 
   const [shippingCharge, setShippingCharge] = useState(0);
@@ -35,133 +36,219 @@ export default function Checkout() {
     phone: "",
   });
 
-  const [billingInfo, setBillingInfo] = useState({
-    country: "India",
-    firstName: "",
-    lastName: "",
-    address: "",
-    apartment: "",
-    city: "",
-    state: "Delhi",
-    pincode: "",
-    phone: "",
-  });
-
   const safeSubtotal = Number(subtotal || 0);
-  const taxAmount = +(safeSubtotal * 0.1526).toFixed(2); // example GST ~15.26%
   const finalTotal = safeSubtotal + shippingCharge;
 
-  /* ---------------- SHIPPING CALC ---------------- */
-  const fetchShippingCharge = async () => {
-  if (
-    !shippingInfo.firstName ||
-    !shippingInfo.lastName ||
-    !shippingInfo.address ||
-    !shippingInfo.city ||
-    !shippingInfo.state ||
-    !shippingInfo.pincode ||
-    !shippingInfo.phone
-  ) {
-    toast.error("Please fill all delivery details");
-    return null;
-  }
+  /* ---------------- VALIDATION ---------------- */
 
-  setLoadingShipping(true);
-  try {
-    const res = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
-      {
-        pincode: shippingInfo.pincode,
-        weightKg: cartItems.reduce(
-          (w, i) => w + Number(i.quantity || 0) * 0.5,
-          0.5
-        ),
-        dims: { l: 30, b: 20, h: 10 },
+  const validateForm = () => {
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "address",
+      "city",
+      "state",
+      "pincode",
+      "phone",
+      "email",
+    ];
+
+    for (let field of requiredFields) {
+      if (!shippingInfo[field]) {
+        toast.error("Please fill all delivery details");
+        return false;
       }
-    );
+    }
 
-    if (res.data?.success) {
-      const amount = Number(res.data.amount || 0);
-      setShippingCharge(amount); // update UI
-      return amount;             // ✅ return immediately
-    } else {
+    if (shippingInfo.phone.length < 8) {
+      toast.error("Enter valid phone number");
+      return false;
+    }
+
+    return true;
+  };
+
+  /* ---------------- SHIPPING ---------------- */
+
+  const fetchShippingCharge = async () => {
+    setLoadingShipping(true);
+
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/shipping/delhivery`,
+        {
+          pincode: shippingInfo.pincode,
+          weightKg: cartItems.reduce(
+            (w, i) => w + Number(i.quantity || 0) * 0.5,
+            0.5
+          ),
+          dims: { l: 30, b: 20, h: 10 },
+        }
+      );
+
+      if (res.data?.success) {
+        const amount = Number(res.data.amount || 0);
+        setShippingCharge(amount);
+        return amount;
+      }
+
       toast.error("Shipping calculation failed");
       return null;
+    } catch {
+      toast.error("Shipping service unavailable");
+      return null;
+    } finally {
+      setLoadingShipping(false);
     }
-  } catch {
-    toast.error("Shipping service unavailable");
-    return null;
-  } finally {
-    setLoadingShipping(false);
-  }
-};
+  };
 
+  /* ---------------- LOAD RAZORPAY ---------------- */
 
-  /* ---------------- RAZORPAY ---------------- */
   const loadRazorpay = () =>
-    new Promise((resolve) => {
-      if (window.Razorpay) return resolve(true);
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
+  new Promise((resolve) => {
 
-  const handlePayment = async () => {
-  const shippingAmount = await fetchShippingCharge();
-  if (shippingAmount === null) return;
+    if (window.Razorpay) {
+      resolve(true);
+      return;
+    }
 
-  const payableAmount = safeSubtotal + shippingAmount;
+    const existingScript = document.getElementById("razorpay-script");
+
+    if (existingScript) {
+      resolve(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = "razorpay-script";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+
+    document.body.appendChild(script);
+  });
+
+
+  /* ---------------- PAYMENT ---------------- */
+
+ const handlePayment = async () => {
+
+  if (paymentProcessing) {
+    toast.info("Payment already in progress...");
+    return;
+  }
+
+  if (!validateForm()) return;
 
   setPaymentProcessing(true);
+
   try {
+
+    /* ---------- GET SHIPPING ---------- */
+
+    let shippingAmount = shippingCharge;
+
+    if (!shippingAmount) {
+      shippingAmount = await fetchShippingCharge();
+    }
+
+    if (shippingAmount === null) {
+      setPaymentProcessing(false);
+      return;
+    }
+
+    const payableAmount = safeSubtotal + shippingAmount;
+
+    /* ---------- LOAD RAZORPAY ---------- */
+
     const loaded = await loadRazorpay();
-    if (!loaded) return toast.error("Razorpay failed to load");
+    if (!loaded) throw new Error("Razorpay SDK failed");
+
+    /* ---------- CREATE CONFIG (OPTIONAL TOKEN) ---------- */
+
+    const config = token
+      ? {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      : {}; // ✅ guest allowed
+
+    /* ---------- CREATE ORDER ---------- */
 
     const orderRes = await axios.post(
       `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
       {
-        amount: Math.round(payableAmount), // ✅ correct total
+        amount: Math.round(payableAmount),
         cartItems,
+        isGuest: !token, // ⭐ VERY IMPORTANT (backend can track guest)
         shippingAddress: {
           ...shippingInfo,
           name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-          phoneNo: shippingInfo.phone,
+          phoneNo: shippingInfo.phone.replace(/\D/g, ""), // sanitize
           shippingCharge: shippingAmount,
-          billingAddress: billingSameAsShipping
-            ? shippingInfo
-            : billingInfo,
         },
       },
-      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+      config
     );
 
     const { orderId, dbOrderId } = orderRes.data;
 
+    /* ---------- OPEN RAZORPAY ---------- */
+
     const rzp = new window.Razorpay({
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       order_id: orderId,
-      amount: payableAmount * 100, // ✅ paise
+      amount: payableAmount * 100,
       currency: "INR",
       name: "Bright Rose",
+
       handler: async (response) => {
+
         await axios.post(
           `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
           { ...response, dbOrderId }
         );
+
         clearCart();
+
+        toast.success("Payment successful 🎉");
+
         navigate("/order-success");
+      },
+
+      modal: {
+        ondismiss: () => {
+          setPaymentProcessing(false);
+        },
       },
     });
 
     rzp.open();
-  } catch {
-    toast.error("Payment failed");
-  } finally {
+
+  } catch (err) {
+
+    console.error("Payment Error:", err?.response?.data || err);
+
+    if (err?.response?.status === 401) {
+
+      // This should NOT happen after backend fix
+      toast.error("Checkout unavailable. Please try again.");
+
+    } else if (err?.response?.data?.message) {
+
+      toast.error(err.response.data.message);
+
+    } else {
+
+      toast.error("Payment failed. Please try again.");
+    }
+
     setPaymentProcessing(false);
   }
 };
+
 
 
   /* ---------------- UI ---------------- */
@@ -318,7 +405,8 @@ export default function Checkout() {
             className="border w-full px-3 py-3 mb-6 rounded"
             placeholder="Phone"
             onChange={(e) =>
-              setShippingInfo({ ...shippingInfo, phone: e.target.value })
+              setShippingInfo({ ...shippingInfo,phone: e.target.value.replace(/\D/g, "")
+ })
             }
           />
 
