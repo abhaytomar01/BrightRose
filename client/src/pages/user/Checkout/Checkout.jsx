@@ -1,6 +1,6 @@
+
 // client/src/pages/user/Checkout/Checkout.jsx
 import { useState } from "react";
-import Select from "react-select";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
@@ -9,10 +9,6 @@ import { useAuth } from "../../../context/auth";
 import upi from "../../../assets/images/upi.svg";
 import visa from "../../../assets/images/visa.svg";
 import mastercard from "../../../assets/images/master.svg";
-import { countries } from "./countries.js";
-import { states } from "./states.js";
-import { countryCodes } from "./countryCodes.js";
-
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -27,56 +23,17 @@ export default function Checkout() {
   const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
 
   const [shippingInfo, setShippingInfo] = useState({
-  country: "",
-  phoneCode: "",
-  firstName: "",
-  lastName: "",
-  email: authUser?.user?.email || "",
-  address: "",
-  apartment: "",
-  city: "",
-  state: "Delhi",
-  pincode: "",
-  phone: "",
-});
-
-const [errors, setErrors] = useState({});
-
-const selectStyles = {
-  control: (base, state) => ({
-    ...base,
-    minHeight: "52px",   // 🔥 matches py-3 inputs
-    height: "52px",
-    borderRadius: "6px",
-    borderColor: state.isFocused ? "#2563eb" : base.borderColor,
-    boxShadow: "none",
-    "&:hover": {
-      borderColor: "#2563eb",
-    },
-  }),
-
-  valueContainer: (base) => ({
-    ...base,
-    height: "52px",
-    padding: "0 12px",
-  }),
-
-  input: (base) => ({
-    ...base,
-    margin: "0px",
-  }),
-
-  indicatorsContainer: (base) => ({
-    ...base,
-    height: "52px",
-  }),
-
-  placeholder: (base) => ({
-    ...base,
-    color: "#9ca3af", // matches Tailwind gray-400
-  }),
-};
-
+    country: "India",
+    firstName: "",
+    lastName: "",
+    email: authUser?.user?.email || "",
+    address: "",
+    apartment: "",
+    city: "",
+    state: "Delhi",
+    pincode: "",
+    phone: "",
+  });
 
   const [billingInfo, setBillingInfo] = useState({
     country: "India",
@@ -94,32 +51,20 @@ const selectStyles = {
   const taxAmount = +(safeSubtotal * 0.1526).toFixed(2); // example GST ~15.26%
   const finalTotal = safeSubtotal + shippingCharge;
 
-  /* ---------------- VALIDATION ---------------- */
-const validateFields = () => {
-  const newErrors = {};
-
-  if (!shippingInfo.phoneCode)
-    newErrors.phoneCode = "Select country code";
-
-  if (!shippingInfo.phone)
-    newErrors.phone = "Enter mobile number";
-
-  else if (shippingInfo.phone.length < 6)
-    newErrors.phone = "Invalid mobile number";
-
-  setErrors(newErrors);
-
-  return Object.keys(newErrors).length === 0;
-};
-
-
   /* ---------------- SHIPPING CALC ---------------- */
   const fetchShippingCharge = async () => {
-if (!validateFields()) {
-  toast.error("Please fill required fields");
-  return null;
-}
-
+  if (
+    !shippingInfo.firstName ||
+    !shippingInfo.lastName ||
+    !shippingInfo.address ||
+    !shippingInfo.city ||
+    !shippingInfo.state ||
+    !shippingInfo.pincode ||
+    !shippingInfo.phone
+  ) {
+    toast.error("Please fill all delivery details");
+    return null;
+  }
 
   setLoadingShipping(true);
   try {
@@ -182,7 +127,7 @@ if (!validateFields()) {
         shippingAddress: {
           ...shippingInfo,
           name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-phoneNo: `${shippingInfo.phoneCode}${shippingInfo.phone}`,
+          phoneNo: shippingInfo.phone,
           shippingCharge: shippingAmount,
           billingAddress: billingSameAsShipping
             ? shippingInfo
@@ -248,20 +193,39 @@ phoneNo: `${shippingInfo.phoneCode}${shippingInfo.phone}`,
           {/* DELIVERY */}
           <h2 className="text-lg font-semibold mb-4">Delivery</h2>
 
-          <Select
-          styles={selectStyles}
-  options={countries}
-  placeholder="Select country"
-  value={countries.find(c => c.value === shippingInfo.country)}
-  onChange={(selected) =>
-    setShippingInfo({
-      ...shippingInfo,
-      country: selected.value,
-    })
-  }
-  className="mb-4"
-  isSearchable
-/>
+          <select className="border w-full px-3 py-3 mb-4 rounded">
+         <option>India</option>
+<option>United States</option>
+<option>United Kingdom</option>
+<option>Australia</option>
+<option>Canada</option>
+<option>New Zealand</option>
+<option>Singapore</option>
+<option>United Arab Emirates</option>
+<option>Saudi Arabia</option>
+<option>Germany</option>
+<option>France</option>
+<option>Netherlands</option>
+<option>Italy</option>
+<option>Spain</option>
+<option>Switzerland</option>
+<option>Sweden</option>
+<option>Norway</option>
+<option>Denmark</option>
+<option>Ireland</option>
+<option>South Africa</option>
+<option>Japan</option>
+<option>South Korea</option>
+<option>China</option>
+<option>Malaysia</option>
+<option>Thailand</option>
+<option>Indonesia</option>
+<option>Philippines</option>
+<option>Brazil</option>
+<option>Mexico</option>
+<option>Turkey</option>
+
+          </select>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
@@ -304,20 +268,43 @@ phoneNo: `${shippingInfo.phoneCode}${shippingInfo.phone}`,
                 setShippingInfo({ ...shippingInfo, city: e.target.value })
               }
             />
-        <Select
-        styles={selectStyles}
-  options={states}
-  placeholder="Select state"
-  value={states.find(s => s.value === shippingInfo.state)}
-  onChange={(selected) =>
-    setShippingInfo({
-      ...shippingInfo,
-      state: selected.value,
-    })
-  }
-  isSearchable
-/>
+            <select
+              className="border px-3 py-3 rounded"
+              value={shippingInfo.state}
+              onChange={(e) =>
+                setShippingInfo({ ...shippingInfo, state: e.target.value })
+              }
+            >
+              <option>Andhra Pradesh</option>
+<option>Arunachal Pradesh</option>
+<option>Assam</option>
+<option>Bihar</option>
+<option>Chhattisgarh</option>
+<option>Goa</option>
+<option>Gujarat</option>
+<option>Haryana</option>
+<option>Himachal Pradesh</option>
+<option>Jharkhand</option>
+<option>Karnataka</option>
+<option>Kerala</option>
+<option>Madhya Pradesh</option>
+<option>Maharashtra</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Mizoram</option>
+<option>Nagaland</option>
+<option>Odisha</option>
+<option>Punjab</option>
+<option>Rajasthan</option>
+<option>Sikkim</option>
+<option>Tamil Nadu</option>
+<option>Telangana</option>
+<option>Tripura</option>
+<option>Uttar Pradesh</option>
+<option>Uttarakhand</option>
+<option>West Bengal</option>
 
+            </select>
             <input
               className="border px-3 py-3 rounded"
               placeholder="PIN code"
@@ -327,67 +314,13 @@ phoneNo: `${shippingInfo.phoneCode}${shippingInfo.phone}`,
             />
           </div>
 
-        <div className="mb-6">
-  <div className="flex gap-2">
-
-    {/* COUNTRY CODE */}
-<Select
-styles={selectStyles}
-  options={countryCodes.map(c => ({
-    value: c.dial_code,
-    label: `${c.name} (${c.dial_code})`
-  }))}
-  placeholder="Country code"
-  value={
-    countryCodes.find(c => c.dial_code === shippingInfo.phoneCode)
-      ? {
-          value: shippingInfo.phoneCode,
-          label: countryCodes.find(
-            c => c.dial_code === shippingInfo.phoneCode
-          ).name + ` (${shippingInfo.phoneCode})`
-        }
-      : null
-  }
-  onChange={(selected) =>
-    setShippingInfo({
-      ...shippingInfo,
-      phoneCode: selected.value,
-    })
-  }
-  className="w-full sm:w-44"
-  isSearchable
-/>
-
-
-
-    {/* PHONE */}
-    <input
-    type="tel"
-      value={shippingInfo.phone}
-      placeholder="Mobile number"
-      className={`border flex-1 px-3 py-3 text-base rounded ${
-        errors.phone ? "border-red-500" : ""
-      }`}
-     onChange={(e) => {
-  const numbersOnly = e.target.value.replace(/\D/g, "");
-
-  if (numbersOnly.length <= 12) { // prevents crazy input
-    setShippingInfo({
-      ...shippingInfo,
-      phone: numbersOnly,
-    });
-  }
-}}
-
-    />
-  </div>
-
-  {(errors.phoneCode || errors.phone) && (
-    <p className="text-red-500 text-xs mt-1">
-      {errors.phoneCode || errors.phone}
-    </p>
-  )}
-</div>
+          <input
+            className="border w-full px-3 py-3 mb-6 rounded"
+            placeholder="Phone"
+            onChange={(e) =>
+              setShippingInfo({ ...shippingInfo, phone: e.target.value })
+            }
+          />
 
           {/* BILLING */}
           <h2 className="text-lg font-semibold mb-4">Billing address</h2>
@@ -450,12 +383,7 @@ styles={selectStyles}
   </div>
    <button
             onClick={handlePayment}
-           disabled={
-  paymentProcessing ||
-  !shippingInfo.phone ||
-  !shippingInfo.phoneCode
-}
-
+            disabled={paymentProcessing}
             className="w-full bg-blue-600 text-white py-4 rounded text-lg"
           >
             {paymentProcessing ? "Processing..." : "Pay now"}
