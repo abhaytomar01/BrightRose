@@ -168,13 +168,15 @@ console.log("TOKEN:", token);
 
     /* ---------- CREATE CONFIG (OPTIONAL TOKEN) ---------- */
 
-    const config = token
-      ? {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      : {}; // ✅ guest allowed
+    const config =
+  token && token.trim().length > 0
+    ? {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    : undefined;
+
 
     /* ---------- CREATE ORDER ---------- */
 
