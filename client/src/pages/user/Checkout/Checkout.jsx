@@ -133,7 +133,8 @@ export default function Checkout() {
   /* ---------------- PAYMENT ---------------- */
 
  const handlePayment = async () => {
-
+console.log("AUTH USER:", authUser);
+console.log("TOKEN:", token);
   if (paymentProcessing) {
     toast.info("Payment already in progress...");
     return;
@@ -447,9 +448,8 @@ export default function Checkout() {
           {/* PAYMENT */}
           {/* PAYMENT */}
 <h2 className="text-lg font-semibold mb-2">Payment</h2>
-console.log("AUTH USER:", authUser);
-console.log("TOKEN:", token);
-          
+
+
 <p className="text-sm text-gray-500 mb-3">
   All transactions are secure and encrypted.
 </p>
