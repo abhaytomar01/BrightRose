@@ -113,9 +113,12 @@ export const deleteProduct = async (req, res) => {
 // FILTER PRODUCTS
 // ===============================
 // controllers/product/productController.js
+// controllers/product/productController.js
+import productModel from "../../models/productModel.js";
+
 export const filterProducts = async (req, res) => {
   try {
-    console.log("RAW QUERY:", req.query);  // 👈 add this
+    console.log("RAW QUERY:", req.query);
 
     const {
       category,
@@ -129,19 +132,28 @@ export const filterProducts = async (req, res) => {
 
     const filter = {};
 
+    // Category, weave, style
     if (category) filter.category = category;
     if (weavingSlug) filter.weavingSlug = weavingSlug;
     if (tagSlugs) filter.tagSlugs = tagSlugs;
 
-    if (size) filter.sizes = size;  // match any element in sizes array
+    // SIZE: match any element in `sizes` array
+    // Frontend sends "XS","S","M","L","XL","XXL","Free Size"
+    if (size) {
+      const sizeValue = size.trim(); // keep case as stored
+      filter.sizes = { $in: [sizeValue] };
+    }
 
+    // COLOR: case-insensitive partial match on `color` string
     if (color) {
+      const colorValue = color.trim();
       filter.color = {
-        $regex: color.trim(),
+        $regex: colorValue,
         $options: "i",
       };
     }
 
+    // PRICE RANGE
     if (priceMin !== undefined && priceMax !== undefined) {
       filter.price = {
         $gte: Number(priceMin) || 0,
@@ -149,9 +161,9 @@ export const filterProducts = async (req, res) => {
       };
     }
 
-    console.log("FILTER:", filter);  // already there
+    console.log("FILTER:", filter);
 
-    const products = await productModel.find(filter);
+    const products = await productModel.find(filter).sort({ createdAt: -1 });
 
     return res.json({
       products,
@@ -162,4 +174,5 @@ export const filterProducts = async (req, res) => {
     res.status(500).json({ error: "Failed to filter products" });
   }
 };
+
 

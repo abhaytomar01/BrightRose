@@ -55,6 +55,16 @@ const Products = () => {
   const currentProducts = products.slice(startIndex, endIndex);
   const totalPages = Math.ceil(productsCount / productsPerPage);
 
+  // 🔹 Scroll to top whenever page changes
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant", // or "smooth" if you prefer
+  });
+}, [currentPage]);
+
+
   // Reset pagination when ANY filter changes 👇
   useEffect(() => {
     setCurrentPage(1);
@@ -290,20 +300,20 @@ const Products = () => {
                 </div>
 
                 {/* Pagination */}
-                {productsCount > productsPerPage && (
-                  <div className="flex justify-center mt-8">
-                    <Pagination
-                      count={totalPages}
-                      page={currentPage}
-                      onChange={(e, page) => {
-                        setCurrentPage(page);
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
-                      color="primary"
-                      size="large"
-                    />
-                  </div>
-                )}
+               {productsCount > productsPerPage && (
+  <div className="flex justify-center mt-8">
+    <Pagination
+      count={totalPages}
+      page={currentPage}
+      onChange={(e, page) => {
+        setCurrentPage(page);
+      }}
+      color="primary"
+      size="large"
+    />
+  </div>
+)}
+
               </>
             )}
           </div>
