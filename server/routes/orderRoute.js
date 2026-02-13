@@ -5,11 +5,11 @@ import {
   getUserOrders,
   getOrderById,         // user view
   getOrderByIdAdmin,    // admin single order
-  getAllOrders,
+  getAllOrders, 
   updateOrderStatus
-} from "./server/controllers/user/orderController.js";
+} from "../controllers/user/orderController.js";
 
-import { requireSignIn, isAdmin } from "./server/middleware/authMiddleware.js";
+import { requireSignIn, isAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

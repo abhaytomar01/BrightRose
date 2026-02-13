@@ -15,7 +15,6 @@ export default function Checkout() {
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
 
-  const token = authUser?.token;
 
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
@@ -168,33 +167,33 @@ console.log("TOKEN:", token);
 
     /* ---------- CREATE CONFIG (OPTIONAL TOKEN) ---------- */
 
-    const config =
-  token && token.trim().length > 0
-    ? {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    : undefined;
+  //   const config =
+  // token && token.trim().length > 0
+  //   ? {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     }
+  //   : undefined;
 
 
     /* ---------- CREATE ORDER ---------- */
 
     const orderRes = await axios.post(
-      `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-      {
-        amount: Math.round(payableAmount),
-        cartItems,
-        isGuest: !token, // ⭐ VERY IMPORTANT (backend can track guest)
-        shippingAddress: {
-          ...shippingInfo,
-          name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-          phoneNo: shippingInfo.phone.replace(/\D/g, ""), // sanitize
-          shippingCharge: shippingAmount,
-        },
-      },
-      config
-    );
+  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+  {
+    amount: Math.round(payableAmount),
+    cartItems,
+    isGuest: !authUser?.token, // still tells backend if this is guest
+    shippingAddress: {
+      ...shippingInfo,
+      name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+      phoneNo: shippingInfo.phone.replace(/\D/g, ""),
+      shippingCharge: shippingAmount,
+    },
+  }
+  // no config needed – axios default header already set (for logged-in users)
+);
 
     const { orderId, dbOrderId } = orderRes.data;
 
