@@ -15,7 +15,6 @@ export default function Checkout() {
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
 
-
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [paymentProcessing, setPaymentProcessing] = useState(false);
@@ -104,160 +103,134 @@ export default function Checkout() {
   /* ---------------- LOAD RAZORPAY ---------------- */
 
   const loadRazorpay = () =>
-  new Promise((resolve) => {
+    new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
 
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
+      const existingScript = document.getElementById("razorpay-script");
 
-    const existingScript = document.getElementById("razorpay-script");
+      if (existingScript) {
+        resolve(true);
+        return;
+      }
 
-    if (existingScript) {
-      resolve(true);
-      return;
-    }
+      const script = document.createElement("script");
+      script.id = "razorpay-script";
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
-    const script = document.createElement("script");
-    script.id = "razorpay-script";
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
 
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-
-    document.body.appendChild(script);
-  });
-
+      document.body.appendChild(script);
+    });
 
   /* ---------------- PAYMENT ---------------- */
 
- const handlePayment = async () => {
-console.log("AUTH USER:", authUser);
-console.log("TOKEN:", token);
-  if (paymentProcessing) {
-    toast.info("Payment already in progress...");
-    return;
-  }
+  const handlePayment = async () => {
+    console.log("AUTH USER:", authUser);
+    console.log("TOKEN:", authUser?.token);
 
-  if (!validateForm()) return;
-
-  setPaymentProcessing(true);
-
-  try {
-
-    /* ---------- GET SHIPPING ---------- */
-
-    let shippingAmount = shippingCharge;
-
-    if (!shippingAmount) {
-      shippingAmount = await fetchShippingCharge();
-    }
-
-    if (shippingAmount === null) {
-      setPaymentProcessing(false);
+    if (paymentProcessing) {
+      toast.info("Payment already in progress...");
       return;
     }
 
-    const payableAmount = safeSubtotal + shippingAmount;
+    if (!validateForm()) return;
 
-    /* ---------- LOAD RAZORPAY ---------- */
+    setPaymentProcessing(true);
 
-    const loaded = await loadRazorpay();
-    if (!loaded) throw new Error("Razorpay SDK failed");
+    try {
+      /* ---------- GET SHIPPING ---------- */
 
-    /* ---------- CREATE CONFIG (OPTIONAL TOKEN) ---------- */
+      let shippingAmount = shippingCharge;
 
-  //   const config =
-  // token && token.trim().length > 0
-  //   ? {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     }
-  //   : undefined;
+      if (!shippingAmount) {
+        shippingAmount = await fetchShippingCharge();
+      }
 
+      if (shippingAmount === null) {
+        setPaymentProcessing(false);
+        return;
+      }
 
-    /* ---------- CREATE ORDER ---------- */
+      const payableAmount = safeSubtotal + shippingAmount;
 
-    const orderRes = await axios.post(
-  `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
-  {
-    amount: Math.round(payableAmount),
-    cartItems,
-    isGuest: !authUser?.token, // still tells backend if this is guest
-    shippingAddress: {
-      ...shippingInfo,
-      name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
-      phoneNo: shippingInfo.phone.replace(/\D/g, ""),
-      shippingCharge: shippingAmount,
-    },
-  }
-  // no config needed – axios default header already set (for logged-in users)
-);
+      /* ---------- LOAD RAZORPAY ---------- */
 
-    const { orderId, dbOrderId } = orderRes.data;
+      const loaded = await loadRazorpay();
+      if (!loaded) throw new Error("Razorpay SDK failed");
 
-    /* ---------- OPEN RAZORPAY ---------- */
+      /* ---------- CREATE ORDER ---------- */
 
-    const rzp = new window.Razorpay({
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      order_id: orderId,
-      amount: payableAmount * 100,
-      currency: "INR",
-      name: "Bright Rose",
+      const orderRes = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/create-order`,
+        {
+          amount: Math.round(payableAmount),
+          cartItems,
+          isGuest: !authUser?.token, // still tells backend if this is guest
+          shippingAddress: {
+            ...shippingInfo,
+            name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+            phoneNo: shippingInfo.phone.replace(/\D/g, ""),
+            shippingCharge: shippingAmount,
+          },
+        }
+        // no config needed – axios default header already set (for logged-in users)
+      );
 
-      handler: async (response) => {
+      const { orderId, dbOrderId } = orderRes.data;
 
-        await axios.post(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
-          { ...response, dbOrderId }
-        );
+      /* ---------- OPEN RAZORPAY ---------- */
 
-        clearCart();
+      const rzp = new window.Razorpay({
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        order_id: orderId,
+        amount: payableAmount * 100,
+        currency: "INR",
+        name: "Bright Rose",
 
-        toast.success("Payment successful 🎉");
+        handler: async (response) => {
+          await axios.post(
+            `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
+            { ...response, dbOrderId }
+          );
 
-        navigate("/order-success");
-      },
+          clearCart();
 
-      modal: {
-        ondismiss: () => {
-          setPaymentProcessing(false);
+          toast.success("Payment successful 🎉");
+
+          navigate("/order-success");
         },
-      },
-    });
 
-    rzp.open();
+        modal: {
+          ondismiss: () => {
+            setPaymentProcessing(false);
+          },
+        },
+      });
 
-  } catch (err) {
+      rzp.open();
+    } catch (err) {
+      console.error("Payment Error:", err?.response?.data || err);
 
-    console.error("Payment Error:", err?.response?.data || err);
+      if (err?.response?.status === 401) {
+        toast.error("Checkout unavailable. Please try again.");
+      } else if (err?.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Payment failed. Please try again.");
+      }
 
-    if (err?.response?.status === 401) {
-
-      // This should NOT happen after backend fix
-      toast.error("Checkout unavailable. Please try again.");
-
-    } else if (err?.response?.data?.message) {
-
-      toast.error(err.response.data.message);
-
-    } else {
-
-      toast.error("Payment failed. Please try again.");
+      setPaymentProcessing(false);
     }
-
-    setPaymentProcessing(false);
-  }
-};
-
-
+  };
 
   /* ---------------- UI ---------------- */
   return (
     <div className="min-h-screen bg-white mt-10 md:mt-20">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-10 px-4">
-
         {/* LEFT */}
         <div>
           <h1 className="text-xl font-semibold mb-6">Contact</h1>
@@ -283,37 +256,36 @@ console.log("TOKEN:", token);
           <h2 className="text-lg font-semibold mb-4">Delivery</h2>
 
           <select className="border w-full px-3 py-3 mb-4 rounded">
-         <option>India</option>
-<option>United States</option>
-<option>United Kingdom</option>
-<option>Australia</option>
-<option>Canada</option>
-<option>New Zealand</option>
-<option>Singapore</option>
-<option>United Arab Emirates</option>
-<option>Saudi Arabia</option>
-<option>Germany</option>
-<option>France</option>
-<option>Netherlands</option>
-<option>Italy</option>
-<option>Spain</option>
-<option>Switzerland</option>
-<option>Sweden</option>
-<option>Norway</option>
-<option>Denmark</option>
-<option>Ireland</option>
-<option>South Africa</option>
-<option>Japan</option>
-<option>South Korea</option>
-<option>China</option>
-<option>Malaysia</option>
-<option>Thailand</option>
-<option>Indonesia</option>
-<option>Philippines</option>
-<option>Brazil</option>
-<option>Mexico</option>
-<option>Turkey</option>
-
+            <option>India</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Australia</option>
+            <option>Canada</option>
+            <option>New Zealand</option>
+            <option>Singapore</option>
+            <option>United Arab Emirates</option>
+            <option>Saudi Arabia</option>
+            <option>Germany</option>
+            <option>France</option>
+            <option>Netherlands</option>
+            <option>Italy</option>
+            <option>Spain</option>
+            <option>Switzerland</option>
+            <option>Sweden</option>
+            <option>Norway</option>
+            <option>Denmark</option>
+            <option>Ireland</option>
+            <option>South Africa</option>
+            <option>Japan</option>
+            <option>South Korea</option>
+            <option>China</option>
+            <option>Malaysia</option>
+            <option>Thailand</option>
+            <option>Indonesia</option>
+            <option>Philippines</option>
+            <option>Brazil</option>
+            <option>Mexico</option>
+            <option>Turkey</option>
           </select>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -365,34 +337,33 @@ console.log("TOKEN:", token);
               }
             >
               <option>Andhra Pradesh</option>
-<option>Arunachal Pradesh</option>
-<option>Assam</option>
-<option>Bihar</option>
-<option>Chhattisgarh</option>
-<option>Goa</option>
-<option>Gujarat</option>
-<option>Haryana</option>
-<option>Himachal Pradesh</option>
-<option>Jharkhand</option>
-<option>Karnataka</option>
-<option>Kerala</option>
-<option>Madhya Pradesh</option>
-<option>Maharashtra</option>
-<option>Manipur</option>
-<option>Meghalaya</option>
-<option>Mizoram</option>
-<option>Nagaland</option>
-<option>Odisha</option>
-<option>Punjab</option>
-<option>Rajasthan</option>
-<option>Sikkim</option>
-<option>Tamil Nadu</option>
-<option>Telangana</option>
-<option>Tripura</option>
-<option>Uttar Pradesh</option>
-<option>Uttarakhand</option>
-<option>West Bengal</option>
-
+              <option>Arunachal Pradesh</option>
+              <option>Assam</option>
+              <option>Bihar</option>
+              <option>Chhattisgarh</option>
+              <option>Goa</option>
+              <option>Gujarat</option>
+              <option>Haryana</option>
+              <option>Himachal Pradesh</option>
+              <option>Jharkhand</option>
+              <option>Karnataka</option>
+              <option>Kerala</option>
+              <option>Madhya Pradesh</option>
+              <option>Maharashtra</option>
+              <option>Manipur</option>
+              <option>Meghalaya</option>
+              <option>Mizoram</option>
+              <option>Nagaland</option>
+              <option>Odisha</option>
+              <option>Punjab</option>
+              <option>Rajasthan</option>
+              <option>Sikkim</option>
+              <option>Tamil Nadu</option>
+              <option>Telangana</option>
+              <option>Tripura</option>
+              <option>Uttar Pradesh</option>
+              <option>Uttarakhand</option>
+              <option>West Bengal</option>
             </select>
             <input
               className="border px-3 py-3 rounded"
@@ -407,8 +378,10 @@ console.log("TOKEN:", token);
             className="border w-full px-3 py-3 mb-6 rounded"
             placeholder="Phone"
             onChange={(e) =>
-              setShippingInfo({ ...shippingInfo,phone: e.target.value.replace(/\D/g, "")
- })
+              setShippingInfo({
+                ...shippingInfo,
+                phone: e.target.value.replace(/\D/g, ""),
+              })
             }
           />
 
@@ -435,61 +408,86 @@ console.log("TOKEN:", token);
 
           {!billingSameAsShipping && (
             <div className="border rounded-lg p-4 mb-6 space-y-4 bg-gray-50">
-              <input className="border w-full px-3 py-2 rounded" placeholder="Address" />
-              <input className="border w-full px-3 py-2 rounded" placeholder="Apartment, suite" />
+              <input
+                className="border w-full px-3 py-2 rounded"
+                placeholder="Address"
+              />
+              <input
+                className="border w-full px-3 py-2 rounded"
+                placeholder="Apartment, suite"
+              />
               <div className="grid grid-cols-3 gap-3">
-                <input className="border px-3 py-2 rounded" placeholder="City" />
-                <input className="border px-3 py-2 rounded" placeholder="State" />
-                <input className="border px-3 py-2 rounded" placeholder="PIN" />
+                <input
+                  className="border px-3 py-2 rounded"
+                  placeholder="City"
+                />
+                <input
+                  className="border px-3 py-2 rounded"
+                  placeholder="State"
+                />
+                <input
+                  className="border px-3 py-2 rounded"
+                  placeholder="PIN"
+                />
               </div>
-              <input className="border w-full px-3 py-2 rounded" placeholder="Phone (optional)" />
+              <input
+                className="border w-full px-3 py-2 rounded"
+                placeholder="Phone (optional)"
+              />
             </div>
           )}
 
           {/* PAYMENT */}
-          {/* PAYMENT */}
-<h2 className="text-lg font-semibold mb-2">Payment</h2>
+          <h2 className="text-lg font-semibold mb-2">Payment</h2>
 
+          <p className="text-sm text-gray-500 mb-3">
+            All transactions are secure and encrypted.
+          </p>
 
-<p className="text-sm text-gray-500 mb-3">
-  All transactions are secure and encrypted.
-</p>
+          <div className="border border-blue-600 rounded-lg overflow-hidden mb-6">
+            <div className="flex items-center justify-between p-4 bg-blue-50">
+              <span className="text-sm font-medium">
+                Razorpay Secure (UPI, Cards, Int&apos;l Cards, Wallets)
+              </span>
 
-<div className="border border-blue-600 rounded-lg overflow-hidden mb-6">
-  <div className="flex items-center justify-between p-4 bg-blue-50">
-    <span className="text-sm font-medium">
-      Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)
-    </span>
+              <div className="flex items-center gap-2">
+                <img src={upi} alt="UPI" className="h-5" />
+                <img src={visa} alt="Visa" className="h-5" />
+                <img src={mastercard} alt="Mastercard" className="h-5" />
+                <span className="text-xs border px-2 py-0.5 rounded">+17</span>
+              </div>
+            </div>
 
-    <div className="flex items-center gap-2">
-      <img src={upi} alt="UPI" className="h-5" />
-      <img src={visa} alt="Visa" className="h-5" />
-      <img src={mastercard} alt="Mastercard" className="h-5" />
-      <span className="text-xs border px-2 py-0.5 rounded">+17</span>
-    </div>
-  </div>
-
-  <div className="p-4 text-sm text-gray-600 bg-white">
-    You'll be redirected to Razorpay Secure (UPI, Cards, Int'l Cards, Wallets)
-    to complete your purchase.
-  </div>
-   <button
-            onClick={handlePayment}
-            disabled={paymentProcessing}
-            className="w-full bg-blue-600 text-white py-4 rounded text-lg"
-          >
-            {paymentProcessing ? "Processing..." : "Pay now"}
-          </button>
-</div>
-
+            <div className="p-4 text-sm text-gray-600 bg-white">
+              You&apos;ll be redirected to Razorpay Secure (UPI, Cards, Int&apos;l
+              Cards, Wallets) to complete your purchase.
+            </div>
+            <button
+              onClick={handlePayment}
+              disabled={paymentProcessing}
+              className="w-full bg-blue-600 text-white py-4 rounded text-lg"
+            >
+              {paymentProcessing ? "Processing..." : "Pay now"}
+            </button>
+          </div>
 
           {/* POLICIES */}
           <div className="text-sm text-gray-500 mt-6 space-x-3 mb-6">
-            <Link to="/exchange-return" className="underline">Exchange/Return policy</Link>
-            <Link to="/exchange-return" className="underline">Shipping</Link>
-            <Link to="/privacy" className="underline">Privacy policy</Link>
-            <Link to="/terms" className="underline">Terms of service</Link>
-            <Link to="/contact" className="underline">Contact</Link>
+            <Link to="/exchange-return" className="underline">
+              Exchange/Return policy
+            </Link>
+            <Link to="/exchange-return" className="underline">
+              Shipping
+            </Link>
+            <Link to="/privacy" className="underline">
+              Privacy policy
+            </Link>
+            <Link to="/terms" className="underline">
+              Terms of service
+            </Link>
+            <Link to="/contact" className="underline">
+              Contact
+            </Link>
           </div>
         </div>
 
@@ -507,7 +505,10 @@ console.log("TOKEN:", token);
           ))}
 
           <div className="flex gap-2 my-4">
-            <input className="border flex-1 px-3 py-2 rounded" placeholder="Gift card" />
+            <input
+              className="border flex-1 px-3 py-2 rounded"
+              placeholder="Gift card"
+            />
             <button className="border px-4 rounded">Apply</button>
           </div>
 
@@ -518,15 +519,16 @@ console.log("TOKEN:", token);
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
-              <span>{shippingCharge ? `₹${shippingCharge}` : "Enter shipping address"}</span>
+              <span>
+                {shippingCharge
+                  ? `₹${shippingCharge}`
+                  : "Enter shipping address"}
+              </span>
             </div>
             <div className="flex justify-between font-semibold text-lg">
               <span>Total</span>
               <span>₹{finalTotal}</span>
             </div>
-            {/* <p className="text-xs text-gray-500">
-              Including ₹{taxAmount} in taxes
-            </p> */}
           </div>
         </div>
       </div>
