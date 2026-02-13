@@ -63,7 +63,7 @@ const SideFilter = ({
     "L",
     "XL",
     "XXL",
-    "Free Size",
+    
   ];
   const colorOptions = [
     "All",
@@ -71,10 +71,8 @@ const SideFilter = ({
     "Blue",
     "Green",
     "Black",
-    "White",
     "Pink",
     "Yellow",
-    "Purple",
     "Maroon",
     "Gold",
     "Ivory",
