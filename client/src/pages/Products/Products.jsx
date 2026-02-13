@@ -168,7 +168,7 @@ const Products = () => {
       />
 
       {/* FULL SCREEN MOBILE FILTER OVERLAY - UPDATED SideFilter props 👇 */}
-     // 🔥 UPDATED: Mobile Filter Popup with auto-close callback
+     {/* // 🔥 UPDATED: Mobile Filter Popup with auto-close callback */}
 {showFilterPopup && (
   <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
     {/* Header */}
