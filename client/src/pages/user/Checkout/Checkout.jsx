@@ -1,5 +1,3 @@
-// client/src/pages/user/Checkout/Checkout.jsx
-
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,6 +7,7 @@ import { useAuth } from "../../../context/auth";
 import upi from "../../../assets/images/upi.svg";
 import visa from "../../../assets/images/visa.svg";
 import mastercard from "../../../assets/images/master.svg";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector"; // NEW [web:54][web:58]
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -177,7 +176,7 @@ export default function Checkout() {
             shippingCharge: shippingAmount,
           },
         }
-        // no config needed – axios default header already set (for logged-in users)
+        // axios default header already set for logged-in users
       );
 
       const { orderId, dbOrderId } = orderRes.data;
@@ -255,38 +254,19 @@ export default function Checkout() {
           {/* DELIVERY */}
           <h2 className="text-lg font-semibold mb-4">Delivery</h2>
 
-          <select className="border w-full px-3 py-3 mb-4 rounded">
-            <option>India</option>
-            <option>United States</option>
-            <option>United Kingdom</option>
-            <option>Australia</option>
-            <option>Canada</option>
-            <option>New Zealand</option>
-            <option>Singapore</option>
-            <option>United Arab Emirates</option>
-            <option>Saudi Arabia</option>
-            <option>Germany</option>
-            <option>France</option>
-            <option>Netherlands</option>
-            <option>Italy</option>
-            <option>Spain</option>
-            <option>Switzerland</option>
-            <option>Sweden</option>
-            <option>Norway</option>
-            <option>Denmark</option>
-            <option>Ireland</option>
-            <option>South Africa</option>
-            <option>Japan</option>
-            <option>South Korea</option>
-            <option>China</option>
-            <option>Malaysia</option>
-            <option>Thailand</option>
-            <option>Indonesia</option>
-            <option>Philippines</option>
-            <option>Brazil</option>
-            <option>Mexico</option>
-            <option>Turkey</option>
-          </select>
+          {/* Country dropdown (react-country-region-selector) */}
+          <CountryDropdown
+            value={shippingInfo.country}
+            onChange={(val) =>
+              setShippingInfo({
+                ...shippingInfo,
+                country: val,
+                state: "", // reset state when country changes
+              })
+            }
+            classes="border w-full px-3 py-3 mb-4 rounded text-sm"
+            defaultOptionLabel="Select country"
+          />
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
@@ -329,42 +309,23 @@ export default function Checkout() {
                 setShippingInfo({ ...shippingInfo, city: e.target.value })
               }
             />
-            <select
-              className="border px-3 py-3 rounded"
+
+            {/* State / Region dropdown (react-country-region-selector) */}
+            <RegionDropdown
+              country={shippingInfo.country}
               value={shippingInfo.state}
-              onChange={(e) =>
-                setShippingInfo({ ...shippingInfo, state: e.target.value })
+              onChange={(val) =>
+                setShippingInfo({
+                  ...shippingInfo,
+                  state: val,
+                })
               }
-            >
-              <option>Andhra Pradesh</option>
-              <option>Arunachal Pradesh</option>
-              <option>Assam</option>
-              <option>Bihar</option>
-              <option>Chhattisgarh</option>
-              <option>Goa</option>
-              <option>Gujarat</option>
-              <option>Haryana</option>
-              <option>Himachal Pradesh</option>
-              <option>Jharkhand</option>
-              <option>Karnataka</option>
-              <option>Kerala</option>
-              <option>Madhya Pradesh</option>
-              <option>Maharashtra</option>
-              <option>Manipur</option>
-              <option>Meghalaya</option>
-              <option>Mizoram</option>
-              <option>Nagaland</option>
-              <option>Odisha</option>
-              <option>Punjab</option>
-              <option>Rajasthan</option>
-              <option>Sikkim</option>
-              <option>Tamil Nadu</option>
-              <option>Telangana</option>
-              <option>Tripura</option>
-              <option>Uttar Pradesh</option>
-              <option>Uttarakhand</option>
-              <option>West Bengal</option>
-            </select>
+              classes="border px-3 py-3 rounded text-sm w-full"
+              blankOptionLabel={
+                shippingInfo.country ? "Select state / region" : "Select country first"
+              }
+            />
+
             <input
               className="border px-3 py-3 rounded"
               placeholder="PIN code"

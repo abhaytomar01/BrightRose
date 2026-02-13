@@ -8,7 +8,7 @@ import PageNotFound from "../pages/PageNotFound";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
-
+import Founder from "../pages/founder/founder.jsx";
 // 🔹 User pages
 import Dashboard from "../pages/user/Dashboard";
 import Orders from "../pages/user/Orders/Orders";
@@ -59,6 +59,7 @@ const Routers = () => {
       <Route path="/products" element={<Products />} />
       <Route path="/search" element={<Products />} />
       <Route path="/atelier" element={<AtelierSection/>} />
+    <Route path="/founder" element={<Founder />} />
 
       {/* 🔹 Product Details Page */}
       <Route path="/product/:productId" element={<ProductPage />} />
