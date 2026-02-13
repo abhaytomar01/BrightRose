@@ -229,7 +229,7 @@ useEffect(() => {
 )}
 
 
-      <main className="w-full pt-2 pb-5 mt-6 md:mt-20 bg-pureWhite">
+      <main className="w-full pt-2 pb-5 mt-16 md:mt-16 bg-pureWhite">
         <div className="flex flex-col-reverse lg:flex-row gap-3 w-full px-2 sm:px-4 md:px-6 mt-2 md:mt-4">
           {/* Desktop Sidebar Filter - ALL PROPS 👇 */}
           <div className="hidden lg:block w-[23%] min-w-[280px]">
