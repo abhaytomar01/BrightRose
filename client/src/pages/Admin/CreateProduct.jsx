@@ -12,16 +12,18 @@ const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
-   { label: "Kanchipuram", value: "kanchipuram" },
+  { label: "-- Select Weave --", value: "" },
+  { label: "Kanchipuram", value: "kanchipuram" },
   { label: "Banarasi Brocade", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
   { label: "Handloom Plain", value: "plain" },
-  { label: "Kantha", value: "katan" },          // you want this to be kantha
+  { label: "Kantha", value: "kantha" },
   { label: "Pochampalley Ikkat", value: "pochampalley" },
   { label: "Narayanpet", value: "narayanpet" },
 ];
 
 const STYLE_OPTIONS = [
+  { label: "-- Select Style --", value: "" },
   { label: "Sarees", value: "sarees" },
   { label: "Dresses", value: "dresses" },
   { label: "Blazers", value: "blazers" },
@@ -33,6 +35,18 @@ const STYLE_OPTIONS = [
   { label: "Shirt", value: "shirt" },
 ];
 
+const FIELD_CONFIG = [
+  { key: "name",          label: "Product Name",   type: "text",     required: true },
+  { key: "fabric",        label: "Fabric",          type: "text",     required: false },
+  { key: "color",         label: "Color",           type: "text",     required: false },
+  { key: "weavingArt",    label: "Weaving Art",     type: "text",     required: false },
+  { key: "sku",           label: "SKU",             type: "text",     required: false },
+  { key: "price",         label: "Price (₹)",       type: "number",   required: false },
+  { key: "stock",         label: "Stock",           type: "number",   required: false },
+  { key: "description",   label: "Description",     type: "textarea", required: false },
+  { key: "specification", label: "Specification",   type: "textarea", required: false },
+  { key: "care",          label: "Care Instructions", type: "textarea", required: false },
+];
 
 const CreateProduct = () => {
   const { authAdmin } = useAuth();
@@ -54,14 +68,10 @@ const CreateProduct = () => {
 
   const [sizes, setSizes] = useState([...ALL_SIZES]);
   const [maxQuantity, setMaxQuantity] = useState(10);
-
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
-
   const [imagesPreview, setImagesPreview] = useState([]);
   const [imagesFiles, setImagesFiles] = useState([]);
-
-  // NEW: filter slug state
   const [weaveSlug, setWeaveSlug] = useState("");
   const [styleSlug, setStyleSlug] = useState("");
 
@@ -79,22 +89,17 @@ const CreateProduct = () => {
 
   const handleImages = (e) => {
     const files = Array.from(e.target.files || []);
-
     if (imagesFiles.length + files.length > MAX_IMAGES) {
       toast.warning(`Max ${MAX_IMAGES} images allowed`);
       return;
     }
-
     files.forEach((file) => {
       if (file.size > MAX_SIZE) {
         toast.warning("Image exceeds 50MB");
         return;
       }
-
       const reader = new FileReader();
-      reader.onload = () =>
-        setImagesPreview((prev) => [...prev, reader.result]);
-
+      reader.onload = () => setImagesPreview((prev) => [...prev, reader.result]);
       reader.readAsDataURL(file);
       setImagesFiles((prev) => [...prev, file]);
     });
@@ -121,7 +126,6 @@ const CreateProduct = () => {
         setIsSubmit(false);
         return;
       }
-
       if (!sizes.length) {
         toast.error("Please select at least one size");
         setIsSubmit(false);
@@ -130,14 +134,23 @@ const CreateProduct = () => {
 
       const fd = new FormData();
 
-      Object.keys(form).forEach((k) => fd.append(k, form[k] ?? ""));
-      fd.append("tags", JSON.stringify(tags));
-      fd.append("sizes", JSON.stringify(sizes));
-      fd.append("maxQuantity", String(maxQuantity));
+      // Append each field explicitly to guarantee all are sent
+      fd.append("name",          form.name);
+      fd.append("fabric",        form.fabric);
+      fd.append("color",         form.color);
+      fd.append("weavingArt",    form.weavingArt);
+      fd.append("description",   form.description);
+      fd.append("sku",           form.sku);
+      fd.append("price",         form.price);
+      fd.append("stock",         form.stock);
+      fd.append("care",          form.care);
+      fd.append("specification", form.specification);
 
-      // send slugs used by filters
+      fd.append("tags",        JSON.stringify(tags));
+      fd.append("sizes",       JSON.stringify(sizes));
+      fd.append("maxQuantity", String(maxQuantity));
       fd.append("weavingSlug", weaveSlug || "");
-      fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
+      fd.append("tagSlugs",    JSON.stringify(styleSlug ? [styleSlug] : []));
 
       imagesFiles.forEach((file) => fd.append("images", file));
 
@@ -172,21 +185,39 @@ const CreateProduct = () => {
           className="bg-white p-4 rounded shadow flex flex-col gap-4"
           onSubmit={submitHandler}
         >
-          {Object.keys(form).map((key) => (
-            <input
-              key={key}
-              name={key}
-              placeholder={key}
-              value={form[key]}
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
+          {/* All text / number / textarea fields with proper labels */}
+          {FIELD_CONFIG.map(({ key, label, type, required }) => (
+            <div key={key} className="flex flex-col gap-1">
+              <label className="font-medium text-sm">
+                {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              {type === "textarea" ? (
+                <textarea
+                  name={key}
+                  placeholder={`Enter ${label.toLowerCase()}`}
+                  value={form[key]}
+                  onChange={handleChange}
+                  rows={3}
+                  className="border p-2 rounded resize-y"
+                />
+              ) : (
+                <input
+                  type={type}
+                  name={key}
+                  placeholder={`Enter ${label.toLowerCase()}`}
+                  value={form[key]}
+                  onChange={handleChange}
+                  className="border p-2 rounded"
+                />
+              )}
+            </div>
           ))}
 
           {/* Weave + Style slugs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-medium mb-1">Weave (slug)</label>
+              <label className="block font-medium mb-1">Weave</label>
               <select
                 value={weaveSlug}
                 onChange={(e) => setWeaveSlug(e.target.value)}
@@ -199,9 +230,8 @@ const CreateProduct = () => {
                 ))}
               </select>
             </div>
-
             <div>
-              <label className="block font-medium mb-1">Style (slug)</label>
+              <label className="block font-medium mb-1">Style</label>
               <select
                 value={styleSlug}
                 onChange={(e) => setStyleSlug(e.target.value)}
@@ -216,7 +246,7 @@ const CreateProduct = () => {
             </div>
           </div>
 
-          {/* sizes */}
+          {/* Sizes */}
           <div>
             <label className="block font-medium mb-2">Available Sizes</label>
             <div className="flex gap-2 flex-wrap">
@@ -243,11 +273,9 @@ const CreateProduct = () => {
             </p>
           </div>
 
-          {/* maxQuantity */}
+          {/* Max Quantity */}
           <div>
-            <label className="block font-medium mb-2">
-              Max Quantity per order
-            </label>
+            <label className="block font-medium mb-2">Max Quantity per order</label>
             <input
               type="number"
               min={1}
@@ -258,34 +286,43 @@ const CreateProduct = () => {
               className="border p-2 rounded w-40"
             />
             <p className="text-sm text-neutral-500 mt-1">
-              User cannot increase quantity beyond this number (also limited by
-              stock).
+              User cannot increase quantity beyond this number (also limited by stock).
             </p>
           </div>
 
           {/* Tags */}
           <div>
-            <input
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              placeholder="Add tag"
-              className="border p-2"
-            />
-            <button
-              type="button"
-              onClick={addTag}
-              className="ml-2 bg-blue-500 text-white px-3 rounded"
-            >
-              Add
-            </button>
-
+            <label className="block font-medium mb-2">Tags</label>
+            <div className="flex gap-2">
+              <input
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
+                placeholder="Add tag and press Enter"
+                className="border p-2 rounded flex-1"
+              />
+              <button
+                type="button"
+                onClick={addTag}
+                className="bg-blue-500 text-white px-3 rounded"
+              >
+                Add
+              </button>
+            </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((t, i) => (
                 <span
                   key={i}
-                  className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2"
+                  className="bg-gray-200 px-3 py-1 rounded flex items-center gap-2 text-sm"
                 >
-                  {t} <button onClick={() => removeTag(i)}>x</button>
+                  {t}
+                  <button
+                    type="button"
+                    onClick={() => removeTag(i)}
+                    className="text-red-500 font-bold"
+                  >
+                    ×
+                  </button>
                 </span>
               ))}
             </div>
@@ -293,23 +330,23 @@ const CreateProduct = () => {
 
           {/* Images */}
           <div>
-            <label className="block font-medium mb-2">Product Images</label>
-
-            <div className="flex gap-2 overflow-x-auto mb-2">
+            <label className="block font-medium mb-2">
+              Product Images (max {MAX_IMAGES})
+            </label>
+            <div className="flex gap-2 flex-wrap mb-2">
               {imagesPreview.map((img, i) => (
                 <div key={i} className="relative">
-                  <img src={img} className="w-20 h-20 object-cover border" />
+                  <img src={img} className="w-20 h-20 object-cover border rounded" alt="" />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
-                    className="absolute top-0 right-0 bg-red-600 text-white px-1"
+                    className="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center rounded-bl text-xs"
                   >
-                    X
+                    ×
                   </button>
                 </div>
               ))}
             </div>
-
             <input
               type="file"
               multiple
@@ -318,7 +355,10 @@ const CreateProduct = () => {
             />
           </div>
 
-          <button className="bg-orange-500 text-white w-full p-2 rounded">
+          <button
+            type="submit"
+            className="bg-orange-500 text-white w-full p-2 rounded font-medium"
+          >
             Submit
           </button>
         </form>
