@@ -27,6 +27,12 @@ const WEAVE_OPTIONS = [
   { label: "Gollabhama", value: "gollabhama" },
   { label: "Bawan Booti", value: "bawan-booti" },
   { label: "Tanchoi", value: "tanchoi" },
+  { label: "Weave of silk & ghicha", value: "silk-ghicha" },
+  { label: "Weave of Mulberry", value: "mulberry" },
+  { label: "Pochampally Ikat & Patan Patola", value: "pochampally-patan-patola" },
+  { label: "Plain weave of silk", value: "plain-silk" },
+  { label: "Plain weave of tissue & silk", value: "plain-tissue-silk" },
+  { label: "Plain weave of Mulberry", value: "plain-mulberry" },
 ];
 
 const STYLE_OPTIONS = [
@@ -47,6 +53,10 @@ const STYLE_OPTIONS = [
   { label: "Skirt & Corset Set", value: "skirt-corset-set" },
   { label: "Blazer & Skirt Set", value: "blazer-skirt-set" },
   { label: "Kaftaan", value: "kaftaan" },
+  { label: "Trousers", value: "trousers" },
+  { label: "Coat", value: "coat" },
+  { label: "Shirt and Trousers set", value: "shirt-trousers-set" },
+  { label: "Top and Skirt set", value: "top-skirt-set" },
 ];
 
 

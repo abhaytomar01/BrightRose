@@ -120,6 +120,48 @@ const subcategories = [
     desc: "Tanchoi is a rich Banarasi silk weave featuring self-coloured or multi-coloured patterns woven seamlessly into the fabric. Introduced to India via Chinese influence, it is known for its satin-like smoothness and intricate floral and geometric designs that seem to float on the surface of the silk.",
     image: Img7,
   },
+  {
+    heritage: "Heritage Weave",
+    name: "Weave of silk & ghicha",
+    slug: "silk-ghicha",
+    desc: "A beautiful amalgamation of luxurious silk and earthy ghicha, creating a fabric with unique texture and a sophisticated handspun appeal.",
+    image: Img9,
+  },
+  {
+    heritage: "Heritage Weave",
+    name: "Weave of Mulberry",
+    slug: "mulberry",
+    desc: "Crafted from the finest mulberry silk, this weave boasts a brilliant luster, incredible softness, and exceptional durability, making it a timeless classic.",
+    image: Img6,
+  },
+  {
+    heritage: "Telangana & Gujarat Heritage Weave",
+    name: "Pochampally Ikat & Patan Patola",
+    slug: "pochampally-patan-patola",
+    desc: "A magnificent fusion of Pochampally's striking geometric ikat and the exquisite double-ikat subtlety of Patan Patola, representing pinnacle weaving artistry.",
+    image: Img8,
+  },
+  {
+    heritage: "Heritage Weave",
+    name: "Plain weave of silk",
+    slug: "plain-silk",
+    desc: "A masterclass in elegant simplicity. The plain silk weave highlights the natural sheen and pure quality of the silk yarn without competing motifs.",
+    image: Img4,
+  },
+  {
+    heritage: "Heritage Weave",
+    name: "Plain weave of tissue & silk",
+    slug: "plain-tissue-silk",
+    desc: "A sheer, delicate blend of fine silk and metallic tissue threads that create a subtle, luminous glow perfect for evening wear.",
+    image: Img7,
+  },
+  {
+    heritage: "Heritage Weave",
+    name: "Plain weave of Mulberry",
+    slug: "plain-mulberry",
+    desc: "Pure, unadorned mulberry silk woven perfectly to create an incredibly smooth, fluid fabric that drapes effortlessly and feels weightless.",
+    image: Img6,
+  },
 ];
 
 const WeaveCollection = () => {

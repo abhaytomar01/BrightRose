@@ -112,6 +112,30 @@ const subcategories = [
     desc: "Luxurious free-flowing silhouettes for relaxed yet sophisticated dressing.",
     image: dresses,
   },
+  {
+    name: "Trousers",
+    slug: "trousers",
+    desc: "Impeccably tailored trousers offering a sharp, sophisticated silhouette perfect for both professional and evening settings.",
+    image: skirtnpants,
+  },
+  {
+    name: "Coat",
+    slug: "coat",
+    desc: "A statement outerwear piece structured to provide an elegant layer of warmth and a commanding aesthetic.",
+    image: blazers,
+  },
+  {
+    name: "Shirt and Trousers set",
+    slug: "shirt-trousers-set",
+    desc: "A seamlessly coordinated pairing of a handcrafted shirt and tailored trousers, embodying effortless contemporary style.",
+    image: skirtnpants,
+  },
+  {
+    name: "Top and Skirt set",
+    slug: "top-skirt-set",
+    desc: "A beautiful ensemble combining a tailored top with a fluid skirt, blending structure and grace for a perfect modern look.",
+    image: corsetndtops,
+  },
 ];
 
 const StyleCollection = () => {

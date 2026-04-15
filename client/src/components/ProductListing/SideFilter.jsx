@@ -49,6 +49,12 @@ const SideFilter = ({
     "gollabhama",
     "bawan-booti",
     "tanchoi",
+    "silk-ghicha",
+    "mulberry",
+    "pochampally-patan-patola",
+    "plain-silk",
+    "plain-tissue-silk",
+    "plain-mulberry",
   ];
   const styleSubcategories = [
     "All",
@@ -68,6 +74,10 @@ const SideFilter = ({
     "skirt-corset-set",
     "blazer-skirt-set",
     "kaftaan",
+    "trousers",
+    "coat",
+    "shirt-trousers-set",
+    "top-skirt-set",
   ];
   const sizeOptions = ["All", "XS", "S", "M", "L", "XL", "XXL"];
   const colorOptions = [
@@ -100,6 +110,12 @@ const SideFilter = ({
     "gollabhama": "Gollabhama",
     "bawan-booti": "Bawan Booti",
     "tanchoi": "Tanchoi",
+    "silk-ghicha": "Weave of silk & ghicha",
+    "mulberry": "Weave of Mulberry",
+    "pochampally-patan-patola": "Pochampally Ikat & Patan Patola",
+    "plain-silk": "Plain weave of silk",
+    "plain-tissue-silk": "Plain weave of tissue & silk",
+    "plain-mulberry": "Plain weave of Mulberry",
   };
   const styleLabels = {
     "All": "All",
@@ -119,6 +135,10 @@ const SideFilter = ({
     "skirt-corset-set": "Skirt & Corset Set",
     "blazer-skirt-set": "Blazer & Skirt Set",
     "kaftaan": "Kaftaan",
+    "trousers": "Trousers",
+    "coat": "Coat",
+    "shirt-trousers-set": "Shirt and Trousers set",
+    "top-skirt-set": "Top and Skirt set",
   };
 
   const displayWeave = (slug) => weaveLabels[slug] || slug;
