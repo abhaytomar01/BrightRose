@@ -157,80 +157,79 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         </div>
       </section> */}
 
+      <section className="relative bg-[#fff] pt-20 pb-4 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
 
-  <section className="relative bg-[#fff] pt-20 pb-4 px-6 md:px-10 lg:px-16 mt-4 md:mt-10 overflow-hidden">
+        {/* Soft Background Accent */}
+        <div className="absolute -right-10 top-20 w-[260px] h-[260px] md:w-[340px] md:h-[340px] rounded-full bg-[#CFAF9A]/10 blur-3xl"></div>
 
-  {/* Soft Background Accent */}
-  <div className="absolute -right-10 top-20 w-[260px] h-[260px] md:w-[340px] md:h-[340px] rounded-full bg-[#CFAF9A]/10 blur-3xl"></div>
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-start relative z-[2]">
 
-  <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-start relative z-[2]">
+          {/* LEFT CONTENT */}
+          <div className="max-w-[650px]">
 
-    {/* LEFT CONTENT */}
-    <div className="max-w-[650px]">
+            {/* Section Label */}
+            <div className="flex items-center gap-4 mb-6">
+              <span className="w-10 h-[1px] bg-neutral-700"></span>
+              <p className="tracking-[0.25em] text-[10px] md:text-[12px] uppercase text-neutral-700">
+                Brand Philosophy
+              </p>
+            </div>
 
-      {/* Section Label */}
-      <div className="flex items-center gap-4 mb-6">
-        <span className="w-10 h-[1px] bg-neutral-700"></span>
-        <p className="tracking-[0.25em] text-[10px] md:text-[12px] uppercase text-neutral-700">
-          Brand Philosophy
-        </p>
-      </div>
+            {/* Elegant Heading */}
+            <h2 className="font-[manrope] text-[18px] md:text-[26px]  leading-tight mb-6">
+              About <span className="uppercase text-neutral-700">Bright Rose</span>
+            </h2>
 
-      {/* Elegant Heading */}
-      <h2 className="font-[manrope] text-[18px] md:text-[26px]  leading-tight mb-6">
-        About <span className="uppercase text-neutral-700">Bright Rose</span>
-      </h2>
+            {/* Body Text */}
+            <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-5 text-justify">
+              <span className="font-semibold">Bright Rose</span> is an endeavor to bring back Indian Handloom
+              so that we can clothe the world once again in a natural way through the beauty
+              of <span className="tracking-wide">INTRICATE WEAVES</span>.
+            </p>
 
-      {/* Body Text */}
-      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-5 text-justify">
-        <span className="font-semibold">Bright Rose</span> is an endeavor to bring back Indian Handloom
-        so that we can clothe the world once again in a natural way through the beauty
-        of <span className="tracking-wide">INTRICATE WEAVES</span>.
-      </p>
+            <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-2 text-justify">
+              Known as the Queen of Flowers, the rose inspires us with its layered petals,
+              depth, vibrance, and emotion. Just like every rose is unique, each of our garments
+              carries its own soul, bold hues, and distinct character — just like you.
+            </p>
 
-      <p className="text-[12px] md:text-[16px] leading-relaxed text-neutral-700 mb-2 text-justify">
-        Known as the Queen of Flowers, the rose inspires us with its layered petals,
-        depth, vibrance, and emotion. Just like every rose is unique, each of our garments
-        carries its own soul, bold hues, and distinct character — just like you.
-      </p>
+            {/* Pull Quote Block */}
+            <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
+              <p className="italic text-neutral-700 text-[12px] md:text-[15px] leading-relaxed text-justify">
+                “Our knowledge of weaving is deeply valued within families and passed down
+                as tradition. Many artisans master the craft so beautifully that they can
+                weave with their eyes closed.”
+              </p>
+              <p className="not-italic mt-3 text-neutral-700 text-xs md:text-sm font-medium">
+                — Master Weaver, Chand (Varanasi)
+              </p>
+            </div>
+          </div>
 
-      {/* Pull Quote Block */}
-       <div className="mt-6 border-l-[2.5px] border-neutral-700 pl-5">
-        <p className="italic text-neutral-700 text-[12px] md:text-[15px] leading-relaxed text-justify">
-          “Our knowledge of weaving is deeply valued within families and passed down
-          as tradition. Many artisans master the craft so beautifully that they can
-          weave with their eyes closed.”
-        </p>
-        <p className="not-italic mt-3 text-neutral-700 text-xs md:text-sm font-medium">
-          — Master Weaver, Chand (Varanasi)
-        </p>
-      </div>
-    </div>
+          {/* RIGHT VISUAL STORY PANEL */}
+          <div className="relative">
+            <div className="relative group">
 
-    {/* RIGHT VISUAL STORY PANEL */}
-    <div className="relative">
-      <div className="relative group">
-        
-        {/* Gold Frame Accent */}
-        <div className="absolute -inset-3 border border-[#d4af37]/40 rounded-sm"></div>
+              {/* Gold Frame Accent */}
+              <div className="absolute -inset-3 border border-[#d4af37]/40 rounded-sm"></div>
 
-        <img 
-          src={ourstory}
-          className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[580px] object-cover"
-          alt="Bright Rose weaving"
-          loading="lazy"
-        />
+              <img
+                src={ourstory}
+                className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[580px] object-cover"
+                alt="Bright Rose weaving"
+                loading="lazy"
+              />
 
-        {/* Floating Tag */}
-        <div className="absolute bottom-20 right-0 md:right-2 bg-white/80 backdrop-blur-sm px-4 py-2 text-[11px] tracking-widest uppercase">
-          Handwoven in India
+              {/* Floating Tag */}
+              <div className="absolute bottom-20 right-0 md:right-2 bg-white/80 backdrop-blur-sm px-4 py-2 text-[11px] tracking-widest uppercase">
+                Handwoven in India
+              </div>
+
+            </div>
+          </div>
+
         </div>
-
-      </div>
-    </div>
-
-  </div>
-</section>
+      </section>
 
 
 
@@ -245,86 +244,86 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         ================================ */}
 
         <section className="relative bg-[#faf9f7] px-6 py-16 md:py-20 overflow-hidden">
-  {/* Floating image */}
-  {manifestoImage && (
-    <div
-      className="pointer-events-none fixed z-[80] hidden md:block transition-transform duration-150 ease-[cubic-bezier(.19,1,.22,1)]"
-      style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}
-    >
-      <img
-        src={manifestoImage}
-        className="w-[260px] h-[360px] object-cover shadow-2xl"
-        alt=""
-        loading="lazy"
-      />
-    </div>
-  )}
+          {/* Floating image */}
+          {manifestoImage && (
+            <div
+              className="pointer-events-none fixed z-[80] hidden md:block transition-transform duration-150 ease-[cubic-bezier(.19,1,.22,1)]"
+              style={{ transform: `translate(${cursor.x}px, ${cursor.y}px)` }}
+            >
+              <img
+                src={manifestoImage}
+                className="w-[260px] h-[360px] object-cover shadow-2xl"
+                alt=""
+                loading="lazy"
+              />
+            </div>
+          )}
 
-  <div className="max-w-[1200px] mx-auto">
+          <div className="max-w-[1200px] mx-auto">
 
-    {/* CENTER HEADING (PERFECTLY ALIGNED) */}
-    <h2 className="text-center uppercase font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-2 md:mb-10">
-      Why Craft Matters
-    </h2>
+            {/* CENTER HEADING (PERFECTLY ALIGNED) */}
+            <h2 className="text-center uppercase font-[manrope] text-[22px] md:text-[32px] tracking-[0.08em] mb-2 md:mb-10">
+              Why Craft Matters
+            </h2>
 
-    <div className="divide-y divide-neutral-300/70">
-      {[
-        {
-          num: "I.",
-          head: "ITS INHERENTLY CIRCULAR",
-          text: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
-        },
-        {
-          num: "II. ITS HONOURS TIME, NOT SPEED",
-          text: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
-        },
-        {
-          num: "III. ITS ROOTED IN LOCAL ECOSYSTEMS",
-          text: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
-        },
-        {
-          num: "IV. ITS EMPOWERS AT GRASSROOT",
-          text: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
-        },
-        {
-          num: "V. ITS RESISTS SAMENESS",
-          text: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
-        },
-        {
-          num: "VI. ITS PREDATES AND OUTLIVES TRENDS",
-          text: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
-        },
-        {
-          num: "VII. IT'S CULTURALLY SIGNIFICANT",
-          text: "Our designs are not random. They are rich with symbolism mangoes for -fertility, lotuses for purity, parrots for love. Every motif is civilizational memory, not trend forecasting.",
-        },
-        {
-          num: "VIII. IT DOESN'T RELY ON MACHINES",
-          text: "It relies on memory, on muscle, on mastery. Artisans are the original slow fashion designers. Their skills are honed over decades, passed down generations. This is craft, not commodity.",
-        },
-        {
-          num: "IX. ITS BUILT TO LAST",
-          text: "Handwoven, hand-stitched, hand-dyed, every detail is made to endure. This is generational, not disposable. Local, low carbon, low waste.",
-        },
-        {
-          num: "X. IT'S FASHION THAT FEEL LIKE HOME",
-          text: "In a world obsessed with what's new, Indian craftsmanship reminds us what's true. Slow fashion here is not a buzzword, it's a birthright. Our inheritance",
-        },
-        {
-          num: "XI. INDIAN CRAFTSMANSHIP DOESN'T NEED VALIDATION",
-          text: "It needs visibility. Value. And voices that protect it.",
-        },
-        {
-          num: "XII. SUPPORT INDIAN ARTISANS",
-          text: "Wear your culture with pride. Made in India clothing is not a compromise, it's a reclaiming, a rebellion. It is soil-to-soul style.", 
-        },
-        {
-          num: "XIII. WHEN YOU CHOOSE INDIAN CRAFT AND DESIGN",
-          text: "You don't just wear beauty, you invest in culture and preserve a dynasty. You wear knowledge, resistance, devotion, and home. You choose memory, meaning, mastery - over marketing. You fund futures, woven into fabric",
-        },
+            <div className="divide-y divide-neutral-300/70">
+              {[
+                {
+                  num: "I.",
+                  head: "ITS INHERENTLY CIRCULAR",
+                  text: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
+                },
+                {
+                  num: "II. ITS HONOURS TIME, NOT SPEED",
+                  text: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
+                },
+                {
+                  num: "III. ITS ROOTED IN LOCAL ECOSYSTEMS",
+                  text: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
+                },
+                {
+                  num: "IV. ITS EMPOWERS AT GRASSROOT",
+                  text: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
+                },
+                {
+                  num: "V. ITS RESISTS SAMENESS",
+                  text: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
+                },
+                {
+                  num: "VI. ITS PREDATES AND OUTLIVES TRENDS",
+                  text: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
+                },
+                {
+                  num: "VII. IT'S CULTURALLY SIGNIFICANT",
+                  text: "Our designs are not random. They are rich with symbolism mangoes for -fertility, lotuses for purity, parrots for love. Every motif is civilizational memory, not trend forecasting.",
+                },
+                {
+                  num: "VIII. IT DOESN'T RELY ON MACHINES",
+                  text: "It relies on memory, on muscle, on mastery. Artisans are the original slow fashion designers. Their skills are honed over decades, passed down generations. This is craft, not commodity.",
+                },
+                {
+                  num: "IX. ITS BUILT TO LAST",
+                  text: "Handwoven, hand-stitched, hand-dyed, every detail is made to endure. This is generational, not disposable. Local, low carbon, low waste.",
+                },
+                {
+                  num: "X. IT'S FASHION THAT FEEL LIKE HOME",
+                  text: "In a world obsessed with what's new, Indian craftsmanship reminds us what's true. Slow fashion here is not a buzzword, it's a birthright. Our inheritance",
+                },
+                {
+                  num: "XI. INDIAN CRAFTSMANSHIP DOESN'T NEED VALIDATION",
+                  text: "It needs visibility. Value. And voices that protect it.",
+                },
+                {
+                  num: "XII. SUPPORT INDIAN ARTISANS",
+                  text: "Wear your culture with pride. Made in India clothing is not a compromise, it's a reclaiming, a rebellion. It is soil-to-soul style.",
+                },
+                {
+                  num: "XIII. WHEN YOU CHOOSE INDIAN CRAFT AND DESIGN",
+                  text: "You don't just wear beauty, you invest in culture and preserve a dynasty. You wear knowledge, resistance, devotion, and home. You choose memory, meaning, mastery - over marketing. You fund futures, woven into fabric",
+                },
 
-      ].map((item, i) => (
-       <div
+              ].map((item, i) => (
+                <div
                   key={i}
                   className="grid grid-rows-[70px_1fr] md:grid-cols-[720px_1fr] items-center py-10 md:py-14"
                 >
@@ -337,51 +336,51 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
                   >
                     {item.num}  {item.head}
                   </span>
-                  
+
 
                   <p className="uppercase tracking-[0.18em] text-[10px] md:text-[13px] leading-relaxed max-w-[420px]">
                     {item.text}
                   </p>
                 </div>
-      ))}
-    </div>
-  </div>
-</section>
+              ))}
+            </div>
+          </div>
+        </section>
 
 
 
 
-  {/* CTA SECTION */}
-<section
-  className="
+        {/* CTA SECTION */}
+        <section
+          className="
     relative 
     w-full 
     py-28 md:py-40 
     bg-[#faf9f7]
     overflow-hidden
   "
->
-  {/* Background Image (Optional) */}
-  {creative2 && (
-    <img
-      src={creative2}
-      alt="Bright Rose Collection"
-      loading="lazy"
-      className="
+        >
+          {/* Background Image (Optional) */}
+          {creative2 && (
+            <img
+              src={creative2}
+              alt="Bright Rose Collection"
+              loading="lazy"
+              className="
         absolute inset-0 w-full h-full object-cover
         transition-all duration-500
       "
-    />
-  )}
+            />
+          )}
 
-  {/* Soft dark overlay for readability */}
-  {creative2 && (
-    <div className="absolute inset-0 bg-black/30 md:bg-black/25"></div>
-  )}
+          {/* Soft dark overlay for readability */}
+          {creative2 && (
+            <div className="absolute inset-0 bg-black/30 md:bg-black/25"></div>
+          )}
 
-  {/* Content */}
-  <div className="relative max-w-[1200px] mx-auto text-center px-6">
-    <h3 className="
+          {/* Content */}
+          <div className="relative max-w-[1200px] mx-auto text-center px-6">
+            <h3 className="
       text-[18px] md:text-[24px] 
       tracking-[0.18em]
       uppercase
@@ -391,12 +390,12 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
       mb-6
       drop-shadow
     ">
-      Discover The World Of Bright Rose
-    </h3>
+              Discover The World Of Bright Rose
+            </h3>
 
-    <Link
-      to="/weavecollection"
-      className="
+            <Link
+              to="/weavecollection"
+              className="
         inline-block 
         border border-neutral-900 md:border-white
         px-12 py-4
@@ -407,11 +406,11 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         hover:bg-white hover:text-black
         transition duration-300
       "
-    >
-      Discover Collection
-    </Link>
-  </div>
-</section>
+            >
+              Discover Collection
+            </Link>
+          </div>
+        </section>
 
       </main>
     </>

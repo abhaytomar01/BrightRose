@@ -112,9 +112,7 @@ export const deleteProduct = async (req, res) => {
 // ===============================
 // FILTER PRODUCTS
 // ===============================
-// controllers/product/productController.js
-// controllers/product/productController.js
-import productModel from "../../models/productModel.js";
+
 
 export const filterProducts = async (req, res) => {
   try {
@@ -135,7 +133,7 @@ export const filterProducts = async (req, res) => {
     // Category, weave, style
     if (category) filter.category = category;
     if (weavingSlug) filter.weavingSlug = weavingSlug;
-    if (tagSlugs) filter.tagSlugs = tagSlugs;
+    if (tagSlugs) filter.tagSlugs = { $in: [tagSlugs] };
 
     // SIZE: match any element in `sizes` array
     // Frontend sends "XS","S","M","L","XL","XXL","Free Size"

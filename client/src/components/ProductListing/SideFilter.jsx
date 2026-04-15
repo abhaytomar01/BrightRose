@@ -39,13 +39,20 @@ const SideFilter = ({
     "banarasi",
     "pashmina",
     "plain",
-    "kantha",
+    "katan",
     "pochampalley",
     "narayanpet",
+    "banarasi-katan",
+    "rangkaat",
+    "patan-patola",
+    "kosa-silk",
+    "gollabhama",
+    "bawan-booti",
+    "tanchoi",
   ];
   const styleSubcategories = [
     "All",
-    "sarees",
+    "pre-draped-saree",
     "dresses",
     "blazers",
     "skirt",
@@ -54,17 +61,15 @@ const SideFilter = ({
     "tops",
     "jacket",
     "shirt",
+    "shirt-skirt-set",
+    "skirt-blazer-set",
+    "blazer-trousers-set",
+    "jacket-trousers-set",
+    "skirt-corset-set",
+    "blazer-skirt-set",
+    "kaftaan",
   ];
-  const sizeOptions = [
-    "All",
-    "XS",
-    "S",
-    "M",
-    "L",
-    "XL",
-    "XXL",
-    
-  ];
+  const sizeOptions = ["All", "XS", "S", "M", "L", "XL", "XXL"];
   const colorOptions = [
     "All",
     "Red",
@@ -79,10 +84,45 @@ const SideFilter = ({
     "Grey",
   ];
 
-  const displayWeave = (slug) =>
-    slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
-  const displayStyle = (slug) =>
-    slug === "All" ? "All" : slug.charAt(0).toUpperCase() + slug.slice(1);
+  const weaveLabels = {
+    "All": "All",
+    "kanchipuram": "Kanchipuram",
+    "banarasi": "Banarasi Brocade",
+    "pashmina": "Pashmina",
+    "plain": "Handloom Plain",
+    "katan": "Kantha",
+    "pochampalley": "Pochampalley Ikkat",
+    "narayanpet": "Narayanpet",
+    "banarasi-katan": "Banarasi Katan",
+    "rangkaat": "Rangkaat",
+    "patan-patola": "Patan Patola",
+    "kosa-silk": "Kosa Silk",
+    "gollabhama": "Gollabhama",
+    "bawan-booti": "Bawan Booti",
+    "tanchoi": "Tanchoi",
+  };
+  const styleLabels = {
+    "All": "All",
+    "pre-draped-saree": "Pre-Draped Saree",
+    "dresses": "Dresses",
+    "blazers": "Blazers",
+    "skirt": "Skirt",
+    "pants": "Pants",
+    "corsets": "Corsets",
+    "tops": "Tops",
+    "jacket": "Jacket",
+    "shirt": "Shirt",
+    "shirt-skirt-set": "Shirt & Skirt Set",
+    "skirt-blazer-set": "Skirt & Blazer Set",
+    "blazer-trousers-set": "Blazer & Trousers Set",
+    "jacket-trousers-set": "Jacket & Trousers Set",
+    "skirt-corset-set": "Skirt & Corset Set",
+    "blazer-skirt-set": "Blazer & Skirt Set",
+    "kaftaan": "Kaftaan",
+  };
+
+  const displayWeave = (slug) => weaveLabels[slug] || slug;
+  const displayStyle = (slug) => styleLabels[slug] || slug;
   const displaySize = (s) => (s === "All" ? "All Sizes" : s);
   const displayColor = (c) => (c === "All" ? "All Colors" : c);
 

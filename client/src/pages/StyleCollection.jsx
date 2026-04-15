@@ -18,13 +18,13 @@ import ikkatsilkcorset from "../assets/images/ikkatsilkcorset1.jpg";
 const subcategories = [
   {
     name: "Jackets",
-    slug: "jacket", // must match backend tagSlugs
+    slug: "jacket",
     desc: "Tailored elegance crafted with handwoven textiles.",
     image: jacketnblazers,
   },
   {
     name: "Blazers & Coats",
-    slug: "blazers", // must match backend tagSlugs
+    slug: "blazers",
     desc: "Sharp, elongated tailoring for statement layering from day to evening.",
     image: blazers,
   },
@@ -34,10 +34,9 @@ const subcategories = [
     desc: "Contemporary silhouettes with traditional craftsmanship.",
     image: skirtnpants,
   },
-  
   {
-    name: "Saree",
-    slug: "saree",
+    name: "Pre-Draped Saree",
+    slug: "pre-draped-saree",
     desc: "Classic drapes blending heritage with modern minimalism.",
     image: sarees,
   },
@@ -58,6 +57,60 @@ const subcategories = [
     slug: "tops",
     desc: "Versatile separates designed to pair seamlessly with your elevated wardrobe.",
     image: corsetndtops,
+  },
+  {
+    name: "Shirt",
+    slug: "shirt",
+    desc: "Handcrafted shirts that bring artisanal texture to everyday luxury.",
+    image: corsetndtops,
+  },
+  {
+    name: "Pants",
+    slug: "pants",
+    desc: "Tailored trousers woven with heritage fabrics for a refined look.",
+    image: skirtnpants,
+  },
+  {
+    name: "Shirt & Skirt Set",
+    slug: "shirt-skirt-set",
+    desc: "A coordinated pairing of handwoven shirt and skirt for effortless elegance.",
+    image: skirtnpants,
+  },
+  {
+    name: "Skirt & Blazer Set",
+    slug: "skirt-blazer-set",
+    desc: "Power dressing reimagined with handloom heritage and modern tailoring.",
+    image: blazers,
+  },
+  {
+    name: "Blazer & Trousers Set",
+    slug: "blazer-trousers-set",
+    desc: "A classic two-piece set combining structured blazer and relaxed trousers.",
+    image: jacketnblazers,
+  },
+  {
+    name: "Jacket & Trousers Set",
+    slug: "jacket-trousers-set",
+    desc: "Contemporary jacket-trouser pairing crafted from artisanal textiles.",
+    image: jacketnblazers,
+  },
+  {
+    name: "Skirt & Corset Set",
+    slug: "skirt-corset-set",
+    desc: "A statement set pairing a structured corset with a flowing skirt.",
+    image: ikkatsilkcorset,
+  },
+  {
+    name: "Blazer & Skirt Set",
+    slug: "blazer-skirt-set",
+    desc: "Sharp blazer meets fluid skirt in this versatile coordinated set.",
+    image: blazers,
+  },
+  {
+    name: "Kaftaan",
+    slug: "kaftaan",
+    desc: "Luxurious free-flowing silhouettes for relaxed yet sophisticated dressing.",
+    image: dresses,
   },
 ];
 

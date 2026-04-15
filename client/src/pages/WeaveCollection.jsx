@@ -33,14 +33,14 @@ const subcategories = [
     heritage: "Bengal Heritage Weave",
     name: "Kantha",
     slug: "katan",
-    desc: "Every piece of Kantha is one-of-a-kind because there were and still are no strict rules to follow. However, there are certain symbols and motifs that are widely recognized, where each design has a personal charm, shaped by the artist’s unique perspective, style and colour palette.",
+    desc: "Every piece of Kantha is one-of-a-kind because there were and still are no strict rules to follow. However, there are certain symbols and motifs that are widely recognized, where each design has a personal charm, shaped by the artist's unique perspective, style and colour palette.",
     image: Img2,
   },
   {
     heritage: "Uttar Pradesh Heritage Weave",
     name: "Banarasi Brocade",
     slug: "banarasi",
-    desc: "The Banarasi brocade saw its golden age during Emperor Akhbar’s Mughal rule. The infusion of the Persian designs with Indian motifs, formed the iconic ornate patterns such as the floral vines, creepers, and the timeless paisley design. With this blend of cultures, the Banarasi weaving became a priceless element of the Indian textile history.",
+    desc: "The Banarasi brocade saw its golden age during Emperor Akhbar's Mughal rule. The infusion of the Persian designs with Indian motifs, formed the iconic ornate patterns such as the floral vines, creepers, and the timeless paisley design. With this blend of cultures, the Banarasi weaving became a priceless element of the Indian textile history.",
     image: Img5,
   },
   {
@@ -54,7 +54,7 @@ const subcategories = [
     heritage: "Kashmir Heritage Weave",
     name: "Pashmina",
     slug: "pashmina",
-    desc: "Exquisitely handcrafted, pashmina weave is a wild of imagination for Kashmir’s master embroiderers. The elaborate patterns on the body of Pashmina shawls are inspired by the blossoming beauty of Kashmir valley, its colorful flowers, birds, animals, and medieval art and architecture. Mughal motifs such as floral vines and paintings of rare and exquisite plants and birds are found in plenty on the Kashmiri Pashmina weave.",
+    desc: "Exquisitely handcrafted, pashmina weave is a wild of imagination for Kashmir's master embroiderers. The elaborate patterns on the body of Pashmina shawls are inspired by the blossoming beauty of Kashmir valley, its colorful flowers, birds, animals, and medieval art and architecture. Mughal motifs such as floral vines and paintings of rare and exquisite plants and birds are found in plenty on the Kashmiri Pashmina weave.",
     image: pashmina,
   },
   {
@@ -67,10 +67,58 @@ const subcategories = [
   {
     heritage: "Andhra Pradesh Heritage Weave",
     name: "Narayanpet",
-    // use the exact slug you use in DB for brocade products
     slug: "narayanpet",
-    desc: "The pioneers of Narayanpet silk were weavers in the time of Chatrapati Shivaji in 1630 AD who settled in a village of the same name in Andhra Pradesh. It is said that once when Chattrapati Shivaji was traveling across the Narayanpet region, he set up camp at Narayanpet. After camping for a few days, he continued his travels, but he left behind a few weavers.  ",
+    desc: "The pioneers of Narayanpet silk were weavers in the time of Chatrapati Shivaji in 1630 AD who settled in a village of the same name in Andhra Pradesh. It is said that once when Chattrapati Shivaji was traveling across the Narayanpet region, he set up camp at Narayanpet. After camping for a few days, he continued his travels, but he left behind a few weavers.",
     image: narayanpetImg,
+  },
+  {
+    heritage: "Uttar Pradesh Heritage Weave",
+    name: "Banarasi Katan",
+    slug: "banarasi-katan",
+    desc: "Banarasi Katan is woven from pure silk threads on traditional pit looms in Varanasi. Known for its dense, lustrous texture and intricate gold zari motifs, this weave carries the opulence of Mughal-era craftsmanship into contemporary couture.",
+    image: Img6,
+  },
+  {
+    heritage: "Bengal Heritage Weave",
+    name: "Rangkaat",
+    slug: "rangkaat",
+    desc: "Rangkaat is a vibrant Bengali silk weave celebrated for its bold colour contrasts and striking border patterns. Deeply rooted in the handloom tradition of West Bengal, each Rangkaat fabric is a testament to the weaver's mastery of colour and rhythm.",
+    image: Img3,
+  },
+  {
+    heritage: "Gujarat Heritage Weave",
+    name: "Patan Patola",
+    slug: "patan-patola",
+    desc: "Among the rarest and most prized Indian textiles, Patan Patola is a double-ikat silk weave from Gujarat. Both the warp and weft threads are resist-dyed before weaving, resulting in perfectly mirrored geometric patterns of breathtaking precision.",
+    image: Img8,
+  },
+  {
+    heritage: "Chhattisgarh Heritage Weave",
+    name: "Kosa Silk",
+    slug: "kosa-silk",
+    desc: "Kosa silk, also known as Tussar silk, is handwoven in the forests of Chhattisgarh using fibre from wild silkworms. Its natural golden sheen and earthy warmth give it an unmatched organic beauty that makes every piece entirely unique.",
+    image: Img9,
+  },
+  {
+    heritage: "Andhra Pradesh Heritage Weave",
+    name: "Gollabhama",
+    slug: "gollabhama",
+    desc: "Gollabhama is a distinguished handloom weave from Andhra Pradesh, traditionally featuring the iconic Golla woman motif with a pot on her head. Woven on pit looms, these fabrics reflect generations of artisanal storytelling through thread and colour.",
+    image: Img10,
+  },
+  {
+    heritage: "Uttar Pradesh Heritage Weave",
+    name: "Bawan Booti",
+    slug: "bawan-booti",
+    desc: "Bawan Booti — meaning 52 motifs — is a celebrated Banarasi weave distinguished by its densely packed, all-over bootis woven in gold or silver zari. A single piece can take weeks to complete, making it one of the most labour-intensive and prestigious weaves of Varanasi.",
+    image: Img5,
+  },
+  {
+    heritage: "Uttar Pradesh Heritage Weave",
+    name: "Tanchoi",
+    slug: "tanchoi",
+    desc: "Tanchoi is a rich Banarasi silk weave featuring self-coloured or multi-coloured patterns woven seamlessly into the fabric. Introduced to India via Chinese influence, it is known for its satin-like smoothness and intricate floral and geometric designs that seem to float on the surface of the silk.",
+    image: Img7,
   },
 ];
 

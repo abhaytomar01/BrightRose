@@ -73,6 +73,23 @@ const newProduct = async (req, res) => {
     data.images = uploaded;
 
     // ---------------------------
+    // WEAVE & STYLE SLUGS
+    // ---------------------------
+    if (req.body.weavingSlug) {
+      data.weavingSlug = req.body.weavingSlug.trim();
+    }
+    if (req.body.tagSlugs) {
+      try {
+        const parsed = JSON.parse(req.body.tagSlugs);
+        if (Array.isArray(parsed)) {
+          data.tagSlugs = parsed;
+        }
+      } catch (e) {
+        console.log("tagSlugs parse failed:", e.message);
+      }
+    }
+
+    // ---------------------------
     // CREATE PRODUCT
     // ---------------------------
     const product = await productModel.create(data);

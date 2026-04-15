@@ -12,25 +12,41 @@ const MAX_SIZE = 50 * 1024 * 1024;
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const WEAVE_OPTIONS = [
-    { label: "Kanchipuram", value: "kanchipuram" },
+  { label: "-- Select Weave --", value: "" },
+  { label: "Kanchipuram", value: "kanchipuram" },
   { label: "Banarasi Brocade", value: "banarasi" },
   { label: "Pashmina", value: "pashmina" },
   { label: "Handloom Plain", value: "plain" },
-  { label: "Kantha", value: "kantha" },              // <-- FIX HERE
+  { label: "Kantha", value: "katan" },
   { label: "Pochampalley Ikkat", value: "pochampalley" },
   { label: "Narayanpet", value: "narayanpet" },
+  { label: "Banarasi Katan", value: "banarasi-katan" },
+  { label: "Rangkaat", value: "rangkaat" },
+  { label: "Patan Patola", value: "patan-patola" },
+  { label: "Kosa Silk", value: "kosa-silk" },
+  { label: "Gollabhama", value: "gollabhama" },
+  { label: "Bawan Booti", value: "bawan-booti" },
+  { label: "Tanchoi", value: "tanchoi" },
 ];
 
 const STYLE_OPTIONS = [
-  { label: "Sarees", value: "sarees" },
+  { label: "-- Select Style --", value: "" },
+  { label: "Pre-Draped Saree", value: "pre-draped-saree" },
   { label: "Dresses", value: "dresses" },
   { label: "Blazers", value: "blazers" },
   { label: "Skirt", value: "skirt" },
   { label: "Pants", value: "pants" },
   { label: "Corsets", value: "corsets" },
   { label: "Tops", value: "tops" },
-   { label: "Jacket", value: "jacket" },
+  { label: "Jacket", value: "jacket" },
   { label: "Shirt", value: "shirt" },
+  { label: "Shirt & Skirt Set", value: "shirt-skirt-set" },
+  { label: "Skirt & Blazer Set", value: "skirt-blazer-set" },
+  { label: "Blazer & Trousers Set", value: "blazer-trousers-set" },
+  { label: "Jacket & Trousers Set", value: "jacket-trousers-set" },
+  { label: "Skirt & Corset Set", value: "skirt-corset-set" },
+  { label: "Blazer & Skirt Set", value: "blazer-skirt-set" },
+  { label: "Kaftaan", value: "kaftaan" },
 ];
 
 
