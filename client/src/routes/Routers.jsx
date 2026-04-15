@@ -40,7 +40,7 @@ import CustomerService from "../pages/Policy/CustomerService.jsx";
 import ExchangeReturn from "../pages/Policy/ExchangeReturn.jsx";
 
 // 🔹 Extra pages
-import Ourheritage from "../pages/Ourheritage/Ourheritage.jsx";
+import Ourheritage from "../pages/Ourheritage/OurHeritage.jsx";
 import WeaveCollection from "../pages/WeaveCollection.jsx";
 import Contact from "../pages/contact/contact.jsx";
 import StyleCollection from "../pages/StyleCollection.jsx";
