@@ -299,11 +299,10 @@ const EditProduct = () => {
                   key={s}
                   type="button"
                   onClick={() => toggleSize(s)}
-                  className={`px-3 py-1 rounded border text-sm transition ${
-                    active
+                  className={`px-3 py-1 rounded border text-sm transition ${active
                       ? "bg-black text-white border-black"
                       : "border-neutral-300 bg-white text-neutral-700"
-                  }`}
+                    }`}
                 >
                   {s}
                 </button>
@@ -366,9 +365,8 @@ const EditProduct = () => {
                 src={
                   img.url.startsWith("http")
                     ? img.url
-                    : `${import.meta.env.VITE_SERVER_URL}${
-                        img.url.startsWith("/") ? img.url : "/" + img.url
-                      }`
+                    : `${import.meta.env.VITE_SERVER_URL}${img.url.startsWith("/") ? img.url : "/" + img.url
+                    }`
                 }
                 className="w-20 h-20 object-cover border"
               />

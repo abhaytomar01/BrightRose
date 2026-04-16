@@ -88,7 +88,7 @@ const CreateProduct = () => {
   const [imagesFiles, setImagesFiles] = useState([]);
 
   // NEW: filter slug state
-  const [weaveSlug, setWeaveSlug] = useState("");
+  const [weaveSlug, setWeaveSlug] = useState([]);
   const [styleSlug, setStyleSlug] = useState("");
 
   const handleChange = (e) =>
@@ -162,7 +162,7 @@ const CreateProduct = () => {
       fd.append("maxQuantity", String(maxQuantity));
 
       // send slugs used by filters
-      fd.append("weavingSlug", weaveSlug || "");
+      fd.append("weavingSlug", JSON.stringify(weaveSlug));
       fd.append("tagSlugs", JSON.stringify(styleSlug ? [styleSlug] : []));
 
       imagesFiles.forEach((file) => fd.append("images", file));
@@ -212,11 +212,15 @@ const CreateProduct = () => {
           {/* Weave + Style slugs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-medium mb-1">Weave (slug)</label>
+              <label className="block font-medium mb-1">Weaves</label>
               <select
+                multiple
                 value={weaveSlug}
-                onChange={(e) => setWeaveSlug(e.target.value)}
-                className="border p-2 rounded w-full"
+                onChange={(e) => {
+                  const vals = Array.from(e.target.selectedOptions, o => o.value).filter(v => v !== "");
+                  setWeaveSlug(vals);
+                }}
+                className="border p-2 rounded w-full h-40"
               >
                 {WEAVE_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -224,6 +228,7 @@ const CreateProduct = () => {
                   </option>
                 ))}
               </select>
+              <p className="text-xs text-neutral-500 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple weaves.</p>
             </div>
 
             <div>

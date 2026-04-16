@@ -23,6 +23,15 @@ const productSchema = new mongoose.Schema(
       },
     ],
 
+    // Missing fields that were being discarded:
+    fabric: { type: String, default: "" },
+    weavingArt: { type: String, default: "" },
+    sku: { type: String, default: "" },
+    stock: { type: Number, default: 0 },
+    care: { type: String, default: "" },
+    specification: { type: String, default: "" },
+    maxQuantity: { type: Number, default: 10 },
+
     specifications: {
       type: [String], // storing as JSON strings as you already do
       default: [],
