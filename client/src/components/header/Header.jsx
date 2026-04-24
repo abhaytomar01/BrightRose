@@ -5,6 +5,7 @@ import { Menu, X, Search, User, ShoppingBag, ChevronDown, Heart } from "lucide-r
 import { useAuth } from "../../context/auth";
 import { useCart } from "../../context/cart";
 import api from "../../utils/apiClient";
+import { trackEvent } from "../Analytics/pixelUtils";
 
 export default function Header() {
   const location = useLocation();
@@ -198,6 +199,10 @@ useEffect(() => {
   const timeoutId = setTimeout(async () => {
     try {
       setLoading(true);
+      // Meta Pixel: Search
+      trackEvent('Search', {
+        search_string: term
+      });
       const res = await api.get(
         `/products/search/${encodeURIComponent(term)}`,
         { signal: controller.signal }

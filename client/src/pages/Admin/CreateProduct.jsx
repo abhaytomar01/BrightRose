@@ -73,7 +73,7 @@ const CreateProduct = () => {
     description: "",
     sku: "",
     price: "",
-    stock: "",
+    stock: "1",
     care: "",
     specification: "",
   });

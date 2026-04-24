@@ -113,6 +113,18 @@ const WeaveCollection = () => {
         throw new Error(data.message || "Failed to add to cart");
       }
 
+      // Facebook Pixel: AddToCart
+      if (window.fbq) {
+        console.log("⚜️ Meta Pixel Tracking AddToCart", { name: product.name, price: Number(product.price) });
+        window.fbq('trackSingle', '1667260638022314', 'AddToCart', {
+          content_name: String(product.name),
+          content_ids: [String(product.id)],
+          content_type: 'product',
+          value: Number(product.price),
+          currency: 'INR'
+        });
+      }
+
       alert(`✅ ${product.name} added to cart successfully!`);
     } catch (error) {
       console.error(error);

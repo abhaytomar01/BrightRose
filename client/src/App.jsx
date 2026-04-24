@@ -4,6 +4,7 @@ import Layout from "./layouts/Layout";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import SitePrivacyNotice  from "./components/SitePrivacyNotice.jsx";
+import FacebookPixel from "./components/Analytics/FacebookPixel.jsx";
 
 function App() {
     const { pathname } = useLocation();
@@ -16,7 +17,9 @@ function App() {
         });
     }, [pathname]);
     return (
-        <> <SitePrivacyNotice />
+        <> 
+            <FacebookPixel />
+            <SitePrivacyNotice />
             <Layout />
         </>
     );

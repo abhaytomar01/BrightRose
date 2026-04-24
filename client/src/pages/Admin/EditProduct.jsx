@@ -76,7 +76,7 @@ const EditProduct = () => {
     description: "",
     sku: "",
     price: "",
-    stock: "",
+    stock: "1",
     care: "",
     specification: "",
   });
@@ -116,7 +116,7 @@ const EditProduct = () => {
           care: p.care || "",
           sku: p.sku || "",
           price: p.price ?? "",
-          stock: p.stock ?? "",
+          stock: p.stock ?? "1",
         });
 
         setTags(p.tags || []);
@@ -300,8 +300,8 @@ const EditProduct = () => {
                   type="button"
                   onClick={() => toggleSize(s)}
                   className={`px-3 py-1 rounded border text-sm transition ${active
-                      ? "bg-black text-white border-black"
-                      : "border-neutral-300 bg-white text-neutral-700"
+                    ? "bg-black text-white border-black"
+                    : "border-neutral-300 bg-white text-neutral-700"
                     }`}
                 >
                   {s}

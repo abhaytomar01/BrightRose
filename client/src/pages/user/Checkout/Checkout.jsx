@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,11 +8,28 @@ import upi from "../../../assets/images/upi.svg";
 import visa from "../../../assets/images/visa.svg";
 import mastercard from "../../../assets/images/master.svg";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector"; // NEW [web:54][web:58]
+import { trackEvent } from "../../../components/Analytics/pixelUtils";
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { cartItems, subtotal, clearCart } = useCart();
   const { authUser } = useAuth();
+
+  // Meta Pixel: InitiateCheckout
+  useEffect(() => {
+    trackEvent('InitiateCheckout', {
+      value: Number(subtotal),
+      currency: 'INR',
+      content_ids: cartItems.map(item => String(item._id || item.productId)),
+      content_type: 'product',
+      num_items: cartItems.length,
+      contents: cartItems.map(item => ({
+        id: String(item._id || item.productId),
+        quantity: item.quantity,
+        item_price: Number(item.price)
+      }))
+    });
+  }, []);
 
   const [shippingCharge, setShippingCharge] = useState(0);
   const [loadingShipping, setLoadingShipping] = useState(false);
@@ -195,6 +212,20 @@ export default function Checkout() {
             `${import.meta.env.VITE_SERVER_URL}/api/v1/payment/verify-payment`,
             { ...response, dbOrderId }
           );
+
+          // Meta Pixel: Purchase
+          trackEvent('Purchase', {
+            value: Number(payableAmount),
+            currency: 'INR',
+            content_ids: cartItems.map(item => String(item._id || item.productId)),
+            content_type: 'product',
+            num_items: cartItems.length,
+            contents: cartItems.map(item => ({
+              id: String(item._id || item.productId),
+              quantity: item.quantity,
+              item_price: Number(item.price)
+            }))
+          });
 
           clearCart();
 
