@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema(
     fabric: { type: String, default: "" },
     weavingArt: { type: String, default: "" },
     sku: { type: String, default: "" },
-    stock: { type: Number, default: 0 },
+    stock: { type: Number, default: 1 },
     care: { type: String, default: "" },
     specification: { type: String, default: "" },
     maxQuantity: { type: Number, default: 10 },

@@ -61,7 +61,7 @@ const newProduct = async (req, res) => {
     let data = {};
 
     allowedFields.forEach((f) => {
-      if (req.body[f] !== undefined) {
+      if (req.body[f] !== undefined && req.body[f] !== "") {
         data[f] = req.body[f];
       }
     });

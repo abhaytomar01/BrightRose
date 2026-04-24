@@ -140,7 +140,7 @@ const updateProduct = async (req, res) => {
     ];
 
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) {
+      if (req.body[field] !== undefined && req.body[field] !== "") {
         product[field] = req.body[field];
       }
     });
