@@ -1,77 +1,82 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-<link rel="icon" type="image/png" sizes="48x48" href="public/favicon.png">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="48x48" href="public/favicon.png">
 
 
-    <!-- ⚜️ General SEO -->
-<meta name="author" content="Bright Rose">
-<meta name="theme-color" content="#ffffff">
-<meta name="language" content="English">
-<meta name="rating" content="General">
+  <!-- ⚜️ General SEO -->
+  <meta name="author" content="Bright Rose">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="language" content="English">
+  <meta name="rating" content="General">
 
-<!-- ⚜️ OpenGraph (WhatsApp / Facebook / Instagram sharing) -->
-<meta property="og:site_name" content="Bright Rose">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.thebrightrose.com">
-<meta property="og:title" content="Bright Rose – Artisanal Luxury Handloom Couture">
-<meta property="og:description" content="Explore handcrafted Kanchipuram weaves, artisanal garments, and luxury silk couture made by master weavers of India.">
-<meta property="og:image" content="https://www.thebrightrose.com/uploads/brightrose-logo.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+  <!-- ⚜️ OpenGraph (WhatsApp / Facebook / Instagram sharing) -->
+  <meta property="og:site_name" content="Bright Rose">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.thebrightrose.com">
+  <meta property="og:title" content="Bright Rose – Artisanal Luxury Handloom Couture">
+  <meta property="og:description"
+    content="Explore handcrafted Kanchipuram weaves, artisanal garments, and luxury silk couture made by master weavers of India.">
+  <meta property="og:image" content="https://www.thebrightrose.com/uploads/brightrose-logo.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
-<!-- ⚜️ Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bright Rose – Premium Handloom Couture">
-<meta name="twitter:description" content="Discover luxury sarees, jackets, capes, and handwoven artisanal clothing.">
-<meta name="twitter:image" content="https://www.thebrightrose.com/uploads/products/brightrose-logo.png">
+  <!-- ⚜️ Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bright Rose – Premium Handloom Couture">
+  <meta name="twitter:description" content="Discover luxury sarees, jackets, capes, and handwoven artisanal clothing.">
+  <meta name="twitter:image" content="https://www.thebrightrose.com/uploads/products/brightrose-logo.png">
 
-<!-- Load reCAPTCHA v2 (I’m not a robot) -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Load reCAPTCHA v2 (I’m not a robot) -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E802SXQH4J"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-E802SXQH4J');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E802SXQH4J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-E802SXQH4J');
+  </script>
 
-<!-- Facebook Pixel Code -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];
-  t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  
-  console.log("⚜️ Meta Pixel Initializing...");
-  fbq('init', '1667260638022314');
-  fbq('track', 'PageView'); // Restored to appease Pixel Helper on initial load
-</script>
-<!-- End Facebook Pixel Code -->
-    <title>Bright Rose - Reweaving Indian Weaves</title>
-  </head>
+  <!-- Facebook Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
 
-  <body>
-    <!-- Facebook Pixel Code (Fallback) -->
-    <noscript>
-      <img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=1667260638022314&ev=PageView&noscript=1"
-      />
-    </noscript>
-    <div id="root"></div>
-    <script type="module" src="src/main.jsx"></script>
-  </body>
+    console.log("⚜️ Meta Pixel Initializing...");
+    fbq('init', '1667260638022314');
+    fbq('track', 'PageView'); // Restored to appease Pixel Helper on initial load
+  </script>
+  <!-- End Facebook Pixel Code -->
+  <title>Bright Rose - Reweaving Indian Weaves</title>
+</head>
+
+<body>
+  <!-- Facebook Pixel Code (Fallback) -->
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1667260638022314&ev=PageView&noscript=1" />
+  </noscript>
+  <div id="root"></div>
+  <script type="module" src="src/main.jsx"></script>
+</body>
+
 </html>

@@ -460,7 +460,6 @@ export default function ProductDetails() {
               <h1 className="text-md md:text-2xl font-light tracking-wide leading-snug">{product.name}</h1>
 
               {/* WISHLIST BUTTON */}
-              {/* WISHLIST BUTTON */}
               <button
                 onClick={() => handleWishlist(product._id)}
                 className="p-1 text-neutral-600 hover:text-black transition"

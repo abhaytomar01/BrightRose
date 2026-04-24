@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SeoData from "../../SEO/SeoData.jsx";
 import creative2 from "../../assets/images/creative2.webp";
 import ourstory from "../../assets/images/braboutcover.png";
+import founderImage from "../../assets/images/BRfounder.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -231,7 +232,69 @@ Rose is known as the Queen of Flowers for its intricate petal structure, wide sp
         </div>
       </section>
 
+      {/* FOUNDER SECTION */}
+      <section className="relative bg-[#faf9f7] py-16 md:py-24 px-6 md:px-10 lg:px-16 overflow-hidden">
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center relative z-[2]">
 
+          {/* LEFT IMAGE PANEL */}
+          <div className="order-2 md:order-1 relative">
+            <div className="relative group flex justify-center md:justify-start">
+              {/* Subtle accent frame */}
+              <div className="absolute -inset-3 border border-neutral-300 rounded-sm"></div>
+
+              <img
+                src={founderImage}
+                className="w-full md:w-[500px] lg:w-[540px] h-[480px] md:h-[650px] object-cover"
+                alt="Founder of Bright Rose"
+                loading="lazy"
+              />
+
+              {/* Floating Tag */}
+              <div className="absolute bottom-6 left-0 md:-left-4 bg-white/90 backdrop-blur-sm px-5 py-3 shadow-sm">
+                <p className="text-[11px] tracking-widest uppercase text-neutral-800 font-medium">
+                  Natasha & Rajeev
+                </p>
+                <p className="text-[9px] tracking-widest uppercase text-neutral-500 mt-1">
+                  Founder
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT CONTENT PANEL */}
+          <div className="order-1 md:order-2 max-w-[600px]">
+            {/* Section Label */}
+            <div className="flex items-center gap-4 mb-6">
+              <span className="w-10 h-[1px] bg-neutral-700"></span>
+              <p className="tracking-[0.25em] text-[10px] md:text-[12px] uppercase text-neutral-700">
+                Meet The Founder
+              </p>
+            </div>
+
+            {/* Elegant Heading */}
+            <h2 className="font-[manrope] text-[20px] md:text-[28px] leading-tight mb-8">
+              A Quiet <span className="italic text-neutral-600">Conviction</span>
+            </h2>
+
+            {/* Body Text */}
+            <div className="space-y-5 text-[12px] md:text-[15px] leading-relaxed text-neutral-700 text-justify">
+              <p>
+                She wasn't trying to start a brand. She was standing in front of her closet fifteen years into her marriage, surrounded by inherited sarees she had never worn when it hit her. Every Indian woman has them. Beautiful, intricate, blessed-upon-her, folded away. And no occasion that ever feels quite right.
+              </p>
+              <p>
+                That moment of quiet frustration became the founding idea of <span className="font-medium text-neutral-900">Bright Rose</span>: take the fabric exactly as the weaver makes it—unchanged, uncompromised—and present it in silhouettes that belong to the life she actually lives.
+              </p>
+              <p>
+                Natasha had spent thirteen years in marketing, always carrying a single quiet conviction at the back of her mind: <span className="italic text-neutral-900">“if I ever build something of my own, it will be in textiles.”</span> A documentary about fashion's waste during COVID made her certain she didn't want to build just another label. So she started travelling—Varanasi, Kanchipuram, Gujarat, Rajasthan—meeting weavers whose craft spans centuries but whose children are leaving because the demand has gone.
+              </p>
+              <p>
+                Bright Rose exists to make that demand real again. Every piece is handwoven, one of a kind, carrying the slight and beautiful imprecision of a human hand. That, for Natasha, is what real luxury has always meant.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
 
       <main className="bg-[#faf9f7] overflow-x-hidden">
         {/* FULL IMAGE */}
