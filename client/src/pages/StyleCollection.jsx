@@ -16,7 +16,6 @@ import blazers from "../assets/images/blazers1.jpg";
 import blazertrouser from "../assets/images/blazertrouser.webp";
 import silktrenchcoat from "../assets/images/silktrenchcoat.webp";
 
-
 // import pants from "../assets/images/pants.jpg";
 import ikkatsilkcorset from "../assets/images/ikkatsilkcorset1.jpg";
 
@@ -89,12 +88,6 @@ const subcategories = [
     slug: "shirt-skirt-set",
     desc: "A coordinated pairing of handwoven shirt and skirt for effortless elegance.",
     image: shirtskirt,
-  },
-  {
-    name: "Skirt & Blazer Set",
-    slug: "skirt-blazer-set",
-    desc: "Power dressing reimagined with handloom heritage and modern tailoring.",
-    image: blazers,
   },
   {
     name: "Blazer & Trousers Set",

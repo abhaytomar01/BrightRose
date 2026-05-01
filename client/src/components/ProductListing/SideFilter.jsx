@@ -76,7 +76,6 @@ const SideFilter = ({
   const setSubcategories = [
     "All",
     "shirt-skirt-set",
-    "skirt-blazer-set",
     "blazer-trousers-set",
     "jacket-trousers-set",
     "skirt-corset-set",
@@ -123,7 +122,6 @@ const SideFilter = ({
   const setLabels = {
     "All": "All Sets",
     "shirt-skirt-set": "Shirt & Skirt Set",
-    "skirt-blazer-set": "Skirt & Blazer Set",
     "blazer-trousers-set": "Blazer & Trousers Set",
     "jacket-trousers-set": "Jacket & Trousers Set",
     "skirt-corset-set": "Skirt & Corset Set",

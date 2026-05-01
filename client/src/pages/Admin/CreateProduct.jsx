@@ -47,7 +47,6 @@ const STYLE_OPTIONS = [
   { label: "Jacket", value: "jacket" },
   { label: "Shirt", value: "shirt" },
   { label: "Shirt & Skirt Set", value: "shirt-skirt-set" },
-  { label: "Skirt & Blazer Set", value: "skirt-blazer-set" },
   { label: "Blazer & Trousers Set", value: "blazer-trousers-set" },
   { label: "Jacket & Trousers Set", value: "jacket-trousers-set" },
   { label: "Skirt & Corset Set", value: "skirt-corset-set" },
