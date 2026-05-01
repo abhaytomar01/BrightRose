@@ -15,6 +15,8 @@ const SideFilter = ({
   setWeave,
   style,
   setStyle,
+  set,
+  setSet,
   size,
   setSize,
   color,
@@ -25,6 +27,7 @@ const SideFilter = ({
   const [openCategory, setOpenCategory] = useState(true);
   const [openWeaves, setOpenWeaves] = useState(false);
   const [openStyle, setOpenStyle] = useState(false);
+  const [openSets, setOpenSets] = useState(false); // 👈 NEW
   const [openPrice, setOpenPrice] = useState(true);
   const [openSize, setOpenSize] = useState(false);
   const [openColor, setOpenColor] = useState(false);
@@ -67,15 +70,18 @@ const SideFilter = ({
     "tops",
     "jacket",
     "shirt",
+    "kaftaan",
+    "trousers",
+    "coat",
+  ];
+  const setSubcategories = [
+    "All",
     "shirt-skirt-set",
     "skirt-blazer-set",
     "blazer-trousers-set",
     "jacket-trousers-set",
     "skirt-corset-set",
     "blazer-skirt-set",
-    "kaftaan",
-    "trousers",
-    "coat",
     "shirt-trousers-set",
     "top-skirt-set",
   ];
@@ -117,8 +123,19 @@ const SideFilter = ({
     "plain-tissue-silk": "Plain weave of tissue & silk",
     "plain-mulberry": "Plain weave of Mulberry",
   };
+  const setLabels = {
+    "All": "All Sets",
+    "shirt-skirt-set": "Shirt & Skirt Set",
+    "skirt-blazer-set": "Skirt & Blazer Set",
+    "blazer-trousers-set": "Blazer & Trousers Set",
+    "jacket-trousers-set": "Jacket & Trousers Set",
+    "skirt-corset-set": "Skirt & Corset Set",
+    "blazer-skirt-set": "Blazer & Skirt Set",
+    "shirt-trousers-set": "Shirt and Trousers set",
+    "top-skirt-set": "Top and Skirt set",
+  };
   const styleLabels = {
-    "All": "All",
+    "All": "All Styles",
     "pre-draped-saree": "Pre-Draped Saree",
     "dresses": "Dresses",
     "blazers": "Blazers",
@@ -128,21 +145,14 @@ const SideFilter = ({
     "tops": "Tops",
     "jacket": "Jacket",
     "shirt": "Shirt",
-    "shirt-skirt-set": "Shirt & Skirt Set",
-    "skirt-blazer-set": "Skirt & Blazer Set",
-    "blazer-trousers-set": "Blazer & Trousers Set",
-    "jacket-trousers-set": "Jacket & Trousers Set",
-    "skirt-corset-set": "Skirt & Corset Set",
-    "blazer-skirt-set": "Blazer & Skirt Set",
     "kaftaan": "Kaftaan",
     "trousers": "Trousers",
     "coat": "Coat",
-    "shirt-trousers-set": "Shirt and Trousers set",
-    "top-skirt-set": "Top and Skirt set",
   };
 
   const displayWeave = (slug) => weaveLabels[slug] || slug;
   const displayStyle = (slug) => styleLabels[slug] || slug;
+  const displaySet = (slug) => setLabels[slug] || slug;
   const displaySize = (s) => (s === "All" ? "All Sizes" : s);
   const displayColor = (c) => (c === "All" ? "All Colors" : c);
 
@@ -231,6 +241,7 @@ const SideFilter = ({
                 } else {
                   setWeave(w);
                   setStyle("");
+                  setSet("");
                 }
               }}
               filterType="weave"
@@ -258,6 +269,7 @@ const SideFilter = ({
                 } else {
                   setStyle(s);
                   setWeave("");
+                  setSet("");
                 }
               }}
               filterType="style"
@@ -265,6 +277,35 @@ const SideFilter = ({
           ))}
         </ul>
       </Collapse>
+
+      {/* SETS - 🔥 NEW SECTION */}
+      <SectionHeader
+        label="Sets"
+        openState={openSets}
+        setOpenState={setOpenSets}
+      />
+      <Collapse in={openSets}>
+        <ul className="py-2 space-y-1">
+          {setSubcategories.map((st) => (
+            <Option
+              key={st}
+              text={displaySet(st)}
+              isActive={set === st || (st === "All" && !set)}
+              onClick={() => {
+                if (st === "All") {
+                  setSet("");
+                } else {
+                  setSet(st);
+                  setWeave("");
+                  setStyle("");
+                }
+              }}
+              filterType="set"
+            />
+          ))}
+        </ul>
+      </Collapse>
+
 
       {/* SIZE - 🔥 AUTO-CLOSE ADDED */}
       <SectionHeader

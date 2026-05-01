@@ -690,7 +690,6 @@ export default function ProductDetails() {
                       className={`transition-transform ${accordionOpen === item.id ? "rotate-180" : ""
                         }`}
                     >
-                      ⌄
                     </span>
                   </button>
 

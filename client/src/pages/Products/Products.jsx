@@ -21,6 +21,7 @@ const Products = () => {
   const initialCategory = searchParams.get("category") || "";
   const initialWeave = searchParams.get("weave") || "";
   const initialStyle = searchParams.get("style") || "";
+  const initialSet = searchParams.get("set") || "";       // 👈 NEW
   const initialSize = searchParams.get("size") || "";     // 👈 NEW
   const initialColor = searchParams.get("color") || "";   // 👈 NEW
   const initialPriceMin = searchParams.get("priceMin");
@@ -36,6 +37,7 @@ const Products = () => {
   const [category, setCategory] = useState(initialCategory);
   const [weave, setWeave] = useState(initialWeave);
   const [style, setStyle] = useState(initialStyle);
+  const [set, setSet] = useState(initialSet);       // 👈 NEW
   const [size, setSize] = useState(initialSize);     // 👈 NEW
   const [color, setColor] = useState(initialColor);  // 👈 NEW
 
@@ -68,7 +70,7 @@ useEffect(() => {
   // Reset pagination when ANY filter changes 👇
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedPrice, category, weave, style, size, color]);  // 👈 ADDED size/color
+  }, [debouncedPrice, category, weave, style, set, size, color]);  // 👈 ADDED set, size/color
 
   // Debounce price
   useEffect(() => {
@@ -83,7 +85,7 @@ useEffect(() => {
 
       // Check if NO filters active → fetch ALL products
       const filterIsActive =
-        category || weave || style || size || color ||  // 👈 ADDED size/color
+        category || weave || style || set || size || color ||  // 👈 ADDED set, size/color
         debouncedPrice[0] !== 0 ||
         debouncedPrice[1] !== 200000;
 
@@ -101,7 +103,7 @@ useEffect(() => {
       const params = {
         category: category || "",
         weavingSlug: weave || "",
-        tagSlugs: style || "",
+        tagSlugs: style || set || "", // Use either style or set
         size: size || "",        // 👈 NEW
         color: color || "",      // 👈 NEW
         priceMin: debouncedPrice[0],
@@ -123,7 +125,7 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
-  }, [debouncedPrice, category, weave, style, size, color]);  // 👈 ADDED deps
+  }, [debouncedPrice, category, weave, style, set, size, color]);  // 👈 ADDED deps
 
   // Fetch products when filters change
   useEffect(() => {
@@ -157,6 +159,7 @@ useEffect(() => {
     setCategory("");
     setWeave("");
     setStyle("");
+    setSet("");      // 👈 NEW
     setSize("");     // 👈 NEW
     setColor("");    // 👈 NEW
     toast.success("Filters reset!");
@@ -202,6 +205,8 @@ useEffect(() => {
       setWeave={setWeave}
       style={style}
       setStyle={setStyle}
+      set={set}             // 👈 NEW
+      setSet={setSet}       // 👈 NEW
       size={size}
       setSize={setSize}
       color={color}
@@ -252,6 +257,8 @@ useEffect(() => {
                 setWeave={setWeave}
                 style={style}
                 setStyle={setStyle}
+                set={set}             // 👈 NEW
+                setSet={setSet}       // 👈 NEW
                 size={size}           // 👈 NEW
                 setSize={setSize}     // 👈 NEW
                 color={color}         // 👈 NEW

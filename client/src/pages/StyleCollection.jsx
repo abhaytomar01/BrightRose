@@ -5,7 +5,7 @@ import SeoData from "../SEO/SeoData.jsx";
 import stylecover from "../assets/images/stylecover.jpeg";
 import corsetndtops from "../assets/images/corsetndtops1.jpg";
 import dresses from "../assets/images/dresses.webp";
-import skirtnpants from "../assets/images/skirtndtrouser.jpg";
+import skirtnpants from "../assets/images/Shirt&trouser.jpg";
 import sarees from "../assets/images/saree.jpg";
 import jacketnblazers from "../assets/images/jacket&blazer.jpg";
 import blazers from "../assets/images/blazers1.jpg";
@@ -192,7 +192,20 @@ const StyleCollection = () => {
                 transition={{ delay: index * 0.06, duration: 0.6 }}
               >
                 <Link
-                  to={`/products?style=${encodeURIComponent(sub.slug)}`}
+                  to={`/products?${
+                    [
+                      "shirt-skirt-set",
+                      "skirt-blazer-set",
+                      "blazer-trousers-set",
+                      "jacket-trousers-set",
+                      "skirt-corset-set",
+                      "blazer-skirt-set",
+                      "shirt-trousers-set",
+                      "top-skirt-set",
+                    ].includes(sub.slug)
+                      ? "set"
+                      : "style"
+                  }=${encodeURIComponent(sub.slug)}`}
                   className="block group"
                 >
                   <div className="overflow-hidden rounded-2xl bg-neutralLight border border-mutedGray/80 hover:border-accentGold/60 transition-all duration-300">

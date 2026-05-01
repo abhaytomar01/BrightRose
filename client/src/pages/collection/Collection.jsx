@@ -14,6 +14,7 @@ const Collection = () => {
   const [category, setCategory] = useState("");
   const [weave, setWeave] = useState("");
   const [style, setStyle] = useState("");
+  const [set, setSet] = useState(""); // 👈 NEW
 
   // pagination (frontend slice)
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +29,7 @@ const Collection = () => {
   priceMax: price[1],
 };
 if (weave) params.weavingSlug = weave;
-if (style) params.tagSlugs = style;
+if (style || set) params.tagSlugs = style || set;
 if (category) params.category = category;
 
 
@@ -60,7 +61,7 @@ if (category) params.category = category;
   useEffect(() => {
     fetchFiltered();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price, weave, style, category]);
+  }, [price, weave, style, set, category]);
 
   const handlePageChange = (_, page) => {
     setCurrentPage(page);
@@ -79,6 +80,8 @@ if (category) params.category = category;
           setWeave={setWeave}
           style={style}
           setStyle={setStyle}
+          set={set}             // 👈 NEW
+          setSet={setSet}       // 👈 NEW
         />
       </div>
 
