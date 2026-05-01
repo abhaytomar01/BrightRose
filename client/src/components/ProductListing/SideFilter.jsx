@@ -153,9 +153,12 @@ const SideFilter = ({
   const displayColor = (c) => (c === "All" ? "All Colors" : c);
 
   useEffect(() => {
+    // Only update parent state if the price has actually changed
+    if (tempPrice[0] === price[0] && tempPrice[1] === price[1]) return;
+
     const t = setTimeout(() => setPrice(tempPrice), 300);
     return () => clearTimeout(t);
-  }, [tempPrice, setPrice]);
+  }, [tempPrice, setPrice, price[0], price[1]]);
 
   // 🔥 NEW: Auto-close handler for mobile
   const handleFilterApply = (filterType) => {

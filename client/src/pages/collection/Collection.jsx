@@ -18,28 +18,28 @@ const Collection = () => {
   const [set, setSet] = useState(""); // 👈 NEW
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPage = Number(searchParams.get("page")) || 1;
-
-  // pagination (frontend slice)
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const currentPage = Number(searchParams.get("page")) || 1;
   const productsPerPage = 12;
 
-  // 🔹 Sync currentPage with URL (for back/forward buttons)
-  useEffect(() => {
-    const page = Number(searchParams.get("page")) || 1;
-    if (page !== currentPage) {
-      setCurrentPage(page);
-    }
-  }, [searchParams, currentPage]);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+
+  // 🧠 Smart Pagination
+  const currentProducts = products.length > productsPerPage 
+    ? products.slice(startIndex, endIndex) 
+    : products;
+
 
   const fetchFiltered = async () => {
     try {
       setLoading(true);
 
       const params = {
-  priceMin: price[0],
-  priceMax: price[1],
-};
+        priceMin: price[0],
+        priceMax: price[1],
+        page: currentPage,
+        limit: productsPerPage,
+      };
 if (weave) params.weavingSlug = weave;
 if (style || set) params.tagSlugs = style || set;
 if (category) params.category = category;
@@ -55,7 +55,6 @@ if (category) params.category = category;
         setProducts(res.data.products || []);
         // if backend uses a 'count' field use that, otherwise length
         setProductsCount(res.data.count ?? (res.data.products?.length || 0));
-        setCurrentPage(1);
       } else {
         setProducts([]);
         setProductsCount(0);
@@ -69,19 +68,34 @@ if (category) params.category = category;
     }
   };
 
-  // Fetch when filters change
+  // Fetch when filters or PAGE change
   useEffect(() => {
     fetchFiltered();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price, weave, style, set, category]);
+  }, [price, weave, style, set, category, currentPage]);
 
-  const handlePageChange = (_, page) => {
-    setCurrentPage(page);
+  const handleFilterChange = useCallback((setter, value) => {
+    setter(value);
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set("page", page.toString());
+      next.set("page", "1");
       return next;
-    });
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const handlePriceChange = useCallback((newPrice) => {
+    setPrice(newPrice);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", "1");
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const handlePageChange = (_, page) => {
+    const next = new URLSearchParams(searchParams);
+    next.set("page", page.toString());
+    setSearchParams(next);
   };
 
   return (
@@ -90,15 +104,15 @@ if (category) params.category = category;
       <div className="hidden md:block w-64 border-r bg-white">
         <SideFilter
           price={price}
-          setPrice={setPrice}
+          setPrice={handlePriceChange}
           category={category}
-          setCategory={setCategory}
+          setCategory={(v) => handleFilterChange(setCategory, v)}
           weave={weave}
-          setWeave={setWeave}
+          setWeave={(v) => handleFilterChange(setWeave, v)}
           style={style}
-          setStyle={setStyle}
-          set={set}             // 👈 NEW
-          setSet={setSet}       // 👈 NEW
+          setStyle={(v) => handleFilterChange(setStyle, v)}
+          set={set}
+          setSet={(v) => handleFilterChange(setSet, v)}
         />
       </div>
 
@@ -106,7 +120,7 @@ if (category) params.category = category;
       <div className="flex-1">
         <ProductListing
           loading={loading}
-          products={products}
+          products={currentProducts}
           wishlistItems={[]}
           setWishlistItems={() => {}}
           currentPage={currentPage}

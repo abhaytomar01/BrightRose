@@ -1,6 +1,6 @@
 // src/pages/products/Products.jsx
 import Pagination from "@mui/material/Pagination";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Product from "../../components/ProductListing/Product";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
 
   const [searchParamsState, setSearchParamsState] = useSearchParams();
-  
+
   // --- read all query params ONCE for initial state ---
   const initialCategory = searchParamsState.get("category") || "";
   const initialWeave = searchParamsState.get("weave") || "";
@@ -50,42 +50,52 @@ const Products = () => {
   // Wishlist
   const [wishlistItems, setWishlistItems] = useState([]);
 
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  // Pagination (Derived from URL)
+  const currentPage = Number(searchParamsState.get("page")) || 1;
   const productsPerPage = 16;
 
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
-  const currentProducts = products.slice(startIndex, endIndex);
+
+  // 🧠 Smart Pagination: 
+  // If server returns more than we asked for, it means it didn't paginate. 
+  // So we slice on client. Otherwise, use as-is.
+  const currentProducts = products.length > productsPerPage
+    ? products.slice(startIndex, endIndex)
+    : products;
+
   const totalPages = Math.ceil(productsCount / productsPerPage);
 
-  // 🔹 Sync currentPage with URL (for back/forward buttons)
-  useEffect(() => {
-    const page = Number(searchParamsState.get("page")) || 1;
-    if (page !== currentPage) {
-      setCurrentPage(page);
-    }
-  }, [searchParamsState, currentPage]);
 
   // 🔹 Scroll to top whenever page changes
-useEffect(() => {
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "instant", // or "smooth" if you prefer
-  });
-}, [currentPage]);
-
-
-  // Reset pagination when ANY filter changes 👇
   useEffect(() => {
-    setCurrentPage(1);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant", // or "smooth" if you prefer
+    });
+  }, [currentPage]);
+
+
+  // Helper to update filter state AND reset URL page to 1
+  const handleFilterChange = useCallback((setter, value) => {
+    setter(value);
     setSearchParamsState((prev) => {
       const next = new URLSearchParams(prev);
       next.set("page", "1");
       return next;
     }, { replace: true });
-  }, [debouncedPrice, category, weave, style, set, size, color, setSearchParamsState]);  // 👈 ADDED set, size/color
+  }, [setSearchParamsState]);
+
+  // Helper for price specifically (since it's an array)
+  const handlePriceChange = useCallback((newPrice) => {
+    setPrice(newPrice);
+    setSearchParamsState((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", "1");
+      return next;
+    }, { replace: true });
+  }, [setSearchParamsState]);
 
   // Debounce price
   useEffect(() => {
@@ -107,10 +117,11 @@ useEffect(() => {
       if (!filterIsActive) {
         // Fetch ALL products
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`
+          `${import.meta.env.VITE_SERVER_URL}/api/v1/products`,
+          { params: { page: currentPage, limit: productsPerPage } }
         );
         setProducts(res.data.products || []);
-        setProductsCount(res.data.products?.length || 0);
+        setProductsCount(res.data.count ?? (res.data.products?.length || 0));
         return;
       }
 
@@ -123,6 +134,8 @@ useEffect(() => {
         color: color || "",      // 👈 NEW
         priceMin: debouncedPrice[0],
         priceMax: debouncedPrice[1],
+        page: currentPage, // 👈 Pass current page to API
+        limit: productsPerPage,
       };
 
       const res = await axios.get(
@@ -140,7 +153,7 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
-  }, [debouncedPrice, category, weave, style, set, size, color]);  // 👈 ADDED deps
+  }, [debouncedPrice[0], debouncedPrice[1], category, weave, style, set, size, color, currentPage]);
 
   // Fetch products when filters change
   useEffect(() => {
@@ -196,57 +209,56 @@ useEffect(() => {
       />
 
       {/* FULL SCREEN MOBILE FILTER OVERLAY - UPDATED SideFilter props 👇 */}
-     {/* // 🔥 UPDATED: Mobile Filter Popup with auto-close callback */}
-{showFilterPopup && (
-  <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
-    {/* Header */}
-    <div className="flex justify-between items-center border-b pb-3 mb-4">
-      <h2 className="text-xl font-semibold">Filters</h2>
-      <button
-        onClick={() => setShowFilterPopup(false)}
-        className="text-lg font-semibold cursor-pointer hover:opacity-70"
-      >
-        ✕
-      </button>
-    </div>
+      {/* // 🔥 UPDATED: Mobile Filter Popup with auto-close callback */}
+      {showFilterPopup && (
+        <div className="fixed inset-0 bg-white z-[9999] overflow-y-auto p-5 animate-fadeIn">
+          {/* Header */}
+          <div className="flex justify-between items-center border-b pb-3 mb-4">
+            <h2 className="text-xl font-semibold">Filters</h2>
+            <button
+              onClick={() => setShowFilterPopup(false)}
+              className="text-lg font-semibold cursor-pointer hover:opacity-70"
+            >
+              ✕
+            </button>
+          </div>
 
-    {/* 🔥 SideFilter with onFilterApply callback */}
-    <SideFilter
-      price={price}
-      setPrice={setPrice}
-      category={category}
-      setCategory={setCategory}
-      weave={weave}
-      setWeave={setWeave}
-      style={style}
-      setStyle={setStyle}
-      set={set}             // 👈 NEW
-      setSet={setSet}       // 👈 NEW
-      size={size}
-      setSize={setSize}
-      color={color}
-      setColor={setColor}
-      // 🔥 NEW: Auto-close callback
-      onFilterApply={(filterType) => {
-        console.log(`Applied ${filterType} filter`); // Optional: for debugging
-        setShowFilterPopup(false); // 🔥 AUTO-CLOSE FILTER POPUP
-      }}
-    />
+          {/* 🔥 SideFilter with wrapped handlers to reset page */}
+          <SideFilter
+            price={price}
+            setPrice={handlePriceChange}
+            category={category}
+            setCategory={(v) => handleFilterChange(setCategory, v)}
+            weave={weave}
+            setWeave={(v) => handleFilterChange(setWeave, v)}
+            style={style}
+            setStyle={(v) => handleFilterChange(setStyle, v)}
+            set={set}
+            setSet={(v) => handleFilterChange(setSet, v)}
+            size={size}
+            setSize={(v) => handleFilterChange(setSize, v)}
+            color={color}
+            setColor={(v) => handleFilterChange(setColor, v)}
+            // 🔥 NEW: Auto-close callback
+            onFilterApply={(filterType) => {
+              setShowFilterPopup(false);
+            }}
+          />
 
-    {/* Reset Button - Also auto-closes */}
-    <div className="flex gap-2 mt-5">
-      <button
-        className="flex-1 bg-gray-200 text-black text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-300 transition"
-        onClick={() => {
-          handleResetFilters();
-          setShowFilterPopup(false); // 🔥 AUTO-CLOSE
-        }}
-      >
-        RESET FILTERS
-      </button>
-    </div>
-  </div>
-)}
+          {/* Reset Button - Also auto-closes */}
+          <div className="flex gap-2 mt-5">
+            <button
+              className="flex-1 bg-gray-200 text-black text-center py-4 rounded-lg text-sm tracking-wide font-medium hover:bg-gray-300 transition"
+              onClick={() => {
+                handleResetFilters();
+                setShowFilterPopup(false); // 🔥 AUTO-CLOSE
+              }}
+            >
+              RESET FILTERS
+            </button>
+          </div>
+        </div>
+      )}
 
 
       <main className="w-full pt-2 pb-5 mt-16 md:mt-16 bg-pureWhite">
@@ -265,19 +277,19 @@ useEffect(() => {
               </div>
               <SideFilter
                 price={price}
-                setPrice={setPrice}
+                setPrice={handlePriceChange}
                 category={category}
-                setCategory={setCategory}
+                setCategory={(v) => handleFilterChange(setCategory, v)}
                 weave={weave}
-                setWeave={setWeave}
+                setWeave={(v) => handleFilterChange(setWeave, v)}
                 style={style}
-                setStyle={setStyle}
-                set={set}             // 👈 NEW
-                setSet={setSet}       // 👈 NEW
-                size={size}           // 👈 NEW
-                setSize={setSize}     // 👈 NEW
-                color={color}         // 👈 NEW
-                setColor={setColor}   // 👈 NEW
+                setStyle={(v) => handleFilterChange(setStyle, v)}
+                set={set}
+                setSet={(v) => handleFilterChange(setSet, v)}
+                size={size}
+                setSize={(v) => handleFilterChange(setSize, v)}
+                color={color}
+                setColor={(v) => handleFilterChange(setColor, v)}
               />
             </div>
           </div>
@@ -322,23 +334,21 @@ useEffect(() => {
                 </div>
 
                 {/* Pagination */}
-               {productsCount > productsPerPage && (
-  <div className="flex justify-center mt-8">
-      count={totalPages}
-      page={currentPage}
-      onChange={(e, page) => {
-        setCurrentPage(page);
-        setSearchParamsState((prev) => {
-          const next = new URLSearchParams(prev);
-          next.set("page", page.toString());
-          return next;
-        });
-      }}
-      color="primary"
-      size="large"
-    />
-  </div>
-)}
+                {productsCount > productsPerPage && (
+                  <div className="flex justify-center mt-8">
+                    <Pagination
+                      count={totalPages}
+                      page={currentPage}
+                      onChange={(e, page) => {
+                        const next = new URLSearchParams(searchParamsState);
+                        next.set("page", page.toString());
+                        setSearchParamsState(next);
+                      }}
+                      color="primary"
+                      size="large"
+                    />
+                  </div>
+                )}
 
               </>
             )}
