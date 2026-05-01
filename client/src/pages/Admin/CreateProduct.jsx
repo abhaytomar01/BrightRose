@@ -54,6 +54,7 @@ const STYLE_OPTIONS = [
   { label: "Blazer & Skirt Set", value: "blazer-skirt-set" },
   { label: "Kaftaan", value: "kaftaan" },
   { label: "Trousers", value: "trousers" },
+  { label: "Palazzo", value: "palazzo" },
   { label: "Coat", value: "coat" },
   { label: "Shirt and Trousers set", value: "shirt-trousers-set" },
   { label: "Top and Skirt set", value: "top-skirt-set" },

@@ -70,6 +70,7 @@ const SideFilter = ({
     "shirt",
     "kaftaan",
     "trousers",
+    "palazzo",
     "coat",
   ];
   const setSubcategories = [
@@ -143,6 +144,7 @@ const SideFilter = ({
     "shirt": "Shirt",
     "kaftaan": "Kaftaan",
     "trousers": "Trousers",
+    "palazzo": "Palazzo",
     "coat": "Coat",
   };
 

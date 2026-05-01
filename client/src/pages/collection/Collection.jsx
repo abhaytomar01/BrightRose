@@ -25,8 +25,8 @@ const Collection = () => {
   const endIndex = startIndex + productsPerPage;
 
   // 🧠 Smart Pagination
-  const currentProducts = products.length > productsPerPage 
-    ? products.slice(startIndex, endIndex) 
+  const currentProducts = products.length > productsPerPage
+    ? products.slice(startIndex, endIndex)
     : products;
 
 
@@ -40,9 +40,9 @@ const Collection = () => {
         page: currentPage,
         limit: productsPerPage,
       };
-if (weave) params.weavingSlug = weave;
-if (style || set) params.tagSlugs = style || set;
-if (category) params.category = category;
+      if (weave) params.weavingSlug = weave;
+      if (style || set) params.tagSlugs = style || set;
+      if (category) params.category = category;
 
 
       const res = await axios.get(
@@ -122,7 +122,7 @@ if (category) params.category = category;
           loading={loading}
           products={currentProducts}
           wishlistItems={[]}
-          setWishlistItems={() => {}}
+          setWishlistItems={() => { }}
           currentPage={currentPage}
           productsPerPage={productsPerPage}
           productsCount={productsCount}

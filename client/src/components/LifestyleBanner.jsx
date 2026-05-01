@@ -21,7 +21,7 @@ const slides = [
   },
   {
     id: 3,
-    title: "IT ROOTED IN LOCAL ECOSYSTEMS",
+    title: "IT'S ROOTED IN LOCAL ECOSYSTEMS",
     subtitle: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
     imageUrl: slide3,
   },

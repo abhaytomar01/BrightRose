@@ -6,9 +6,17 @@ import stylecover from "../assets/images/stylecover.jpeg";
 import corsetndtops from "../assets/images/corsetndtops1.jpg";
 import dresses from "../assets/images/dresses.webp";
 import skirtnpants from "../assets/images/Shirt&trouser.jpg";
+import skirt2 from "../assets/images/skirt2.jpg";
+import shirtskirt from "../assets/images/skirt2.jpg";
+import pants2 from "../assets/images/pants2.jpg";
+import palazzo from "../assets/images/palazzo.jpg";
 import sarees from "../assets/images/saree.jpg";
 import jacketnblazers from "../assets/images/jacket&blazer.jpg";
 import blazers from "../assets/images/blazers1.jpg";
+import blazertrouser from "../assets/images/blazertrouser.webp";
+import silktrenchcoat from "../assets/images/silktrenchcoat.webp";
+
+
 // import pants from "../assets/images/pants.jpg";
 import ikkatsilkcorset from "../assets/images/ikkatsilkcorset1.jpg";
 
@@ -32,7 +40,7 @@ const subcategories = [
     name: "Skirt",
     slug: "skirt",
     desc: "Contemporary silhouettes with traditional craftsmanship.",
-    image: skirtnpants,
+    image: skirt2,
   },
   {
     name: "Pre-Draped Saree",
@@ -62,19 +70,25 @@ const subcategories = [
     name: "Shirt",
     slug: "shirt",
     desc: "Handcrafted shirts that bring artisanal texture to everyday luxury.",
-    image: corsetndtops,
+    image: skirtnpants,
   },
   {
     name: "Pants",
     slug: "pants",
     desc: "Tailored trousers woven with heritage fabrics for a refined look.",
-    image: skirtnpants,
+    image: pants2,
+  },
+  {
+    name: "Palazzo",
+    slug: "palazzo",
+    desc: "Fluid, wide-leg silhouettes blending comfort with high-end artisanal craft.",
+    image: palazzo,
   },
   {
     name: "Shirt & Skirt Set",
     slug: "shirt-skirt-set",
     desc: "A coordinated pairing of handwoven shirt and skirt for effortless elegance.",
-    image: skirtnpants,
+    image: shirtskirt,
   },
   {
     name: "Skirt & Blazer Set",
@@ -86,7 +100,7 @@ const subcategories = [
     name: "Blazer & Trousers Set",
     slug: "blazer-trousers-set",
     desc: "A classic two-piece set combining structured blazer and relaxed trousers.",
-    image: jacketnblazers,
+    image: blazertrouser,
   },
   {
     name: "Jacket & Trousers Set",
@@ -122,7 +136,7 @@ const subcategories = [
     name: "Coat",
     slug: "coat",
     desc: "A statement outerwear piece structured to provide an elegant layer of warmth and a commanding aesthetic.",
-    image: blazers,
+    image: silktrenchcoat,
   },
   {
     name: "Shirt and Trousers set",
@@ -192,20 +206,19 @@ const StyleCollection = () => {
                 transition={{ delay: index * 0.06, duration: 0.6 }}
               >
                 <Link
-                  to={`/products?${
-                    [
-                      "shirt-skirt-set",
-                      "skirt-blazer-set",
-                      "blazer-trousers-set",
-                      "jacket-trousers-set",
-                      "skirt-corset-set",
-                      "blazer-skirt-set",
-                      "shirt-trousers-set",
-                      "top-skirt-set",
-                    ].includes(sub.slug)
-                      ? "set"
-                      : "style"
-                  }=${encodeURIComponent(sub.slug)}`}
+                  to={`/products?${[
+                    "shirt-skirt-set",
+                    "skirt-blazer-set",
+                    "blazer-trousers-set",
+                    "jacket-trousers-set",
+                    "skirt-corset-set",
+                    "blazer-skirt-set",
+                    "shirt-trousers-set",
+                    "top-skirt-set",
+                  ].includes(sub.slug)
+                    ? "set"
+                    : "style"
+                    }=${encodeURIComponent(sub.slug)}`}
                   className="block group"
                 >
                   <div className="overflow-hidden rounded-2xl bg-neutralLight border border-mutedGray/80 hover:border-accentGold/60 transition-all duration-300">
