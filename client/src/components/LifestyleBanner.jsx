@@ -9,41 +9,41 @@ import slide5 from "../assets/images/about2.jpg";
 const slides = [
   {
     id: 1,
-    title: "ITS INHERENTLY CIRCULAR",
+    title: "IT INHERENTLY CIRCULAR",
     subtitle: "Indian craftsmanship has been practicing zero-waste design long before it had a name. We repurposed fabric, dyed naturally, and created heirlooms, not mass produce landfill.",
     imageUrl: slide2,
   },
   {
     id: 2,
-    title: "ITS HONOURS TIME, NOT SPEED",
+    title: "IT HONOURS TIME, NOT SPEED",
     subtitle: "A single garment can take weeks or months to make. A weave can take years to perfect. This is slow fashion. A lived reality, not a marketing label.",
-    imageUrl: slide1, 
+    imageUrl: slide1,
   },
   {
     id: 3,
-    title: "ITS ROOTED IN LOCAL ECOSYSTEMS",
+    title: "IT ROOTED IN LOCAL ECOSYSTEMS",
     subtitle: "From Kutch to Varanasi, Kashmir to Tamil Nadu, craft traditions are shaped by climate, soil, and community. We don't just make garments. We weave history.",
     imageUrl: slide3,
   },
   {
     id: 4,
-    title: "ITS EMPOWERS AT GRASSROOT",
+    title: "IT EMPOWERS AT GRASSROOT",
     subtitle: "When you support Indian craft, you support rural economies, women-led artisan collectives, and intergenerational skill. Not corporations or exploitation.",
-    imageUrl: slide4, 
+    imageUrl: slide4,
   },
   {
     id: 5,
-    title: "ITS RESISTS SAMENESS",
+    title: "IT RESISTS SAMENESS",
     subtitle: "No two weaves are identical. Craft preserves individuality which is the very soul of sustainable style. Craft preserves individuality which is the very soul of sustainable style.",
     imageUrl: slide1,
   },
   {
     id: 6,
-    title: "ITS PREDATES AND OUTLIVES TRENDS",
+    title: "IT PREDATES AND OUTLIVES TRENDS",
     subtitle: "Fast fashion fades. Karegari survives. Indian craftsmanship is not old, it's timeless. It doesn't follow, it outlasts.",
     imageUrl: slide5,
   },
-];  
+];
 
 const AUTOPLAY_DELAY = 6000;
 
@@ -62,16 +62,15 @@ export default function LifestyleBanner() {
   const prev = () => setActive((p) => (p - 1 + slides.length) % slides.length);
 
   return (
-  <section className="relative w-full bg-black text-white overflow-hidden">
-  <div className="relative min-h-[90vh] w-full lifestyle-banner-container">
+    <section className="relative w-full bg-black text-white overflow-hidden">
+      <div className="relative min-h-[90vh] w-full lifestyle-banner-container">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-              index === active
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 transition-opacity duration-700 ease-out ${index === active
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+              }`}
           >
             {/* Background */}
             <div className="w-full h-full relative">
@@ -89,7 +88,7 @@ export default function LifestyleBanner() {
                 <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 pb-14 md:pb-0">
                   <div className="max-w-xl md:max-w-2xl">
                     <p className="uppercase tracking-[0.25em] text-[11px] md:text-xs text-neutral-300 mb-4">
-                      Bright Rose 
+                      Bright Rose
                     </p>
                     <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-light leading-tight md:leading-[1.1] text-neutral-200">
                       {slide.title}
@@ -128,11 +127,10 @@ export default function LifestyleBanner() {
             className="group flex items-center gap-2"
           >
             <span
-              className={`h-[3px] md:h-[4px] rounded-full transition-all duration-300 ${
-                index === active
-                  ? "w-10 md:w-14 bg-white"
-                  : "w-4 md:w-6 bg-white/40 group-hover:bg-white/70"
-              }`}
+              className={`h-[3px] md:h-[4px] rounded-full transition-all duration-300 ${index === active
+                ? "w-10 md:w-14 bg-white"
+                : "w-4 md:w-6 bg-white/40 group-hover:bg-white/70"
+                }`}
             />
             <span className="hidden md:block text-[10px] uppercase tracking-[0.2em] text-white/60">
               {`0${index + 1}`}

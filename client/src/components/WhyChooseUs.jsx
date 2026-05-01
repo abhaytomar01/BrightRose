@@ -4,14 +4,14 @@ import { Leaf, MapPin, Star, Truck } from "lucide-react";
 const WhyChooseUs = ({
   highlights = [
     { icon: <Leaf size={28} />, title: "Craftsmanship", description: "Every piece is meticulously handcrafted, honoring techniques that take years to master and moments to perfect." },
-    { icon: <MapPin size={28} />, title: "Intentionality", description: "From fabric selection to final finishing, every decision is made with purpose, not pressure." },
-    { icon: <Star size={28} />, title: "Exclusivity", description: "Limited creations designed to feel personal — because true luxury is never mass-produced." },
-    { icon: <Truck size={28} />, title: "Trust", description: "A promise of transparency, reliability, and consistency — from creation to delivery." },
+    { icon: <MapPin size={28} />, title: "Intentionality", description: "From fabric selection to final finishing every decision is made with purpose, not pressure." },
+    { icon: <Star size={28} />, title: "Exclusivity", description: "Limited creations designed to feel personal because true luxury is never mass-produced." },
+    { icon: <Truck size={28} />, title: "Trust", description: "A promise of transparency, reliability, and consistency from creation to delivery." },
   ],
 }) => {
   return (
     <section className="w-full py-10 md:py-20 bg-gradient-to-b from-[#ffffff] to-[#ffffff] select-none">
-      
+
       <div className="max-w-[1500px] mx-auto px-5 sm:px-10 lg:px-20 text-center">
         {/* SECTION TITLE */}
         <h2 className="text-[28px] sm:text-[34px] md:text-[40px] font-light text-neutral-900 tracking-wide">
@@ -19,7 +19,7 @@ const WhyChooseUs = ({
         </h2>
 
         <p className="text-neutralDark/80 text-[14px] sm:text-[16px] md:text-[18px] font-light max-w-xl mx-auto mt-3 leading-relaxed">
-          A reflection of our core values — craftsmanship, luxury, and authenticity.
+          A reflection of our core values craftsmanship, luxury, and authenticity.
         </p>
 
         {/* Minimal Gold Divider */}

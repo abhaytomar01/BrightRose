@@ -1,5 +1,6 @@
 // client/src/pages/collection/Collection.jsx
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import SideFilter from "../../components/ProductListing/SideFilter";
 import ProductListing from "../../components/ProductListing/ProductListing";
@@ -16,9 +17,20 @@ const Collection = () => {
   const [style, setStyle] = useState("");
   const [set, setSet] = useState(""); // 👈 NEW
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = Number(searchParams.get("page")) || 1;
+
   // pagination (frontend slice)
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const productsPerPage = 12;
+
+  // 🔹 Sync currentPage with URL (for back/forward buttons)
+  useEffect(() => {
+    const page = Number(searchParams.get("page")) || 1;
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  }, [searchParams, currentPage]);
 
   const fetchFiltered = async () => {
     try {
@@ -65,6 +77,11 @@ if (category) params.category = category;
 
   const handlePageChange = (_, page) => {
     setCurrentPage(page);
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", page.toString());
+      return next;
+    });
   };
 
   return (

@@ -129,20 +129,6 @@ const subcategories = [
   },
   {
     heritage: "Heritage Weave",
-    name: "Weave of Mulberry",
-    slug: "mulberry",
-    desc: "Crafted from the finest mulberry silk, this weave boasts a brilliant luster, incredible softness, and exceptional durability, making it a timeless classic.",
-    image: Img6,
-  },
-  {
-    heritage: "Telangana & Gujarat Heritage Weave",
-    name: "Pochampally Ikat & Patan Patola",
-    slug: "pochampally-patan-patola",
-    desc: "A magnificent fusion of Pochampally's striking geometric ikat and the exquisite double-ikat subtlety of Patan Patola, representing pinnacle weaving artistry.",
-    image: Img8,
-  },
-  {
-    heritage: "Heritage Weave",
     name: "Plain weave of silk",
     slug: "plain-silk",
     desc: "A masterclass in elegant simplicity. The plain silk weave highlights the natural sheen and pure quality of the silk yarn without competing motifs.",

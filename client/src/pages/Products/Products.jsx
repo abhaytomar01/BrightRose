@@ -2,7 +2,7 @@
 import Pagination from "@mui/material/Pagination";
 import { useState, useEffect, useCallback } from "react";
 import Product from "../../components/ProductListing/Product";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Spinner from "../../components/Spinner";
 import axios from "axios";
@@ -16,16 +16,18 @@ const Products = () => {
   const { auth, isAdmin } = useAuth();
   const [loading, setLoading] = useState(true);
 
+  const [searchParamsState, setSearchParamsState] = useSearchParams();
+  
   // --- read all query params ONCE for initial state ---
-  const searchParams = new URLSearchParams(location.search);
-  const initialCategory = searchParams.get("category") || "";
-  const initialWeave = searchParams.get("weave") || "";
-  const initialStyle = searchParams.get("style") || "";
-  const initialSet = searchParams.get("set") || "";       // 👈 NEW
-  const initialSize = searchParams.get("size") || "";     // 👈 NEW
-  const initialColor = searchParams.get("color") || "";   // 👈 NEW
-  const initialPriceMin = searchParams.get("priceMin");
-  const initialPriceMax = searchParams.get("priceMax");
+  const initialCategory = searchParamsState.get("category") || "";
+  const initialWeave = searchParamsState.get("weave") || "";
+  const initialStyle = searchParamsState.get("style") || "";
+  const initialSet = searchParamsState.get("set") || "";       // 👈 NEW
+  const initialSize = searchParamsState.get("size") || "";     // 👈 NEW
+  const initialColor = searchParamsState.get("color") || "";   // 👈 NEW
+  const initialPriceMin = searchParamsState.get("priceMin");
+  const initialPriceMax = searchParamsState.get("priceMax");
+  const initialPage = Number(searchParamsState.get("page")) || 1;
 
   // Filters - ADDED size/color states 👇
   const [price, setPrice] = useState([
@@ -49,13 +51,21 @@ const Products = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const productsPerPage = 16;
 
   const startIndex = (currentPage - 1) * productsPerPage;
   const endIndex = startIndex + productsPerPage;
   const currentProducts = products.slice(startIndex, endIndex);
   const totalPages = Math.ceil(productsCount / productsPerPage);
+
+  // 🔹 Sync currentPage with URL (for back/forward buttons)
+  useEffect(() => {
+    const page = Number(searchParamsState.get("page")) || 1;
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
+  }, [searchParamsState, currentPage]);
 
   // 🔹 Scroll to top whenever page changes
 useEffect(() => {
@@ -70,7 +80,12 @@ useEffect(() => {
   // Reset pagination when ANY filter changes 👇
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedPrice, category, weave, style, set, size, color]);  // 👈 ADDED set, size/color
+    setSearchParamsState((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", "1");
+      return next;
+    }, { replace: true });
+  }, [debouncedPrice, category, weave, style, set, size, color, setSearchParamsState]);  // 👈 ADDED set, size/color
 
   // Debounce price
   useEffect(() => {
@@ -309,11 +324,15 @@ useEffect(() => {
                 {/* Pagination */}
                {productsCount > productsPerPage && (
   <div className="flex justify-center mt-8">
-    <Pagination
       count={totalPages}
       page={currentPage}
       onChange={(e, page) => {
         setCurrentPage(page);
+        setSearchParamsState((prev) => {
+          const next = new URLSearchParams(prev);
+          next.set("page", page.toString());
+          return next;
+        });
       }}
       color="primary"
       size="large"
