@@ -82,6 +82,12 @@ const SideFilter = ({
     "blazer-skirt-set",
     "shirt-trousers-set",
     "top-skirt-set",
+    "corset-palazzo-set",
+    "blazer-top-skirt-set",
+    "jacket-skirt-set",
+    "corset-skirt-jacket-set",
+    "blazer-pant-set",
+    "kaftaan-set",
   ];
   const sizeOptions = ["All", "XS", "S", "M", "L", "XL", "XXL"];
   const colorOptions = [
@@ -125,9 +131,15 @@ const SideFilter = ({
     "blazer-trousers-set": "Blazer & Trousers Set",
     "jacket-trousers-set": "Jacket & Trousers Set",
     "skirt-corset-set": "Skirt & Corset Set",
-    "blazer-skirt-set": "Blazer & Skirt Set",
+    "blazer-skirt-set": "Blazer & Skirt set",
     "shirt-trousers-set": "Shirt and Trousers set",
-    "top-skirt-set": "Top and Skirt set",
+    "top-skirt-set": "Top & Skirt Set",
+    "corset-palazzo-set": "Corset & Palazzo Set",
+    "blazer-top-skirt-set": "Blazer, Top & Skirt Set",
+    "jacket-skirt-set": "Jacket & Skirt Set",
+    "corset-skirt-jacket-set": "Corset Skirt & Jacket Set",
+    "blazer-pant-set": "Blazer & Pant Set",
+    "kaftaan-set": "Kaftaan Set",
   };
   const styleLabels = {
     "All": "All Styles",

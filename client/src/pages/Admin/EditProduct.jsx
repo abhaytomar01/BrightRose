@@ -50,13 +50,19 @@ const STYLE_OPTIONS = [
   { label: "Blazer & Trousers Set", value: "blazer-trousers-set" },
   { label: "Jacket & Trousers Set", value: "jacket-trousers-set" },
   { label: "Skirt & Corset Set", value: "skirt-corset-set" },
-  { label: "Blazer & Skirt Set", value: "blazer-skirt-set" },
+  { label: "Blazer & Skirt set", value: "blazer-skirt-set" },
   { label: "Kaftaan", value: "kaftaan" },
   { label: "Trousers", value: "trousers" },
   { label: "Palazzo", value: "palazzo" },
   { label: "Coat", value: "coat" },
   { label: "Shirt and Trousers set", value: "shirt-trousers-set" },
-  { label: "Top and Skirt set", value: "top-skirt-set" },
+  { label: "Top & Skirt Set", value: "top-skirt-set" },
+  { label: "Corset & Palazzo Set", value: "corset-palazzo-set" },
+  { label: "Blazer, Top & Skirt Set", value: "blazer-top-skirt-set" },
+  { label: "Jacket & Skirt Set", value: "jacket-skirt-set" },
+  { label: "Corset Skirt & Jacket Set", value: "corset-skirt-jacket-set" },
+  { label: "Blazer & Pant Set", value: "blazer-pant-set" },
+  { label: "Kaftaan Set", value: "kaftaan-set" },
 ];
 
 

@@ -1,5 +1,5 @@
 // client/src/pages/collection/Collection.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import SideFilter from "../../components/ProductListing/SideFilter";

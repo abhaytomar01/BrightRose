@@ -108,7 +108,7 @@ const subcategories = [
     image: ikkatsilkcorset,
   },
   {
-    name: "Blazer & Skirt Set",
+    name: "Blazer & Skirt set",
     slug: "blazer-skirt-set",
     desc: "Sharp blazer meets fluid skirt in this versatile coordinated set.",
     image: blazers,
@@ -138,10 +138,46 @@ const subcategories = [
     image: skirtnpants,
   },
   {
-    name: "Top and Skirt set",
+    name: "Top & Skirt Set",
     slug: "top-skirt-set",
     desc: "A beautiful ensemble combining a tailored top with a fluid skirt, blending structure and grace for a perfect modern look.",
     image: corsetndtops,
+  },
+  {
+    name: "Corset & Palazzo Set",
+    slug: "corset-palazzo-set",
+    desc: "A sophisticated pairing of a structured corset and fluid palazzo pants.",
+    image: palazzo,
+  },
+  {
+    name: "Blazer, Top & Skirt Set",
+    slug: "blazer-top-skirt-set",
+    desc: "A complete three-piece ensemble for a polished, layered look.",
+    image: blazers,
+  },
+  {
+    name: "Jacket & Skirt Set",
+    slug: "jacket-skirt-set",
+    desc: "A modern pairing of a tailored jacket and fluid skirt.",
+    image: jacketnblazers,
+  },
+  {
+    name: "Corset Skirt & Jacket Set",
+    slug: "corset-skirt-jacket-set",
+    desc: "A luxurious three-piece set combining structure and movement.",
+    image: ikkatsilkcorset,
+  },
+  {
+    name: "Blazer & Pant Set",
+    slug: "blazer-pant-set",
+    desc: "The ultimate power suit, reimagined with artisanal handwoven fabrics.",
+    image: blazertrouser,
+  },
+  {
+    name: "Kaftaan Set",
+    slug: "kaftaan-set",
+    desc: "A luxurious coordinated kaftaan ensemble for effortless sophistication.",
+    image: dresses,
   },
 ];
 
@@ -201,13 +237,18 @@ const StyleCollection = () => {
                 <Link
                   to={`/products?${[
                     "shirt-skirt-set",
-                    "skirt-blazer-set",
                     "blazer-trousers-set",
                     "jacket-trousers-set",
                     "skirt-corset-set",
                     "blazer-skirt-set",
                     "shirt-trousers-set",
                     "top-skirt-set",
+                    "corset-palazzo-set",
+                    "blazer-top-skirt-set",
+                    "jacket-skirt-set",
+                    "corset-skirt-jacket-set",
+                    "blazer-pant-set",
+                    "kaftaan-set",
                   ].includes(sub.slug)
                     ? "set"
                     : "style"
