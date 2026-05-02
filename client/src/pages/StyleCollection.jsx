@@ -108,7 +108,7 @@ const subcategories = [
     image: ikkatsilkcorset,
   },
   {
-    name: "Blazer & Skirt set",
+    name: "Blazer & Skirt Set",
     slug: "blazer-skirt-set",
     desc: "Sharp blazer meets fluid skirt in this versatile coordinated set.",
     image: blazers,
@@ -132,7 +132,7 @@ const subcategories = [
     image: silktrenchcoat,
   },
   {
-    name: "Shirt and Trousers set",
+    name: "Shirt & Trousers Set",
     slug: "shirt-trousers-set",
     desc: "A seamlessly coordinated pairing of a handcrafted shirt and tailored trousers, embodying effortless contemporary style.",
     image: skirtnpants,
