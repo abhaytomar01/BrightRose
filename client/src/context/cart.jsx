@@ -16,6 +16,7 @@ import {
   removeCartItemAPI,
   clearCartAPI,
 } from "../api/cart";
+import { trackEvent } from "../components/Analytics/pixelUtils";
 
 const CartContext = createContext();
 
@@ -171,6 +172,16 @@ export const CartProvider = ({ children }) => {
       }
 
       return updated;
+    });
+
+    // Track AddToCart Event
+    trackEvent('AddToCart', {
+      content_ids: [item._id],
+      content_name: item.name,
+      content_type: 'product',
+      value: item.price * qty,
+      currency: 'INR',
+      quantity: qty
     });
 
     toast.success("Cart updated");

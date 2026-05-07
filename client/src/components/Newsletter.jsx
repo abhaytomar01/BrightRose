@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { trackEvent } from "./Analytics/pixelUtils";
 
 const Newsletter = ({
   title = "Join Our Circle",
@@ -42,6 +43,13 @@ const Newsletter = ({
       if (response.ok) {
         setStatus("success");
         setMessage("Thank you for subscribing!");
+
+        // Track Lead Event
+        trackEvent('Lead', {
+          content_name: 'Newsletter Signup',
+          status: 'Success'
+        });
+
         setEmail("");
       } else {
         throw new Error(data.message || "Subscription failed.");
@@ -81,10 +89,9 @@ const Newsletter = ({
             type="submit"
             disabled={status === "loading"}
             className={`px-6 py-3 rounded-full font-medium border border-[#D4AF37] transition-all duration-300
-              ${
-                status === "loading"
-                  ? "bg-gray-400 cursor-not-allowed text-white"
-                  : "bg-[#AD000F] text-white hover:bg-[#8c000c] hover:shadow-lg"
+              ${status === "loading"
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-[#AD000F] text-white hover:bg-[#8c000c] hover:shadow-lg"
               }`}
           >
             {status === "loading" ? "Subscribing..." : buttonText}
@@ -94,13 +101,12 @@ const Newsletter = ({
         {/* Status Message */}
         {message && (
           <p
-            className={`mt-4 text-sm ${
-              status === "success"
-                ? "text-green-600"
-                : status === "error"
+            className={`mt-4 text-sm ${status === "success"
+              ? "text-green-600"
+              : status === "error"
                 ? "text-red-600"
                 : "text-gray-600"
-            }`}
+              }`}
           >/
             {message}
           </p>

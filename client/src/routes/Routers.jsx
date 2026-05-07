@@ -27,7 +27,7 @@ import AdminDashboard from "../pages/Admin/AdminDashboard";
 import AdminOrders from "../pages/Admin/AdminOrders";
 import UpdateOrders from "../pages/Admin/UpdateOrders";
 import DeleteAllOrder from "../pages/DeleteAllOrder.jsx";
-import AdminOrderDetails from "../pages/Admin/AdminOrderDetails.jsx"; 
+import AdminOrderDetails from "../pages/Admin/AdminOrderDetails.jsx";
 
 // 🔹 Products
 import Products from "../pages/Products/Products";
@@ -58,26 +58,26 @@ const Routers = () => {
       <Route path="/" element={<Home />} />
       <Route path="/products" element={<Products />} />
       <Route path="/search" element={<Products />} />
-      <Route path="/atelier" element={<AtelierSection/>} />
-    <Route path="/founder" element={<Founder />} />
+      <Route path="/atelier" element={<AtelierSection />} />
+      <Route path="/founder" element={<Founder />} />
 
       {/* 🔹 Product Details Page */}
       <Route path="/product/:productId" element={<ProductPage />} />
 
       {/* Cart & Checkout Flow */}
-<Route path="/cart" element={<Cart />} />
-<Route path="/collection" element={<Collection />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/collection" element={<Collection />} />
 
-{/* Checkout - address, payment, and review in one flow */}
-<Route path="/checkout" element={<Checkout />} />
+      {/* Checkout - address, payment, and review in one flow */}
+      <Route path="/checkout" element={<Checkout />} />
 
-{/* Shipping and Order Confirmation Pages (protected routes) */}
-<Route element={<PrivateRoute />}>
-  <Route path="/shipping" element={<Shipping />} />
-  <Route path="/order-success/:id" element={<OrderSuccess />} />
-  <Route path="/order-failed" element={<OrderFailed />} />
+      {/* Shipping and Order Confirmation Pages (protected routes) */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/shipping" element={<Shipping />} />
+        <Route path="/order-success/:id" element={<OrderSuccess />} />
+        <Route path="/order-failed" element={<OrderFailed />} />
 
-</Route>
+      </Route>
 
 
       {/* Auth */}
@@ -93,18 +93,18 @@ const Routers = () => {
         <Route path="wishlist" element={<Wishlist />} />
       </Route>
 
-    {/* Admin Login Page (Public) */}
-<Route path="/admin/login" element={<AdminLogin />} />
+      {/* Admin Login Page (Public) */}
+      <Route path="/admin/login" element={<AdminLogin />} />
 
-{/* Admin Protected Routes */}
-<Route path="/admin" element={<AdminRoute />}>
-  <Route path="dashboard/*" element={<AdminDashboard />} />
-  <Route path="orders" element={<AdminOrders />} />
-  <Route path="orders/order_details/:id" element={<UpdateOrders />} />
-  <Route path="/admin/orders/:id" element={<AdminOrderDetails />}
-/>
+      {/* Admin Protected Routes */}
+      <Route path="/admin" element={<AdminRoute />}>
+        <Route path="dashboard/*" element={<AdminDashboard />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="orders/order_details/:id" element={<UpdateOrders />} />
+        <Route path="/admin/orders/:id" element={<AdminOrderDetails />}
+        />
 
-</Route>
+      </Route>
 
 
       {/* Extra Pages */}
@@ -119,9 +119,9 @@ const Routers = () => {
 
       {/* Policy  */}
       <Route path="/terms" element={<Terms />} />
-<Route path="/privacy" element={<Privacy />} />
-<Route path="/customer-service" element={<CustomerService />} />
-<Route path="/exchange-return" element={<ExchangeReturn />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/customer-service" element={<CustomerService />} />
+      <Route path="/exchange-return" element={<ExchangeReturn />} />
 
     </Routes>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import SeoData from "../../SEO/SeoData";
+import { trackEvent } from "../../components/Analytics/pixelUtils";
 // import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
@@ -44,6 +45,13 @@ const Contact = () => {
 
       if (res.data.success) {
         setSent(true);
+        
+        // Track Lead Event
+        trackEvent('Lead', {
+          content_name: 'Contact Form',
+          status: 'Success'
+        });
+
         setForm({ name: "", email: "", message: "", honey: "" });
         setTimeout(() => setSent(false), 5000);
       } else {
