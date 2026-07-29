@@ -182,7 +182,7 @@ app.use("/api/v1/orders/admin", adminOrderRoute);
 // ==============================
 // Serve frontend (if built) — final catch-all
 // ==============================
-const frontendPath = path.join(__dirname, "../legacy-client", "dist");
+const frontendPath = path.join(__dirname, "../client", "dist");
 if (fs.existsSync(frontendPath)) {
   app.use(express.static(frontendPath));
 

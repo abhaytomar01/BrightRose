@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "build": "npm install --prefix ../legacy-client && npm run build --prefix ../legacy-client && npm install",
-    "client": "npm run dev --prefix ../legacy-client",
+    "build": "npm install --prefix ../client && npm run build --prefix ../client && npm install",
+    "client": "npm run dev --prefix ../client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
