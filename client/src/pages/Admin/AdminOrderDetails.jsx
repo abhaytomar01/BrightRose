@@ -26,6 +26,7 @@ const AdminOrderDetails = () => {
   const [loading, setLoading] = useState(true);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [addingUpdate, setAddingUpdate] = useState(false);
+  const [generatingInvoice, setGeneratingInvoice] = useState(false);
 
   // Status update form
   const [newStatus, setNewStatus] = useState("");
@@ -106,6 +107,26 @@ const AdminOrderDetails = () => {
       toast.error(err.response?.data?.message || "Failed to post update");
     } finally {
       setAddingUpdate(false);
+    }
+  };
+
+  // ─── Generate Invoice ───────────────────────────────────────────
+  const handleGenerateInvoice = async () => {
+    setGeneratingInvoice(true);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/api/v1/orders/admin/order/${id}/invoice`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.success) {
+        toast.success("Invoice generated successfully!");
+        await fetchOrder();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to generate invoice");
+    } finally {
+      setGeneratingInvoice(false);
     }
   };
 
@@ -224,9 +245,18 @@ const AdminOrderDetails = () => {
                     📄 Download Invoice (PDF)
                   </a>
                 ) : (
-                  <p className="text-xs text-gray-500 italic">
-                    No invoice generated yet.
-                  </p>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs text-gray-500 italic">
+                      No invoice generated yet.
+                    </p>
+                    <button
+                      onClick={handleGenerateInvoice}
+                      disabled={generatingInvoice}
+                      className="w-fit text-xs bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60"
+                    >
+                      {generatingInvoice ? "Generating..." : "⚡ Generate Invoice Now"}
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

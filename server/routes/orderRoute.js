@@ -8,7 +8,8 @@ import {
   getAllOrders, 
   updateOrderStatus,
   cancelOrder,
-  addTrackingUpdate
+  addTrackingUpdate,
+  generateInvoiceForOrder
 } from "../controllers/user/orderController.js";
 
 import { requireSignIn, isAdmin } from "../middleware/authMiddleware.js";
@@ -26,5 +27,6 @@ router.get("/admin/orders", requireSignIn, isAdmin, getAllOrders);
 router.get("/admin/order/:id", requireSignIn, isAdmin, getOrderByIdAdmin); // admin single order
 router.put("/admin/order-status/:id", requireSignIn, isAdmin, updateOrderStatus);
 router.post("/admin/order-status/:id/tracking", requireSignIn, isAdmin, addTrackingUpdate);
+router.post("/admin/order/:id/invoice", requireSignIn, isAdmin, generateInvoiceForOrder);
 
 export default router;

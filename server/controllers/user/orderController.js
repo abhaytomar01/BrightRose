@@ -317,7 +317,26 @@ export const getOrderByIdAdmin = async (req, res) => {
 };
 
 /* ======================================================
-    7️⃣ USER – CANCEL ORDER
+    7️⃣ ADMIN – GENERATE MISSING INVOICE
+====================================================== */
+export const generateInvoiceForOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    
+    const paths = await generateInvoicePDF(order);
+    order.invoicePath = paths.relativePath;
+    await order.save();
+    
+    return res.json({ success: true, message: "Invoice generated successfully", invoicePath: paths.relativePath });
+  } catch (err) {
+    console.error("Generate Invoice Error:", err);
+    return res.status(500).json({ success: false, message: "Failed to generate invoice" });
+  }
+};
+
+/* ======================================================
+    8️⃣ USER – CANCEL ORDER
 ====================================================== */
 export const cancelOrder = async (req, res) => {
   try {
