@@ -5,11 +5,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import mobileVideo from "../../../assets/images/Banners/video2.mp4";
-import desktopVideo from "../../../assets/images/Banners/video1.mp4";
+import mobileVideo from "../../../assets/images/banners/video2.mp4";
+import desktopVideo from "../../../assets/images/banners/video1.mp4";
 import { Link } from "react-router-dom";
-import videocover1 from "../../../assets/images/Banners/videocover1.png";
-import videocover2 from "../../../assets/images/Banners/videocover2.png";
+import videocover1 from "../../../assets/images/banners/videocover1.png";
+import videocover2 from "../../../assets/images/banners/videocover2.png";
 
 export const PreviousBtn = ({ className, onClick }) => (
   <div
