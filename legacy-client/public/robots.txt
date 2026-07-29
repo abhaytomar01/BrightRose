@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.thebrightrose.com/sitemap.xml
+
+# Block unnecessary pages
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /cart
+Disallow: /checkout
+Disallow: /user
+Disallow: /order-success
+Disallow: /order-failed
+Disallow: /shipping
